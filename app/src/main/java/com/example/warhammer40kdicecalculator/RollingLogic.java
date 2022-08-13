@@ -30,13 +30,15 @@ public class RollingLogic {
 
         for(int z = 0; z < 10000; z++)
         {
-
+            OriginalUnit = defender.copy();
 
             amountOfWoundsTotal = 0;
             amountOfModelsKilled = 0;
             currentModelDamage = 0;
             int currentDefendingModelInteger = 0;
-            Model currentDefendingModel = defender.listOfModels.get(0);
+
+            Model currentDefendingModel = OriginalUnit.listOfModels.get(0);
+          //  amountOfWoundsTotal = currentDefendingModel.wounds;
             for(int i = 0; i < attacker.listOfModels.size(); i++)
             {
 
@@ -156,9 +158,9 @@ public class RollingLogic {
                             {
                                 amountOfWoundsTotal += currentMetricsOfAttacking.damage;
 
-                                currentDefendingModel.wounds -= currentMetricsOfAttacking.damage;
+                                currentModelDamage += currentMetricsOfAttacking.damage;
 
-                                if(currentDefendingModel.wounds <= 0)
+                                if(currentDefendingModel.wounds <= currentModelDamage)
                                 {
                                     z = z;
                                     amountOfModelsKilled +=1;
@@ -167,6 +169,7 @@ public class RollingLogic {
                                     {   currentDefendingModelInteger +=1;
                                         currentDefendingModel = defender.listOfModels.get(currentDefendingModelInteger );
                                     }
+                                    currentModelDamage = 0;
                                 }
 
                                 //        if(currentModelDamage >= defender.numberOfWounds)

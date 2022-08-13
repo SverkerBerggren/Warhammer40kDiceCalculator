@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         guardsman.ballisticSkill = 5;
         guardsman.listOfRangedWeapons.add(lasgun);
 
+        conscripts.listOfAbilitys.add(new HammerOfTheEmperor());
 
         for(int i = 0; i < 100; i++)
         {
