@@ -1,0 +1,70 @@
+++ Battalion Detachment 0CP (Imperium - Astra Militarum) [114 PL, 3CP, 2,000pts] ++
+
++ Configuration +
+
+Battle Size [6CP]: 3. Strike Force (101-200 Total PL / 1001-2000 Points)
+
+Detachment Command Cost
+
+Gametype: 4. Chapter Approved: War Zone Nephilim
+
+Regimental Doctrine: Regiment: Cadian
+
++ Stratagems +
+
+Imperial Commander's Armoury [-1CP]: 1 additional Heirloom of Conquest
+
+Tank Ace [-1CP]
+
+Whiteshields [-2CP]
+
++ HQ +
+
+Knight Commander Pask [14 PL, 220pts]: Battle Cannon, Heavy Bolter
+
+Lord Castellan Creed [3 PL, 1CP, 60pts]: Stratagem: Warlord Trait, Warlord
+
+Tank Commander [12 PL, 225pts]: Heavy Bolter, Turret-mounted Demolisher Siege Cannon
+. 2 Heavy Bolters
+
++ Troops +
+
+Conscripts [7 PL, 150pts]: Whiteshields
+. 30x Conscript: 30x Lasgun
+
+Conscripts [7 PL, 150pts]: Whiteshields
+. 30x Conscript: 30x Lasgun
+
+Conscripts [7 PL, 150pts]: Whiteshields
+. 30x Conscript: 30x Lasgun
+
+Conscripts [7 PL, 150pts]: Whiteshields
+. 30x Conscript: 30x Lasgun
+
+Infantry Squad [3 PL, 60pts]
+. 5x Guardsman: 5x Lasgun
+. Guardsman W/ Special Weapon: Plasma gun
+. Guardsman w/ Vox-caster
+. Heavy Weapon Team: Mortar
+. Sergeant: Laspistol
+
++ Elites +
+
+Platoon Commander [2 PL, 25pts]: Laspistol
+
+Platoon Commander [2 PL, 25pts]: Laspistol
+
+Platoon Commander [2 PL, 25pts]: Laspistol
+
++ Heavy Support +
+
+Leman Russ Battle Tanks [30 PL, 450pts]
+. Leman Russ Demolisher: Heavy Bolter, Turret-mounted Demolisher Siege Cannon
+. Leman Russ Demolisher: Heavy Bolter, Turret-mounted Demolisher Siege Cannon
+. Leman Russ Demolisher: Heavy Bolter, Turret-mounted Demolisher Siege Cannon
+
+Manticore [9 PL, 155pts]: Full Payload, Heavy Bolter
+
+Manticore [9 PL, 155pts]: Heavy Bolter
+
+++ Total: [114 PL, 3CP, 2,000pts] ++
