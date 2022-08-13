@@ -37,19 +37,20 @@ public class MainActivity extends AppCompatActivity {
         DataSheet conscript = new DataSheet(5,3,90,1,1,0,3,5,-1);
         DataSheet spaceMarine = new DataSheet(3,4,1,2,1,1,4,3,-1);
     //    conscript.hammerOfEmperor = true;
-   //     hej.CalculateDamage(conscript,spaceMarine);
+    //     hej.CalculateDamage(conscript,spaceMarine);
 
         RangedWeapon lasgun = new RangedWeapon(3,0,1,new RangedAttackAmount(1,0,0));
 
         Unit conscripts = new Unit();
-
+        lasgun.ap = 0;
         Model guardsman = new Model();
         guardsman.ballisticSkill = 5;
         guardsman.listOfRangedWeapons.add(lasgun);
 
+
         for(int i = 0; i < 100; i++)
         {
-            conscripts.listOfModels.add(guardsman);
+            conscripts.listOfModels.add(new Model(guardsman));
         }
 
 
@@ -57,10 +58,11 @@ public class MainActivity extends AppCompatActivity {
         Model intercessor = new Model();
         intercessor.wounds = 2;
         intercessor.armorSave = 3;
+        intercessor.toughness = 4;
 
         for(int i =0; i <10; i ++)
         {
-            spaceMarineIntercessorUnit.listOfModels.add(intercessor);
+            spaceMarineIntercessorUnit.listOfModels.add(new Model(intercessor));
         }
 
         hej.newCalculateDamage(conscripts,spaceMarineIntercessorUnit);

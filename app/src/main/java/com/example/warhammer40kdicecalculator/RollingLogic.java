@@ -21,9 +21,17 @@ public class RollingLogic {
         ArrayList<Integer> resultWoundsDealt = new ArrayList<Integer>();
         ArrayList<Integer> resultModelsSlain = new ArrayList<Integer>();
 
+        Unit OriginalUnit = defender.copy();
+
+  //      for(int i = 0; i < defender.listOfModels.size();i++)
+  //      {
+  //
+  //      }
 
         for(int z = 0; z < 10000; z++)
         {
+
+
             amountOfWoundsTotal = 0;
             amountOfModelsKilled = 0;
             currentModelDamage = 0;
@@ -31,34 +39,54 @@ public class RollingLogic {
             Model currentDefendingModel = defender.listOfModels.get(0);
             for(int i = 0; i < attacker.listOfModels.size(); i++)
             {
+
                 Model currentAttackingModel = attacker.listOfModels.get(i);
 
                 for(int f = 0; f < currentAttackingModel.listOfRangedWeapons.size(); f++)
                 {
-                    RangedWeapon currentWeapon = currentAttackingModel.listOfRangedWeapons.get(f);
-                    int amountOfAttacks = 0;
 
-                    amountOfAttacks += currentWeapon.amountOfAttacks.rawNumberOfAttacks;
-                    for( int p = 0; p < currentWeapon.amountOfAttacks.numberOfD3; p++)
-                    {
-                        amountOfAttacks += ThreadLocalRandom.current().nextInt(1, 3 +1 );
-                    }
-                    for( int p = 0; p < currentWeapon.amountOfAttacks.numberOfD6; p++)
-                    {
-                        amountOfAttacks += ThreadLocalRandom.current().nextInt(1, 6 +1 );
-                    }
+                    RangedWeapon currentWeapon = currentAttackingModel.listOfRangedWeapons.get(f);
                     int requiredBallisticSkil= currentAttackingModel.ballisticSkill;
                     int damage = currentWeapon.damage;
                     int ap = currentWeapon.ap;
                     int strength = currentWeapon.strength;
 
                     MetricsOfAttacking currentMetricsOfAttacking = new MetricsOfAttacking(0, ap,damage, 0,0);
+                    int amountOfAttacks = 0;
 
+                    amountOfAttacks += currentWeapon.amountOfAttacks.rawNumberOfAttacks;
 
-
-                    for(int p = 0; p < amountOfAttacks; i++)
+                    for( int p = 0; p < currentWeapon.amountOfAttacks.numberOfD3; p++)
                     {
-                        int hitRoll = ThreadLocalRandom.current().nextInt(1, 6 +1 );
+                        Log.d(("Testar loopar: "),"Fungerar vapen loopen loopen");
+                        Integer diceResult = ThreadLocalRandom.current().nextInt(1, 3 +1 );
+
+                        for(int c = 0; c < currentAttackingModel.listOfAbilites.size(); c++)
+                        {
+                            currentAttackingModel.listOfAbilites.get(c).rollNumberOfShots(diceResult,currentMetricsOfAttacking);
+                        }
+                        amountOfAttacks += diceResult;
+                    }
+                    for( int p = 0; p < currentWeapon.amountOfAttacks.numberOfD6; p++)
+                    {
+
+
+                        Integer diceResult = ThreadLocalRandom.current().nextInt(1, 6 +1 );
+                        for(int c = 0; c < currentAttackingModel.listOfAbilites.size(); c++)
+                        {
+                            currentAttackingModel.listOfAbilites.get(c).rollNumberOfShots(diceResult,currentMetricsOfAttacking);
+                        }
+                        amountOfAttacks += diceResult;
+                    }
+
+
+
+
+                    for(int p = 0; p < amountOfAttacks; p++)
+                    {
+
+                       // Log.d(("Testar loopar: "),"Fungerar amount of attacks loopen loopen " + p);
+                        Integer hitRoll = ThreadLocalRandom.current().nextInt(1, 6 +1 );
 
                         for(int k = 0; k < currentAttackingModel.listOfAbilites.size(); k++)
                         {
@@ -70,70 +98,84 @@ public class RollingLogic {
                             currentMetricsOfAttacking.hits += 1;
                         }
 
-                        int woundRoll = ThreadLocalRandom.current().nextInt(1, 6 +1 );
-
-                        for(int m = 0; m < currentAttackingModel.listOfAbilites.size(); m++ )
+                        for(int j = 0; j < currentMetricsOfAttacking.hits; j++)
                         {
-                            currentAttackingModel.listOfAbilites.get(m).woundRollAbility(woundRoll,currentMetricsOfAttacking);
-                        }
-
-                        int requiredResult = -1;
-                        if(strength == currentDefendingModel.toughness)
-                        {
-                            requiredResult = 4;
-                        }
-                        else if(strength >= currentDefendingModel.toughness *2)
-                        {
-                            requiredResult = 2;
-                        }
-                        else if(strength > currentDefendingModel.toughness)
-                        {
-                            requiredResult = 3;
-                        }
-                        if(strength  <= currentDefendingModel.toughness /2 )
-                        {
-                            requiredResult = 6;
-                        }
-                        else if(strength < currentDefendingModel.toughness)
-                        {
-                            requiredResult = 5;
-                        }
-                        if(woundRoll >= requiredResult)
-                        {
-                            currentMetricsOfAttacking.wounds += 1;
-                        }
-
-
-                        int defenderWoundRoll = ThreadLocalRandom.current().nextInt(1, 6 +1 );
-                        int requiredSaveRoll = currentDefendingModel.armorSave + currentMetricsOfAttacking.ap;
-                        for(int w = 0; w < currentDefendingModel.listOfAbilites.size(); w++)
-                        {
-                            currentDefendingModel.listOfAbilites.get(w).saveRollAbility(defenderWoundRoll,currentMetricsOfAttacking);
-                        }
-                        if(defenderWoundRoll < requiredSaveRoll || currentMetricsOfAttacking.wounds > 0)
-                        {
-                            amountOfWoundsTotal += currentMetricsOfAttacking.damage;
-
-                            currentDefendingModel.wounds -= currentMetricsOfAttacking.damage;
-
-                            if(currentDefendingModel.wounds <= 0)
+                            int woundRoll = ThreadLocalRandom.current().nextInt(1, 6 +1 );
+                            for(int m = 0; m < currentAttackingModel.listOfAbilites.size(); m++ )
                             {
-                                amountOfModelsKilled +=1;
-
-                                if(!(currentDefendingModelInteger == defender.listOfModels.size() -1) )
-                                {   currentDefendingModelInteger +=1;
-                                    currentDefendingModel = defender.listOfModels.get(currentDefendingModelInteger );
-                                }
+                                currentAttackingModel.listOfAbilites.get(m).woundRollAbility(woundRoll,currentMetricsOfAttacking);
+                            }
+                            for(int m = 0; m < currentAttackingModel.listOfAbilites.size(); m++ )
+                            {
+                                currentAttackingModel.listOfAbilites.get(m).woundRollAbility(woundRoll,currentMetricsOfAttacking);
                             }
 
-                   //        if(currentModelDamage >= defender.numberOfWounds)
-                   //        {
-                   //            amountOfModelsKilled +=1;
+                            int requiredResult = -1;
+                            if(strength == currentDefendingModel.toughness)
+                            {
+                                requiredResult = 4;
+                            }
+                            else if(strength >= currentDefendingModel.toughness *2)
+                            {
+                                requiredResult = 2;
+                            }
+                            else if(strength > currentDefendingModel.toughness)
+                            {
+                                requiredResult = 3;
+                            }
+                            if(strength  <= currentDefendingModel.toughness /2 )
+                            {
+                                requiredResult = 6;
+                            }
+                            else if(strength < currentDefendingModel.toughness)
+                            {
+                                requiredResult = 5;
+                            }
+                            if(woundRoll >= requiredResult)
+                            {
+                                currentMetricsOfAttacking.wounds += 1;
+                            }
+                        }
 
-                   //            currentModelDamage = 0;
-                   //        }
 
 
+
+
+
+
+                        int requiredSaveRoll = currentDefendingModel.armorSave + currentMetricsOfAttacking.ap;
+
+
+                        for(int e = 0; e < currentMetricsOfAttacking.wounds; e++)
+                        {   int defenderWoundRoll = ThreadLocalRandom.current().nextInt(1, 6 +1 );
+                            for(int w = 0; w < currentDefendingModel.listOfAbilites.size(); w++)
+                            {
+                                currentDefendingModel.listOfAbilites.get(w).saveRollAbility(defenderWoundRoll,currentMetricsOfAttacking);
+                            }
+                            if(defenderWoundRoll < requiredSaveRoll )
+                            {
+                                amountOfWoundsTotal += currentMetricsOfAttacking.damage;
+
+                                currentDefendingModel.wounds -= currentMetricsOfAttacking.damage;
+
+                                if(currentDefendingModel.wounds <= 0)
+                                {
+                                    z = z;
+                                    amountOfModelsKilled +=1;
+
+                                    if(!(currentDefendingModelInteger == defender.listOfModels.size() -1) )
+                                    {   currentDefendingModelInteger +=1;
+                                        currentDefendingModel = defender.listOfModels.get(currentDefendingModelInteger );
+                                    }
+                                }
+
+                                //        if(currentModelDamage >= defender.numberOfWounds)
+                                //        {
+                                //            amountOfModelsKilled +=1;
+
+                                //            currentModelDamage = 0;
+                                //        }
+                            }
                         }
 
                     }
@@ -141,7 +183,7 @@ public class RollingLogic {
 
 
 
-
+                  //  Log.d("Resultat test:", "Hits: " + currentMetricsOfAttacking.hits + " Wounds" + currentMetricsOfAttacking.wounds);
                 }
 
 
