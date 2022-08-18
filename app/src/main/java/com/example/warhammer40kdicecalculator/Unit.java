@@ -32,5 +32,6 @@ public class Unit {
     {
         listOfModels = new ArrayList<>(other.listOfModels);
 
+        listOfAbilitys = new ArrayList<>(other.listOfAbilitys);
     }
 }

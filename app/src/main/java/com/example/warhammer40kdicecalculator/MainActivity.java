@@ -1,6 +1,7 @@
 package com.example.warhammer40kdicecalculator;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.transition.Visibility;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     //    conscript.hammerOfEmperor = true;
     //     hej.CalculateDamage(conscript,spaceMarine);
 
-        RangedWeapon lasgun = new RangedWeapon(3,0,1,new RangedAttackAmount(1,0,0));
+        RangedWeapon lasgun = new RangedWeapon(3,0,new DamageAmount(1,0,0),new RangedAttackAmount(1,0,0));
 
         Unit conscripts = new Unit();
         lasgun.ap = 0;
@@ -65,6 +66,16 @@ public class MainActivity extends AppCompatActivity {
         {
             spaceMarineIntercessorUnit.listOfModels.add(new Model(intercessor));
         }
+
+        Unit LemanRuss = new Unit();
+        Model lemanRussTurret = new Model();
+        LemanRuss.listOfModels.add(lemanRussTurret);
+
+        lemanRussTurret.ballisticSkill = 3;
+
+   //     RangedWeapon demolisherCannon = new RangedWeapon(10,3,)
+
+
 
         hej.newCalculateDamage(conscripts,spaceMarineIntercessorUnit);
 

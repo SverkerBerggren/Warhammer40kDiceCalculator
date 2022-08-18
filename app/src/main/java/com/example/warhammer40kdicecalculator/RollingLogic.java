@@ -49,7 +49,7 @@ public class RollingLogic {
 
                     RangedWeapon currentWeapon = currentAttackingModel.listOfRangedWeapons.get(f);
                     int requiredBallisticSkil= currentAttackingModel.ballisticSkill;
-                    int damage = currentWeapon.damage;
+                    int damage = currentWeapon.damageAmount.rawDamageAmount;
                     int ap = currentWeapon.ap;
                     int strength = currentWeapon.strength;
 
@@ -60,25 +60,25 @@ public class RollingLogic {
 
                     for( int p = 0; p < currentWeapon.amountOfAttacks.numberOfD3; p++)
                     {
-                        Log.d(("Testar loopar: "),"Fungerar vapen loopen loopen");
-                        Integer diceResult = ThreadLocalRandom.current().nextInt(1, 3 +1 );
+                      //  Log.d(("Testar loopar: "),"Fungerar vapen loopen loopen");
+                        DiceResult diceResult = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 +1 ));
 
                         for(int c = 0; c < currentAttackingModel.listOfAbilites.size(); c++)
                         {
                             currentAttackingModel.listOfAbilites.get(c).rollNumberOfShots(diceResult,currentMetricsOfAttacking);
                         }
-                        amountOfAttacks += diceResult;
+                        amountOfAttacks += diceResult.result;
                     }
                     for( int p = 0; p < currentWeapon.amountOfAttacks.numberOfD6; p++)
                     {
 
 
-                        Integer diceResult = ThreadLocalRandom.current().nextInt(1, 6 +1 );
+                        DiceResult diceResult = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 +1 ));
                         for(int c = 0; c < currentAttackingModel.listOfAbilites.size(); c++)
                         {
                             currentAttackingModel.listOfAbilites.get(c).rollNumberOfShots(diceResult,currentMetricsOfAttacking);
                         }
-                        amountOfAttacks += diceResult;
+                        amountOfAttacks += diceResult.result;
                     }
 
 
@@ -88,21 +88,21 @@ public class RollingLogic {
                     {
 
                        // Log.d(("Testar loopar: "),"Fungerar amount of attacks loopen loopen " + p);
-                        Integer hitRoll = ThreadLocalRandom.current().nextInt(1, 6 +1 );
+                        DiceResult hitRoll = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 +1 ));
 
-                        for(int k = 0; k < currentAttackingModel.listOfAbilites.size(); k++)
+                        for(int k = 0; k < attacker.listOfAbilitys.size(); k++)
                         {
-                            currentAttackingModel.listOfAbilites.get(k).hitRollAbility(hitRoll,currentMetricsOfAttacking);
+                            attacker.listOfAbilitys.get(k).hitRollAbility(hitRoll,currentMetricsOfAttacking);
                         }
 
-                        if(hitRoll >= requiredBallisticSkil)
+                        if(hitRoll.result >= requiredBallisticSkil)
                         {
                             currentMetricsOfAttacking.hits += 1;
                         }
 
                         for(int j = 0; j < currentMetricsOfAttacking.hits; j++)
                         {
-                            int woundRoll = ThreadLocalRandom.current().nextInt(1, 6 +1 );
+                            DiceResult woundRoll = new DiceResult( ThreadLocalRandom.current().nextInt(1, 6 +1 ));
                             for(int m = 0; m < currentAttackingModel.listOfAbilites.size(); m++ )
                             {
                                 currentAttackingModel.listOfAbilites.get(m).woundRollAbility(woundRoll,currentMetricsOfAttacking);
@@ -133,7 +133,7 @@ public class RollingLogic {
                             {
                                 requiredResult = 5;
                             }
-                            if(woundRoll >= requiredResult)
+                            if(woundRoll.result >= requiredResult)
                             {
                                 currentMetricsOfAttacking.wounds += 1;
                             }
@@ -149,16 +149,42 @@ public class RollingLogic {
 
 
                         for(int e = 0; e < currentMetricsOfAttacking.wounds; e++)
-                        {   int defenderWoundRoll = ThreadLocalRandom.current().nextInt(1, 6 +1 );
+                        {   DiceResult defenderWoundRoll = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 +1 ));
                             for(int w = 0; w < currentDefendingModel.listOfAbilites.size(); w++)
                             {
                                 currentDefendingModel.listOfAbilites.get(w).saveRollAbility(defenderWoundRoll,currentMetricsOfAttacking);
                             }
-                            if(defenderWoundRoll < requiredSaveRoll )
+                            if(defenderWoundRoll.result < requiredSaveRoll )
                             {
+                                //amountOfWoundsTotal += currentWeapon.damageAmount.rawDamageAmount;
+                                int damageToBeTaken = currentWeapon.damageAmount.rawDamageAmount;
+                                for( int o = 0; p < currentWeapon.damageAmount.d3DamageAmount; p++)
+                                {
+                                    //  Log.d(("Testar loopar: "),"Fungerar vapen loopen loopen");
+                                    DiceResult diceResult = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 +1 ));
+
+                                    for(int c = 0; c < currentAttackingModel.listOfAbilites.size(); c++)
+                                    {
+                                      //  currentAttackingModel.listOfAbilites.get(c).rollNumberOfShots(diceResult,currentMetricsOfAttacking);
+                                    }
+                                    amountOfAttacks += diceResult.result;
+                                }
+                                for( int o = 0; p < currentWeapon.amountOfAttacks.numberOfD6; p++)
+                                {
+
+
+                                    DiceResult diceResult = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 +1 ));
+                                    for(int c = 0; c < currentAttackingModel.listOfAbilites.size(); c++)
+                                    {
+                                      //  currentAttackingModel.listOfAbilites.get(c).rollNumberOfShots(diceResult,currentMetricsOfAttacking);
+                                    }
+                                    amountOfAttacks += diceResult.result;
+                                }
                                 amountOfWoundsTotal += currentMetricsOfAttacking.damage;
 
                                 currentModelDamage += currentMetricsOfAttacking.damage;
+
+
 
                                 if(currentDefendingModel.wounds <= currentModelDamage)
                                 {
