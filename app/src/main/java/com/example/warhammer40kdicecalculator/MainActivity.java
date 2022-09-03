@@ -76,9 +76,18 @@ public class MainActivity extends AppCompatActivity {
    //     RangedWeapon demolisherCannon = new RangedWeapon(10,3,)
 
 
+        Unit manticore = new Unit();
+        Model manticoreHunterKillerMissile = new Model();
+        manticoreHunterKillerMissile.ballisticSkill = 4;
+        RangedWeapon hunterKillerMissile = new RangedWeapon(10,-2,new DamageAmount(3,0,0),new RangedAttackAmount(0,0,2));
+        manticoreHunterKillerMissile.listOfRangedWeapons.add(hunterKillerMissile);
+        manticore.listOfModels.add(manticoreHunterKillerMissile);
 
-        hej.newCalculateDamage(conscripts,spaceMarineIntercessorUnit);
 
+
+      //  hej.newCalculateDamage(conscripts,spaceMarineIntercessorUnit);
+
+        hej.newCalculateDamage(manticore,spaceMarineIntercessorUnit);
 
     }
 }
