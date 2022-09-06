@@ -3,6 +3,7 @@ package com.example.warhammer40kdicecalculator;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class RollingLogic {
@@ -60,25 +61,49 @@ public class RollingLogic {
 
                     for( int p = 0; p < currentWeapon.amountOfAttacks.numberOfD3; p++)
                     {
+                        List<DiceResult> amountOffAttacksRoll = new ArrayList<>();
                       //  Log.d(("Testar loopar: "),"Fungerar vapen loopen loopen");
-                        DiceResult diceResult = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 +1 ));
 
-                        for(int c = 0; c < currentAttackingModel.listOfAbilites.size(); c++)
+
+                        for(int c = 0; c < currentWeapon.amountOfAttacks.numberOfD3; c++)
                         {
-                            currentAttackingModel.listOfAbilites.get(c).rollNumberOfShots(diceResult,currentMetricsOfAttacking);
+                            DiceResult diceResult = new DiceResult(ThreadLocalRandom.current().nextInt(1, 3 +1 ));
+                            diceResult.isD3Roll = true;
+                            amountOffAttacksRoll.add(diceResult);
                         }
-                        amountOfAttacks += diceResult.result;
+
+                        for(int l = 0; l < currentAttackingModel.listOfAbilites.size(); l++)
+                        {
+                            currentAttackingModel.listOfAbilites.get(l).rollNumberOfShots(amountOffAttacksRoll,currentMetricsOfAttacking);
+                        }
+
+                        for(int l = 0; l < amountOffAttacksRoll.size(); l++)
+                        {
+                            amountOfAttacks += amountOffAttacksRoll.get(l).result;
+                        }
                     }
                     for( int p = 0; p < currentWeapon.amountOfAttacks.numberOfD6; p++)
                     {
+                        List<DiceResult> amountOffAttacksRoll = new ArrayList<>();
+                        //  Log.d(("Testar loopar: "),"Fungerar vapen loopen loopen");
 
 
-                        DiceResult diceResult = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 +1 ));
-                        for(int c = 0; c < currentAttackingModel.listOfAbilites.size(); c++)
+                        for(int c = 0; c < currentWeapon.amountOfAttacks.numberOfD6; c++)
                         {
-                            currentAttackingModel.listOfAbilites.get(c).rollNumberOfShots(diceResult,currentMetricsOfAttacking);
+                            DiceResult diceResult = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 +1 ));
+                            diceResult.isD6Roll= true;
+                            amountOffAttacksRoll.add(diceResult);
                         }
-                        amountOfAttacks += diceResult.result;
+
+                        for(int l = 0; l < currentAttackingModel.listOfAbilites.size(); l++)
+                        {
+                            currentAttackingModel.listOfAbilites.get(l).rollNumberOfShots(amountOffAttacksRoll,currentMetricsOfAttacking);
+                        }
+
+                        for(int l = 0; l < amountOffAttacksRoll.size(); l++)
+                        {
+                            amountOfAttacks += amountOffAttacksRoll.get(l).result;
+                        }
                     }
 
 
@@ -165,7 +190,7 @@ public class RollingLogic {
 
                                     for(int c = 0; c < currentAttackingModel.listOfAbilites.size(); c++)
                                     {
-                                       currentAttackingModel.listOfAbilites.get(c).rollNumberOfShots(diceResult,currentMetricsOfAttacking);
+                                       currentAttackingModel.listOfAbilites.get(c).woundRollAbility(diceResult,currentMetricsOfAttacking);
                                     }
                                     if(diceResult.result ==1 || diceResult.result == 2)
                                     {
@@ -187,7 +212,7 @@ public class RollingLogic {
                                     DiceResult diceResult = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 +1 ));
                                     for(int c = 0; c < currentAttackingModel.listOfAbilites.size(); c++)
                                     {
-                                       currentAttackingModel.listOfAbilites.get(c).rollNumberOfShots(diceResult,currentMetricsOfAttacking);
+                                       currentAttackingModel.listOfAbilites.get(c).woundRollAbility(diceResult,currentMetricsOfAttacking);
                                     }
                                     damageToBeTaken += diceResult.result;
                                 }
@@ -258,136 +283,7 @@ public class RollingLogic {
         Log.d("Result", "Average amount of killed models: " + averageModelsKilled);
     }
 
-    public void CalculateDamage(DataSheet attacker, DataSheet defender)
-    {   //Random random = new Random();
 
-        boolean printRequireHitdResult = true;
-        boolean printRequiredWoundResult = true;
-        boolean printRequiredSaveResult = true;
-
-        int amountOfWoundsTotal;
-        int amountOfModelsKilled;
-        int currentModelDamage;
-        ArrayList<Integer> resultWoundsDealt = new ArrayList<Integer>();
-        ArrayList<Integer> resultModelsSlain = new ArrayList<Integer>();
-
-
-
-        for(int z = 0; z < 10000; z++)
-        {   amountOfWoundsTotal = 0;
-            amountOfModelsKilled = 0;
-            currentModelDamage = 0;
-            for (int i = 0; i < attacker.NumberOfAttacks; i++)
-            {
-
-
-                int resultHitRoll;
-
-                resultHitRoll = ThreadLocalRandom.current().nextInt(1, 6 +1 );
-                if(attacker.hammerOfEmperor && resultHitRoll == 6)
-                {
-                    int resultSave = ThreadLocalRandom.current().nextInt(1, 6 +1 );
-
-                    if(resultSave <= defender.armorSave + attacker.ap)
-                    {
-                        amountOfWoundsTotal +=1;
-                        continue;
-                    }
-                }
-
-                if(printRequireHitdResult)
-                {
-                    Log.d("Tester", "Vilken hitroll kravdes " + attacker.ballisticSkill);
-                    printRequireHitdResult = false;
-                }
-                if(resultHitRoll >= attacker.ballisticSkill)
-                {   int resultWoundRoll = ThreadLocalRandom.current().nextInt(1, 6 +1 );
-
-                    int requiredResult = -1;
-                    if(attacker.Strength == defender.toughness)
-                    {
-                        requiredResult = 4;
-                    }
-                    else if(attacker.Strength >= defender.toughness *2)
-                    {
-                        requiredResult = 2;
-                    }
-                    else if(attacker.Strength > defender.toughness)
-                    {
-                        requiredResult = 3;
-                    }
-                    if(attacker.Strength  <= defender.toughness /2 )
-                    {
-                        requiredResult = 6;
-                    }
-                    else if(attacker.Strength < defender.toughness)
-                    {
-                        requiredResult = 5;
-                    }
-                    if(printRequiredWoundResult)
-                    {
-                        Log.d("required Result", "vad ar required result wound" + requiredResult );
-                        printRequiredWoundResult = false;
-                    }
-
-
-                    if(resultWoundRoll >= requiredResult)
-                    {
-                        int defenderWoundRoll = ThreadLocalRandom.current().nextInt(1, 6 +1 );
-
-                        int requiredRoll = defender.armorSave + attacker.ap;
-
-                        if(printRequiredSaveResult)
-                        {
-                            Log.d("tester: ", "Vad behover saveas" + requiredRoll);
-                            printRequiredSaveResult = false;
-                        }
-
-                        if(defenderWoundRoll < requiredRoll)
-                        {
-                            amountOfWoundsTotal += attacker.damage;
-                            currentModelDamage += attacker.damage;
-
-                            if(currentModelDamage >= defender.numberOfWounds)
-                            {
-                                amountOfModelsKilled +=1;
-
-                                currentModelDamage = 0;
-                            }
-                        }
-
-                    }
-                }
-              //  Log.d("Mangden damage", "hur manga wounds " + amountOfWoundsTotal );
-
-            }
-            resultWoundsDealt.add(amountOfWoundsTotal);
-            resultModelsSlain.add(amountOfModelsKilled);
-        }
-
-        Log.d("inget", "" +resultWoundsDealt.size());
-        float average = 0;
-        float sum = 0;
-        for(int result : resultWoundsDealt)
-        {
-            sum +=result;
-        }
-        float averageModelsKilled = 0;
-        float anotherSum = 0;
-
-        for(int result : resultModelsSlain)
-        {
-            anotherSum += result;
-        }
-
-        average = sum/10000;
-
-        averageModelsKilled = anotherSum/10000;
-
-        Log.d("Result", "Average amount of wounds: " + average);
-        Log.d("Result", "Average amount of killed models: " + averageModelsKilled);
-
-    }
 
 
 

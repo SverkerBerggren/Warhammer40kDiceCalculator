@@ -1,5 +1,7 @@
 package com.example.warhammer40kdicecalculator;
 
+import java.util.List;
+
 public class HammerOfTheEmperor extends Ability{
 
     public  void hitRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking)
@@ -22,7 +24,7 @@ public class HammerOfTheEmperor extends Ability{
 
     }
 
-    public   void rollNumberOfShots(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking)
+    public   void rollNumberOfShots(List<DiceResult> diceResult, MetricsOfAttacking metricsOfAttacking)
     {
 
     }

@@ -71,11 +71,14 @@ public class MainActivity extends AppCompatActivity {
         Model lemanRussTurret = new Model();
         LemanRuss.listOfModels.add(lemanRussTurret);
 
-        lemanRussTurret.ballisticSkill = 3;
+        LemanRuss.listOfAbilitys.add(new HammerOfTheEmperor());
 
-   //     RangedWeapon demolisherCannon = new RangedWeapon(10,3,)
+        lemanRussTurret.ballisticSkill = 4;
 
+        RangedWeapon demolisherCannon = new RangedWeapon(10,-3, new DamageAmount(0,0,1),new RangedAttackAmount(0,0,1));
 
+        lemanRussTurret.listOfRangedWeapons.add(demolisherCannon);
+        lemanRussTurret.listOfRangedWeapons.add(demolisherCannon);
         Unit manticore = new Unit();
         Model manticoreHunterKillerMissile = new Model();
         manticoreHunterKillerMissile.ballisticSkill = 4;
@@ -83,11 +86,14 @@ public class MainActivity extends AppCompatActivity {
         manticoreHunterKillerMissile.listOfRangedWeapons.add(hunterKillerMissile);
         manticore.listOfModels.add(manticoreHunterKillerMissile);
 
-
+        manticore.listOfAbilitys.add(new HammerOfTheEmperor());
 
       //  hej.newCalculateDamage(conscripts,spaceMarineIntercessorUnit);
 
-        hej.newCalculateDamage(manticore,spaceMarineIntercessorUnit);
+        lemanRussTurret.listOfAbilites.add(new HammerOfTheEmperor());
+        lemanRussTurret.listOfAbilites.add(new ReRollAmountOfHits());
+
+        hej.newCalculateDamage(LemanRuss,spaceMarineIntercessorUnit);
 
     }
 }
