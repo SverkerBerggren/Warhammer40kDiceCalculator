@@ -87,13 +87,15 @@ public class MainActivity extends AppCompatActivity {
         manticore.listOfModels.add(manticoreHunterKillerMissile);
 
         manticore.listOfAbilitys.add(new HammerOfTheEmperor());
-
+        manticoreHunterKillerMissile.listOfAbilites.add(new HammerOfTheEmperor());
       //  hej.newCalculateDamage(conscripts,spaceMarineIntercessorUnit);
-
+        manticore.listOfAbilitys.add(new ReRollAmountOfHits());
+        manticoreHunterKillerMissile.listOfAbilites.add(new ReRollAmountOfHits());
         lemanRussTurret.listOfAbilites.add(new HammerOfTheEmperor());
         lemanRussTurret.listOfAbilites.add(new ReRollAmountOfHits());
 
-        hej.newCalculateDamage(LemanRuss,spaceMarineIntercessorUnit);
+   //     manticoreHunterKillerMissile.listOfAbilites.add(new HammerOfTheEmperor());
+        hej.newCalculateDamage(manticore,spaceMarineIntercessorUnit);
 
     }
 }

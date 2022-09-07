@@ -23,7 +23,7 @@ public class RollingLogic {
         ArrayList<Integer> resultModelsSlain = new ArrayList<Integer>();
 
         Unit OriginalUnit = defender.copy();
-
+        double averageAmountOfAttacks = 0;
   //      for(int i = 0; i < defender.listOfModels.size();i++)
   //      {
   //
@@ -32,7 +32,7 @@ public class RollingLogic {
         for(int z = 0; z < 10000; z++)
         {
             OriginalUnit = defender.copy();
-
+          //  averageAmountOfAttacks = 0;
             amountOfWoundsTotal = 0;
             amountOfModelsKilled = 0;
             currentModelDamage = 0;
@@ -55,58 +55,53 @@ public class RollingLogic {
                     int strength = currentWeapon.strength;
 
                     MetricsOfAttacking currentMetricsOfAttacking = new MetricsOfAttacking(0, ap,damage, 0,0);
-                    int amountOfAttacks = 0;
+                    double amountOfAttacks = 0;
 
                     amountOfAttacks += currentWeapon.amountOfAttacks.rawNumberOfAttacks;
-
+                    List<DiceResult> amountOffAttacksRollD3 = new ArrayList<>();
                     for( int p = 0; p < currentWeapon.amountOfAttacks.numberOfD3; p++)
                     {
-                        List<DiceResult> amountOffAttacksRoll = new ArrayList<>();
-                      //  Log.d(("Testar loopar: "),"Fungerar vapen loopen loopen");
 
-
-                        for(int c = 0; c < currentWeapon.amountOfAttacks.numberOfD3; c++)
-                        {
-                            DiceResult diceResult = new DiceResult(ThreadLocalRandom.current().nextInt(1, 3 +1 ));
-                            diceResult.isD3Roll = true;
-                            amountOffAttacksRoll.add(diceResult);
-                        }
-
-                        for(int l = 0; l < currentAttackingModel.listOfAbilites.size(); l++)
-                        {
-                            currentAttackingModel.listOfAbilites.get(l).rollNumberOfShots(amountOffAttacksRoll,currentMetricsOfAttacking);
-                        }
-
-                        for(int l = 0; l < amountOffAttacksRoll.size(); l++)
-                        {
-                            amountOfAttacks += amountOffAttacksRoll.get(l).result;
-                        }
-                    }
-                    for( int p = 0; p < currentWeapon.amountOfAttacks.numberOfD6; p++)
-                    {
-                        List<DiceResult> amountOffAttacksRoll = new ArrayList<>();
                         //  Log.d(("Testar loopar: "),"Fungerar vapen loopen loopen");
 
 
-                        for(int c = 0; c < currentWeapon.amountOfAttacks.numberOfD6; c++)
-                        {
-                            DiceResult diceResult = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 +1 ));
-                            diceResult.isD6Roll= true;
-                            amountOffAttacksRoll.add(diceResult);
-                        }
-
+                        DiceResult diceResult = new DiceResult(ThreadLocalRandom.current().nextInt(1, 3 + 1));
+                        diceResult.isD3Roll = true;
+                        amountOffAttacksRollD3.add(diceResult);
+                    }
+                    if(currentWeapon.amountOfAttacks.numberOfD3 != 0)
+                    {
                         for(int l = 0; l < currentAttackingModel.listOfAbilites.size(); l++)
                         {
-                            currentAttackingModel.listOfAbilites.get(l).rollNumberOfShots(amountOffAttacksRoll,currentMetricsOfAttacking);
-                        }
-
-                        for(int l = 0; l < amountOffAttacksRoll.size(); l++)
-                        {
-                            amountOfAttacks += amountOffAttacksRoll.get(l).result;
+                            currentAttackingModel.listOfAbilites.get(l).rollNumberOfShots(amountOffAttacksRollD3,currentMetricsOfAttacking);
                         }
                     }
 
+                    for(int l = 0; l < amountOffAttacksRollD3.size(); l++)
+                    {
+                        amountOfAttacks += amountOffAttacksRollD3.get(l).result;
+                    }
+                    List<DiceResult> amountOffAttacksRollD6 = new ArrayList<>();
+                    for( int p = 0; p < currentWeapon.amountOfAttacks.numberOfD6; p++)
+                    {
 
+                        //  Log.d(("Testar loopar: "),"Fungerar vapen loopen loopen");
+
+                        DiceResult diceResult = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 +1 ));
+                        diceResult.isD6Roll= true;
+                        amountOffAttacksRollD6.add(diceResult);
+                    }
+                    if(currentWeapon.amountOfAttacks.numberOfD6 != 0)
+                    {
+                        for (int l = 0; l < currentAttackingModel.listOfAbilites.size(); l++) {
+                            currentAttackingModel.listOfAbilites.get(l).rollNumberOfShots(amountOffAttacksRollD6, currentMetricsOfAttacking);
+                        }
+                    }
+                    for(int l = 0; l < amountOffAttacksRollD6.size(); l++)
+                    {
+                        amountOfAttacks += amountOffAttacksRollD6.get(l).result;
+                    }
+                    averageAmountOfAttacks += amountOfAttacks;
 
 
                     for(int p = 0; p < amountOfAttacks; p++)
@@ -275,10 +270,13 @@ public class RollingLogic {
             anotherSum += result;
         }
 
+
+
+
         average = sum/10000;
 
         averageModelsKilled = anotherSum/10000;
-
+        Log.d("Result", "Average amount of attacks: " + averageAmountOfAttacks/10000);
         Log.d("Result", "Average amount of wounds: " + average);
         Log.d("Result", "Average amount of killed models: " + averageModelsKilled);
     }
