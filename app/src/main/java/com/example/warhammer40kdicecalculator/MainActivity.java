@@ -1,5 +1,6 @@
 package com.example.warhammer40kdicecalculator;
 
+import androidx.annotation.LongDef;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.transition.Visibility;
@@ -13,7 +14,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringBufferInputStream;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.function.Function;
 
@@ -29,6 +36,7 @@ class Runnable_Function<FunctionArgument,FunctionReturnValue> implements Runnabl
         m_FunctionToRun = FunctionToRun;
     }
     //@RequiresApi(api = Build.VERSION_CODES.N)
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void run()
     {
         m_FunctionToRun.apply(m_ArgumentToUse);
@@ -47,6 +55,7 @@ class Callback_Runner <RunArgumentType,RunResultType,CallbackResultType> impleme
         m_CodeToRun = CodeToRun;
         m_RunArgument = RunArgument;
     }
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void run()
     {
         RunResultType RunReturnValue = m_CodeToRun.apply(m_RunArgument);
@@ -58,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Context context;
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
         return(0);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     void EXAMPLEUPDATE()
     {
         WahapediaUpdate Updater = new WahapediaUpdate();
@@ -96,6 +107,51 @@ public class MainActivity extends AppCompatActivity {
 
         Thread UploadDataThread = new Thread(new Callback_Runner<UpdateArgumentStruct,String,Integer>(this,this::p_UpdateCallback,Updater::UpdateFiles,Arguments));
         UploadDataThread.start();
+    }
+
+    public  void testNedladdning(View v)
+    {
+        WahapediaUpdate wahapediaUpdate = new WahapediaUpdate();
+        UpdateArgumentStruct updateArgumentStruct = new UpdateArgumentStruct();
+
+
+        wahapediaUpdate.UpdateFiles(updateArgumentStruct);
+    }
+
+    public  void testBattleScribeParse(View v)
+    {
+        BattlescribeParser parser = new BattlescribeParser();
+
+        ArrayList<BattlescribeUnit> unitsInList = new ArrayList<>();
+        try
+        {
+            //  ArrayList<ArrayList<String>> arrayListToReturn = new ArrayList<>();
+
+            InputStreamReader input = new InputStreamReader(context.getAssets().open("TestParing.txt"));
+
+           // InputStream inputStream = new InputStream();
+            try {
+
+                unitsInList = parser.ParseUnits(context.getAssets().open("TestParing.txt"));
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+
+            Log.d("parsa battle", "lyckades " +unitsInList.size());
+
+            for(int i = 0; i < unitsInList.size(); i++)
+            {
+                Log.d("Unit list ", " " + unitsInList.get(i).Name);
+            }
+
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
     }
 
     public void printTest(View v)

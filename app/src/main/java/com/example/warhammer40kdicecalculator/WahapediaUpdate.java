@@ -1,6 +1,8 @@
 package com.example.warhammer40kdicecalculator;
 
 
+import android.util.Log;
+
 import java.io.DataInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -22,6 +24,7 @@ public class WahapediaUpdate
 
     public String UpdateFiles(UpdateArgumentStruct Arguments)
     {
+        Log.d("Wahapedia grejen: ", "den uppdaterade bra");
         String ReturnValue = "Success!";
         try
         {
@@ -31,6 +34,7 @@ public class WahapediaUpdate
                 HttpURLConnection con = (HttpURLConnection)API_URL.openConnection();
                 con.setRequestMethod("GET");
                 con.setDoInput(true);
+
                 DataInputStream HTTPInput = new DataInputStream( con.getInputStream() );
 
                 OutputStream FileOutput = new FileOutputStream(Arguments.OutputPrefix+"/"+File);
