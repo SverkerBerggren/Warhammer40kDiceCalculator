@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 public class Unit {
 
+    public String unitName = "";
+
     public ArrayList<Model> listOfModels = new ArrayList<>();
 
     public ArrayList<Ability> listOfAbilitys = new ArrayList<>( );

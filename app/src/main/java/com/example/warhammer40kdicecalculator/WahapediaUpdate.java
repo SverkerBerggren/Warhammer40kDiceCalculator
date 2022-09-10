@@ -24,7 +24,7 @@ public class WahapediaUpdate
 
     public String UpdateFiles(UpdateArgumentStruct Arguments)
     {
-        Log.d("Wahapedia grejen: ", "den uppdaterade bra");
+      //  Log.d("Wahapedia grejen: ", "den uppdaterade bra");
         String ReturnValue = "Success!";
         try
         {

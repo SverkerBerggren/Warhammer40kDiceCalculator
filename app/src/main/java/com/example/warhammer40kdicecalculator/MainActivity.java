@@ -65,7 +65,14 @@ class Callback_Runner <RunArgumentType,RunResultType,CallbackResultType> impleme
 
 public class MainActivity extends AppCompatActivity {
 
+
+
+
     private Context context;
+    private ArrayList<Unit> firstPlayerArmy;
+    private ArrayList<ArrayList<String>> parsedDatasheetList = new ArrayList<>();
+    private ArrayList<ArrayList<String>> parsedWeaponList = new ArrayList<>();
+    private ArrayList<ArrayList<String>> parsedModelList = new ArrayList<>();
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -73,6 +80,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         context = getApplicationContext();
+
+
+
+
+
         try {
             InputStream Input = this.getAssets().open("TestParing.txt");
             BattlescribeParser Parser = new BattlescribeParser();
@@ -86,8 +98,19 @@ public class MainActivity extends AppCompatActivity {
             int hej = 2;
         }
 
+
+
         EXAMPLEUPDATE();
+
+
+        TestLasaCsv csvParser = new TestLasaCsv(this.context);
+        parsedDatasheetList =   csvParser.ReadCsvFile("Datasheets.csv");
+        parsedWeaponList = csvParser.ReadCsvFile("Wargear_list.csv");
+        parsedModelList = csvParser.ReadCsvFile("Datasheets_models.csv");
+
     }
+
+
 
     Integer p_UpdateCallback(String Result)
     {
@@ -109,13 +132,56 @@ public class MainActivity extends AppCompatActivity {
         UploadDataThread.start();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public  void testNedladdning(View v)
     {
         WahapediaUpdate wahapediaUpdate = new WahapediaUpdate();
         UpdateArgumentStruct updateArgumentStruct = new UpdateArgumentStruct();
 
+        updateArgumentStruct.FilesToDownload.add("Datasheets.csv");
+        updateArgumentStruct.FilesToDownload.add("Wargear_list.csv");
+        updateArgumentStruct.FilesToDownload.add("Datasheets_models.csv");
+        updateArgumentStruct.URLPrefix = "https://wahapedia.ru/wh40k9ed/";
+        updateArgumentStruct.OutputPrefix = this.getDataDir().toString();
 
-        wahapediaUpdate.UpdateFiles(updateArgumentStruct);
+        Thread UploadDataThread = new Thread(new Callback_Runner<UpdateArgumentStruct,String,Integer>(this,this::p_UpdateCallback,wahapediaUpdate::UpdateFiles,updateArgumentStruct));
+        UploadDataThread.start();
+
+
+    }
+
+    public void testParseDownloadedCsv(View v)
+    {
+        TestLasaCsv parser = new TestLasaCsv(v.getContext());
+
+
+        ArrayList<ArrayList<String>> testLastDatasheets = new ArrayList<ArrayList<String>>();
+
+
+        testLastDatasheets = parser.ReadCsvFile("Datasheets.csv");
+
+        Log.d("lasa datasheets", "langden " + testLastDatasheets.size());
+
+    }
+
+    public ArrayList<Unit> armyFromBattleScribe(ArrayList<BattlescribeUnit> inputArmy)
+    {
+        ArrayList<Unit> armyToReturn = new ArrayList<>();
+
+
+
+        for(int i =0; i < inputArmy.size(); i++)
+        {
+            Unit unitToAdd = new Unit();
+            BattlescribeUnit battlescribeUnit = inputArmy.get(i);
+            unitToAdd.unitName = battlescribeUnit.Name;
+
+
+
+
+        }
+
+        return null;
     }
 
     public  void testBattleScribeParse(View v)
@@ -123,6 +189,10 @@ public class MainActivity extends AppCompatActivity {
         BattlescribeParser parser = new BattlescribeParser();
 
         ArrayList<BattlescribeUnit> unitsInList = new ArrayList<>();
+
+
+
+
         try
         {
             //  ArrayList<ArrayList<String>> arrayListToReturn = new ArrayList<>();
@@ -133,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
             try {
 
                 unitsInList = parser.ParseUnits(context.getAssets().open("TestParing.txt"));
+
             }
             catch (Exception e)
             {
@@ -145,6 +216,23 @@ public class MainActivity extends AppCompatActivity {
             {
                 Log.d("Unit list ", " " + unitsInList.get(i).Name);
             }
+
+            Log.d("har uniten vapen " , " " + unitsInList.get(2).Attributes.size());
+            for(int i = 0; i < unitsInList.get(7).Attributes.size(); i++)
+            {
+                Log.d("Vilka vapen har unitse", "Vapen  " + unitsInList.get(7).Attributes);
+            }
+            Log.d("Vilka vapen har unitse", "Vapen " + unitsInList.get(2).Name);
+            for(int i = 0; i < unitsInList.get(2).Models.size(); i++)
+            {
+                for(int z = 0; z < unitsInList.get(2).Models.get(i).Weapons.size(); z++)
+                {
+                    Log.d("Vilka vapen har unitse", "Vilken model: " +unitsInList.get(2).Models.get(i).ModelName + " " + unitsInList.get(2).Models.get(i).Weapons.get(z));
+                }
+               // Log.d("Vilka vapen har unitse", "Vapen  " + unitsInList.get(7).Models);
+            }
+
+
 
         }
         catch (IOException e)

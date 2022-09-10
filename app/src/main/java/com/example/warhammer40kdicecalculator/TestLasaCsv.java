@@ -15,6 +15,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 
 public class TestLasaCsv {
@@ -103,6 +104,12 @@ public class TestLasaCsv {
         return arrayListToReturn;
     }
 
+    public List<Model> createModelsFromBattleScribe(String fileName )
+    {
 
+
+
+        return  null;
+    }
 
 }
