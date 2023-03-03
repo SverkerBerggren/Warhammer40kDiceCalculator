@@ -129,11 +129,11 @@
         android:id="@+id/WeaponSkill"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="32dp"
         android:text="WeaponSkill"
         android:textSize="28sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.197"
+        app:layout_constraintHorizontal_bias="0.189"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/UnitStats" />
 
@@ -245,20 +245,6 @@
         app:srcCompat="@android:drawable/arrow_down_float" />
 
     <ImageButton
-        android:id="@+id/increaseModelButton12"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/app_name"
-        android:minWidth="48dp"
-        android:minHeight="48dp"
-        android:rotation="90"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/increaseModelButton5"
-        app:srcCompat="@android:drawable/arrow_down_float"
-        tools:layout_editor_absoluteY="618dp" />
-
-    <ImageButton
         android:id="@+id/increaseModelButton20"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -270,6 +256,20 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/increaseModelButton5"
         app:layout_constraintTop_toTopOf="@+id/Leadership"
+        app:srcCompat="@android:drawable/arrow_down_float" />
+
+    <ImageButton
+        android:id="@+id/increaseModelButton12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/app_name"
+        android:minWidth="48dp"
+        android:minHeight="48dp"
+        android:rotation="90"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/increaseModelButton5"
+        app:layout_constraintTop_toTopOf="@+id/InvulnerableSave"
         app:srcCompat="@android:drawable/arrow_down_float" />
 
     <ImageButton
@@ -356,11 +356,12 @@
         android:id="@+id/modelCount10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
         android:text="3"
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/increaseModelButton19"
         app:layout_constraintStart_toEndOf="@+id/increaseModelButton12"
-        tools:layout_editor_absoluteY="630dp" />
+        app:layout_constraintTop_toTopOf="@+id/InvulnerableSave" />
 
     <TextView
         android:id="@+id/modelCount11"
@@ -464,9 +465,9 @@
         android:minHeight="48dp"
         android:rotation="-90"
         app:layout_constraintEnd_toEndOf="@+id/increaseModelButton6"
+        app:layout_constraintTop_toTopOf="@+id/InvulnerableSave"
         app:srcCompat="@android:drawable/arrow_down_float"
-        tools:ignore="SpeakableTextPresentCheck"
-        tools:layout_editor_absoluteY="618dp" />
+        tools:ignore="SpeakableTextPresentCheck" />
 
     <ImageButton
         android:id="@+id/increaseModelButton21"
