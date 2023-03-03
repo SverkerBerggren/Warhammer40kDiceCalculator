@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.transition.Visibility;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -63,7 +64,7 @@ class Callback_Runner <RunArgumentType,RunResultType,CallbackResultType> impleme
     }
 }
 
-public class MainActivity extends AppCompatActivity {
+public class  MainActivity extends AppCompatActivity {
 
 
 
@@ -315,5 +316,14 @@ public class MainActivity extends AppCompatActivity {
    //     manticoreHunterKillerMissile.listOfAbilites.add(new HammerOfTheEmperor());
         hej.newCalculateDamage(manticore,spaceMarineIntercessorUnit);
 
+    }
+
+
+
+    public void TestAktivitet(View v)
+    {
+        Intent intetionen = new Intent(this, CompareActivity.class);
+
+        startActivity(intetionen);
     }
 }
