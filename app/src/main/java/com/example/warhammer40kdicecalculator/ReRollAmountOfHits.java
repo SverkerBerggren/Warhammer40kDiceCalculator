@@ -7,6 +7,11 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class ReRollAmountOfHits extends Ability {
 
+    public ReRollAmountOfHits()
+    {
+        super("ReRollAmountOfHits");
+    }
+
     public  void hitRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking)
     {
 

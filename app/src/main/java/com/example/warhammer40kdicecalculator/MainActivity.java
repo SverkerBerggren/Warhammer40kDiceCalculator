@@ -69,6 +69,7 @@ public class  MainActivity extends AppCompatActivity {
 
 
 
+
     private Context context;
     private ArrayList<Unit> firstPlayerArmy;
     private ArrayList<ArrayList<String>> parsedDatasheetList = new ArrayList<>();
@@ -319,6 +320,12 @@ public class  MainActivity extends AppCompatActivity {
     }
 
 
+    public void OpenSavedMatchups(View v)
+    {
+        Intent intent = new Intent(this, SavedMatchups.class);
+
+        startActivity(intent);
+    }
 
     public void TestAktivitet(View v)
     {

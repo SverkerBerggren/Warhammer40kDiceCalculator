@@ -6,6 +6,16 @@ public class Unit {
 
     public String unitName = "";
 
+    public int toughnessModifier;
+    public int strengthModifier;
+    public int armorSaveModifier;
+    public int invulnerableSaveModifier;
+    public int woundsModifier;
+    public int ballisticSkillModifier;
+    public int weaponSkillModifier;
+    public int attacksModifier;
+
+
     public ArrayList<Model> listOfModels = new ArrayList<>();
 
     public ArrayList<Ability> listOfAbilitys = new ArrayList<>( );
@@ -35,5 +45,23 @@ public class Unit {
         listOfModels = new ArrayList<>(other.listOfModels);
 
         listOfAbilitys = new ArrayList<>(other.listOfAbilitys);
+    }
+    public  Unit(String  unitName,int toughnessModifier, int strengthModifier, int armorSaveModifier,int invulnerableSaveModifier,int woundsModifier, int ballisticSkillModifier, int weaponSkillModifier,
+                 int attacksModifier, ArrayList<Model> listOfModels,ArrayList<Ability> listOfAbilitys  )
+    {
+        this.unitName = unitName;
+
+        this.toughnessModifier = toughnessModifier;
+        this.strengthModifier = strengthModifier;
+        this.armorSaveModifier = armorSaveModifier;
+        this.invulnerableSaveModifier = invulnerableSaveModifier;
+        this.woundsModifier = woundsModifier;
+        this.ballisticSkillModifier = ballisticSkillModifier;
+        this.weaponSkillModifier = weaponSkillModifier;
+        this.attacksModifier = weaponSkillModifier;
+
+        this.listOfModels = listOfModels;
+
+        this.listOfAbilitys = listOfAbilitys;
     }
 }

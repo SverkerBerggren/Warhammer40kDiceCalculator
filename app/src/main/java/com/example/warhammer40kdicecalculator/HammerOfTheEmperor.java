@@ -4,6 +4,11 @@ import java.util.List;
 
 public class HammerOfTheEmperor extends Ability{
 
+    public HammerOfTheEmperor()
+    {
+        super("HammerOfTheEmperor");
+    }
+
     public  void hitRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking)
     {
         if(diceResult.result == 6)

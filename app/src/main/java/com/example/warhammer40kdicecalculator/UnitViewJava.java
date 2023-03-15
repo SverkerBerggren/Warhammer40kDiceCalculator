@@ -10,6 +10,7 @@ public class UnitViewJava extends View {
     }
 
 
+
     public UnitViewJava(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
     }

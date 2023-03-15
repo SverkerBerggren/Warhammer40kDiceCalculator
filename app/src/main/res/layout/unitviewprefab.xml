@@ -42,7 +42,7 @@
             tools:visibility="visible" />
 
         <ImageButton
-            android:id="@+id/increaseModelButton7"
+            android:id="@+id/DecreaseStrength"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/app_name"
@@ -57,7 +57,7 @@
             tools:visibility="visible" />
 
         <ImageButton
-            android:id="@+id/increaseModelButton12"
+            android:id="@+id/DecreaseInvul"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/app_name"
@@ -72,7 +72,7 @@
             tools:visibility="visible" />
 
         <ImageButton
-            android:id="@+id/increaseModelButton5"
+            android:id="@+id/DecreaseWeaponSkill"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/app_name"
@@ -87,19 +87,19 @@
             tools:visibility="visible" />
 
         <TextView
-            android:id="@+id/modelCount"
+            android:id="@+id/BallisticSkillIndicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="3"
             android:textSize="20sp"
-            app:layout_constraintEnd_toStartOf="@+id/increaseModelButton"
-            app:layout_constraintStart_toEndOf="@+id/increaseModelButton2"
+            app:layout_constraintEnd_toStartOf="@+id/IncreaseBallisticSkill"
+            app:layout_constraintStart_toEndOf="@+id/DecreaseBallisticSkill"
             app:layout_constraintTop_toTopOf="@+id/BallisticSkill"
             tools:visibility="visible" />
 
         <ImageButton
-            android:id="@+id/increaseModelButton13"
+            android:id="@+id/IncreaseStrength"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="48dp"
@@ -114,7 +114,7 @@
             tools:visibility="visible" />
 
         <ImageButton
-            android:id="@+id/increaseModelButton16"
+            android:id="@+id/IncreaseWounds"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="48dp"
@@ -129,7 +129,7 @@
             tools:visibility="visible" />
 
         <ImageButton
-            android:id="@+id/increaseModelButton6"
+            android:id="@+id/IncreaseWeaponSkill"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="48dp"
@@ -144,7 +144,7 @@
             tools:visibility="visible" />
 
         <ImageButton
-            android:id="@+id/increaseModelButton9"
+            android:id="@+id/DecreaseWounds"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/app_name"
@@ -159,7 +159,7 @@
             tools:visibility="visible" />
 
         <ImageButton
-            android:id="@+id/increaseModelButton17"
+            android:id="@+id/IncreaseAttacks"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="48dp"
@@ -200,19 +200,19 @@
             tools:visibility="visible" />
 
         <TextView
-            android:id="@+id/modelCount9"
+            android:id="@+id/ArmorSaveIndicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="3"
             android:textSize="20sp"
-            app:layout_constraintEnd_toStartOf="@+id/increaseModelButton18"
-            app:layout_constraintStart_toEndOf="@+id/increaseModelButton11"
+            app:layout_constraintEnd_toStartOf="@+id/IncreaseArmorSave"
+            app:layout_constraintStart_toEndOf="@+id/DecreaseArmorSave"
             app:layout_constraintTop_toTopOf="@+id/save2"
             tools:visibility="visible" />
 
         <ImageButton
-            android:id="@+id/increaseModelButton18"
+            android:id="@+id/IncreaseArmorSave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="48dp"
@@ -240,7 +240,7 @@
             tools:visibility="visible" />
 
         <ImageButton
-            android:id="@+id/increaseModelButton8"
+            android:id="@+id/DecreaseToughness"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/app_name"
@@ -255,7 +255,7 @@
             tools:visibility="visible" />
 
         <ImageButton
-            android:id="@+id/increaseModelButton2"
+            android:id="@+id/DecreaseBallisticSkill"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/app_name"
@@ -270,7 +270,7 @@
             tools:visibility="visible" />
 
         <ImageButton
-            android:id="@+id/increaseModelButton19"
+            android:id="@+id/IncreaseInvul"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="48dp"
@@ -285,26 +285,26 @@
             tools:visibility="visible" />
 
         <TextView
-            android:id="@+id/modelCount11"
+            android:id="@+id/LeadershipIndicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="3"
             android:textSize="20sp"
-            app:layout_constraintEnd_toStartOf="@+id/increaseModelButton21"
-            app:layout_constraintStart_toEndOf="@+id/increaseModelButton20"
+            app:layout_constraintEnd_toStartOf="@+id/IncreaseLeadership"
+            app:layout_constraintStart_toEndOf="@+id/DecreaseLeadership"
             app:layout_constraintTop_toTopOf="@+id/Leadership"
             tools:visibility="visible" />
 
         <TextView
-            android:id="@+id/modelCount10"
+            android:id="@+id/InvulIndicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="3"
             android:textSize="20sp"
-            app:layout_constraintEnd_toStartOf="@+id/increaseModelButton19"
-            app:layout_constraintStart_toEndOf="@+id/increaseModelButton12"
+            app:layout_constraintEnd_toStartOf="@+id/IncreaseInvul"
+            app:layout_constraintStart_toEndOf="@+id/DecreaseInvul"
             app:layout_constraintTop_toTopOf="@+id/InvulnerableSave"
             tools:visibility="visible" />
 
@@ -322,50 +322,50 @@
             tools:visibility="visible" />
 
         <TextView
-            android:id="@+id/modelCount7"
+            android:id="@+id/WoundIndicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="3"
             android:textSize="20sp"
-            app:layout_constraintEnd_toStartOf="@+id/increaseModelButton16"
-            app:layout_constraintStart_toEndOf="@+id/increaseModelButton9"
+            app:layout_constraintEnd_toStartOf="@+id/IncreaseWounds"
+            app:layout_constraintStart_toEndOf="@+id/DecreaseWounds"
             app:layout_constraintTop_toTopOf="@+id/Wounds"
             tools:visibility="visible" />
 
         <TextView
-            android:id="@+id/modelCount5"
+            android:id="@+id/StrengthIndicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="3"
             android:textSize="20sp"
-            app:layout_constraintEnd_toStartOf="@+id/increaseModelButton13"
-            app:layout_constraintStart_toEndOf="@+id/increaseModelButton7"
+            app:layout_constraintEnd_toStartOf="@+id/IncreaseStrength"
+            app:layout_constraintStart_toEndOf="@+id/DecreaseStrength"
             app:layout_constraintTop_toTopOf="@+id/Strength"
             tools:visibility="visible" />
 
         <TextView
-            android:id="@+id/modelCount6"
+            android:id="@+id/ToughnessIndicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="3"
             android:textSize="20sp"
-            app:layout_constraintEnd_toStartOf="@+id/increaseModelButton14"
-            app:layout_constraintStart_toEndOf="@+id/increaseModelButton8"
+            app:layout_constraintEnd_toStartOf="@+id/IncreaseToughness"
+            app:layout_constraintStart_toEndOf="@+id/DecreaseToughness"
             app:layout_constraintTop_toTopOf="@+id/Toughness"
             tools:visibility="visible" />
 
         <TextView
-            android:id="@+id/modelCount8"
+            android:id="@+id/AttacksIndicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="3"
             android:textSize="20sp"
-            app:layout_constraintEnd_toStartOf="@+id/increaseModelButton17"
-            app:layout_constraintStart_toEndOf="@+id/increaseModelButton10"
+            app:layout_constraintEnd_toStartOf="@+id/IncreaseAttacks"
+            app:layout_constraintStart_toEndOf="@+id/DecreaseAttacks"
             app:layout_constraintTop_toTopOf="@+id/Attacks"
             tools:visibility="visible" />
 
@@ -383,19 +383,19 @@
             tools:visibility="visible" />
 
         <TextView
-            android:id="@+id/modelCount3"
+            android:id="@+id/WeaponSkillIndicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="3"
             android:textSize="20sp"
-            app:layout_constraintEnd_toStartOf="@+id/increaseModelButton6"
-            app:layout_constraintStart_toEndOf="@+id/increaseModelButton5"
+            app:layout_constraintEnd_toStartOf="@+id/IncreaseWeaponSkill"
+            app:layout_constraintStart_toEndOf="@+id/DecreaseWeaponSkill"
             app:layout_constraintTop_toTopOf="@+id/WeaponSkill"
             tools:visibility="visible" />
 
         <ImageButton
-            android:id="@+id/increaseModelButton"
+            android:id="@+id/IncreaseBallisticSkill"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="48dp"
@@ -410,7 +410,7 @@
             tools:visibility="visible" />
 
         <ImageButton
-            android:id="@+id/increaseModelButton10"
+            android:id="@+id/DecreaseAttacks"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/app_name"
@@ -439,18 +439,18 @@
 
         <TextView
             android:id="@+id/UnitStats"
-            android:layout_width="135dp"
-            android:layout_height="51dp"
+            android:layout_width="200dp"
+            android:layout_height="56dp"
             android:layout_marginTop="4dp"
-            android:text="Unit stats"
+            android:text="Unit Modifiers"
             android:textSize="28sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.025"
+            app:layout_constraintHorizontal_bias="0.028"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
-            android:id="@+id/increaseModelButton11"
+            android:id="@+id/DecreaseArmorSave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/app_name"
@@ -465,7 +465,7 @@
             tools:visibility="visible" />
 
         <ImageButton
-            android:id="@+id/increaseModelButton14"
+            android:id="@+id/IncreaseToughness"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="48dp"
@@ -493,7 +493,7 @@
             tools:visibility="visible" />
 
         <ImageButton
-            android:id="@+id/increaseModelButton20"
+            android:id="@+id/DecreaseLeadership"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/app_name"
@@ -521,7 +521,7 @@
             tools:visibility="visible" />
 
         <ImageButton
-            android:id="@+id/increaseModelButton21"
+            android:id="@+id/IncreaseLeadership"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="48dp"

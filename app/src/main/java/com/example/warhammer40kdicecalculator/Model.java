@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 public class Model {
     //public int ap;
+    public String name;
     public int toughness;
     public int strength;
     public int armorSave;

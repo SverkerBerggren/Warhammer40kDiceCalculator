@@ -5,6 +5,14 @@
       <map>
         <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/activity_compare.xml" value="0.22665080309339677" />
         <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/activity_saved_matchups.xml" value="0.5" />
+        <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/activity_saved_matchups2.xml" value="0.1524822695035461" />
+        <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/content_saved_matchups.xml" value="0.25" />
+        <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/fragment_first.xml" value="0.1524822695035461" />
+        <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/fragment_second.xml" value="0.19807497467071936" />
+        <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/fragment_second2.xml" value="0.1524822695035461" />
+        <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/matchupbutton.xml" value="0.25" />
+        <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/savedmatchups.xml" value="0.33" />
         <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/unitviewprefab.xml" value="0.33" />
       </map>
     </option>

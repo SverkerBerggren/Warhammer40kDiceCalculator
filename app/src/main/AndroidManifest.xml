@@ -16,6 +16,11 @@
         android:theme="@style/Theme.Warhammer40kDiceCalculator"
         tools:targetApi="31">
         <activity
+            android:name=".SkaDeletas"
+            android:exported="false"
+            android:label="@string/title_activity_saved_matchups"
+            android:theme="@style/Theme.Warhammer40kDiceCalculator.NoActionBar" />
+        <activity
             android:name=".CompareActivity"
             android:exported="false" />
         <activity
