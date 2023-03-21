@@ -29,4 +29,16 @@ public class RangedWeapon {
         this.amountOfAttacks = new RangedAttackAmount(amountOfAttacks) ;
         this.weaponRules = weaponRules;
     }
+
+
+    public RangedWeapon(String name, int strength, int ap, DamageAmount damageAmount, RangedAttackAmount amountOfAttacks, ArrayList<Ability> weaponRules)
+    {
+        this.name = name;
+        this.damageAmount = damageAmount;
+        this.strength = strength;
+        this.ap = ap;
+        this.amountOfAttacks = new RangedAttackAmount(amountOfAttacks) ;
+        this.weaponRules = weaponRules;
+    }
 }
+

@@ -6,25 +6,32 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.content.Context;
 import android.os.Bundle;
 
-import android.util.JsonWriter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.Button;
+import android.widget.ImageButton;
 
 
 import com.google.gson.Gson;
 
-import org.json.JSONObject;
-import org.json.JSONStringer;
-
 import java.io.File;
 import java.io.FileWriter;
-import java.io.Writer;
 import java.util.HashMap;
 
 public class CompareActivity extends AppCompatActivity {
+
+    private  FileHandler  fileHandler;
+    private Matchup matchup;
+
+    private int UNIT_ALLEGIANCE = R.string.UNIT_ALLEGIANCE;
+    private int UNIT_MODIFIER = R.string.UNIT_MODIFIER;
+    private int UNIT_NUMBER = R.string.UNIT_NUMBER;
+
+    private String DECREASE_WEAPONSKILL = "decreaseWeaponSkill";
+
+    private String FRIENDLY = "friendly";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,51 +40,23 @@ public class CompareActivity extends AppCompatActivity {
         LayoutInflater inflater =  getLayoutInflater();
 
 
-        Unit testUnitJson = new Unit();
-        File dir = new File(getBaseContext().getFilesDir(), "SavedMatchups");
-        if(!dir.exists()){
-            dir.mkdir();
-        }
-        try {
+        fileHandler = new FileHandler(getBaseContext());
 
-            Unit testUnit = new Unit();
-            Gson gson = new Gson();
-            Model testModel = new Model();
+        //Log.d("testar intetion", "onCreate: " + getIntent().getStringExtra("SourceFile"));
 
-        //    testModel.listOfAbilites.add()
+        matchup = fileHandler.getMatchup( getIntent().getStringExtra("SourceFile"));
 
-            testUnit.listOfAbilitys.add(new ReRollAmountOfHits());
-            testUnit.listOfAbilitys.add(new HammerOfTheEmperor());
+
+        createArmies(matchup,inflater);
+
+
+    //    Log.d("vad är texten " + )
 
 
 
-            testUnit.listOfModels.add(testModel);
+      //  View viewToModify = inflater.inflate(R.layout.unitviewprefab, findViewById(R.id.VerticalLayout));
 
-            testModel.listOfAbilites.add(new HammerOfTheEmperor());
-
-            String jsonString = gson.toJson(testUnit);
-            Log.d("json check",  jsonString);
-
-
-
-
-
-            File gpxfile = new File(dir, "arme 1 json");
-            FileWriter writer = new FileWriter(gpxfile);
-            writer.append(jsonString);
-
-
-            Log.d("json skrivning", "kommer den till slutet " + getBaseContext().getFilesDir());
-            writer.flush();
-            writer.close();
-        } catch (Exception e){
-            e.printStackTrace();
-            Log.d("json skrivning", "det sket sig");
-        }
-
-        View viewToModify = inflater.inflate(R.layout.unitviewprefab, findViewById(R.id.VerticalLayout));
-
-        View viewIgen =  viewToModify.findViewById(R.id.TestId);
+        //View viewIgen =  viewToModify.findViewById(R.id.TestId);
 
 
 
@@ -94,9 +73,77 @@ public class CompareActivity extends AppCompatActivity {
     private HashMap<String, DataSheet> datasheetMap = new HashMap<>();
 
 
-    private void createArmies()
+    private void createArmies(Matchup matchup, LayoutInflater inflater)
     {
-        
+        for(int i = 0; i < matchup.friendlyArmy.units.size();i++)
+        {
+
+
+
+
+            View viewToModify = inflater.inflate(R.layout.unitviewprefab, ((ViewGroup)findViewById(R.id.VerticalLayout)),true);
+
+            Log.d("grejer",""+viewToModify.getParent().toString());
+
+            instaniateUnitButton(viewToModify,matchup.friendlyArmy.units.get(i),i,FRIENDLY);
+
+
+        }
+
+        Log.d("längd", ""+matchup.friendlyArmy.units.size());
+
+
+    }
+
+    private  void instaniateUnitButton(View buttonToModify, Unit unit, int unitNumber, String friendlyOrEnemy)
+    {
+        View topButton = buttonToModify.findViewById(R.id.UnitTopButton);
+
+
+
+        ((Button)topButton).setText(unit.unitName);
+
+
+
+
+        ImageButton decreaseWeaponSkill = ((ImageButton)buttonToModify.findViewById(R.id.DecreaseWeaponSkill));
+
+        decreaseWeaponSkill.setTag(UNIT_ALLEGIANCE, friendlyOrEnemy);
+        decreaseWeaponSkill.setTag(UNIT_MODIFIER, DECREASE_WEAPONSKILL);
+        decreaseWeaponSkill.setTag(UNIT_NUMBER, unitNumber);
+
+
+
+        decreaseWeaponSkill.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                ChangeUnitModifer(v);
+            }
+        });
+
+
+
+
+
+    }
+
+    private void ChangeUnitModifer(View buttonClicked)
+    {
+        if(((String)buttonClicked.getTag(UNIT_ALLEGIANCE)).equals("friendly"))
+        {
+            //matchup.friendlyArmy.units.get( ((int)buttonClicked.getTag(UNIT_NUMBER)) );
+
+            if(buttonClicked.getTag(UNIT_MODIFIER).equals(DECREASE_WEAPONSKILL))
+            {
+                matchup.friendlyArmy.units.get(((int)buttonClicked.getTag(UNIT_NUMBER)) ).weaponSkillModifier -=1;
+
+
+               Log.d("unit knappar","unit name " +matchup.friendlyArmy.units.get((int)buttonClicked.getTag(UNIT_NUMBER)).unitName);
+            }
+        }
+        else
+        {
+
+        }
     }
 
 

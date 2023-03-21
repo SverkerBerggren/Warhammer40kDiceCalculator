@@ -47,4 +47,24 @@ public class Model {
     {
 
     }
+
+    public Model(String name, int toughness, int strength, int armorSave, int invulnerableSave, int wounds, int ballisticSkill, int weaponSkill, int attacks,
+                 ArrayList<Ability> listOfAbilites,ArrayList<RangedWeapon> listOfRangedWeapons, ArrayList<MeleeWeapons> listOfMeleeWeapons)
+    {
+        this.name = name;
+        this.toughness = toughness;
+        this.strength = strength;
+        this.armorSave = armorSave;
+        this.invulnerableSave = invulnerableSave;
+        this.wounds = wounds;
+        this.ballisticSkill = ballisticSkill;
+        this.weaponSkill = weaponSkill;
+        this.attacks = attacks;
+
+        this.listOfAbilites = listOfAbilites;
+
+        this.listOfRangedWeapons = listOfRangedWeapons;
+        this.listOfMeleeWeapons = listOfMeleeWeapons;
+    }
+
 }

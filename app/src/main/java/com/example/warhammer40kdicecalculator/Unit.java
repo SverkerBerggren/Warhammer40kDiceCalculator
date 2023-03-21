@@ -6,6 +6,9 @@ public class Unit {
 
     public String unitName = "";
 
+    public int pointCost;
+
+
     public int toughnessModifier;
     public int strengthModifier;
     public int armorSaveModifier;
@@ -46,11 +49,11 @@ public class Unit {
 
         listOfAbilitys = new ArrayList<>(other.listOfAbilitys);
     }
-    public  Unit(String  unitName,int toughnessModifier, int strengthModifier, int armorSaveModifier,int invulnerableSaveModifier,int woundsModifier, int ballisticSkillModifier, int weaponSkillModifier,
+    public  Unit(String  unitName,int pointCost,int toughnessModifier, int strengthModifier, int armorSaveModifier,int invulnerableSaveModifier,int woundsModifier, int ballisticSkillModifier, int weaponSkillModifier,
                  int attacksModifier, ArrayList<Model> listOfModels,ArrayList<Ability> listOfAbilitys  )
     {
         this.unitName = unitName;
-
+        this.pointCost = pointCost;
         this.toughnessModifier = toughnessModifier;
         this.strengthModifier = strengthModifier;
         this.armorSaveModifier = armorSaveModifier;

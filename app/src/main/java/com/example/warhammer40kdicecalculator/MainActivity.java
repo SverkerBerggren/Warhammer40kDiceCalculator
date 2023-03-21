@@ -1,9 +1,7 @@
 package com.example.warhammer40kdicecalculator;
 
-import androidx.annotation.LongDef;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.transition.Visibility;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,17 +13,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringBufferInputStream;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.function.Function;
-
-import com.example.warhammer40kdicecalculator.WahapediaUpdate;
 
 class Runnable_Function<FunctionArgument,FunctionReturnValue> implements Runnable
 {
@@ -322,15 +314,10 @@ public class  MainActivity extends AppCompatActivity {
 
     public void OpenSavedMatchups(View v)
     {
-        Intent intent = new Intent(this, SavedMatchups.class);
+        Intent intent = new Intent(this, SavedMatchupsActivity.class);
 
         startActivity(intent);
     }
 
-    public void TestAktivitet(View v)
-    {
-        Intent intetionen = new Intent(this, CompareActivity.class);
 
-        startActivity(intetionen);
-    }
 }

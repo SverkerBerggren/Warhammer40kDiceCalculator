@@ -5,7 +5,11 @@ import androidx.annotation.NonNull;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+import javax.xml.namespace.QName;
+
 public class ReRollAmountOfHits extends Ability {
+
+
 
     public ReRollAmountOfHits()
     {
