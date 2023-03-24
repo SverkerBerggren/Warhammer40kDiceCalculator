@@ -12,12 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 
-import com.google.gson.Gson;
-
-import java.io.File;
-import java.io.FileWriter;
 import java.util.HashMap;
 
 public class CompareActivity extends AppCompatActivity {
@@ -30,6 +27,8 @@ public class CompareActivity extends AppCompatActivity {
     private int UNIT_NUMBER = R.string.UNIT_NUMBER;
 
     private String DECREASE_WEAPONSKILL = "decreaseWeaponSkill";
+    private String INCREASE_WEAPONSKILL = "increaseWeaponSkill";
+
 
     private String FRIENDLY = "friendly";
 
@@ -75,20 +74,24 @@ public class CompareActivity extends AppCompatActivity {
 
     private void createArmies(Matchup matchup, LayoutInflater inflater)
     {
+        ViewGroup verticalLayout = null;
         for(int i = 0; i < matchup.friendlyArmy.units.size();i++)
         {
 
 
 
 
-            View viewToModify = inflater.inflate(R.layout.unitviewprefab, ((ViewGroup)findViewById(R.id.VerticalLayout)),true);
+            verticalLayout = (ViewGroup) inflater.inflate(R.layout.unitviewprefab, ((ViewGroup)findViewById(R.id.VerticalLayout)));
 
-            Log.d("grejer",""+viewToModify.getParent().toString());
 
-            instaniateUnitButton(viewToModify,matchup.friendlyArmy.units.get(i),i,FRIENDLY);
+            instaniateUnitButton(verticalLayout.getChildAt(i +1),matchup.friendlyArmy.units.get(i),i, FRIENDLY);
+            //Log.d("grejer",""+viewToModify.getParent().toString());
+
 
 
         }
+
+
 
         Log.d("längd", ""+matchup.friendlyArmy.units.size());
 
@@ -97,24 +100,46 @@ public class CompareActivity extends AppCompatActivity {
 
     private  void instaniateUnitButton(View buttonToModify, Unit unit, int unitNumber, String friendlyOrEnemy)
     {
-        View topButton = buttonToModify.findViewById(R.id.UnitTopButton);
+        Button topButton = (Button)buttonToModify.findViewById(R.id.UnitTopButton);
 
 
 
-        ((Button)topButton).setText(unit.unitName);
+        topButton.setText(unit.unitName);
+
+      //  topButton.setId(R.id.noId);
 
 
 
 
         ImageButton decreaseWeaponSkill = ((ImageButton)buttonToModify.findViewById(R.id.DecreaseWeaponSkill));
+        ImageButton increaseWeaponSkill = ((ImageButton)buttonToModify.findViewById(R.id.IncreaseWeaponSkill));
+       // TextView weaponSkillIndicator = (TextView)buttonToModify.findViewById(R.id.WeaponSkillIndicator);
+
+       // weaponSkillIndicator.setTag(UNIT_ALLEGIANCE,friendlyOrEnemy);
+       // weaponSkillIndicator.setTag(UNIT_NUMBER,unitNumber);
+       // TextView hej = (TextView)buttonToModify.findViewById(R.id.WeaponSkillIndicatorr);
+
+        int test = R.id.WeaponSkillInd;
 
         decreaseWeaponSkill.setTag(UNIT_ALLEGIANCE, friendlyOrEnemy);
         decreaseWeaponSkill.setTag(UNIT_MODIFIER, DECREASE_WEAPONSKILL);
         decreaseWeaponSkill.setTag(UNIT_NUMBER, unitNumber);
 
+        increaseWeaponSkill.setTag(UNIT_ALLEGIANCE, friendlyOrEnemy);
+        increaseWeaponSkill.setTag(UNIT_MODIFIER, INCREASE_WEAPONSKILL);
+        increaseWeaponSkill.setTag(UNIT_NUMBER, unitNumber);
+
+
+
 
 
         decreaseWeaponSkill.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                ChangeUnitModifer(v);
+            }
+        });
+
+        increaseWeaponSkill.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 ChangeUnitModifer(v);
             }
@@ -136,6 +161,15 @@ public class CompareActivity extends AppCompatActivity {
             {
                 matchup.friendlyArmy.units.get(((int)buttonClicked.getTag(UNIT_NUMBER)) ).weaponSkillModifier -=1;
 
+                ViewGroup parent = (ViewGroup) buttonClicked.getParent();
+
+                TextView textView = parent.findViewById(R.id.WeaponSkillInd);
+
+
+                String textToSet = Integer.toString(matchup.friendlyArmy.units.get(((int)buttonClicked.getTag(UNIT_NUMBER)) ).weaponSkillModifier);
+                 textView.setText(textToSet);
+                //((TextView)parent.findViewById(R.id.WeaponSkillIndicator)).setText(matchup.friendlyArmy.units.get(((int)buttonClicked.getTag(UNIT_NUMBER)) ).weaponSkillModifier);
+                //buttonClicked.getParent().
 
                Log.d("unit knappar","unit name " +matchup.friendlyArmy.units.get((int)buttonClicked.getTag(UNIT_NUMBER)).unitName);
             }
