@@ -77,4 +77,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonTestParse" />
 
+    <Button
+        android:id="@+id/NyMatchup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="CreateNewMatchup"
+        android:text="Gör ny matchup"
+        app:layout_constraintBottom_toTopOf="@+id/buttonTestParse"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/parseList" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
