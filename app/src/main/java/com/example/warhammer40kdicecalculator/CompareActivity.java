@@ -119,7 +119,7 @@ public class CompareActivity extends AppCompatActivity {
        // weaponSkillIndicator.setTag(UNIT_NUMBER,unitNumber);
        // TextView hej = (TextView)buttonToModify.findViewById(R.id.WeaponSkillIndicatorr);
 
-        int test = R.id.WeaponSkillIndicatorr;
+        int test = R.id.WeaponSkillInd;
 
         decreaseWeaponSkill.setTag(UNIT_ALLEGIANCE, friendlyOrEnemy);
         decreaseWeaponSkill.setTag(UNIT_MODIFIER, DECREASE_WEAPONSKILL);
@@ -163,8 +163,11 @@ public class CompareActivity extends AppCompatActivity {
 
                 ViewGroup parent = (ViewGroup) buttonClicked.getParent();
 
-                TextView textView = parent.findViewById(R.id.WeaponSkillIndicatorr);
-                textView.setText(matchup.friendlyArmy.units.get(((int)buttonClicked.getTag(UNIT_NUMBER)) ).weaponSkillModifier);
+                TextView textView = parent.findViewById(R.id.WeaponSkillInd);
+
+
+                String textToSet = Integer.toString(matchup.friendlyArmy.units.get(((int)buttonClicked.getTag(UNIT_NUMBER)) ).weaponSkillModifier);
+                 textView.setText(textToSet);
                 //((TextView)parent.findViewById(R.id.WeaponSkillIndicator)).setText(matchup.friendlyArmy.units.get(((int)buttonClicked.getTag(UNIT_NUMBER)) ).weaponSkillModifier);
                 //buttonClicked.getParent().
 
