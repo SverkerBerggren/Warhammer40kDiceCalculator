@@ -10,6 +10,7 @@ import android.os.Bundle;
 
 import android.os.Handler;
 import android.util.Log;
+import android.view.TextureView;
 import android.view.View;
 import android.widget.Toast;
 
@@ -319,5 +320,10 @@ public class  MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void OpenPopup(View v)
+    {
+        Intent intent = new Intent(this, activity_popup.class);
 
+        startActivity(intent);
+    }
 }
