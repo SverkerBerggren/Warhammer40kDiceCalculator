@@ -16,6 +16,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 
+import com.jjoe64.graphview.GraphView;
+
 import java.util.HashMap;
 
 public class CompareActivity extends AppCompatActivity {
@@ -56,7 +58,7 @@ public class CompareActivity extends AppCompatActivity {
         setContentView(R.layout.activity_compare);
         LayoutInflater inflater =  getLayoutInflater();
 
-
+        GraphView hej = null;
         fileHandler = new FileHandler(getBaseContext());
 
         //Log.d("testar intetion", "onCreate: " + getIntent().getStringExtra("SourceFile"));
