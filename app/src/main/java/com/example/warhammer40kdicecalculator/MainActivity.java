@@ -318,7 +318,12 @@ public class  MainActivity extends AppCompatActivity {
 
         startActivity(intent);
     }
+    public void OpenPopup(View v)
+    {
+        Intent intenten = new Intent(this,activity_popup.class);
 
+        startActivity(intenten);
+    }
 
     public void CreateNewMatchup(View v)
     {
