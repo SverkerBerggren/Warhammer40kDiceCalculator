@@ -306,8 +306,12 @@ public class  MainActivity extends AppCompatActivity {
         lemanRussTurret.listOfAbilites.add(new HammerOfTheEmperor());
         lemanRussTurret.listOfAbilites.add(new ReRollAmountOfHits());
 
+
+        ArrayList<Unit> listToCompare = new ArrayList<>();
+
+        listToCompare.add(manticore);
    //     manticoreHunterKillerMissile.listOfAbilites.add(new HammerOfTheEmperor());
-        hej.newCalculateDamage(manticore,spaceMarineIntercessorUnit);
+        hej.newCalculateDamage(listToCompare,spaceMarineIntercessorUnit);
 
     }
 

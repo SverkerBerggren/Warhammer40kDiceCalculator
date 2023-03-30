@@ -14,13 +14,15 @@ public class RollingLogic {
         Log.d(("hej"),"hejhej");
     }
 
-    public void newCalculateDamage(Unit attacker, Unit defender)
+    public RollResult newCalculateDamage(ArrayList<Unit> attackerList, Unit defender)
     {
         int amountOfWoundsTotal;
         int amountOfModelsKilled;
         int currentModelDamage;
         ArrayList<Integer> resultWoundsDealt = new ArrayList<Integer>();
         ArrayList<Integer> resultModelsSlain = new ArrayList<Integer>();
+
+        Unit attacker = attackerList.get(0);
 
         Unit OriginalUnit = defender.copy();
         double averageAmountOfAttacks = 0;
@@ -273,12 +275,20 @@ public class RollingLogic {
 
 
 
+
         average = sum/10000;
 
         averageModelsKilled = anotherSum/10000;
         Log.d("Result", "Average amount of attacks: " + averageAmountOfAttacks/10000);
         Log.d("Result", "Average amount of wounds: " + average);
         Log.d("Result", "Average amount of killed models: " + averageModelsKilled);
+        RollResult returnResult = new RollResult();
+        returnResult.modelsSlain = resultModelsSlain;
+        returnResult.woundsDealt = resultWoundsDealt;
+
+        return returnResult;
+
+
     }
 
 
