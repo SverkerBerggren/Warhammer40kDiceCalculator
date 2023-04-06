@@ -7,7 +7,7 @@
     android:layout_height="wrap_content">
 
     <TableLayout
-        android:id="@+id/layoutWeapons"
+        android:id="@+id/WeaponsLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="10dp"
@@ -17,7 +17,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layoutStats">
+        app:layout_constraintTop_toBottomOf="@+id/layoutStatsen">
 
         <TableRow
             android:layout_width="match_parent"
@@ -26,7 +26,7 @@
             android:textAlignment="center">
 
             <TextView
-                android:id="@+id/textView7"
+                android:id="@+id/Name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="BS"
@@ -34,7 +34,7 @@
                 android:textSize="10sp" />
 
             <TextView
-                android:id="@+id/textView9"
+                android:id="@+id/Ability"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="WS"
@@ -165,7 +165,7 @@
     </TableLayout>
 
     <TableLayout
-        android:id="@+id/layoutStats"
+        android:id="@+id/layoutStatsen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="10dp"
@@ -184,7 +184,7 @@
             android:textAlignment="center">
 
             <TextView
-                android:id="@+id/textView7"
+                android:id="@+id/BallisticSkillRow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="BS"
@@ -192,7 +192,7 @@
                 android:textSize="10sp" />
 
             <TextView
-                android:id="@+id/textView9"
+                android:id="@+id/WeaponSkillRow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="WS"
@@ -200,7 +200,7 @@
                 android:textSize="10sp" />
 
             <TextView
-                android:id="@+id/textView11"
+                android:id="@+id/StrengthRow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="S"
@@ -208,7 +208,7 @@
                 android:textSize="10sp" />
 
             <TextView
-                android:id="@+id/textView13"
+                android:id="@+id/ToughnssRow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="T"
@@ -216,7 +216,7 @@
                 android:textSize="10sp" />
 
             <TextView
-                android:id="@+id/textView15"
+                android:id="@+id/WoundsRow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="W"
@@ -224,7 +224,7 @@
                 android:textSize="10sp" />
 
             <TextView
-                android:id="@+id/textView17"
+                android:id="@+id/AttacksRow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="A"
@@ -232,7 +232,7 @@
                 android:textSize="10sp" />
 
             <TextView
-                android:id="@+id/textView19"
+                android:id="@+id/SaveRow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Sv"
@@ -240,7 +240,7 @@
                 android:textSize="10sp" />
 
             <TextView
-                android:id="@+id/textView27"
+                android:id="@+id/InvulrnebaleSaveRow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="ISv"
@@ -255,7 +255,7 @@
             android:background="#DFDADA">
 
             <TextView
-                android:id="@+id/textView8"
+                android:id="@+id/BallisticSkillStatIndicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0"
@@ -263,7 +263,7 @@
                 android:textSize="10sp" />
 
             <TextView
-                android:id="@+id/textView21"
+                android:id="@+id/WeaponSkillStatIndicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0"
@@ -271,7 +271,7 @@
                 android:textSize="10sp" />
 
             <TextView
-                android:id="@+id/textView22"
+                android:id="@+id/StrengthStatIndicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0"
@@ -279,7 +279,7 @@
                 android:textSize="10sp" />
 
             <TextView
-                android:id="@+id/textView23"
+                android:id="@+id/ToughnessStatIndicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0"
@@ -287,7 +287,7 @@
                 android:textSize="10sp" />
 
             <TextView
-                android:id="@+id/textView24"
+                android:id="@+id/WoundsStatIndicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0"
@@ -295,7 +295,7 @@
                 android:textSize="10sp" />
 
             <TextView
-                android:id="@+id/textView25"
+                android:id="@+id/AttacksStatIndicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0"
@@ -303,7 +303,7 @@
                 android:textSize="10sp" />
 
             <TextView
-                android:id="@+id/textView26"
+                android:id="@+id/SaveStatIndicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0"
@@ -311,7 +311,7 @@
                 android:textSize="10sp" />
 
             <TextView
-                android:id="@+id/textView28"
+                android:id="@+id/InvulStatIndicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0"
@@ -330,7 +330,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.714"
-        app:layout_constraintStart_toEndOf="@+id/layoutStats"
+        app:layout_constraintStart_toEndOf="@+id/layoutStatsen"
         app:layout_constraintTop_toBottomOf="@+id/imageButton3"
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@android:drawable/ic_menu_edit" />
