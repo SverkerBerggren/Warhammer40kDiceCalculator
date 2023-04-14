@@ -2,7 +2,9 @@ package com.example.warhammer40kdicecalculator;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -11,10 +13,14 @@ import java.util.ArrayList;
 
 public class Weapon_Popup extends AppCompatActivity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weapon_popup);
+
+        View searchGroup = findViewById(R.id.SearchGroup);
+        searchGroup.setVisibility(View.GONE);
 
         SearchView searchView = findViewById(R.id.searchView);
         ListView listView = findViewById(R.id.listView);
@@ -40,5 +46,11 @@ public class Weapon_Popup extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void ShowSearch(View v)
+    {
+        View searchGroup = findViewById(R.id.SearchGroup);
+        searchGroup.setVisibility(View.VISIBLE);
     }
 }

@@ -343,6 +343,7 @@
         android:id="@+id/imageButton6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="ShowSearch"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -355,36 +356,51 @@
         android:id="@+id/searchView"
         android:layout_width="175dp"
         android:layout_height="wrap_content"
+        android:elevation="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.68"
+        app:layout_constraintHorizontal_bias="0.41"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.75" />
+        app:layout_constraintVertical_bias="0.13999999" />
 
     <ListView
         android:id="@+id/listView"
         android:layout_width="241dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="7dp"
-        android:layout_marginEnd="2dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="100dp"
+        android:elevation="15dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/checkBox2"
-        app:layout_constraintTop_toBottomOf="@+id/searchView" >
+        app:layout_constraintTop_toBottomOf="@+id/searchView">
 
     </ListView>
 
     <androidx.constraintlayout.widget.Group
+        android:id="@+id/SearchGroup"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginEnd="411dp"
         android:layout_marginBottom="731dp"
-        app:constraint_referenced_ids="listView,searchView"
+        android:visibility="visible"
+        app:constraint_referenced_ids="listView,searchView,view4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.51"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
+
+    <View
+        android:id="@+id/view4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#BEC3A6A6"
+        android:elevation="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
