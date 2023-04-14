@@ -329,6 +329,13 @@ public class  MainActivity extends AppCompatActivity {
         startActivity(intenten);
     }
 
+    public void OpenWeaponPopup(View v)
+    {
+        Intent intenten = new Intent(this, Weapon_Popup.class);
+
+        startActivity(intenten);
+    }
+
     public void CreateNewMatchup(View v)
     {
 

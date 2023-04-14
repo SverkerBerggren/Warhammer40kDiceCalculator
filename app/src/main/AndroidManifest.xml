@@ -16,6 +16,9 @@
         android:theme="@style/Theme.Warhammer40kDiceCalculator"
         tools:targetApi="31">
         <activity
+            android:name=".Weapon_Popup"
+            android:exported="false" />
+        <activity
             android:name=".StatisticActivity"
             android:exported="false" />
         <activity

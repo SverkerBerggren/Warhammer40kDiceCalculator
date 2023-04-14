@@ -100,4 +100,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/laddaNerDataKnappen" />
 
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="150dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="167dp"
+        android:layout_marginBottom="7dp"
+        android:onClick="OpenWeaponPopup"
+        android:text="To Weapon Popup"
+        app:layout_constraintBottom_toTopOf="@+id/ButtonTestActivity"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonTestParse" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
