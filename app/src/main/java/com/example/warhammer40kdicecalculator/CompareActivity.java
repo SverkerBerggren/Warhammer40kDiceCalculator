@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Switch;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
@@ -48,7 +48,7 @@ public class CompareActivity extends AppCompatActivity {
     private String INCREASE_ATTACKS = "increaseAttacks";
 
 
-
+    private String DONT_DROP_DOWN = "dontDropDown";
 
     private String FRIENDLY = "friendly";
 
@@ -109,7 +109,7 @@ public class CompareActivity extends AppCompatActivity {
             instaniateUnitButton(verticalLayout.getChildAt(i +1),matchup.friendlyArmy.units.get(i),i, FRIENDLY);
             //Log.d("grejer",""+viewToModify.getParent().toString());
 
-            CreateModel(verticalLayout.getChildAt(i +1),matchup.friendlyArmy.units.get(i),i,inflater);
+            CreateModel(verticalLayout.getChildAt(i +1),matchup.friendlyArmy.units.get(i),i,FRIENDLY,inflater);
 
 
         }
@@ -121,11 +121,29 @@ public class CompareActivity extends AppCompatActivity {
 
     }
 
-    private void CreateModel(View buttonToModify, Unit unit, int unitNumber , LayoutInflater inflater)
+    private void CreateModel(View buttonToModify, Unit unit, int unitNumber,String friendlyArmy , LayoutInflater inflater)
     {
-        ConstraintLayout modelsLayout = (ConstraintLayout) buttonToModify.findViewById(R.id.ModelsSubLayout);
 
-        inflater.inflate(R.layout.model_stats_prefab,modelsLayout);
+
+        if(friendlyArmy.equals(FRIENDLY))
+        {
+            for(int i = 0; i < matchup.friendlyArmy.units.get(unitNumber).listOfModels.size();i++)
+            {
+                Log.d("models mangd", "hur manga models " +matchup.friendlyArmy.units.get(unitNumber).listOfModels.size() );
+
+                LinearLayout modelsLayout = (LinearLayout) buttonToModify.findViewById(R.id.ModelsSubLayout);
+                View inflatedView = inflater.inflate(R.layout.model_stats_prefab,modelsLayout);
+
+                ((Button)inflatedView.findViewById(R.id.inividualModelTopButton)).setText(matchup.friendlyArmy.units.get(unitNumber).listOfModels.get(i).name);
+
+                ((Button)inflatedView.findViewById(R.id.inividualModelTopButton)).setId(R.id.noId);
+            }
+
+        }
+
+       // for(int i = 0; i <  )
+
+
 
     }
 
@@ -353,22 +371,27 @@ public class CompareActivity extends AppCompatActivity {
 
         ConstraintLayout constraintLayout = (ConstraintLayout) v.getParent();
 
-        Log.d("Ui grejer", "Vad är höjden innan" +  constraintLayout.getMeasuredHeight());
 
 
         ViewGroup viewGroup = (ViewGroup) constraintLayout;
 
         for(int i = 0; i < viewGroup.getChildCount(); i++)
         {
-            if(viewGroup.getChildAt(i) != v)
+            View childView = viewGroup.getChildAt(i);
+
+            if(childView.getTag() != null && childView.getTag().equals(DONT_DROP_DOWN))
             {
-                if(viewGroup.getChildAt(i).getVisibility() == View.VISIBLE)
+                continue;
+            }
+            if(childView != v)
+            {
+                if(childView.getVisibility() == View.VISIBLE)
                 {
-                    viewGroup.getChildAt(i).setVisibility(View.GONE);
+                    childView.setVisibility(View.GONE);
                 }
                 else
                 {
-                    viewGroup.getChildAt(i).setVisibility(View.VISIBLE);
+                    childView.setVisibility(View.VISIBLE);
                 }
             }
         }

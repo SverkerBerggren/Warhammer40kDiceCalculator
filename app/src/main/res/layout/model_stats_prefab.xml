@@ -6,413 +6,408 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <Button
-        android:id="@+id/inividualModelTopButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:onClick="DropDownClick"
-        android:text="ingen model text satt"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.156"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <TableLayout
-        android:id="@+id/AbilityLayout"
-        android:layout_width="386dp"
-        android:layout_height="56dp"
-        android:background="#B5B2B2"
-        android:stretchColumns="*"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/AddWeaponButton"
-        app:layout_constraintVertical_bias="1.0">
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#B5B2B2">
-
-            <TextView
-                android:id="@+id/ModelAbilities"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Abilities"
-                android:textAlignment="center" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <ImageButton
-                android:id="@+id/imageButton4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@android:drawable/ic_input_add" />
-
-        </TableRow>
-
-    </TableLayout>
-
-    <TableLayout
-        android:id="@+id/WeaponsLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="70dp"
-        android:layout_marginBottom="100dp"
-        android:stretchColumns="*"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layoutStatsen">
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#B5B2B2"
-            android:textAlignment="center">
-
-            <TextView
-                android:id="@+id/Name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Name"
-                android:textAlignment="center"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/AbilitiesWeapon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Abilities"
-                android:textAlignment="center"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/AttacksWeapon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Attacks"
-                android:textAlignment="center"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/StrengthWeapon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="S"
-                android:textAlignment="center"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/ApWeapon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="AP"
-                android:textAlignment="center"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/DamageWeapon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Damage"
-                android:textAlignment="center"
-                android:textSize="10sp" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#DFDADA">
-
-            <TextView
-                android:id="@+id/WeaponName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textAlignment="center"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/WeaponAbilities"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textAlignment="center"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/WeaponAttacks"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textAlignment="center"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/WeaponStrength"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textAlignment="center"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/WeaponAp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textAlignment="center"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/WeaponDamage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textAlignment="center"
-                android:textSize="10sp" />
-
-        </TableRow>
-
-    </TableLayout>
-
-    <TableLayout
-        android:id="@+id/layoutStatsen"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="70dp"
-        android:layout_marginBottom="210dp"
-        android:stretchColumns="*"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inividualModelTopButton">
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#B5B2B2"
-            android:textAlignment="center">
-
-            <TextView
-                android:id="@+id/BallisticSkillRow"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="BS"
-                android:textAlignment="center"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/WeaponSkillRow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="WS"
-                android:textAlignment="center"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/StrengthRow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="S"
-                android:textAlignment="center"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/ToughnssRow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="T"
-                android:textAlignment="center"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/WoundsRow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="W"
-                android:textAlignment="center"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/AttacksRow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="A"
-                android:textAlignment="center"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/SaveRow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Sv"
-                android:textAlignment="center"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/InvulrnebaleSaveRow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ISv"
-                android:textAlignment="center"
-                android:textSize="10sp" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#DFDADA">
-
-            <TextView
-                android:id="@+id/BallisticSkillStatIndicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textAlignment="center"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/WeaponSkillStatIndicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textAlignment="center"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/StrengthStatIndicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textAlignment="center"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/ToughnessStatIndicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textAlignment="center"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/WoundsStatIndicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textAlignment="center"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/AttacksStatIndicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textAlignment="center"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/SaveStatIndicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textAlignment="center"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/InvulStatIndicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textAlignment="center"
-                android:textSize="10sp" />
-
-        </TableRow>
-
-    </TableLayout>
-
-    <ImageButton
-        android:id="@+id/imageButton2"
-        android:layout_width="61dp"
-        android:layout_height="49dp"
-        android:elevation="10dp"
-        app:layout_constraintBottom_toBottomOf="@+id/layoutStatsen"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.333"
-        app:layout_constraintStart_toEndOf="@+id/layoutStatsen"
-        app:layout_constraintTop_toTopOf="@+id/layoutStatsen"
-        app:layout_constraintVertical_bias="0.059"
-        app:srcCompat="@android:drawable/ic_menu_edit" />
-
     <ImageButton
         android:id="@+id/imageButton3"
         android:layout_width="49dp"
         android:layout_height="49dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:tag="dontDropDown"
+        app:layout_constraintBottom_toBottomOf="@+id/inividualModelTopButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.717"
-        app:layout_constraintStart_toEndOf="@+id/imageButton"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.012"
-        app:srcCompat="@android:drawable/radiobutton_on_background" />
-
-    <ImageButton
-        android:id="@+id/imageButton5"
-        android:layout_width="60dp"
-        android:layout_height="50dp"
-        app:layout_constraintBottom_toBottomOf="@+id/WeaponsLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/WeaponsLayout"
-        app:layout_constraintTop_toTopOf="@+id/WeaponsLayout"
-        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.927"
+        app:layout_constraintStart_toEndOf="@+id/inividualModelTopButton"
+        app:layout_constraintTop_toTopOf="@+id/inividualModelTopButton"
+        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@android:drawable/radiobutton_on_background" />
 
     <ImageButton
         android:id="@+id/imageButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="10dp"
         android:contentDescription="@string/UNIT_MODIFIER"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.3"
+        android:tag="dontDropDown"
+        app:layout_constraintBottom_toBottomOf="@+id/inividualModelTopButton"
+        app:layout_constraintEnd_toStartOf="@+id/imageButton3"
         app:layout_constraintStart_toEndOf="@+id/inividualModelTopButton"
         app:layout_constraintTop_toTopOf="@+id/inividualModelTopButton"
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@android:drawable/btn_dialog" />
 
-    <ImageButton
-        android:id="@+id/AddWeaponButton"
-        android:layout_width="64dp"
-        android:layout_height="51dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="65dp"
-        android:layout_marginBottom="90dp"
+    <Button
+        android:id="@+id/inividualModelTopButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:onClick="DropDownClick"
+        android:text="ingen model text satt"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.51"
+        app:layout_constraintHorizontal_bias="0.15"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/WeaponsLayout"
-        app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:id="@+id/constraintLayout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
+        <TableLayout
+            android:id="@+id/layoutStatsen"
+            android:layout_width="320dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="50dp"
+            android:stretchColumns="*"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#B5B2B2"
+                android:textAlignment="center">
+
+                <TextView
+                    android:id="@+id/BallisticSkillRow"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="BS"
+                    android:textAlignment="center"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/WeaponSkillRow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="WS"
+                    android:textAlignment="center"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/StrengthRow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="S"
+                    android:textAlignment="center"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/ToughnssRow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="T"
+                    android:textAlignment="center"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/WoundsRow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="W"
+                    android:textAlignment="center"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/AttacksRow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="A"
+                    android:textAlignment="center"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/SaveRow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sv"
+                    android:textAlignment="center"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/InvulrnebaleSaveRow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ISv"
+                    android:textAlignment="center"
+                    android:textSize="10sp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#DFDADA">
+
+                <TextView
+                    android:id="@+id/BallisticSkillStatIndicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textAlignment="center"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/WeaponSkillStatIndicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textAlignment="center"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/StrengthStatIndicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textAlignment="center"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/ToughnessStatIndicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textAlignment="center"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/WoundsStatIndicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textAlignment="center"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/AttacksStatIndicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textAlignment="center"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/SaveStatIndicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textAlignment="center"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/InvulStatIndicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textAlignment="center"
+                    android:textSize="10sp" />
+
+            </TableRow>
+
+        </TableLayout>
+
+        <TableLayout
+            android:id="@+id/WeaponsLayout"
+            android:layout_width="320dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="50dp"
+            android:stretchColumns="*"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layoutStatsen">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#B5B2B2"
+                android:textAlignment="center">
+
+                <TextView
+                    android:id="@+id/Name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Name"
+                    android:textAlignment="center"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/AbilitiesWeapon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Abilities"
+                    android:textAlignment="center"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/AttacksWeapon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Attacks"
+                    android:textAlignment="center"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/StrengthWeapon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="S"
+                    android:textAlignment="center"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/ApWeapon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="AP"
+                    android:textAlignment="center"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/DamageWeapon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Damage"
+                    android:textAlignment="center"
+                    android:textSize="10sp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#DFDADA">
+
+                <TextView
+                    android:id="@+id/WeaponName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textAlignment="center"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/WeaponAbilities"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textAlignment="center"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/WeaponAttacks"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textAlignment="center"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/WeaponStrength"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textAlignment="center"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/WeaponAp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textAlignment="center"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/WeaponDamage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textAlignment="center"
+                    android:textSize="10sp" />
+
+            </TableRow>
+
+        </TableLayout>
+
+        <TableLayout
+            android:id="@+id/AbilityLayout"
+            android:layout_width="386dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="20dp"
+            android:background="#B5B2B2"
+            android:stretchColumns="*"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/AddWeaponButton">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#B5B2B2">
+
+                <TextView
+                    android:id="@+id/ModelAbilities"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Abilities"
+                    android:textAlignment="center" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageButton
+                    android:id="@+id/imageButton4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@android:drawable/ic_input_add" />
+
+            </TableRow>
+
+        </TableLayout>
+
+        <ImageButton
+            android:id="@+id/AddWeaponButton"
+            android:layout_width="64dp"
+            android:layout_height="51dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/WeaponsLayout"
+            app:srcCompat="@android:drawable/ic_input_add" />
+
+        <ImageButton
+            android:id="@+id/imageButton2"
+            android:layout_width="61dp"
+            android:layout_height="49dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="4dp"
+            android:elevation="10dp"
+            app:layout_constraintBottom_toBottomOf="@+id/layoutStatsen"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/layoutStatsen"
+            app:layout_constraintTop_toTopOf="@+id/layoutStatsen"
+            app:srcCompat="@android:drawable/ic_menu_edit" />
+
+        <ImageButton
+            android:id="@+id/imageButton5"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            app:layout_constraintBottom_toBottomOf="@+id/WeaponsLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/WeaponsLayout"
+            app:layout_constraintTop_toTopOf="@+id/WeaponsLayout"
+            app:srcCompat="@android:drawable/radiobutton_on_background" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
