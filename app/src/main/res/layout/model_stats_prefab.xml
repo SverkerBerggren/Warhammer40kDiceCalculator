@@ -6,13 +6,67 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <Button
+        android:id="@+id/inividualModelTopButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:onClick="DropDownClick"
+        android:text="ingen model text satt"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.156"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TableLayout
+        android:id="@+id/AbilityLayout"
+        android:layout_width="386dp"
+        android:layout_height="56dp"
+        android:background="#B5B2B2"
+        android:stretchColumns="*"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/AddWeaponButton"
+        app:layout_constraintVertical_bias="1.0">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#B5B2B2">
+
+            <TextView
+                android:id="@+id/ModelAbilities"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Abilities"
+                android:textAlignment="center" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageButton
+                android:id="@+id/imageButton4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@android:drawable/ic_input_add" />
+
+        </TableRow>
+
+    </TableLayout>
+
     <TableLayout
         android:id="@+id/WeaponsLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="50dp"
         android:layout_marginEnd="70dp"
+        android:layout_marginBottom="100dp"
         android:stretchColumns="*"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,20 +83,28 @@
                 android:id="@+id/Name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="BS"
+                android:text="Name"
                 android:textAlignment="center"
                 android:textSize="10sp" />
 
             <TextView
-                android:id="@+id/Ability"
+                android:id="@+id/AbilitiesWeapon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="WS"
+                android:text="Abilities"
                 android:textAlignment="center"
                 android:textSize="10sp" />
 
             <TextView
-                android:id="@+id/textView11"
+                android:id="@+id/AttacksWeapon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Attacks"
+                android:textAlignment="center"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/StrengthWeapon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="S"
@@ -50,42 +112,18 @@
                 android:textSize="10sp" />
 
             <TextView
-                android:id="@+id/textView13"
+                android:id="@+id/ApWeapon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="T"
+                android:text="AP"
                 android:textAlignment="center"
                 android:textSize="10sp" />
 
             <TextView
-                android:id="@+id/textView15"
+                android:id="@+id/DamageWeapon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="W"
-                android:textAlignment="center"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/textView17"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="A"
-                android:textAlignment="center"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/textView19"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Sv"
-                android:textAlignment="center"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/textView27"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ISv"
+                android:text="Damage"
                 android:textAlignment="center"
                 android:textSize="10sp" />
 
@@ -97,7 +135,7 @@
             android:background="#DFDADA">
 
             <TextView
-                android:id="@+id/textView8"
+                android:id="@+id/WeaponName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0"
@@ -105,7 +143,7 @@
                 android:textSize="10sp" />
 
             <TextView
-                android:id="@+id/textView21"
+                android:id="@+id/WeaponAbilities"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0"
@@ -113,7 +151,7 @@
                 android:textSize="10sp" />
 
             <TextView
-                android:id="@+id/textView22"
+                android:id="@+id/WeaponAttacks"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0"
@@ -121,7 +159,7 @@
                 android:textSize="10sp" />
 
             <TextView
-                android:id="@+id/textView23"
+                android:id="@+id/WeaponStrength"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0"
@@ -129,7 +167,7 @@
                 android:textSize="10sp" />
 
             <TextView
-                android:id="@+id/textView24"
+                android:id="@+id/WeaponAp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0"
@@ -137,23 +175,7 @@
                 android:textSize="10sp" />
 
             <TextView
-                android:id="@+id/textView25"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textAlignment="center"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/textView26"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textAlignment="center"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/textView28"
+                android:id="@+id/WeaponDamage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0"
@@ -169,10 +191,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="100dp"
         android:layout_marginEnd="70dp"
+        android:layout_marginBottom="210dp"
         android:stretchColumns="*"
-        app:layout_constraintBottom_toTopOf="@+id/inividualModelTopButton"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/inividualModelTopButton">
@@ -324,28 +346,16 @@
 
     <ImageButton
         android:id="@+id/imageButton2"
-        android:layout_width="44dp"
-        android:layout_height="41dp"
+        android:layout_width="61dp"
+        android:layout_height="49dp"
         android:elevation="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/layoutStatsen"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.714"
+        app:layout_constraintHorizontal_bias="0.333"
         app:layout_constraintStart_toEndOf="@+id/layoutStatsen"
-        app:layout_constraintTop_toBottomOf="@+id/imageButton3"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintTop_toTopOf="@+id/layoutStatsen"
+        app:layout_constraintVertical_bias="0.059"
         app:srcCompat="@android:drawable/ic_menu_edit" />
-
-    <Button
-        android:id="@+id/inividualModelTopButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="ingen model text satt"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.156"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
 
     <ImageButton
         android:id="@+id/imageButton3"
@@ -353,10 +363,22 @@
         android:layout_height="49dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.717"
         app:layout_constraintStart_toEndOf="@+id/imageButton"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.057"
+        app:layout_constraintVertical_bias="0.012"
+        app:srcCompat="@android:drawable/radiobutton_on_background" />
+
+    <ImageButton
+        android:id="@+id/imageButton5"
+        android:layout_width="60dp"
+        android:layout_height="50dp"
+        app:layout_constraintBottom_toBottomOf="@+id/WeaponsLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/WeaponsLayout"
+        app:layout_constraintTop_toTopOf="@+id/WeaponsLayout"
+        app:layout_constraintVertical_bias="1.0"
         app:srcCompat="@android:drawable/radiobutton_on_background" />
 
     <ImageButton
@@ -366,10 +388,31 @@
         android:contentDescription="@string/UNIT_MODIFIER"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.119"
+        app:layout_constraintHorizontal_bias="0.3"
         app:layout_constraintStart_toEndOf="@+id/inividualModelTopButton"
         app:layout_constraintTop_toTopOf="@+id/inividualModelTopButton"
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@android:drawable/btn_dialog" />
+
+    <ImageButton
+        android:id="@+id/AddWeaponButton"
+        android:layout_width="64dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="65dp"
+        android:layout_marginBottom="90dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.51"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/WeaponsLayout"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@android:drawable/ic_input_add" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
