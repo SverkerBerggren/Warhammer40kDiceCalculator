@@ -104,9 +104,12 @@ public class CompareActivity extends AppCompatActivity {
             verticalLayout = (ViewGroup) inflater.inflate(R.layout.unitviewprefab, ((ViewGroup)findViewById(R.id.VerticalLayout)));
 
 
+
+
             instaniateUnitButton(verticalLayout.getChildAt(i +1),matchup.friendlyArmy.units.get(i),i, FRIENDLY);
             //Log.d("grejer",""+viewToModify.getParent().toString());
 
+            CreateModel(verticalLayout.getChildAt(i +1),matchup.friendlyArmy.units.get(i),i,inflater);
 
 
         }
@@ -115,6 +118,14 @@ public class CompareActivity extends AppCompatActivity {
 
         Log.d("längd", ""+matchup.friendlyArmy.units.size());
 
+
+    }
+
+    private void CreateModel(View buttonToModify, Unit unit, int unitNumber , LayoutInflater inflater)
+    {
+        ConstraintLayout modelsLayout = (ConstraintLayout) buttonToModify.findViewById(R.id.ModelsSubLayout);
+
+        inflater.inflate(R.layout.model_stats_prefab,modelsLayout);
 
     }
 
