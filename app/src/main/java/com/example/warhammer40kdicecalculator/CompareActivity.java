@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 
@@ -137,6 +138,8 @@ public class CompareActivity extends AppCompatActivity {
                 ((Button)inflatedView.findViewById(R.id.inividualModelTopButton)).setText(matchup.friendlyArmy.units.get(unitNumber).listOfModels.get(i).name);
 
                 ((Button)inflatedView.findViewById(R.id.inividualModelTopButton)).setId(R.id.noId);
+
+               SetModelStats(inflatedView.findViewWithTag("TableModelStatsIndicator"), matchup.friendlyArmy.units.get(unitNumber).listOfModels.get(i));
             }
 
         }
@@ -145,6 +148,11 @@ public class CompareActivity extends AppCompatActivity {
 
 
 
+    }
+
+    private void SetModelStats(TableRow tableRow, Model model)
+    {
+        ((TextView)tableRow.findViewById(R.id.BallisticSkillStatIndicator)).setText(model.ballisticSkill);
     }
 
     private  void instaniateUnitButton(View buttonToModify, Unit unit, int unitNumber, String friendlyOrEnemy)

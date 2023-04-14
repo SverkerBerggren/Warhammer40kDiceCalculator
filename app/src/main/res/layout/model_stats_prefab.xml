@@ -69,6 +69,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <TableRow
+                android:id="@+id/TableRowTest"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#B5B2B2"
@@ -141,9 +142,11 @@
             </TableRow>
 
             <TableRow
+                android:id="@+id/ModelStatsIndicator"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#DFDADA">
+                android:background="#DFDADA"
+                android:tag="TableModelStatsIndicator">
 
                 <TextView
                     android:id="@+id/BallisticSkillStatIndicator"
