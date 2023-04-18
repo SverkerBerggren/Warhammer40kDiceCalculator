@@ -1,6 +1,7 @@
 package com.example.warhammer40kdicecalculator;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -41,14 +42,17 @@ public class Weapon_Popup extends AppCompatActivity {
 
     public void ShowSearch(View v)
     {
-
-        LayoutInflater inf = getLayoutInflater();
-        ViewGroup constraintLayout = findViewById(R.id.ConstraintLayout);
-        inf.inflate(R.layout.search_prefab, constraintLayout);
-
-
-        View searchGroup = findViewById(R.id.SearchGroup);
-        searchGroup.setVisibility(View.GONE);
+        if (findViewById(R.id.SearchLayout) == null)
+        {
+            LayoutInflater inf = getLayoutInflater();
+            ViewGroup constraintLayout = findViewById(R.id.ConstraintLayout);
+            inf.inflate(R.layout.search_prefab, constraintLayout);
+        }
+        else
+        {
+            View searchLayout = findViewById(R.id.SearchLayout);
+            searchLayout.setVisibility(View.VISIBLE);
+        }
 
         SearchView searchView = findViewById(R.id.searchView);
         ListView listView = findViewById(R.id.listView);
@@ -70,6 +74,10 @@ public class Weapon_Popup extends AppCompatActivity {
                 String item = (String)parent.getItemAtPosition(position);
 
                 Ability ability = map.get(item);
+
+                View searchLayout = findViewById(R.id.SearchLayout);
+                searchLayout.setVisibility(View.GONE);
+
 
             }
         });
