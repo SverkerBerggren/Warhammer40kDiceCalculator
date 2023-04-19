@@ -336,6 +336,13 @@ public class  MainActivity extends AppCompatActivity {
         startActivity(intenten);
     }
 
+    public void OpenUnitSelection(View v)
+    {
+        Intent intenten = new Intent(this, UnitSelection.class);
+
+        startActivity(intenten);
+    }
+
     public void CreateNewMatchup(View v)
     {
 
