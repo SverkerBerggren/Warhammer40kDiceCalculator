@@ -23,7 +23,6 @@ import com.jjoe64.graphview.GraphView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.zip.Inflater;
 
 public class CompareActivity extends AppCompatActivity {
 
@@ -111,15 +110,40 @@ public class CompareActivity extends AppCompatActivity {
 
 
 
-            verticalLayout = (ViewGroup) inflater.inflate(R.layout.unitviewprefab, ((ViewGroup)findViewById(R.id.VerticalLayout)));
+            verticalLayout = (ViewGroup) inflater.inflate(R.layout.unitviewprefab, ((ViewGroup)findViewById(R.id.VerticalLayoutFriendlyArmy)));
 
 
 
 
             instaniateUnitButton(verticalLayout.getChildAt(i +1),matchup.friendlyArmy.units.get(i),i, FRIENDLY);
+
+            CreateUnitAbilites(matchup.friendlyArmy.units.get(i),findViewById(R.id.VerticalLayoutFriendlyArmy),inflater);
             //Log.d("grejer",""+viewToModify.getParent().toString());
 
             CreateModel(verticalLayout.getChildAt(i +1),matchup.friendlyArmy.units.get(i),i,FRIENDLY,inflater);
+
+
+
+        }
+
+        for(int i = 0; i < matchup.friendlyArmy.units.size();i++)
+        {
+
+
+
+
+            verticalLayout = (ViewGroup) inflater.inflate(R.layout.unitviewprefab, ((ViewGroup)findViewById(R.id.VerticalLayoutFriendlyArmy)));
+
+
+
+
+            instaniateUnitButton(verticalLayout.getChildAt(i +1),matchup.friendlyArmy.units.get(i),i, FRIENDLY);
+
+            CreateUnitAbilites(matchup.friendlyArmy.units.get(i),findViewById(R.id.VerticalLayoutFriendlyArmy),inflater);
+            //Log.d("grejer",""+viewToModify.getParent().toString());
+
+            CreateModel(verticalLayout.getChildAt(i +1),matchup.friendlyArmy.units.get(i),i,FRIENDLY,inflater);
+
 
 
         }
@@ -131,9 +155,27 @@ public class CompareActivity extends AppCompatActivity {
 
     }
 
-    private void CreateUnitAbilites( Inflater inflater)
+    private void CreateUnitAbilites(Unit unit, LinearLayout linearLayout, LayoutInflater inflater)
     {
+        TableLayout unitAbilitLayout = linearLayout.findViewWithTag("AbilityLayoutUnit");
+        Context context = getBaseContext();
 
+        for(int i = 0; i < unit.listOfAbilitys.size(); i++)
+        {
+            TableRow tableRow = new TableRow(context);
+            tableRow.setBackgroundColor(Color.parseColor("#DFDADA"));
+            tableRow.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+
+            TextView abilityTextView = new TextView(context);
+            abilityTextView.setText(unit.listOfAbilitys.get(i).name);
+            abilityTextView.setTextSize(10);
+            abilityTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+            tableRow.addView(abilityTextView);
+            unitAbilitLayout.addView(tableRow);
+        }
+        unitAbilitLayout.setTag("");
     }
 
     private void CreateModel(View buttonToModify, Unit unit, int unitNumber,String friendlyArmy , LayoutInflater inflater)
