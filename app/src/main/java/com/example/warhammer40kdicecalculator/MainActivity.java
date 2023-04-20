@@ -353,7 +353,7 @@ public class  MainActivity extends AppCompatActivity {
 
         ArrayList<RangedWeapon> bolters = new ArrayList<>();
 
-        RangedWeapon bolter = new RangedWeapon("Bolter",0,0,new DamageAmount(1,0,0), new RangedAttackAmount(1,0,0),listOfAbilities);
+        RangedWeapon bolter = new RangedWeapon("Bolter",4,0,new DamageAmount(1,0,0), new RangedAttackAmount(2,0,0),listOfAbilities);
 
         bolters.add(bolter);
         bolters.add(bolter);
@@ -361,17 +361,34 @@ public class  MainActivity extends AppCompatActivity {
         ArrayList<MeleeWeapons> meleeWeapons = new ArrayList<>();
         meleeWeapons.add(new MeleeWeapons());
 
-        Model intercessor = new Model("Intercessor",0,0,0,0,0,0,0,0,listOfAbilities,bolters,meleeWeapons);
+        Model intercessor = new Model("Intercessor",4,4,4,0,2,3,3,2,listOfAbilities,bolters,meleeWeapons);
         intercessor.listOfAbilites.add(new ReRollAmountOfHits());
+        listOfModels.add(intercessor);
+        listOfModels.add(intercessor);
+        listOfModels.add(intercessor);
+        listOfModels.add(intercessor);
+        listOfModels.add(intercessor);
+        listOfModels.add(intercessor);
+        listOfModels.add(intercessor);
+        listOfModels.add(intercessor);
         listOfModels.add(intercessor);
         listOfModels.add(intercessor);
 
         Unit blackTemplar = new Unit("Ny Blacktemplar",100,0,0,0,0,0,0,0,0,listOfModels,listOfAbilities);
 
-        Model guardsman = new Model("Guardsman",0,0,0,0,0,0,0,0,listOfAbilities,bolters,meleeWeapons);
+        Model guardsman = new Model("Guardsman",3,3,5,0,1,4,4,1,listOfAbilities,bolters,meleeWeapons);
 
         ArrayList<Model> guardsmen = new ArrayList<>();
 
+        guardsmen.add(guardsman);
+        guardsmen.add(guardsman);
+        guardsmen.add(guardsman);
+        guardsmen.add(guardsman);
+        guardsmen.add(guardsman);
+        guardsmen.add(guardsman);
+        guardsmen.add(guardsman);
+        guardsmen.add(guardsman);
+        guardsmen.add(guardsman);
         guardsmen.add(guardsman);
 
         ArrayList<Ability> abilitiesGuard = new ArrayList<>();

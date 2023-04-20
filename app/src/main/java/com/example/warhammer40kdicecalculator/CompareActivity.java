@@ -200,7 +200,7 @@ public class CompareActivity extends AppCompatActivity {
           tableRow.setBackgroundColor(Color.parseColor("#DFDADA"));
 
           ImageButton addButton = new ImageButton(getBaseContext());
-          addButton.setImageResource(com.google.android.material.R.drawable.abc_ic_star_black_36dp);
+          //addButton.setImageResource(com.google.android.material.R.drawable.abc_ic_star_black_36dp);
 
 
 
