@@ -4,21 +4,27 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 
 import com.jjoe64.graphview.GraphView;
 
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class CompareActivity extends AppCompatActivity {
@@ -53,6 +59,8 @@ public class CompareActivity extends AppCompatActivity {
 
     private String FRIENDLY = "friendly";
 
+    private ArrayList<TableLayout> previousLayouts = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +69,9 @@ public class CompareActivity extends AppCompatActivity {
 
         GraphView hej = null;
         fileHandler = new FileHandler(getBaseContext());
+
+
+
 
         //Log.d("testar intetion", "onCreate: " + getIntent().getStringExtra("SourceFile"));
 
@@ -117,7 +128,7 @@ public class CompareActivity extends AppCompatActivity {
 
 
 
-        Log.d("längd", ""+matchup.friendlyArmy.units.size());
+        //Log.d("längd", ""+matchup.friendlyArmy.units.size());
 
 
     }
@@ -127,24 +138,70 @@ public class CompareActivity extends AppCompatActivity {
 
 
         if(friendlyArmy.equals(FRIENDLY))
-        {
+        {   LinearLayout modelsLayout = (LinearLayout) buttonToModify.findViewById(R.id.ModelsSubLayout);
             for(int i = 0; i < matchup.friendlyArmy.units.get(unitNumber).listOfModels.size();i++)
             {
                 Log.d("models mangd", "hur manga models " +matchup.friendlyArmy.units.get(unitNumber).listOfModels.size() );
 
-                LinearLayout modelsLayout = (LinearLayout) buttonToModify.findViewById(R.id.ModelsSubLayout);
+
+                Model currentModel = matchup.friendlyArmy.units.get(unitNumber).listOfModels.get(i);
+
                 View inflatedView = inflater.inflate(R.layout.model_stats_prefab,modelsLayout);
 
-                ((Button)inflatedView.findViewById(R.id.inividualModelTopButton)).setText(matchup.friendlyArmy.units.get(unitNumber).listOfModels.get(i).name);
+                ((Button)inflatedView.findViewById(R.id.inividualModelTopButton)).setText(currentModel.name);
 
                 ((Button)inflatedView.findViewById(R.id.inividualModelTopButton)).setId(R.id.noId);
 
-               SetModelStats(inflatedView.findViewWithTag("TableModelStatsIndicator"), matchup.friendlyArmy.units.get(unitNumber).listOfModels.get(i));
+
+
+
+
+               SetModelStats(inflatedView.findViewById(R.id.ModelStatsIndicator), currentModel);
+                inflatedView.findViewById(R.id.ModelStatsIndicator).setId(R.id.noId);
+
+
+                ConstraintLayout constraintLayout = ((ConstraintLayout)inflatedView.getParent()).findViewWithTag("ConstraintLayoutModel");
+
+                SetModelAbilites(currentModel, constraintLayout);
+
+
+                constraintLayout.setTag("");
+
+
             }
 
         }
 
        // for(int i = 0; i <  )
+    }
+
+    private void SetModelAbilites(Model model, ConstraintLayout constraintLayout)
+    {
+          TableLayout abilityTable =  constraintLayout.findViewById(R.id.AbilityLayout);
+
+          Context context = getBaseContext();
+
+          abilityTable.setBackgroundColor(Color.parseColor("#DFDADA"));
+          for(int i = 0; i < model.listOfAbilites.size(); i++)
+          {   TableRow tableRow = new TableRow(context);
+              tableRow.setBackgroundColor(Color.parseColor("#DFDADA"));
+              tableRow.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+
+              TextView abilityTextView = new TextView(context);
+              abilityTextView.setText(model.listOfAbilites.get(i).name);
+              abilityTextView.setTextSize(10);
+              abilityTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+              tableRow.addView(abilityTextView);
+              abilityTable.addView(tableRow);
+          }
+          TableRow tableRow = new TableRow(context);
+          tableRow.setBackgroundColor(Color.parseColor("#DFDADA"));
+
+          ImageButton addButton = new ImageButton(getBaseContext());
+          addButton.setImageResource(com.google.android.material.R.drawable.abc_ic_star_black_36dp);
+
 
 
 
@@ -152,7 +209,89 @@ public class CompareActivity extends AppCompatActivity {
 
     private void SetModelStats(TableRow tableRow, Model model)
     {
-        ((TextView)tableRow.findViewById(R.id.BallisticSkillStatIndicator)).setText(model.ballisticSkill);
+
+
+
+        ((TextView)tableRow.findViewById(R.id.BallisticSkillStatIndicator)).setText("" + model.ballisticSkill + "+");
+        ((TextView)tableRow.findViewById(R.id.WeaponSkillStatIndicator)).setText("" + model.weaponSkill + "+");
+        ((TextView)tableRow.findViewById(R.id.StrengthStatIndicator)).setText("" + model.strength + "+");
+        ((TextView)tableRow.findViewById(R.id.ToughnessStatIndicator)).setText("" + model.toughness + "+");
+        ((TextView)tableRow.findViewById(R.id.AttacksStatIndicator)).setText("" + model.attacks + "+");
+        ((TextView)tableRow.findViewById(R.id.SaveStatIndicator)).setText("" + model.armorSave + "+");
+        ((TextView)tableRow.findViewById(R.id.WoundsStatIndicator)).setText("" + model.wounds + "+");
+        ((TextView)tableRow.findViewById(R.id.InvulStatIndicator)).setText("" + model.invulnerableSave + "+");
+
+
+
+
+
+        ConstraintLayout constraintLayout = (ConstraintLayout)tableRow.getParent().getParent();
+
+        TableLayout weaponLayout = constraintLayout.findViewWithTag("WeaponLayout");
+        for(int i = 0; i < model.listOfRangedWeapons.size();i++)
+        {
+            AddWeapon(weaponLayout,model.listOfRangedWeapons.get(i));
+        }
+
+
+        weaponLayout.setTag("NoTag");
+
+
+
+
+    }
+
+    private void AddWeapon(TableLayout tableLayout, RangedWeapon weapon)
+    {
+        TableRow tableRow = new TableRow(getBaseContext());
+
+        TextView nameText = new TextView(getBaseContext());
+        nameText.setText(weapon.name);
+        nameText.setTextSize(10);
+        nameText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+        TextView abilityText = new TextView(getBaseContext());
+        abilityText.setText(""+weapon.weaponRules.size());
+        abilityText.setTextSize(10);
+        abilityText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+        TextView attacksText = new TextView(getBaseContext());
+        attacksText.setText(weapon.amountOfAttacks.numberOfD6 +"D6 + " + weapon.amountOfAttacks.numberOfD3
+                +"D3 +" +weapon.amountOfAttacks.rawNumberOfAttacks);
+        attacksText.setTextSize(10);
+        attacksText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+        TextView strengthText = new TextView(getBaseContext());
+        strengthText.setText("" +weapon.strength);
+        strengthText.setTextSize(10);
+        strengthText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+        TextView apText = new TextView(getBaseContext());
+        apText.setText(""+weapon.ap);
+        apText.setTextSize(10);
+        apText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+
+        TextView damageText = new TextView(getBaseContext());
+        damageText.setText(weapon.damageAmount.d6DamageAmount + "D6 +" + weapon.damageAmount.d3DamageAmount + "D3 +" + weapon.damageAmount.rawDamageAmount);
+        damageText.setTextSize(10);
+        damageText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+        tableRow.addView(nameText);
+        tableRow.addView(abilityText);
+        tableRow.addView(attacksText);
+        tableRow.addView(strengthText);
+        tableRow.addView(apText);
+        tableRow.addView(damageText);
+
+
+        tableRow.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+
+        tableRow.setBackgroundColor(Color.parseColor("#DFDADA"));
+
+        tableLayout.addView(tableRow);
+
     }
 
     private  void instaniateUnitButton(View buttonToModify, Unit unit, int unitNumber, String friendlyOrEnemy)

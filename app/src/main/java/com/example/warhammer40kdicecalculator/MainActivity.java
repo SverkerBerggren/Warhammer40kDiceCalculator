@@ -355,11 +355,11 @@ public class  MainActivity extends AppCompatActivity {
         meleeWeapons.add(new MeleeWeapons());
 
         Model intercessor = new Model("Intercessor",0,0,0,0,0,0,0,0,listOfAbilities,bolters,meleeWeapons);
-
+        intercessor.listOfAbilites.add(new ReRollAmountOfHits());
         listOfModels.add(intercessor);
         listOfModels.add(intercessor);
 
-        Unit blackTemplar = new Unit("BlackTemplar",100,0,0,0,0,0,0,0,0,listOfModels,listOfAbilities);
+        Unit blackTemplar = new Unit("Ny Blacktemplar",100,0,0,0,0,0,0,0,0,listOfModels,listOfAbilities);
 
         Model guardsman = new Model("Guardsman",0,0,0,0,0,0,0,0,listOfAbilities,bolters,meleeWeapons);
 
@@ -370,6 +370,10 @@ public class  MainActivity extends AppCompatActivity {
         ArrayList<Ability> abilitiesGuard = new ArrayList<>();
 
         abilitiesGuard.add(new HammerOfTheEmperor());
+        abilitiesGuard.add(new HammerOfTheEmperor());
+
+        guardsman.listOfAbilites.add(new HammerOfTheEmperor());
+        guardsman.listOfAbilites.add(new HammerOfTheEmperor());
 
         Unit infantrySquad = new Unit("Cadian infantry squad",50,0,0,0,0,0,0,0,0,guardsmen,abilitiesGuard);
 
@@ -389,7 +393,7 @@ public class  MainActivity extends AppCompatActivity {
         Army friendlyArmy = new Army("Min arme",0,0,0,0,0,0,0,0,listOfFriendlyUnits,listOfAbilities);
         Army enemyArmy = new Army("Min arme",0,0,0,0,0,0,0,0,listOfEnemyUnits,listOfAbilities);
 
-        Matchup matchup = new Matchup("Matchu fran knapp",friendlyArmy,enemyArmy);
+        Matchup matchup = new Matchup("Matchu fran ny",friendlyArmy,enemyArmy);
 
 
         FileHandler handler = new FileHandler(context);
