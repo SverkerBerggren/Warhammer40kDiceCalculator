@@ -286,6 +286,8 @@ public class RollingLogic {
         returnResult.modelsSlain = resultModelsSlain;
         returnResult.woundsDealt = resultWoundsDealt;
 
+        returnResult.averageAmountOfWounds = average;
+
         return returnResult;
 
 

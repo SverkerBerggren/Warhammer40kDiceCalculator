@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,10 +21,9 @@ import android.widget.TextView;
 
 import com.jjoe64.graphview.GraphView;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.zip.Inflater;
 
 public class CompareActivity extends AppCompatActivity {
 
@@ -133,6 +131,11 @@ public class CompareActivity extends AppCompatActivity {
 
     }
 
+    private void CreateUnitAbilites( Inflater inflater)
+    {
+
+    }
+
     private void CreateModel(View buttonToModify, Unit unit, int unitNumber,String friendlyArmy , LayoutInflater inflater)
     {
 
@@ -177,7 +180,7 @@ public class CompareActivity extends AppCompatActivity {
 
     private void SetModelAbilites(Model model, ConstraintLayout constraintLayout)
     {
-          TableLayout abilityTable =  constraintLayout.findViewById(R.id.AbilityLayout);
+          TableLayout abilityTable =  constraintLayout.findViewById(R.id.AbilityLayoutUnit);
 
           Context context = getBaseContext();
 
@@ -196,12 +199,16 @@ public class CompareActivity extends AppCompatActivity {
               tableRow.addView(abilityTextView);
               abilityTable.addView(tableRow);
           }
-          TableRow tableRow = new TableRow(context);
-          tableRow.setBackgroundColor(Color.parseColor("#DFDADA"));
+          TableRow tableRowButton = new TableRow(context);
+          tableRowButton.setBackgroundColor(Color.parseColor("#DFDADA"));
 
           ImageButton addButton = new ImageButton(getBaseContext());
-          addButton.setImageResource(com.google.android.material.R.drawable.abc_ic_star_black_36dp);
+          addButton.setImageResource(com.google.android.material.R.drawable.abc_ab_share_pack_mtrl_alpha);
 
+          tableRowButton.addView(addButton);
+
+
+        abilityTable.addView(tableRowButton);
 
 
 
