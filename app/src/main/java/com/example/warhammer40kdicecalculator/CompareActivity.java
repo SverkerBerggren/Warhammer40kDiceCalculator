@@ -4,14 +4,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
@@ -33,7 +36,7 @@ public class CompareActivity extends AppCompatActivity {
     private int UNIT_MODIFIER = R.string.UNIT_MODIFIER;
     private int UNIT_NUMBER = R.string.UNIT_NUMBER;
 
-    static private String DECREASE_WEAPONSKILL = "decreaseWeaponSkill";
+    private String DECREASE_WEAPONSKILL = "decreaseWeaponSkill";
     private String DECREASE_BALLISTICSKILL = "decreaseBallisticSkill";
     private String DECREASE_STRENGTH = "decreaseStrength";
     private String DECREASE_TOUGHNESS = "decreaseToughness";
@@ -58,11 +61,26 @@ public class CompareActivity extends AppCompatActivity {
 
     private ArrayList<TableLayout> previousLayouts = new ArrayList<>();
 
+    private LayoutInflater inflater;
+
+    private boolean inflatedModelStats = false;
+
+    private EditText weaponSkillView;
+    private EditText ballisticSkillView;
+    private EditText strengthView;
+    private EditText toughnessView;
+    private EditText woundsView;
+    private EditText attacksView;
+    private EditText armorSaveView;
+    private EditText InvSaveView;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compare);
-        LayoutInflater inflater =  getLayoutInflater();
+        inflater =  getLayoutInflater();
 
         GraphView hej = null;
         fileHandler = new FileHandler(getBaseContext());
@@ -126,27 +144,27 @@ public class CompareActivity extends AppCompatActivity {
 
         }
 
-        for(int i = 0; i < matchup.friendlyArmy.units.size();i++)
-        {
-
-
-
-
-            verticalLayout = (ViewGroup) inflater.inflate(R.layout.unitviewprefab, ((ViewGroup)findViewById(R.id.VerticalLayoutFriendlyArmy)));
-
-
-
-
-            instaniateUnitButton(verticalLayout.getChildAt(i +1),matchup.friendlyArmy.units.get(i),i, FRIENDLY);
-
-            CreateUnitAbilites(matchup.friendlyArmy.units.get(i),findViewById(R.id.VerticalLayoutFriendlyArmy),inflater);
-            //Log.d("grejer",""+viewToModify.getParent().toString());
-
-            CreateModel(verticalLayout.getChildAt(i +1),matchup.friendlyArmy.units.get(i),i,FRIENDLY,inflater);
-
-
-
-        }
+    //    for(int i = 0; i < matchup.friendlyArmy.units.size();i++)
+    //    {
+//
+//
+//
+//
+    //        verticalLayout = (ViewGroup) inflater.inflate(R.layout.unitviewprefab, ((ViewGroup)findViewById(R.id.VerticalLayoutFriendlyArmy)));
+//
+//
+//
+//
+    //        instaniateUnitButton(verticalLayout.getChildAt(i +1),matchup.friendlyArmy.units.get(i),i, FRIENDLY);
+//
+    //        CreateUnitAbilites(matchup.friendlyArmy.units.get(i),findViewById(R.id.VerticalLayoutFriendlyArmy),inflater);
+    //        //Log.d("grejer",""+viewToModify.getParent().toString());
+//
+    //        CreateModel(verticalLayout.getChildAt(i +1),matchup.friendlyArmy.units.get(i),i,FRIENDLY,inflater);
+//
+//
+//
+    //    }
 
 
 
@@ -198,10 +216,16 @@ public class CompareActivity extends AppCompatActivity {
                 ((Button)inflatedView.findViewById(R.id.inividualModelTopButton)).setId(R.id.noId);
 
 
+                ModelIdentifier modelId = new ModelIdentifier(FRIENDLY, null, unitNumber,i,matchup.name );
 
+                ((ImageButton)inflatedView.findViewById(R.id.EditWeaponsButton)).setTag(R.string.MODEL_IDENTIFIER,modelId);
+                ((ImageButton)inflatedView.findViewById(R.id.EditWeaponsButton)).setId(R.id.noId);
 
+                ((ImageButton)inflatedView.findViewById(R.id.EditModelStatsButton)).setOnClickListener(new OnClickListenerModelStats(currentModel));
 
-               SetModelStats(inflatedView.findViewById(R.id.ModelStatsIndicator), currentModel);
+                ((ImageButton)inflatedView.findViewById(R.id.EditModelStatsButton)).setId(R.id.noId);
+
+                SetModelStats(inflatedView.findViewById(R.id.ModelStatsIndicator), currentModel);
                 inflatedView.findViewById(R.id.ModelStatsIndicator).setId(R.id.noId);
 
 
@@ -218,6 +242,20 @@ public class CompareActivity extends AppCompatActivity {
         }
 
        // for(int i = 0; i <  )
+    }
+
+    public void EditWeaponActivityStart(View v)
+    {
+        Intent intent = new Intent(this,EditWeaponActivity.class);
+
+        ModelIdentifier modelId = (ModelIdentifier) v.getTag(R.string.MODEL_IDENTIFIER);
+
+        intent.putExtra(""+UNIT_ALLEGIANCE, modelId.allegiance);
+        intent.putExtra("indexUnit", modelId.indexUnit);
+        intent.putExtra("indexModel", modelId.indexModel);
+        intent.putExtra("matchupName", modelId.matchupName);
+
+        startActivity(intent);
     }
 
     private void SetModelAbilites(Model model, ConstraintLayout constraintLayout)
@@ -245,7 +283,7 @@ public class CompareActivity extends AppCompatActivity {
           tableRowButton.setBackgroundColor(Color.parseColor("#DFDADA"));
 
           ImageButton addButton = new ImageButton(getBaseContext());
-          //addButton.setImageResource(com.google.android.material.R.drawable.abc_ic_star_black_36dp);
+          addButton.setImageResource(com.google.android.material.R.drawable.abc_ab_share_pack_mtrl_alpha);
 
           tableRowButton.addView(addButton);
 
@@ -598,4 +636,93 @@ public class CompareActivity extends AppCompatActivity {
 
         Log.d("Ui grejer", "" +  v.getParent());
     }
+
+
+    private  class OnClickListenerModelStats implements View.OnClickListener
+    {
+        private  Model model;
+
+        public OnClickListenerModelStats(Model model)
+        {
+            this.model = model;
+        }
+
+        @Override
+        public void onClick(View view) {
+            if(!inflatedModelStats)
+            {
+                inflater.inflate(R.layout.activity_popup,findViewById(R.id.ConstraintLayoutCompare));
+                ((Button)findViewById(R.id.SaveModelPopup)).setOnClickListener(new OnClickListenerModelSave(model));
+
+                inflatedModelStats = true;
+            }
+            else
+            {
+                ShowPopup(view);
+            }
+
+            weaponSkillView = (EditText)findViewById(R.id.WeaponSkillModelPopup) ;
+            ballisticSkillView   = (EditText)findViewById(R.id.BallisticSkillModelPopup) ;
+            strengthView  = (EditText)findViewById(R.id.StrengthModelPopup) ;
+            toughnessView = (EditText)findViewById(R.id.ToughnessModelPopup) ;
+            woundsView  = (EditText)findViewById(R.id.WoundsModelPopup) ;
+            attacksView  = (EditText)findViewById(R.id.AttacksModelPopup) ;
+            armorSaveView  = (EditText)findViewById(R.id.ArmorSaveModelPopup) ;
+            InvSaveView  = (EditText)findViewById(R.id.InvSaveModelPopup) ;
+
+            weaponSkillView.setText(""+ model.weaponSkill);
+            ballisticSkillView.setText(""+ model.ballisticSkill);
+            strengthView.setText(""+ model.strength);
+            toughnessView.setText(""+ model.toughness);
+            woundsView.setText(""+ model.wounds);
+            attacksView.setText(""+ model.attacks);
+            armorSaveView.setText(""+ model.armorSave);
+            InvSaveView.setText(""+ model.invulnerableSave);
+
+
+
+        }
+    }
+
+    private class  OnClickListenerModelSave implements View.OnClickListener
+    {
+        private  Model model;
+
+        public OnClickListenerModelSave(Model model)
+        {
+            this.model = model;
+        }
+
+
+        @Override
+        public void onClick(View view) {
+
+            model.weaponSkill = Integer.parseInt(weaponSkillView.getText().toString());
+            model.ballisticSkill = Integer.parseInt(ballisticSkillView.getText().toString());
+            model.strength = Integer.parseInt(strengthView.getText().toString());
+            model.toughness = Integer.parseInt(toughnessView.getText().toString());
+            model.wounds = Integer.parseInt(woundsView.getText().toString());
+            model.attacks = Integer.parseInt(attacksView.getText().toString());
+            model.armorSave = Integer.parseInt(armorSaveView.getText().toString());
+            model.invulnerableSave = Integer.parseInt(InvSaveView.getText().toString());
+
+
+            fileHandler.saveMatchup(matchup);
+
+        }
+    }
+
+
+    public void ShowPopup(View v)
+    {
+        View popup = findViewById(R.id.ConstraintLayoutModelPopup);
+        popup.setVisibility(View.VISIBLE);
+    }
+
+    public void ClosePopup(View v)
+    {
+        View popup = findViewById(R.id.ConstraintLayoutModelPopup);
+        popup.setVisibility(View.GONE);
+    }
+
 }

@@ -13,5 +13,7 @@
     <string name="UNIT_ALLEGIANCE">randomText</string>
     <string name="UNIT_MODIFIER">randomText</string>
     <string name="UNIT_NUMBER">randomText</string>
+    <string name="UNIT_IDENTIFIER">randomText</string>
+    <string name="MODEL_IDENTIFIER">randomText</string>
 
 </resources>

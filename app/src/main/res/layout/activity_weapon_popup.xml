@@ -86,7 +86,7 @@
                 android:textSize="18sp" />
 
             <EditText
-                android:id="@+id/editTextNumber2"
+                android:id="@+id/WeaponSkillModelPopup"
                 android:layout_width="50dp"
                 android:layout_height="40dp"
                 android:digits="1234567890"
@@ -111,7 +111,7 @@
                 android:textSize="18sp" />
 
             <EditText
-                android:id="@+id/editTextNumber3"
+                android:id="@+id/BallisticSkillModelPopup"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:digits="1234567890"
@@ -136,7 +136,7 @@
                 android:textSize="18sp" />
 
             <EditText
-                android:id="@+id/editTextNumber4"
+                android:id="@+id/AttacksAmountD3WeaponPopup"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:digits="1234567890"
@@ -161,7 +161,7 @@
                 android:textSize="18sp" />
 
             <EditText
-                android:id="@+id/editTextNumber5"
+                android:id="@+id/AttacksAmountD6WeaponPopup"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:digits="1234567890"
@@ -186,7 +186,7 @@
                 android:textSize="18sp" />
 
             <EditText
-                android:id="@+id/editTextNumber6"
+                android:id="@+id/AttacksRawAmountWeaponPopup"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:digits="1234567890"
@@ -211,7 +211,7 @@
                 android:textSize="18sp" />
 
             <EditText
-                android:id="@+id/editTextNumber7"
+                android:id="@+id/DamageAmountD3Popup"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:digits="1234567890"
@@ -236,7 +236,7 @@
                 android:textSize="18sp" />
 
             <EditText
-                android:id="@+id/editTextNumber8"
+                android:id="@+id/DamageAmountD6Popup"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:digits="1234567890"
@@ -261,7 +261,7 @@
                 android:textSize="18sp" />
 
             <EditText
-                android:id="@+id/editTextNumber9"
+                android:id="@+id/StrengthPopup"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:digits="1234567890"
@@ -286,7 +286,7 @@
                 android:textSize="18sp" />
 
             <EditText
-                android:id="@+id/editTextNumber10"
+                android:id="@+id/ApPopup"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:digits="1234567890"

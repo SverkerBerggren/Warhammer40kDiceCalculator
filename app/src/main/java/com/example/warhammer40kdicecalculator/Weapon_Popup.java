@@ -36,7 +36,7 @@ public class Weapon_Popup extends AppCompatActivity {
 
     public void ClosePopup(View v)
     {
-        View popup = findViewById(R.id.Popup);
+        View popup = findViewById(R.id.ConstraintLayoutPopup);
         popup.setVisibility(View.GONE);
     }
 

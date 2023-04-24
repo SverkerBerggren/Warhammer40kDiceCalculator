@@ -16,6 +16,9 @@
         android:theme="@style/Theme.Warhammer40kDiceCalculator"
         tools:targetApi="31">
         <activity
+            android:name=".EditWeaponActivity"
+            android:exported="false" />
+        <activity
             android:name=".UnitSelection"
             android:exported="false" />
         <activity

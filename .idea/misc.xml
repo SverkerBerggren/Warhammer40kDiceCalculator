@@ -5,6 +5,7 @@
       <map>
         <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
         <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/activity_compare.xml" value="0.22665080309339677" />
+        <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/activity_edit_weapon.xml" value="0.33" />
         <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/activity_popup.xml" value="0.23550724637681159" />
         <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/activity_saved_matchups.xml" value="0.5" />
@@ -21,7 +22,7 @@
         <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/fragment_second2.xml" value="0.1524822695035461" />
         <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/matchupbutton.xml" value="0.25" />
         <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/model_stats_prefab.xml" value="0.5" />
-        <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/popup_weapon.xml" value="0.20415400202634246" />
+        <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/popup_weapon.xml" value="0.33" />
         <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/savedmatchups.xml" value="0.33" />
         <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/search_prefab.xml" value="0.21467391304347827" />
         <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/unitviewprefab.xml" value="0.33" />
