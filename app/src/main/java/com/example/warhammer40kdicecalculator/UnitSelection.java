@@ -16,6 +16,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class UnitSelection extends AppCompatActivity {
 
@@ -30,6 +31,9 @@ public class UnitSelection extends AppCompatActivity {
     private ArrayList<Unit> enemyArmy;
     private LinearLayout chosenAttackingUnits;
     private LinearLayout chosenDefendingUnits;
+
+    private HashMap<Integer,Unit> listOfAttackingUnits = new HashMap<Integer,Unit>();
+    private int defendingUnitIndex;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +48,7 @@ public class UnitSelection extends AppCompatActivity {
         }
         else
         {
-            matchup = fileHandler.getMatchup("Matchu fran knapp");
+            matchup = fileHandler.getMatchup("Matchu fran ny");
         }
 
         attackingLayout = findViewById(R.id.AttackingLayout);
@@ -75,8 +79,7 @@ public class UnitSelection extends AppCompatActivity {
             {
                 CheckBox checkBox = new CheckBox(context);
                 checkBox.setText(friendlyArmy.get(i).unitName);
-
-                checkBox.setOnClickListener(new ClickListenerChoice(friendlyArmy.get(i).unitName, true));
+                checkBox.setOnClickListener(new ClickListenerChoice( true, friendlyArmy.get(i), i));
                 attackingLayout.addView(checkBox);
 
 
@@ -86,7 +89,7 @@ public class UnitSelection extends AppCompatActivity {
                 RadioButton radioButton = new RadioButton(context);
                 radioButton.setText(enemyArmy.get(i).unitName);
                 radioButton.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
-                radioButton.setOnClickListener(new ClickListenerChoice(enemyArmy.get(i).unitName, false));
+                radioButton.setOnClickListener(new ClickListenerChoice(false, enemyArmy.get(i), i));
                 defendingGroup.addView(radioButton);
             }
         }
@@ -102,7 +105,7 @@ public class UnitSelection extends AppCompatActivity {
             {
                 CheckBox checkBox = new CheckBox(context);
                 checkBox.setText(enemyArmy.get(i).unitName);
-                checkBox.setOnClickListener(new ClickListenerChoice(enemyArmy.get(i).unitName, true));
+                checkBox.setOnClickListener(new ClickListenerChoice(true, enemyArmy.get(i), i));
                 attackingLayout.addView(checkBox);
             }
             for (int i = 0; i < friendlyArmy.size(); i++)
@@ -110,7 +113,7 @@ public class UnitSelection extends AppCompatActivity {
                 RadioButton radioButton = new RadioButton(context);
                 radioButton.setText(friendlyArmy.get(i).unitName);
                 radioButton.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
-                radioButton.setOnClickListener(new ClickListenerChoice(friendlyArmy.get(i).unitName, false));
+                radioButton.setOnClickListener(new ClickListenerChoice(false, friendlyArmy.get(i), i));
                 defendingGroup.addView(radioButton);
             }
         }
@@ -127,10 +130,38 @@ public class UnitSelection extends AppCompatActivity {
         chosenDefendingUnits.removeAllViews();
     }
 
-    class ClickListenerChoice implements View.OnClickListener{
-        String name;
+    public void GoToStatistics(View v)
+    {
+        Intent intenten = new Intent(this, StatisticActivity.class);
+
+        intenten.putExtra("AttackingUnitSize", listOfAttackingUnits.size());
+        intenten.putExtra("MatchupName", matchup.name);
+        int loops = 0;
+        for (int key : listOfAttackingUnits.keySet())
+        {
+            intenten.putExtra("IndexOfUnitAttacking" + loops, key);
+            loops++;
+        }
+
+        intenten.putExtra("IndexOfUnitDefending", defendingUnitIndex);
+        intenten.putExtra("FirendlyArmyAttacking", myUnitsAttacking);
+
+        startActivity(intenten);
+    }
+
+    class ClickListenerChoice implements View.OnClickListener
+    {
         Boolean attacking;
-        ClickListenerChoice(String unitName, boolean attacking) {name = unitName; this.attacking = attacking;}
+        private Unit unitAdded;
+        String name;
+        int index;
+        ClickListenerChoice(boolean attacking, Unit unitAdded, int index)
+        {
+            this.attacking = attacking;
+            this.unitAdded = unitAdded;
+            name = unitAdded.unitName;
+            this.index = index;
+        }
         @Override
         public void onClick(View view) {
             boolean checked = false;
@@ -148,12 +179,14 @@ public class UnitSelection extends AppCompatActivity {
                 if (attacking)
                 {
                     Button bttnToRemove = chosenAttackingUnits.findViewWithTag(name);
+                    listOfAttackingUnits.remove(unitAdded);
                     chosenAttackingUnits.removeView(bttnToRemove);
                 }
                 else
                 {
                     Button bttnToRemove = chosenDefendingUnits.findViewWithTag(name);
                     chosenDefendingUnits.removeView(bttnToRemove);
+                    defendingUnitIndex = -1;
                 }
             }
             else
@@ -164,11 +197,13 @@ public class UnitSelection extends AppCompatActivity {
                 if (attacking)
                 {
                     chosenAttackingUnits.addView(bttn);
+                    listOfAttackingUnits.put(index, unitAdded);
                 }
                 else
                 {
                     chosenDefendingUnits.removeAllViews();
                     chosenDefendingUnits.addView(bttn);
+                    defendingUnitIndex = index;
                 }
             }
         }

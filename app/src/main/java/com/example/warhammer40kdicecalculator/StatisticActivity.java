@@ -1,11 +1,15 @@
 package com.example.warhammer40kdicecalculator;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.BarGraphSeries;
@@ -27,61 +31,66 @@ public class StatisticActivity extends AppCompatActivity {
     private TreeMap<Integer,Integer> woundsDealtDistribution = new TreeMap<>();
     private TreeMap<Integer,Integer> modelsSlainDistribution = new TreeMap<>();
 
+    private ArrayList<Unit> listOfAttackingUnits = new ArrayList<Unit>();
+    private Unit defendingUnit;
+    private RollResult rollResult;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistic);
+
+        Intent intent = getIntent();
+
+        int sizeOfAttack = intent.getIntExtra("AttackingUnitSize", -1);
+        String matchupName = intent.getStringExtra("MatchupName");
+
+
+        FileHandler fileHandler = new FileHandler(getBaseContext());
+
+        Matchup matchup = fileHandler.getMatchup(matchupName);
+
+        boolean myUnitsAttacking = intent.getBooleanExtra("FirendlyArmyAttacking", true);
+
+        for (int i = 0; i < sizeOfAttack; i++)
+        {
+            int key = intent.getIntExtra("IndexOfUnitAttacking" + i, -1000);
+            if (myUnitsAttacking)
+            {
+                listOfAttackingUnits.add(matchup.friendlyArmy.units.get(key));
+            }
+            else
+            {
+                listOfAttackingUnits.add(matchup.enemyArmy.units.get(key));
+            }
+
+        }
+
+        int defendingUnitIndex = intent.getIntExtra("IndexOfUnitDefending", -1000);
+        if (!myUnitsAttacking)
+        {
+            defendingUnit = matchup.friendlyArmy.units.get(defendingUnitIndex);
+        }
+        else
+        {
+            defendingUnit = matchup.enemyArmy.units.get(defendingUnitIndex);
+        }
 
         GraphView graphView1 = findViewById(R.id.Graph1);
         GraphView graphView2 = findViewById(R.id.Graph2);
 
 
 
-
-        MainActivity mainActivity = new MainActivity();
-
-        Unit manticore = new Unit();
-        Model manticoreHunterKillerMissile = new Model();
-        manticoreHunterKillerMissile.ballisticSkill = 4;
-        RangedWeapon hunterKillerMissile = new RangedWeapon(10,-2,new DamageAmount(3,0,0),new RangedAttackAmount(0,0,2));
-        manticoreHunterKillerMissile.listOfRangedWeapons.add(hunterKillerMissile);
-        manticore.listOfModels.add(manticoreHunterKillerMissile);
-
-        manticore.listOfAbilitys.add(new HammerOfTheEmperor());
-        manticoreHunterKillerMissile.listOfAbilites.add(new HammerOfTheEmperor());
-        //  hej.newCalculateDamage(conscripts,spaceMarineIntercessorUnit);
-        manticore.listOfAbilitys.add(new ReRollAmountOfHits());
-
-        Unit spaceMarineIntercessorUnit = new Unit();
-        Model intercessor = new Model();
-        intercessor.wounds = 2;
-        intercessor.armorSave = 3;
-        intercessor.toughness = 4;
-
-        for(int i =0; i <10; i ++)
-        {
-            spaceMarineIntercessorUnit.listOfModels.add(new Model(intercessor));
-        }
-        ArrayList<Unit> listToCompare = new ArrayList<>();
-
-        listToCompare.add(manticore);
-
         RollingLogic rollLogic = new RollingLogic();
 
-        RollResult rollResult = rollLogic.newCalculateDamage(listToCompare,spaceMarineIntercessorUnit);
+        rollResult = rollLogic.newCalculateDamage(listOfAttackingUnits, defendingUnit);
 
         ConvertResult(rollResult);
-
+        InstaniateGraph(graphView1,woundsDealtDistribution);
 
         // series.setDrawDataPoints(true);
         // series.setDataPointsRadius(10);
         // series.setDrawBackground(true);
         // series.setBackgroundColor(Color.argb(80,179, 230, 255));
-
-        InstaniateGraph(graphView1,woundsDealtDistribution);
-
-
-
     }
 
     private void InstaniateGraph(GraphView graphView, TreeMap<Integer,Integer> distribution)
@@ -166,7 +175,12 @@ public class StatisticActivity extends AppCompatActivity {
         barSeries.setOnDataPointTapListener(new OnDataPointTapListener() {
             @Override
             public void onTap(Series series, DataPointInterface dataPoint) {
-                Log.d("Stats", "On Tap Bar: " + dataPoint.getY());
+                ConstraintLayout graphPopup = findViewById(R.id.graphPopup);
+                TextView amountText = findViewById(R.id.amountOfWoundsText);
+                TextView chanceText = findViewById(R.id.chanceOfWoundsText);
+                amountText.setText("Amount of Wounds: " + dataPoint.getX());
+                chanceText.setText("Chance of the Wounds: " + Math.round(dataPoint.getY() * 100.0) / 100.0 + " %");
+                graphPopup.setVisibility(View.VISIBLE);
             }
         });
 
@@ -174,7 +188,8 @@ public class StatisticActivity extends AppCompatActivity {
         lineGraphSeries.setOnDataPointTapListener(new OnDataPointTapListener() {
             @Override
             public void onTap(Series series, DataPointInterface dataPoint) {
-                Log.d("Stats", "On Tap line: " + dataPoint.getY());
+                TextView chanceOfMoreText = findViewById(R.id.chanceForMoreWoundsText);
+                chanceOfMoreText.setText("Chance For More Wounds: " + Math.round(dataPoint.getY() * 100.0) / 100.0 + " %");
             }
         });
         //graphView.addSeries();
