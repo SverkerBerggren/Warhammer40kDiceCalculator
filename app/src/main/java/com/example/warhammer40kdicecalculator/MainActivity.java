@@ -10,13 +10,20 @@ import android.os.Bundle;
 
 import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.function.Function;
 
 class Runnable_Function<FunctionArgument,FunctionReturnValue> implements Runnable
@@ -60,13 +67,19 @@ public class  MainActivity extends AppCompatActivity {
 
 
 
-
+    public static HashMap<String, Ability> abilityMap = new HashMap<>();
 
     private Context context;
     private ArrayList<Unit> firstPlayerArmy;
     private ArrayList<ArrayList<String>> parsedDatasheetList = new ArrayList<>();
     private ArrayList<ArrayList<String>> parsedWeaponList = new ArrayList<>();
     private ArrayList<ArrayList<String>> parsedModelList = new ArrayList<>();
+
+    private void InstantiateAbilities()
+    {
+        abilityMap.put("ReRollAmountOfHits", new ReRollAmountOfHits());
+        abilityMap.put("HammerOfTheEmperor", new HammerOfTheEmperor());
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -77,7 +90,7 @@ public class  MainActivity extends AppCompatActivity {
 
 
 
-
+        InstantiateAbilities();
 
         try {
             InputStream Input = this.getAssets().open("TestParing.txt");
@@ -430,4 +443,132 @@ public class  MainActivity extends AppCompatActivity {
 
     }
 
+    public class AbilitySearchPopup implements View.OnClickListener
+    {
+        private Identifier identifier;
+        public AbilitySearchPopup(RangedWeapon weapon)
+        {
+            this.identifier = identifier;
+        }
+        @Override
+        public void onClick(View view) {
+
+        }
+    }
+
+    private void InflateSearch()
+    {
+        context = getBaseContext();
+        if (findViewById(R.id.SearchLayout) == null)
+        {
+            LayoutInflater inf = getLayoutInflater();
+            ViewGroup constraintLayout = findViewById(R.id.ConstraintLayout);
+            inf.inflate(R.layout.search_prefab, constraintLayout);
+        }
+        else
+        {
+            View searchLayout = findViewById(R.id.SearchLayout);
+            searchLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+
+    public void SearchWeapon(RangedWeapon weapon, Matchup matchup)
+    {
+        InflateSearch();
+        SearchView searchView = findViewById(R.id.searchView);
+        ListView listView = findViewById(R.id.listView);
+        ArrayList<String> searchList = new ArrayList<>();
+
+        for (String abilityName : abilityMap.keySet())
+        {
+            searchList.add(abilityName);
+        }
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,searchList);
+
+        listView.setAdapter(arrayAdapter);
+
+        listView.setOnItemClickListener(new OnClickAbilityItem(weapon));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                arrayAdapter.getFilter().filter(s);
+                return false;
+            }
+
+
+        });
+
+
+        //View searchGroup = findViewById(R.id.SearchGroup);
+        //searchGroup.setVisibility(View.VISIBLE);
+    }
+
+    private class OnClickAbilityItem implements AdapterView.OnItemClickListener
+    {
+        private Army army;
+        private Unit unit;
+        private Model model;
+        private RangedWeapon weapon;
+
+        public OnClickAbilityItem(Army army)
+        {
+            this.army = army;
+        }
+        public OnClickAbilityItem(Unit unit)
+        {
+            this.unit = unit;
+        }
+        public OnClickAbilityItem(Model model)
+        {
+            this.model = model;
+        }
+        public OnClickAbilityItem(RangedWeapon weapon)
+        {
+            this.weapon = weapon;
+        }
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            String item = view.toString();
+            Ability ability = abilityMap.get(item);
+            if (weapon != null)
+            {
+                if (!weapon.weaponRules.contains(ability))
+                {
+                    weapon.weaponRules.add(ability);
+                }
+            }
+            if (model != null)
+            {
+                if (!model.listOfAbilites.contains(ability))
+                {
+                    model.listOfAbilites.add(ability);
+                }
+            }
+            if (unit != null)
+            {
+                if (!unit.listOfAbilitys.contains(ability))
+                {
+                    unit.listOfAbilitys.add(ability);
+                }
+            }
+            if (army != null)
+            {
+                if (!army.abilities.contains(ability))
+                {
+                    army.abilities.add(ability);
+                }
+            }
+
+
+            View searchLayout = findViewById(R.id.SearchLayout);
+            searchLayout.setVisibility(View.GONE);
+        }
+    }
 }

@@ -1,6 +1,6 @@
 package com.example.warhammer40kdicecalculator;
 
-public class ModelIdentifier {
+public class ModelIdentifier extends Identifier{
 
 
     public static int MODEL_IDENTIFIER = R.string.MODEL_IDENTIFIER;

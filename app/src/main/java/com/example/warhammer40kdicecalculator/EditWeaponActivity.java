@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -21,6 +22,7 @@ import java.util.HashMap;
 
 public class EditWeaponActivity extends AppCompatActivity {
     private LayoutInflater inflater;
+    private ImageButton abilityPopupButton;
     private boolean inflatedPopup= false;
     private EditText rawNumberOfAttacksView;
     private EditText attacksAmountD3View;
@@ -33,6 +35,7 @@ public class EditWeaponActivity extends AppCompatActivity {
 
     private  FileHandler fileHandler;
     private  Matchup matchup;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +43,7 @@ public class EditWeaponActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_weapon);
 
         Intent intent = getIntent();
-        Context context = getBaseContext();
+        context = getBaseContext();
         inflater = getLayoutInflater();
 
         String unitAlliegance = intent.getStringExtra("" + R.string.UNIT_ALLEGIANCE);
@@ -93,20 +96,25 @@ public class EditWeaponActivity extends AppCompatActivity {
                 inflater.inflate(R.layout.popup_weapon, findViewById(R.id.WeaponConstraintLayout));
                 ((Button)findViewById(R.id.SaveButtonWeapon)).setOnClickListener(new OnClickListenerSaveWeapon(weapon));
                 inflatedPopup = true;
+
+                rawNumberOfAttacksView =    ((EditText) findViewById(R.id.AttacksRawAmountWeaponPopup));
+                attacksAmountD3View =    ((EditText) findViewById(R.id.AttacksAmountD3WeaponPopup));
+                attacksAmountD6View =    ((EditText) findViewById(R.id.AttacksAmountD6WeaponPopup));
+                rawDamageAmountView =    ((EditText) findViewById(R.id.RawDamagePopup));
+                damageAmountD3View =    ((EditText) findViewById(R.id.DamageAmountD3Popup));
+                damageAmountD6View =    ((EditText) findViewById(R.id.DamageAmountD6Popup));
+                strengthView =    ((EditText) findViewById(R.id.StrengthPopup));
+                apView =    ((EditText) findViewById(R.id.ApPopup));
+
+                abilityPopupButton = findViewById(R.id.SearchPopupWeapon);
+                abilityPopupButton.setOnClickListener(new AbilitySearchPopupWeapon(weapon));
             }
             else
             {
                 ShowPopup(v);
             }
 
-        rawNumberOfAttacksView =    ((EditText) findViewById(R.id.AttacksRawAmountWeaponPopup));
-        attacksAmountD3View =    ((EditText) findViewById(R.id.AttacksAmountD3WeaponPopup));
-        attacksAmountD6View =    ((EditText) findViewById(R.id.AttacksAmountD6WeaponPopup));
-        rawDamageAmountView =    ((EditText) findViewById(R.id.RawDamagePopup));
-        damageAmountD3View =    ((EditText) findViewById(R.id.DamageAmountD3Popup));
-        damageAmountD6View =    ((EditText) findViewById(R.id.DamageAmountD6Popup));
-        strengthView =    ((EditText) findViewById(R.id.StrengthPopup));
-        apView =    ((EditText) findViewById(R.id.ApPopup));
+
 
             rawNumberOfAttacksView.setText(""+weapon.amountOfAttacks.rawNumberOfAttacks);
             attacksAmountD3View.setText(""+weapon.amountOfAttacks.numberOfD3);
@@ -216,5 +224,18 @@ public class EditWeaponActivity extends AppCompatActivity {
 
         });
 
+    }
+    private class AbilitySearchPopupWeapon implements View.OnClickListener
+    {
+        private RangedWeapon weapon;
+        public AbilitySearchPopupWeapon(RangedWeapon weapon)
+        {
+            this.weapon = weapon;
+        }
+        @Override
+        public void onClick(View view) {
+            MainActivity mainActivity = new MainActivity();
+            mainActivity.SearchWeapon(weapon, matchup);
+        }
     }
 }

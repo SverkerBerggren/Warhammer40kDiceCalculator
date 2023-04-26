@@ -1,6 +1,7 @@
 package com.example.warhammer40kdicecalculator;
 
-public class WeaponIdentifier extends Identifier{
+public class Identifier {
+
 
 
 }
