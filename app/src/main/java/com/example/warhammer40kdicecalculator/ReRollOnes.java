@@ -1,17 +1,16 @@
 package com.example.warhammer40kdicecalculator;
 
-import androidx.annotation.NonNull;
-
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-import javax.xml.namespace.QName;
+public class ReRollOnes extends Ability{
 
-public class ReRollAmountOfHits extends Ability {
 
-    public ReRollAmountOfHits()
+    //ej klar fet stub
+
+    public ReRollOnes()
     {
-        super("ReRollAmountOfHits");
+        super("ReRollOnes");
     }
 
     public  void hitRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking)
@@ -30,26 +29,26 @@ public class ReRollAmountOfHits extends Ability {
 
     }
 
-    public   void rollNumberOfShots( List<DiceResult>  diceResultList, MetricsOfAttacking metricsOfAttacking)
+    public   void rollNumberOfShots(List<DiceResult> diceResultList, MetricsOfAttacking metricsOfAttacking)
     {
-    //    if(diceResult.isD3Roll)
-    //    {
-    //        if(diceResult.result <3)
-    //        {
-    //            DiceResult reRoll = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 +1 ));
+        //    if(diceResult.isD3Roll)
+        //    {
+        //        if(diceResult.result <3)
+        //        {
+        //            DiceResult reRoll = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 +1 ));
 //
-    //            diceResult.result = reRoll.result;
-    //        }
-    //    }
-    //    if(diceResult.isD6Roll)
-    //    {
-    //        if(diceResult.result <4)
-    //        {
-    //            DiceResult reRoll = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 +1 ));
+        //            diceResult.result = reRoll.result;
+        //        }
+        //    }
+        //    if(diceResult.isD6Roll)
+        //    {
+        //        if(diceResult.result <4)
+        //        {
+        //            DiceResult reRoll = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 +1 ));
 //
-    //            diceResult.result = reRoll.result;
-    //        }
-    //    }
+        //            diceResult.result = reRoll.result;
+        //        }
+        //    }
 
         int currentAmountOfAttacks = 0;
 
@@ -88,6 +87,5 @@ public class ReRollAmountOfHits extends Ability {
         }
 
     }
-
 
 }

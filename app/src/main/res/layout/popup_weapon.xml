@@ -6,318 +6,312 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <View
-        android:id="@+id/view2"
-        android:layout_width="300dp"
-        android:layout_height="600dp"
-        android:background="#C1C62424"
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.496"
-        tools:visibility="visible" />
+        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintWidth_percent="0.85">
 
-    <Button
-        android:id="@+id/SaveButtonWeapon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Save"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.287"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.872" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="ClosePopup"
-        android:text="Cancel"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.732"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.872" />
-
-    <TextView
-        android:id="@+id/textView9"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="Weapon"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.07999998" />
-
-    <TableLayout
-        android:id="@+id/tableLayout"
-        android:layout_width="276dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="85dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.35000002">
-
-        <TableRow
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:background="#F33737"
+            app:layout_constraintHeight_percent="0.8"
+            app:layout_constraintWidth_percent="0.85">
+
+            <TableLayout
+                android:id="@+id/tableLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal"
+                android:stretchColumns="*"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView9"
+                app:layout_constraintWidth_percent="0.85">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/textView10"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Attacks Amount D3"
+                        android:textSize="18sp" />
+
+                    <EditText
+                        android:id="@+id/AttacksAmountD3WeaponPopup"
+                        android:layout_width="50dp"
+                        android:layout_height="48dp"
+                        android:digits="1234567890"
+                        android:ems="10"
+                        android:inputType="number"
+                        android:maxLength="2"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textSize="18sp" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/textView12"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Attacks Amount D6"
+                        android:textSize="18sp" />
+
+                    <EditText
+                        android:id="@+id/AttacksAmountD6WeaponPopup"
+                        android:layout_width="50dp"
+                        android:layout_height="48dp"
+                        android:digits="1234567890"
+                        android:ems="10"
+                        android:inputType="number"
+                        android:maxLength="2"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textSize="18sp" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/textView14"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Attacks Amount"
+                        android:textSize="18sp" />
+
+                    <EditText
+                        android:id="@+id/AttacksRawAmountWeaponPopup"
+                        android:layout_width="50dp"
+                        android:layout_height="48dp"
+                        android:digits="1234567890"
+                        android:ems="10"
+                        android:inputType="number"
+                        android:maxLength="2"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textSize="18sp" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/textView16"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Damage D3"
+                        android:textSize="18sp" />
+
+                    <EditText
+                        android:id="@+id/DamageAmountD3Popup"
+                        android:layout_width="50dp"
+                        android:layout_height="48dp"
+                        android:digits="1234567890"
+                        android:ems="10"
+                        android:inputType="number"
+                        android:maxLength="2"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textSize="18sp" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/textView18"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Damage D6"
+                        android:textSize="18sp" />
+
+                    <EditText
+                        android:id="@+id/DamageAmountD6Popup"
+                        android:layout_width="50dp"
+                        android:layout_height="48dp"
+                        android:digits="1234567890"
+                        android:ems="10"
+                        android:inputType="number"
+                        android:maxLength="2"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textSize="18sp" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/textView277"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Damage"
+                        android:textSize="18sp" />
+
+                    <EditText
+                        android:id="@+id/RawDamagePopup"
+                        android:layout_width="50dp"
+                        android:layout_height="48dp"
+                        android:digits="1234567890"
+                        android:ems="10"
+                        android:inputType="number"
+                        android:maxLength="2"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textSize="18sp" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/textView20"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Strength"
+                        android:textSize="18sp" />
+
+                    <EditText
+                        android:id="@+id/StrengthPopup"
+                        android:layout_width="50dp"
+                        android:layout_height="48dp"
+                        android:digits="1234567890"
+                        android:ems="10"
+                        android:inputType="number"
+                        android:maxLength="2"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textSize="18sp" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/textView21"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Armor Penetration"
+                        android:textSize="18sp" />
+
+                    <EditText
+                        android:id="@+id/ApPopup"
+                        android:layout_width="50dp"
+                        android:layout_height="48dp"
+                        android:digits="1234567890"
+                        android:ems="10"
+                        android:inputType="number"
+                        android:maxLength="2"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textSize="18sp" />
+
+                </TableRow>
+
+            </TableLayout>
 
             <TextView
-                android:id="@+id/textView10"
+                android:id="@+id/textView9"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Attacks Amount D3"
-                android:textSize="18sp" />
-
-            <EditText
-                android:id="@+id/AttacksAmountD3WeaponPopup"
-                android:layout_width="50dp"
-                android:layout_height="48dp"
-                android:digits="1234567890"
-                android:ems="10"
-                android:inputType="number"
-                android:maxLength="2"
-                android:text="0"
-                android:textAlignment="center"
-                android:textSize="18sp" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+                android:layout_marginTop="16dp"
+                android:text="Weapon"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textView12"
+                android:id="@+id/textView29"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Attacks Amount D6"
-                android:textSize="18sp" />
+                android:layout_marginTop="30dp"
+                android:text="Ability"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
 
-            <EditText
-                android:id="@+id/AttacksAmountD6WeaponPopup"
-                android:layout_width="50dp"
-                android:layout_height="48dp"
-                android:digits="1234567890"
-                android:ems="10"
-                android:inputType="number"
-                android:maxLength="2"
-                android:text="0"
-                android:textAlignment="center"
-                android:textSize="18sp" />
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/ScrollViewAbilityWeapon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fillViewport="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView29">
 
-        </TableRow>
+                <LinearLayout
+                    android:id="@+id/LinearLayoutAbilityWeapon"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+            </androidx.core.widget.NestedScrollView>
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/textView14"
+            <ImageButton
+                android:id="@+id/SearchPopupWeapon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Attacks Amount"
-                android:textSize="18sp" />
+                android:layout_marginBottom="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ScrollViewAbilityWeapon"
+                app:srcCompat="@android:drawable/ic_input_add" />
 
-            <EditText
-                android:id="@+id/AttacksRawAmountWeaponPopup"
-                android:layout_width="50dp"
-                android:layout_height="48dp"
-                android:digits="1234567890"
-                android:ems="10"
-                android:inputType="number"
-                android:maxLength="2"
-                android:text="0"
-                android:textAlignment="center"
-                android:textSize="18sp" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/textView16"
+            <Button
+                android:id="@+id/SaveButtonWeapon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Damage D3"
-                android:textSize="18sp" />
+                android:layout_marginStart="30dp"
+                android:layout_marginBottom="10dp"
+                android:text="Save"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/SearchPopupWeapon" />
 
-            <EditText
-                android:id="@+id/DamageAmountD3Popup"
-                android:layout_width="50dp"
-                android:layout_height="48dp"
-                android:digits="1234567890"
-                android:ems="10"
-                android:inputType="number"
-                android:maxLength="2"
-                android:text="0"
-                android:textAlignment="center"
-                android:textSize="18sp" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/textView18"
+            <Button
+                android:id="@+id/button2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Damage D6"
-                android:textSize="18sp" />
-
-            <EditText
-                android:id="@+id/DamageAmountD6Popup"
-                android:layout_width="50dp"
-                android:layout_height="48dp"
-                android:digits="1234567890"
-                android:ems="10"
-                android:inputType="number"
-                android:maxLength="2"
-                android:text="0"
-                android:textAlignment="center"
-                android:textSize="18sp" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/textView277"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Damage"
-                android:textSize="18sp" />
-
-            <EditText
-                android:id="@+id/RawDamagePopup"
-                android:layout_width="50dp"
-                android:layout_height="48dp"
-                android:digits="1234567890"
-                android:ems="10"
-                android:inputType="number"
-                android:maxLength="2"
-                android:text="0"
-                android:textAlignment="center"
-                android:textSize="18sp" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/textView20"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Strength"
-                android:textSize="18sp" />
-
-            <EditText
-                android:id="@+id/StrengthPopup"
-                android:layout_width="50dp"
-                android:layout_height="48dp"
-                android:digits="1234567890"
-                android:ems="10"
-                android:inputType="number"
-                android:maxLength="2"
-                android:text="0"
-                android:textAlignment="center"
-                android:textSize="18sp" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/textView21"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Armor Penetration"
-                android:textSize="18sp" />
-
-            <EditText
-                android:id="@+id/ApPopup"
-                android:layout_width="50dp"
-                android:layout_height="48dp"
-                android:digits="1234567890"
-                android:ems="10"
-                android:inputType="number"
-                android:maxLength="2"
-                android:text="0"
-                android:textAlignment="center"
-                android:textSize="18sp" />
-
-        </TableRow>
-
-    </TableLayout>
-
-    <TextView
-        android:id="@+id/textView29"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ability"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.687" />
-
-    <CheckBox
-        android:id="@+id/checkBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="AbilityOne"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.215"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.74" />
-
-    <ImageButton
-        android:id="@+id/SearchPopupWeapon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.801"
-        app:srcCompat="@android:drawable/ic_input_add" />
-
-    <SearchView
-        android:layout_width="175dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.8"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.726" />
+                android:layout_marginEnd="30dp"
+                android:layout_marginBottom="10dp"
+                android:onClick="ClosePopup"
+                android:text="Cancel"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/SearchPopupWeapon" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

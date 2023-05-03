@@ -30,8 +30,8 @@ public class Weapon_Popup extends AppCompatActivity {
 
     public void ShowPopup(View v)
     {
-        View popup = findViewById(R.id.Popup);
-        popup.setVisibility(View.VISIBLE);
+      //  View popup = findViewById(R.id.Popup);
+      //  popup.setVisibility(View.VISIBLE);
     }
 
     public void ClosePopup(View v)

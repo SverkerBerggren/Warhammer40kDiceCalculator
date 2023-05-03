@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -32,6 +33,8 @@ public class EditWeaponActivity extends AppCompatActivity {
     private EditText damageAmountD6View;
     private EditText strengthView;
     private EditText apView;
+
+    private LinearLayout linearLayout;
 
     private  FileHandler fileHandler;
     private  Matchup matchup;
@@ -73,7 +76,7 @@ public class EditWeaponActivity extends AppCompatActivity {
 
             weaponButton.setText(weapons.get(i).name);
 
-            weaponButton.setOnClickListener(new OnClickListenerWeapon(weapons.get(i)));
+            weaponButton.setOnClickListener(new OnClickListenerWeapon(weapons.get(i),context));
 
 
             linearLayout.addView(weaponButton);
@@ -84,9 +87,12 @@ public class EditWeaponActivity extends AppCompatActivity {
     private class OnClickListenerWeapon implements View.OnClickListener {
         RangedWeapon weapon;
 
+        Context context;
 
-        public OnClickListenerWeapon(RangedWeapon weapon) {
+
+        public OnClickListenerWeapon(RangedWeapon weapon,Context context) {
             this.weapon = weapon;
+            this.context = context;
         }
 
         public void onClick(View v) {
@@ -106,8 +112,10 @@ public class EditWeaponActivity extends AppCompatActivity {
                 strengthView =    ((EditText) findViewById(R.id.StrengthPopup));
                 apView =    ((EditText) findViewById(R.id.ApPopup));
 
+                linearLayout = ((LinearLayout)findViewById(R.id.LinearLayoutAbilityWeapon) );
+
                 abilityPopupButton = findViewById(R.id.SearchPopupWeapon);
-                abilityPopupButton.setOnClickListener(new AbilitySearchPopupWeapon(weapon));
+                abilityPopupButton.setOnClickListener(new AbilitySearchPopupWeapon(weapon,context));
             }
             else
             {
@@ -124,10 +132,22 @@ public class EditWeaponActivity extends AppCompatActivity {
             damageAmountD6View.setText(""+weapon.damageAmount.d6DamageAmount);
             strengthView.setText(""+weapon.strength);
             apView.setText(""+weapon.ap);
-
-
+//
+            PopulateAbilites(weapon);
         }
 
+    }
+
+    private void PopulateAbilites( RangedWeapon weapon)
+    {   linearLayout.removeAllViews();
+        for(Ability ability : weapon.weaponRules)
+        {
+
+            CheckBox abilityCheckBox = new CheckBox(context);
+            abilityCheckBox.setText(ability.name);
+
+            linearLayout.addView(abilityCheckBox);
+        }
     }
 
     private class OnClickListenerSaveWeapon implements View.OnClickListener
@@ -228,14 +248,17 @@ public class EditWeaponActivity extends AppCompatActivity {
     private class AbilitySearchPopupWeapon implements View.OnClickListener
     {
         private RangedWeapon weapon;
-        public AbilitySearchPopupWeapon(RangedWeapon weapon)
+        private Context context;
+        public AbilitySearchPopupWeapon(RangedWeapon weapon, Context context)
         {
             this.weapon = weapon;
+            this.context = context;
         }
         @Override
         public void onClick(View view) {
             MainActivity mainActivity = new MainActivity();
-            mainActivity.SearchWeapon(weapon, matchup);
+
+            mainActivity.SearchWeapon(weapon, matchup, findViewById(R.id.WeaponConstraintLayout), context);
         }
     }
 }

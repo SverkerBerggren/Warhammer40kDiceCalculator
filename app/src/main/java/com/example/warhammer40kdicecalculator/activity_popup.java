@@ -15,8 +15,8 @@ public class activity_popup extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_popup);
-        View popup = findViewById(R.id.Popup);
-        popup.setVisibility(View.GONE);
+   //     View popup = findViewById(R.id.Popup);
+    //    popup.setVisibility(View.GONE);
     }
 
     public void OpenStats(View v)
@@ -28,14 +28,14 @@ public class activity_popup extends AppCompatActivity {
 
     public void ShowPopup(View v)
     {
-        View popup = findViewById(R.id.Popup);
-        popup.setVisibility(View.VISIBLE);
+   //     View popup = findViewById(R.id.Popup);
+   //     popup.setVisibility(View.VISIBLE);
     }
 
     public void ClosePopup(View v)
     {
-        View popup = findViewById(R.id.Popup);
-        popup.setVisibility(View.GONE);
+     //   View popup = findViewById(R.id.Popup);
+      //  popup.setVisibility(View.GONE);
     }
 
 }

@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -79,6 +80,12 @@ public class  MainActivity extends AppCompatActivity {
     {
         abilityMap.put("ReRollAmountOfHits", new ReRollAmountOfHits());
         abilityMap.put("HammerOfTheEmperor", new HammerOfTheEmperor());
+        abilityMap.put("ReRollOnes", new ReRollOnes());
+    }
+
+    public  MainActivity()
+    {
+        InstantiateAbilities();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -360,7 +367,7 @@ public class  MainActivity extends AppCompatActivity {
     {
 
         ArrayList<Ability> listOfAbilities = new ArrayList<Ability>();
-        listOfAbilities.add(new ReRollAmountOfHits());
+        listOfAbilities.add(new HammerOfTheEmperor());
 
         ArrayList<Model> listOfModels = new ArrayList<>();
 
@@ -456,28 +463,36 @@ public class  MainActivity extends AppCompatActivity {
         }
     }
 
-    private void InflateSearch()
+    private void InflateSearch(ViewGroup baseView, Context context)
     {
-        context = getBaseContext();
-        if (findViewById(R.id.SearchLayout) == null)
+        //context = getBaseContext();
+
+
+        Log.d("infalter grejer", "inflatar den??");
+
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
+
+
+        if (baseView.findViewById(R.id.SearchLayout) == null)
         {
-            LayoutInflater inf = getLayoutInflater();
-            ViewGroup constraintLayout = findViewById(R.id.ConstraintLayout);
-            inf.inflate(R.layout.search_prefab, constraintLayout);
+
+
+
+            inflater.inflate(R.layout.search_prefab, baseView);
         }
         else
         {
-            View searchLayout = findViewById(R.id.SearchLayout);
+            View searchLayout = baseView.findViewById(R.id.SearchLayout);
             searchLayout.setVisibility(View.VISIBLE);
         }
     }
 
 
-    public void SearchWeapon(RangedWeapon weapon, Matchup matchup)
+    public void SearchWeapon(RangedWeapon weapon, Matchup matchup, ViewGroup baseView, Context context)
     {
-        InflateSearch();
-        SearchView searchView = findViewById(R.id.searchView);
-        ListView listView = findViewById(R.id.listView);
+        InflateSearch(baseView,context);
+        SearchView searchView = baseView.findViewById(R.id.searchView);
+        ListView listView = baseView.findViewById(R.id.listView);
         ArrayList<String> searchList = new ArrayList<>();
 
         for (String abilityName : abilityMap.keySet())
@@ -485,11 +500,11 @@ public class  MainActivity extends AppCompatActivity {
             searchList.add(abilityName);
         }
 
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,searchList);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1,searchList);
 
         listView.setAdapter(arrayAdapter);
 
-        listView.setOnItemClickListener(new OnClickAbilityItem(weapon));
+        listView.setOnItemClickListener(new OnClickAbilityItem(weapon,baseView));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -516,27 +531,36 @@ public class  MainActivity extends AppCompatActivity {
         private Unit unit;
         private Model model;
         private RangedWeapon weapon;
+        private ViewGroup baseView;
 
-        public OnClickAbilityItem(Army army)
+
+
+        public OnClickAbilityItem(Army army, ViewGroup baseView)
         {
             this.army = army;
+            this.baseView = baseView;
         }
-        public OnClickAbilityItem(Unit unit)
+        public OnClickAbilityItem(Unit unit,ViewGroup baseView)
         {
             this.unit = unit;
+            this.baseView = baseView;
         }
-        public OnClickAbilityItem(Model model)
+        public OnClickAbilityItem(Model model,ViewGroup baseView)
         {
             this.model = model;
+            this.baseView = baseView;
         }
-        public OnClickAbilityItem(RangedWeapon weapon)
+        public OnClickAbilityItem(RangedWeapon weapon,ViewGroup baseView)
         {
             this.weapon = weapon;
+            this.baseView = baseView;
         }
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-            String item = view.toString();
-            Ability ability = abilityMap.get(item);
+            String item = ((TextView)view).getText().toString();
+
+
+            Ability ability = Ability.getAbilityType( abilityMap.get(item).name);
             if (weapon != null)
             {
                 if (!weapon.weaponRules.contains(ability))
@@ -567,7 +591,7 @@ public class  MainActivity extends AppCompatActivity {
             }
 
 
-            View searchLayout = findViewById(R.id.SearchLayout);
+            View searchLayout = baseView.findViewById(R.id.SearchLayout);
             searchLayout.setVisibility(View.GONE);
         }
     }

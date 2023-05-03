@@ -34,6 +34,11 @@ public abstract class Ability  {
             return new ReRollAmountOfHits();
         }
 
+        if(name.equals("ReRollOnes"))
+        {
+            return new ReRollOnes();
+        }
+
         return null;
     }
 }
