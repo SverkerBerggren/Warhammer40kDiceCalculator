@@ -1,5 +1,7 @@
 package com.example.warhammer40kdicecalculator;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -7,6 +9,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 
 import android.util.Log;
@@ -86,40 +89,20 @@ public class CompareActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compare);
+
         inflater =  getLayoutInflater();
-
-        GraphView hej = null;
         fileHandler = new FileHandler(getBaseContext());
-
-
-
-
-        //Log.d("testar intetion", "onCreate: " + getIntent().getStringExtra("SourceFile"));
-
         matchup = fileHandler.getMatchup( getIntent().getStringExtra("SourceFile"));
 
+        ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
+                new ActivityResultCallback<Uri>() {
+                    @Override
+                    public void onActivityResult(Uri uri) {
+                        // Handle the returned Uri
+                    }
+                });
 
         createArmies(matchup,inflater);
-
-
-    //    Log.d("vad är texten " + )
-
-
-
-      //  View viewToModify = inflater.inflate(R.layout.unitviewprefab, findViewById(R.id.VerticalLayout));
-
-        //View viewIgen =  viewToModify.findViewById(R.id.TestId);
-
-
-
-        
-
-
-
-
-
-
-
     }
 
     private HashMap<String, DataSheet> datasheetMap = new HashMap<>();
