@@ -35,6 +35,7 @@ import com.jjoe64.graphview.GraphView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.zip.Inflater;
 
 public class CompareActivity extends AppCompatActivity {
 
@@ -438,6 +439,21 @@ public class CompareActivity extends AppCompatActivity {
 
     }
 
+    private class EditUnitButtonOnClick implements View.OnClickListener
+    {
+        private Unit unitToEdit;
+
+        public EditUnitButtonOnClick(Unit unit)
+        {
+            unitToEdit = unit;
+        }
+
+        @Override
+        public void onClick(View view) {
+            inflater.inflate(R.layout.activity_popup, findViewById(R.id.ConstraintLayoutCompare));
+        }
+    }
+
     private  void instaniateUnitButton(View buttonToModify, Unit unit, UnitIdentifier unitId)
     {
         Button topButton = (Button)buttonToModify.findViewById(R.id.UnitTopButton);
@@ -447,31 +463,33 @@ public class CompareActivity extends AppCompatActivity {
         topButton.setText(unit.unitName);
 
       //  topButton.setId(R.id.noId);
+        ImageButton button = findViewById(R.id.EditUnitModifierButton);
+        button.setOnClickListener(new EditUnitButtonOnClick(unit));
 
 
 
 
-        ImageButton decreaseWeaponSkill = ((ImageButton)buttonToModify.findViewById(R.id.DecreaseWeaponSkill));
-        ImageButton increaseWeaponSkill = ((ImageButton)buttonToModify.findViewById(R.id.IncreaseWeaponSkill));
+      //ImageButton decreaseWeaponSkill = ((ImageButton)buttonToModify.findViewById(R.id.DecreaseWeaponSkill));
+      //ImageButton increaseWeaponSkill = ((ImageButton)buttonToModify.findViewById(R.id.IncreaseWeaponSkill));
 
 
-        ImageButton decreaseBallisticSkill = ((ImageButton)buttonToModify.findViewById(R.id.DecreaseBallisticSkill));
-        ImageButton increaseBallisticSkill = ((ImageButton)buttonToModify.findViewById(R.id.IncreaseBallisticSkill));
+      //ImageButton decreaseBallisticSkill = ((ImageButton)buttonToModify.findViewById(R.id.DecreaseBallisticSkill));
+      //ImageButton increaseBallisticSkill = ((ImageButton)buttonToModify.findViewById(R.id.IncreaseBallisticSkill));
 
-        ImageButton decreaseStrength = ((ImageButton)buttonToModify.findViewById(R.id.DecreaseStrength));
-        ImageButton increaseStrength = ((ImageButton)buttonToModify.findViewById(R.id.IncreaseStrength));
+      //ImageButton decreaseStrength = ((ImageButton)buttonToModify.findViewById(R.id.DecreaseStrength));
+      //ImageButton increaseStrength = ((ImageButton)buttonToModify.findViewById(R.id.IncreaseStrength));
 
-        ImageButton decreaseToughness = ((ImageButton)buttonToModify.findViewById(R.id.DecreaseToughness));
-        ImageButton increaseToughness = ((ImageButton)buttonToModify.findViewById(R.id.IncreaseToughness));
+      //ImageButton decreaseToughness = ((ImageButton)buttonToModify.findViewById(R.id.DecreaseToughness));
+      //ImageButton increaseToughness = ((ImageButton)buttonToModify.findViewById(R.id.IncreaseToughness));
 
-        ImageButton decreaseArmorSave = ((ImageButton)buttonToModify.findViewById(R.id.DecreaseArmorSave));
-        ImageButton increaseArmorSave = ((ImageButton)buttonToModify.findViewById(R.id.IncreaseArmorSave));
+      //ImageButton decreaseArmorSave = ((ImageButton)buttonToModify.findViewById(R.id.DecreaseArmorSave));
+      //ImageButton increaseArmorSave = ((ImageButton)buttonToModify.findViewById(R.id.IncreaseArmorSave));
 
-        ImageButton decreaseAttacks = ((ImageButton)buttonToModify.findViewById(R.id.DecreaseAttacks));
-        ImageButton increaseAttacks = ((ImageButton)buttonToModify.findViewById(R.id.IncreaseAttacks));
+      //ImageButton decreaseAttacks = ((ImageButton)buttonToModify.findViewById(R.id.DecreaseAttacks));
+      //ImageButton increaseAttacks = ((ImageButton)buttonToModify.findViewById(R.id.IncreaseAttacks));
 
-        ImageButton decreaseInvul = ((ImageButton)buttonToModify.findViewById(R.id.DecreaseInvul));
-        ImageButton increaseInvul = ((ImageButton)buttonToModify.findViewById(R.id.IncreaseInvul));
+      //ImageButton decreaseInvul = ((ImageButton)buttonToModify.findViewById(R.id.DecreaseInvul));
+      //ImageButton increaseInvul = ((ImageButton)buttonToModify.findViewById(R.id.IncreaseInvul));
 
        // TextView weaponSkillIndicator = (TextView)buttonToModify.findViewById(R.id.WeaponSkillIndicator);
 
@@ -479,16 +497,16 @@ public class CompareActivity extends AppCompatActivity {
        // weaponSkillIndicator.setTag(UNIT_NUMBER,unitNumber);
        // TextView hej = (TextView)buttonToModify.findViewById(R.id.WeaponSkillIndicatorr);
 
-        int test = R.id.WeaponSkillInd;
+     // int test = R.id.WeaponSkillInd;
 
-        decreaseWeaponSkill.setTag(UNIT_ALLEGIANCE, unitId.allegiance);
-        decreaseWeaponSkill.setTag(UNIT_MODIFIER, DECREASE_WEAPONSKILL);
-        decreaseWeaponSkill.setTag(UNIT_NUMBER, unitId.index);
+     // decreaseWeaponSkill.setTag(UNIT_ALLEGIANCE, unitId.allegiance);
+     // decreaseWeaponSkill.setTag(UNIT_MODIFIER, DECREASE_WEAPONSKILL);
+     // decreaseWeaponSkill.setTag(UNIT_NUMBER, unitId.index);
 
 
-        decreaseBallisticSkill.setTag(UNIT_ALLEGIANCE, unitId.allegiance);
-        decreaseBallisticSkill.setTag(UNIT_MODIFIER, DECREASE_BALLISTICSKILL);
-        decreaseBallisticSkill.setTag(UNIT_NUMBER, unitId.index);
+     // decreaseBallisticSkill.setTag(UNIT_ALLEGIANCE, unitId.allegiance);
+     // decreaseBallisticSkill.setTag(UNIT_MODIFIER, DECREASE_BALLISTICSKILL);
+     // decreaseBallisticSkill.setTag(UNIT_NUMBER, unitId.index);
 
 
    //    decreaseAttacks.setTag(UNIT_ALLEGIANCE, friendlyOrEnemy);
@@ -575,81 +593,81 @@ public class CompareActivity extends AppCompatActivity {
 
         String buttonTag = (String) buttonClicked.getTag(UNIT_MODIFIER);
 
-        if(buttonTag.equals(DECREASE_WEAPONSKILL))
-        {
-            unitToModify.weaponSkillModifier-=1;
-            ((TextView)parent.findViewById(R.id.WeaponSkillInd)).setText(Integer.toString(unitToModify.weaponSkillModifier));
-        }
-        if(buttonTag.equals(DECREASE_BALLISTICSKILL))
-        {
-            unitToModify.ballisticSkillModifier-=1;
-            ((TextView)parent.findViewById(R.id.BallisticSkillIndicator)).setText(Integer.toString(unitToModify.ballisticSkillModifier));
-        }
-        if(buttonTag.equals(DECREASE_STRENGTH))
-        {
-            unitToModify.strengthModifier-=1;
-            ((TextView)parent.findViewById(R.id.StrengthIndicator)).setText(Integer.toString(unitToModify.strengthModifier));
-        }
-        if(buttonTag.equals(DECREASE_TOUGHNESS))
-        {
-            unitToModify.toughnessModifier-=1;
-            ((TextView)parent.findViewById(R.id.ToughnessIndicator)).setText(Integer.toString(unitToModify.toughnessModifier));
-        }
-        if(buttonTag.equals(DECREASE_ARMORSAVE))
-        {
-            unitToModify.armorSaveModifier-=1;
-            ((TextView)parent.findViewById(R.id.ArmorSaveIndicator)).setText(Integer.toString(unitToModify.armorSaveModifier));
-        }
-        if(buttonTag.equals(DECREASE_INVUL))
-        {
-            unitToModify.invulnerableSaveModifier-=1;
-            ((TextView)parent.findViewById(R.id.InvulIndicator)).setText(Integer.toString(unitToModify.invulnerableSaveModifier));
-        }
-        if(buttonTag.equals(DECREASE_ATTACKS))
-        {
-            unitToModify.attacksModifier-=1;
-            ((TextView)parent.findViewById(R.id.AttacksIndicator)).setText(Integer.toString(unitToModify.attacksModifier));
-        }
+     //  if(buttonTag.equals(DECREASE_WEAPONSKILL))
+     //  {
+     //      unitToModify.weaponSkillModifier-=1;
+     //      ((TextView)parent.findViewById(R.id.WeaponSkillInd)).setText(Integer.toString(unitToModify.weaponSkillModifier));
+     //  }
+     //  if(buttonTag.equals(DECREASE_BALLISTICSKILL))
+     //  {
+     //      unitToModify.ballisticSkillModifier-=1;
+     //      ((TextView)parent.findViewById(R.id.BallisticSkillIndicator)).setText(Integer.toString(unitToModify.ballisticSkillModifier));
+     //  }
+     //  if(buttonTag.equals(DECREASE_STRENGTH))
+     //  {
+     //      unitToModify.strengthModifier-=1;
+     //      ((TextView)parent.findViewById(R.id.StrengthIndicator)).setText(Integer.toString(unitToModify.strengthModifier));
+     //  }
+     //  if(buttonTag.equals(DECREASE_TOUGHNESS))
+     //  {
+     //      unitToModify.toughnessModifier-=1;
+     //      ((TextView)parent.findViewById(R.id.ToughnessIndicator)).setText(Integer.toString(unitToModify.toughnessModifier));
+     //  }
+     //  if(buttonTag.equals(DECREASE_ARMORSAVE))
+     //  {
+     //      unitToModify.armorSaveModifier-=1;
+     //      ((TextView)parent.findViewById(R.id.ArmorSaveIndicator)).setText(Integer.toString(unitToModify.armorSaveModifier));
+     //  }
+     //  if(buttonTag.equals(DECREASE_INVUL))
+     //  {
+     //      unitToModify.invulnerableSaveModifier-=1;
+     //      ((TextView)parent.findViewById(R.id.InvulIndicator)).setText(Integer.toString(unitToModify.invulnerableSaveModifier));
+     //  }
+     //  if(buttonTag.equals(DECREASE_ATTACKS))
+     //  {
+     //      unitToModify.attacksModifier-=1;
+     //      ((TextView)parent.findViewById(R.id.AttacksIndicator)).setText(Integer.toString(unitToModify.attacksModifier));
+     //  }
 
 
 
 
 
-        if(buttonTag.equals(INCREASE_WEAPONSKILL))
-        {
-            unitToModify.weaponSkillModifier+=1;
-            ((TextView)parent.findViewById(R.id.WeaponSkillInd)).setText(Integer.toString(unitToModify.weaponSkillModifier));
-        }
-        if(buttonTag.equals(INCREASE_BALLISTICSKILL))
-        {
-            unitToModify.ballisticSkillModifier+=1;
-            ((TextView)parent.findViewById(R.id.BallisticSkillIndicator)).setText(Integer.toString(unitToModify.ballisticSkillModifier));
-        }
-        if(buttonTag.equals(INCREASE_STRENGTH))
-        {
-            unitToModify.strengthModifier+=1;
-            ((TextView)parent.findViewById(R.id.StrengthIndicator)).setText(Integer.toString(unitToModify.strengthModifier));
-        }
-        if(buttonTag.equals(INCREASE_TOUGHNESS))
-        {
-            unitToModify.toughnessModifier+=1;
-            ((TextView)parent.findViewById(R.id.ToughnessIndicator)).setText(Integer.toString(unitToModify.toughnessModifier));
-        }
-        if(buttonTag.equals(INCREASE_ARMORSAVE))
-        {
-            unitToModify.armorSaveModifier+=1;
-            ((TextView)parent.findViewById(R.id.ArmorSaveIndicator)).setText(Integer.toString(unitToModify.armorSaveModifier));
-        }
-        if(buttonTag.equals(INCREASE_INVUL))
-        {
-            unitToModify.invulnerableSaveModifier+=1;
-            ((TextView)parent.findViewById(R.id.InvulIndicator)).setText(Integer.toString(unitToModify.invulnerableSaveModifier));
-        }
-        if(buttonTag.equals(INCREASE_ATTACKS))
-        {
-            unitToModify.attacksModifier+=1;
-            ((TextView)parent.findViewById(R.id.AttacksIndicator)).setText(Integer.toString(unitToModify.attacksModifier));
-        }
+     //  if(buttonTag.equals(INCREASE_WEAPONSKILL))
+     //  {
+     //      unitToModify.weaponSkillModifier+=1;
+     //      ((TextView)parent.findViewById(R.id.WeaponSkillInd)).setText(Integer.toString(unitToModify.weaponSkillModifier));
+     //  }
+     //  if(buttonTag.equals(INCREASE_BALLISTICSKILL))
+     //  {
+     //      unitToModify.ballisticSkillModifier+=1;
+     //      ((TextView)parent.findViewById(R.id.BallisticSkillIndicator)).setText(Integer.toString(unitToModify.ballisticSkillModifier));
+     //  }
+     //  if(buttonTag.equals(INCREASE_STRENGTH))
+     //  {
+     //      unitToModify.strengthModifier+=1;
+     //      ((TextView)parent.findViewById(R.id.StrengthIndicator)).setText(Integer.toString(unitToModify.strengthModifier));
+     //  }
+     //  if(buttonTag.equals(INCREASE_TOUGHNESS))
+     //  {
+     //      unitToModify.toughnessModifier+=1;
+     //      ((TextView)parent.findViewById(R.id.ToughnessIndicator)).setText(Integer.toString(unitToModify.toughnessModifier));
+     //  }
+     //  if(buttonTag.equals(INCREASE_ARMORSAVE))
+     //  {
+     //      unitToModify.armorSaveModifier+=1;
+     //      ((TextView)parent.findViewById(R.id.ArmorSaveIndicator)).setText(Integer.toString(unitToModify.armorSaveModifier));
+     //  }
+     //  if(buttonTag.equals(INCREASE_INVUL))
+     //  {
+     //      unitToModify.invulnerableSaveModifier+=1;
+     //      ((TextView)parent.findViewById(R.id.InvulIndicator)).setText(Integer.toString(unitToModify.invulnerableSaveModifier));
+     //  }
+     //  if(buttonTag.equals(INCREASE_ATTACKS))
+     //  {
+     //      unitToModify.attacksModifier+=1;
+     //      ((TextView)parent.findViewById(R.id.AttacksIndicator)).setText(Integer.toString(unitToModify.attacksModifier));
+     //  }
 
     }
 
