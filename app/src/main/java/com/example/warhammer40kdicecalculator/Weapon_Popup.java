@@ -1,20 +1,12 @@
 package com.example.warhammer40kdicecalculator;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.SearchView;
 
-import java.util.ArrayList;
+import com.example.warhammer40kdicecalculator.Abilities.Ability;
+
 import java.util.HashMap;
 
 public class Weapon_Popup extends AppCompatActivity {

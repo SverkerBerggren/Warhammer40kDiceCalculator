@@ -1,8 +1,11 @@
-package com.example.warhammer40kdicecalculator;
+package com.example.warhammer40kdicecalculator.DatasheetModeling;
+
+import com.example.warhammer40kdicecalculator.Abilities.Ability;
+import com.example.warhammer40kdicecalculator.DamageAmount;
 
 import java.util.ArrayList;
 
-public class RangedWeapon {
+public class RangedWeapon implements AbilityHolder {
     public String name;
     public DamageAmount damageAmount;
     public int ap;

@@ -1,6 +1,6 @@
 package com.example.warhammer40kdicecalculator;
 
-import com.google.gson.InstanceCreator;
+import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;

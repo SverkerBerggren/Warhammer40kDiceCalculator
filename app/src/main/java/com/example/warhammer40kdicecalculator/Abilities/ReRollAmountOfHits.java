@@ -1,11 +1,10 @@
-package com.example.warhammer40kdicecalculator;
+package com.example.warhammer40kdicecalculator.Abilities;
 
-import androidx.annotation.NonNull;
+import com.example.warhammer40kdicecalculator.DiceResult;
+import com.example.warhammer40kdicecalculator.MetricsOfAttacking;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-
-import javax.xml.namespace.QName;
 
 public class ReRollAmountOfHits extends Ability {
 

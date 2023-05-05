@@ -1,4 +1,4 @@
-package com.example.warhammer40kdicecalculator;
+package com.example.warhammer40kdicecalculator.DatasheetModeling;
 
 public class RangedAttackAmount {
 
@@ -11,7 +11,7 @@ public class RangedAttackAmount {
     public  int numberOfD3;
 
 
-    RangedAttackAmount(int rawNumberOfAttacks, int numberOfD3, int numberOfD6)
+    public RangedAttackAmount(int rawNumberOfAttacks, int numberOfD3, int numberOfD6)
     {
         this.rawNumberOfAttacks = rawNumberOfAttacks;
         this.numberOfD3 = numberOfD3;

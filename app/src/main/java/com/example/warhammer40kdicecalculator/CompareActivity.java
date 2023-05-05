@@ -1,5 +1,6 @@
 package com.example.warhammer40kdicecalculator;
 
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -9,7 +10,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +22,12 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 
+import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedWeapon;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
+import com.example.warhammer40kdicecalculator.Identifiers.ModelIdentifier;
+import com.example.warhammer40kdicecalculator.Identifiers.UnitIdentifier;
 import com.jjoe64.graphview.GraphView;
 
 import java.util.ArrayList;
@@ -126,6 +132,8 @@ public class CompareActivity extends AppCompatActivity {
         {
 
 
+            UnitIdentifier unitIdentifier = new UnitIdentifier("friendly",null,i,matchup.name);
+
 
 
             verticalLayout = (ViewGroup) inflater.inflate(R.layout.unitviewprefab, ((ViewGroup)findViewById(R.id.VerticalLayoutFriendlyArmy)));
@@ -135,7 +143,7 @@ public class CompareActivity extends AppCompatActivity {
 
             instaniateUnitButton(verticalLayout.getChildAt(i +1),matchup.friendlyArmy.units.get(i),i, FRIENDLY);
 
-            CreateUnitAbilites(matchup.friendlyArmy.units.get(i),findViewById(R.id.VerticalLayoutFriendlyArmy),inflater);
+            CreateUnitAbilites(matchup.friendlyArmy.units.get(i),findViewById(R.id.VerticalLayoutFriendlyArmy),inflater, unitIdentifier);
             //Log.d("grejer",""+viewToModify.getParent().toString());
 
             CreateModel(verticalLayout.getChildAt(i +1),matchup.friendlyArmy.units.get(i),i,FRIENDLY,inflater);
@@ -173,7 +181,7 @@ public class CompareActivity extends AppCompatActivity {
 
     }
 
-    private void CreateUnitAbilites(Unit unit, LinearLayout linearLayout, LayoutInflater inflater)
+    private void CreateUnitAbilites(Unit unit, LinearLayout linearLayout, LayoutInflater inflater, UnitIdentifier unitIdentifier)
     {
         TableLayout unitAbilitLayout = linearLayout.findViewWithTag("AbilityLayoutUnit");
         Context context = getBaseContext();
@@ -193,8 +201,76 @@ public class CompareActivity extends AppCompatActivity {
             tableRow.addView(abilityTextView);
             unitAbilitLayout.addView(tableRow);
         }
+
+        ImageButton editAbilities = findViewById(R.id.EditUnitAbilities);
+
+        editAbilities.setTag(R.string.UNIT_IDENTIFIER,unitIdentifier);
+
+        editAbilities.setOnClickListener(new OnClickListenerEditAbilites(unit));
+
+        editAbilities.setId(R.id.noId);
+
         unitAbilitLayout.setTag("");
     }
+
+
+    private class OnClickListenerEditAbilites implements View.OnClickListener
+    {
+        private Unit unit;
+        private Model model;
+        private Army army;
+
+
+
+        public OnClickListenerEditAbilites(Army army)
+        {
+             this.army = army;
+        }
+        public OnClickListenerEditAbilites(Model model)
+        {
+            this.model = model;
+        }
+        public OnClickListenerEditAbilites(Unit unit)
+        {
+            this.unit = unit;
+        }
+
+
+        @Override
+        public void onClick(View view) {
+
+            if(unit != null)
+            {
+                StartEditAbilites(view, unit);
+            }
+        }
+    }
+
+    public void StartEditAbilites(View view,Army army )
+    {
+
+    }
+    public void StartEditAbilites(View view,Model model )
+    {
+
+    }
+    public void StartEditAbilites(View view, Unit unit )
+    {
+        Intent intent = new Intent(this, Activity_Edit_Abilities.class);
+       // Identifier
+        UnitIdentifier identifier = (UnitIdentifier)view.getTag(R.string.UNIT_IDENTIFIER);
+
+
+       intent.putExtra(""+R.string.UNIT_ALLEGIANCE,identifier.allegiance);
+       intent.putExtra(""+R.string.UNIT_NUMBER,identifier.index);
+       intent.putExtra("matchupName",identifier.matchupName);
+
+
+
+       startActivity(intent);
+
+    }
+
 
     private void CreateModel(View buttonToModify, Unit unit, int unitNumber,String friendlyArmy , LayoutInflater inflater)
     {

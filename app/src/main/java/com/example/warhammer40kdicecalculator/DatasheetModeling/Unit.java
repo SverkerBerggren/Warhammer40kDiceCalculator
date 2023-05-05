@@ -1,8 +1,10 @@
-package com.example.warhammer40kdicecalculator;
+package com.example.warhammer40kdicecalculator.DatasheetModeling;
+
+import com.example.warhammer40kdicecalculator.Abilities.Ability;
 
 import java.util.ArrayList;
 
-public class Unit {
+public class Unit implements AbilityHolder{
 
     public String unitName = "";
 

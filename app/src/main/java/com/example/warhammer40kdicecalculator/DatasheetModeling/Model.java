@@ -1,11 +1,11 @@
-package com.example.warhammer40kdicecalculator;
+package com.example.warhammer40kdicecalculator.DatasheetModeling;
 
-import androidx.annotation.NonNull;
+import com.example.warhammer40kdicecalculator.Abilities.Ability;
+import com.example.warhammer40kdicecalculator.MeleeWeapons;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-public class Model {
+public class Model implements AbilityHolder{
     //public int ap;
     public String name;
     public int toughness;

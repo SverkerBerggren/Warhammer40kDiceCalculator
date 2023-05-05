@@ -18,10 +18,14 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
 
+import com.example.warhammer40kdicecalculator.Abilities.Ability;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedWeapon;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class EditWeaponActivity extends AppCompatActivity {
+public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHolder{
     private LayoutInflater inflater;
     private ImageButton abilityPopupButton;
     private boolean inflatedPopup= false;
@@ -39,6 +43,8 @@ public class EditWeaponActivity extends AppCompatActivity {
     private  FileHandler fileHandler;
     private  Matchup matchup;
     private Context context;
+
+    private EditWeaponActivity abilityHolder = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +88,11 @@ public class EditWeaponActivity extends AppCompatActivity {
             linearLayout.addView(weaponButton);
 
         }
+    }
+
+    @Override
+    public void AbilityAdded(Ability ability, AbilityHolder abilityHolder) {
+
     }
 
     private class OnClickListenerWeapon implements View.OnClickListener {
@@ -254,11 +265,12 @@ public class EditWeaponActivity extends AppCompatActivity {
             this.weapon = weapon;
             this.context = context;
         }
+
         @Override
         public void onClick(View view) {
             MainActivity mainActivity = new MainActivity();
 
-            mainActivity.SearchWeapon(weapon, matchup, findViewById(R.id.WeaponConstraintLayout), context);
+            mainActivity.SearchAbility(weapon, matchup, findViewById(R.id.WeaponConstraintLayout), context,abilityHolder);
         }
     }
 }

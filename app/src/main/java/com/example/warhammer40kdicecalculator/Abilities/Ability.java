@@ -1,12 +1,15 @@
-package com.example.warhammer40kdicecalculator;
+package com.example.warhammer40kdicecalculator.Abilities;
 
-import com.google.gson.InstanceCreator;
+import com.example.warhammer40kdicecalculator.DiceResult;
+import com.example.warhammer40kdicecalculator.MetricsOfAttacking;
 
 import java.util.List;
 
 public abstract class Ability  {
 
     public String name;
+    public boolean active = true;
+
 
     public abstract void hitRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking);
 

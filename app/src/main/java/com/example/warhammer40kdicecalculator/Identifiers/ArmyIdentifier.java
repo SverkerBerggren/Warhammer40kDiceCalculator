@@ -1,4 +1,6 @@
-package com.example.warhammer40kdicecalculator;
+package com.example.warhammer40kdicecalculator.Identifiers;
+
+import com.example.warhammer40kdicecalculator.R;
 
 public class ArmyIdentifier extends Identifier{
     public static int ARMY_IDENTIFIER = R.string.ARMY_IDENTIFIER;

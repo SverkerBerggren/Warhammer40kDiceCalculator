@@ -486,6 +486,15 @@
             app:layout_constraintTop_toBottomOf="@+id/ModelsLayout"
             app:layout_constraintVertical_bias="0.0">
 
+            <ImageButton
+                android:id="@+id/EditUnitAbilities"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
+                app:srcCompat="@android:drawable/ic_menu_edit" />
+
             <Button
                 android:id="@+id/abilitiesTopButton"
                 android:layout_width="wrap_content"
@@ -499,10 +508,9 @@
                 app:layout_constraintVertical_bias="0.0" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="20dp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/abilitiesTopButton">

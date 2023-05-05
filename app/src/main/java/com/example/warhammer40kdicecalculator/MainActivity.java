@@ -10,6 +10,7 @@ import android.os.Bundle;
 
 import android.os.Handler;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,18 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.warhammer40kdicecalculator.Abilities.Ability;
+import com.example.warhammer40kdicecalculator.Abilities.HammerOfTheEmperor;
+import com.example.warhammer40kdicecalculator.Abilities.ReRollAmountOfHits;
+import com.example.warhammer40kdicecalculator.Abilities.ReRollOnes;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedAttackAmount;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedWeapon;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
+import com.example.warhammer40kdicecalculator.Identifiers.Identifier;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -488,7 +501,7 @@ public class  MainActivity extends AppCompatActivity {
     }
 
 
-    public void SearchWeapon(RangedWeapon weapon, Matchup matchup, ViewGroup baseView, Context context)
+    public void SearchAbility(AbilityHolder abilityHolder, Matchup matchup, ViewGroup baseView, Context context, AbilityUIHolder abilityUIHolder)
     {
         InflateSearch(baseView,context);
         SearchView searchView = baseView.findViewById(R.id.searchView);
@@ -504,7 +517,7 @@ public class  MainActivity extends AppCompatActivity {
 
         listView.setAdapter(arrayAdapter);
 
-        listView.setOnItemClickListener(new OnClickAbilityItem(weapon,baseView));
+        listView.setOnItemClickListener(new OnClickAbilityItem(abilityHolder,baseView,matchup,context, abilityUIHolder));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -516,8 +529,6 @@ public class  MainActivity extends AppCompatActivity {
                 arrayAdapter.getFilter().filter(s);
                 return false;
             }
-
-
         });
 
 
@@ -532,29 +543,34 @@ public class  MainActivity extends AppCompatActivity {
         private Model model;
         private RangedWeapon weapon;
         private ViewGroup baseView;
+        private Matchup matchup;
+        private Context context;
+        private AbilityUIHolder abilityUIHolder;
 
+        public OnClickAbilityItem(AbilityHolder abilityHolder, ViewGroup baseView, Matchup matchup, Context context, AbilityUIHolder abilityUIHolder)
+        {
+            this.baseView = baseView;
+            this.matchup = matchup;
+            this.context = context;
+            this.abilityUIHolder = abilityUIHolder;
+            if(abilityHolder instanceof Army)
+            {
+                army = (Army) abilityHolder;
+            }
+            if(abilityHolder instanceof Model)
+            {
+                model = (Model) abilityHolder;
+            }
+            if(abilityHolder instanceof Unit)
+            {
+                unit = (Unit) abilityHolder;
+            }
+            if(abilityHolder instanceof RangedWeapon)
+            {
+                weapon = (RangedWeapon) abilityHolder;
+            }
+        }
 
-
-        public OnClickAbilityItem(Army army, ViewGroup baseView)
-        {
-            this.army = army;
-            this.baseView = baseView;
-        }
-        public OnClickAbilityItem(Unit unit,ViewGroup baseView)
-        {
-            this.unit = unit;
-            this.baseView = baseView;
-        }
-        public OnClickAbilityItem(Model model,ViewGroup baseView)
-        {
-            this.model = model;
-            this.baseView = baseView;
-        }
-        public OnClickAbilityItem(RangedWeapon weapon,ViewGroup baseView)
-        {
-            this.weapon = weapon;
-            this.baseView = baseView;
-        }
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
             String item = ((TextView)view).getText().toString();
@@ -567,6 +583,8 @@ public class  MainActivity extends AppCompatActivity {
                 {
                     weapon.weaponRules.add(ability);
                 }
+                abilityUIHolder.AbilityAdded(ability,weapon);
+
             }
             if (model != null)
             {
@@ -574,6 +592,8 @@ public class  MainActivity extends AppCompatActivity {
                 {
                     model.listOfAbilites.add(ability);
                 }
+                abilityUIHolder.AbilityAdded(ability,model);
+
             }
             if (unit != null)
             {
@@ -581,6 +601,8 @@ public class  MainActivity extends AppCompatActivity {
                 {
                     unit.listOfAbilitys.add(ability);
                 }
+
+                abilityUIHolder.AbilityAdded(ability,unit);
             }
             if (army != null)
             {
@@ -588,11 +610,18 @@ public class  MainActivity extends AppCompatActivity {
                 {
                     army.abilities.add(ability);
                 }
+                abilityUIHolder.AbilityAdded(ability,army);
+
             }
 
 
             View searchLayout = baseView.findViewById(R.id.SearchLayout);
             searchLayout.setVisibility(View.GONE);
+
+
+
+            FileHandler fileHandler = new FileHandler(context);
+            fileHandler.saveMatchup(matchup);
         }
     }
 }
