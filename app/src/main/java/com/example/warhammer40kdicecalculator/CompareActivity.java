@@ -139,9 +139,7 @@ public class CompareActivity extends AppCompatActivity {
             verticalLayout = (ViewGroup) inflater.inflate(R.layout.unitviewprefab, ((ViewGroup)findViewById(R.id.VerticalLayoutFriendlyArmy)));
 
 
-
-
-            instaniateUnitButton(verticalLayout.getChildAt(i +1),matchup.friendlyArmy.units.get(i),i, FRIENDLY);
+            instaniateUnitButton(verticalLayout.getChildAt(i +1),matchup.friendlyArmy.units.get(i),unitIdentifier);
 
             CreateUnitAbilites(matchup.friendlyArmy.units.get(i),findViewById(R.id.VerticalLayoutFriendlyArmy),inflater, unitIdentifier);
             //Log.d("grejer",""+viewToModify.getParent().toString());
@@ -457,7 +455,7 @@ public class CompareActivity extends AppCompatActivity {
 
     }
 
-    private  void instaniateUnitButton(View buttonToModify, Unit unit, int unitNumber, String friendlyOrEnemy)
+    private  void instaniateUnitButton(View buttonToModify, Unit unit, UnitIdentifier unitId)
     {
         Button topButton = (Button)buttonToModify.findViewById(R.id.UnitTopButton);
 
@@ -500,75 +498,75 @@ public class CompareActivity extends AppCompatActivity {
 
         int test = R.id.WeaponSkillInd;
 
-        decreaseWeaponSkill.setTag(UNIT_ALLEGIANCE, friendlyOrEnemy);
+        decreaseWeaponSkill.setTag(UNIT_ALLEGIANCE, unitId.allegiance);
         decreaseWeaponSkill.setTag(UNIT_MODIFIER, DECREASE_WEAPONSKILL);
-        decreaseWeaponSkill.setTag(UNIT_NUMBER, unitNumber);
+        decreaseWeaponSkill.setTag(UNIT_NUMBER, unitId.index);
 
 
-        decreaseBallisticSkill.setTag(UNIT_ALLEGIANCE, friendlyOrEnemy);
+        decreaseBallisticSkill.setTag(UNIT_ALLEGIANCE, unitId.allegiance);
         decreaseBallisticSkill.setTag(UNIT_MODIFIER, DECREASE_BALLISTICSKILL);
-        decreaseBallisticSkill.setTag(UNIT_NUMBER, unitNumber);
+        decreaseBallisticSkill.setTag(UNIT_NUMBER, unitId.index);
 
 
-        decreaseAttacks.setTag(UNIT_ALLEGIANCE, friendlyOrEnemy);
-        decreaseAttacks.setTag(UNIT_MODIFIER, DECREASE_ATTACKS);
-        decreaseAttacks.setTag(UNIT_NUMBER, unitNumber);
+   //    decreaseAttacks.setTag(UNIT_ALLEGIANCE, friendlyOrEnemy);
+   //    decreaseAttacks.setTag(UNIT_MODIFIER, DECREASE_ATTACKS);
+   //    decreaseAttacks.setTag(UNIT_NUMBER, unitNumber);
 
 
-        decreaseArmorSave.setTag(UNIT_ALLEGIANCE, friendlyOrEnemy);
-        decreaseArmorSave.setTag(UNIT_MODIFIER, DECREASE_ARMORSAVE);
-        decreaseArmorSave.setTag(UNIT_NUMBER, unitNumber);
+   //    decreaseArmorSave.setTag(UNIT_ALLEGIANCE, friendlyOrEnemy);
+   //    decreaseArmorSave.setTag(UNIT_MODIFIER, DECREASE_ARMORSAVE);
+   //    decreaseArmorSave.setTag(UNIT_NUMBER, unitNumber);
 
 
-        decreaseInvul.setTag(UNIT_ALLEGIANCE, friendlyOrEnemy);
-        decreaseInvul.setTag(UNIT_MODIFIER, DECREASE_INVUL);
-        decreaseInvul.setTag(UNIT_NUMBER, unitNumber);
+   //    decreaseInvul.setTag(UNIT_ALLEGIANCE, friendlyOrEnemy);
+   //    decreaseInvul.setTag(UNIT_MODIFIER, DECREASE_INVUL);
+   //    decreaseInvul.setTag(UNIT_NUMBER, unitNumber);
 
 
-        decreaseToughness.setTag(UNIT_ALLEGIANCE, friendlyOrEnemy);
-        decreaseToughness.setTag(UNIT_MODIFIER, DECREASE_TOUGHNESS);
-        decreaseToughness.setTag(UNIT_NUMBER, unitNumber);
+   //    decreaseToughness.setTag(UNIT_ALLEGIANCE, friendlyOrEnemy);
+   //    decreaseToughness.setTag(UNIT_MODIFIER, DECREASE_TOUGHNESS);
+   //    decreaseToughness.setTag(UNIT_NUMBER, unitNumber);
 
 
-        decreaseStrength.setTag(UNIT_ALLEGIANCE, friendlyOrEnemy);
-        decreaseStrength.setTag(UNIT_MODIFIER, DECREASE_STRENGTH);
-        decreaseStrength.setTag(UNIT_NUMBER, unitNumber);
+   //    decreaseStrength.setTag(UNIT_ALLEGIANCE, friendlyOrEnemy);
+   //    decreaseStrength.setTag(UNIT_MODIFIER, DECREASE_STRENGTH);
+   //    decreaseStrength.setTag(UNIT_NUMBER, unitNumber);
 
 
 
-        increaseWeaponSkill.setTag(UNIT_ALLEGIANCE, friendlyOrEnemy);
-        increaseWeaponSkill.setTag(UNIT_MODIFIER, INCREASE_WEAPONSKILL);
-        increaseWeaponSkill.setTag(UNIT_NUMBER, unitNumber);
+   //    increaseWeaponSkill.setTag(UNIT_ALLEGIANCE, friendlyOrEnemy);
+   //    increaseWeaponSkill.setTag(UNIT_MODIFIER, INCREASE_WEAPONSKILL);
+   //    increaseWeaponSkill.setTag(UNIT_NUMBER, unitNumber);
 
 
-        increaseBallisticSkill.setTag(UNIT_ALLEGIANCE, friendlyOrEnemy);
-        increaseBallisticSkill.setTag(UNIT_MODIFIER, INCREASE_BALLISTICSKILL);
-        increaseBallisticSkill.setTag(UNIT_NUMBER, unitNumber);
+   //    increaseBallisticSkill.setTag(UNIT_ALLEGIANCE, friendlyOrEnemy);
+   //    increaseBallisticSkill.setTag(UNIT_MODIFIER, INCREASE_BALLISTICSKILL);
+   //    increaseBallisticSkill.setTag(UNIT_NUMBER, unitNumber);
 
 
-        increaseAttacks.setTag(UNIT_ALLEGIANCE, friendlyOrEnemy);
-        increaseAttacks.setTag(UNIT_MODIFIER, INCREASE_ATTACKS);
-        increaseAttacks.setTag(UNIT_NUMBER, unitNumber);
+   //    increaseAttacks.setTag(UNIT_ALLEGIANCE, friendlyOrEnemy);
+   //    increaseAttacks.setTag(UNIT_MODIFIER, INCREASE_ATTACKS);
+   //    increaseAttacks.setTag(UNIT_NUMBER, unitNumber);
 
 
-        increaseArmorSave.setTag(UNIT_ALLEGIANCE, friendlyOrEnemy);
-        increaseArmorSave.setTag(UNIT_MODIFIER, INCREASE_ARMORSAVE);
-        increaseArmorSave.setTag(UNIT_NUMBER, unitNumber);
+   //    increaseArmorSave.setTag(UNIT_ALLEGIANCE, friendlyOrEnemy);
+   //    increaseArmorSave.setTag(UNIT_MODIFIER, INCREASE_ARMORSAVE);
+   //    increaseArmorSave.setTag(UNIT_NUMBER, unitNumber);
 
 
-        increaseInvul.setTag(UNIT_ALLEGIANCE, friendlyOrEnemy);
-        increaseInvul.setTag(UNIT_MODIFIER, INCREASE_INVUL);
-        increaseInvul.setTag(UNIT_NUMBER, unitNumber);
+   //    increaseInvul.setTag(UNIT_ALLEGIANCE, friendlyOrEnemy);
+   //    increaseInvul.setTag(UNIT_MODIFIER, INCREASE_INVUL);
+   //    increaseInvul.setTag(UNIT_NUMBER, unitNumber);
 
 
-        increaseToughness.setTag(UNIT_ALLEGIANCE, friendlyOrEnemy);
-        increaseToughness.setTag(UNIT_MODIFIER, INCREASE_TOUGHNESS);
-        increaseToughness.setTag(UNIT_NUMBER, unitNumber);
+   //    increaseToughness.setTag(UNIT_ALLEGIANCE, friendlyOrEnemy);
+   //    increaseToughness.setTag(UNIT_MODIFIER, INCREASE_TOUGHNESS);
+   //    increaseToughness.setTag(UNIT_NUMBER, unitNumber);
 
 
-        increaseStrength.setTag(UNIT_ALLEGIANCE, friendlyOrEnemy);
-        increaseStrength.setTag(UNIT_MODIFIER, INCREASE_STRENGTH);
-        increaseStrength.setTag(UNIT_NUMBER, unitNumber);
+   //    increaseStrength.setTag(UNIT_ALLEGIANCE, friendlyOrEnemy);
+   //    increaseStrength.setTag(UNIT_MODIFIER, INCREASE_STRENGTH);
+   //    increaseStrength.setTag(UNIT_NUMBER, unitNumber);
 
 
 
