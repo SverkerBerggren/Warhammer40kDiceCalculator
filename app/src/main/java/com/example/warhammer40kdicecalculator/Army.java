@@ -18,6 +18,12 @@ public class Army {
     public int weaponSkillModifier;
     public int attacksModifier;
 
+
+    public Army(){
+        units = new ArrayList<>();
+        abilities = new ArrayList<>();
+    }
+
     public  Army( String  name,int toughnessModifier, int strengthModifier, int armorSaveModifier,int invulnerableSaveModifier,int woundsModifier, int ballisticSkillModifier, int weaponSkillModifier,
                   int attacksModifier, ArrayList<Unit> units,ArrayList<Ability> abilities )
     {

@@ -4,12 +4,15 @@ public class DamageAmount {
 
     int rawDamageAmount = 0;
 
-    int d3DamageAmount;
-    int d6DamageAmount;
+    int d3DamageAmount = 0;
+    int d6DamageAmount = 0;
 
+    public DamageAmount()
+    {
 
+    }
 
-    DamageAmount(int rawDamageAmount, int d3DamageAmount, int d6DamageAmount)
+    public DamageAmount(int rawDamageAmount, int d3DamageAmount, int d6DamageAmount)
     {
         this.rawDamageAmount = rawDamageAmount;
         this.d3DamageAmount = d3DamageAmount;
@@ -18,7 +21,7 @@ public class DamageAmount {
 
     }
 
-    DamageAmount(DamageAmount other)
+    public DamageAmount(DamageAmount other)
     {
         this.rawDamageAmount = other.rawDamageAmount;
         this.d3DamageAmount = other.d3DamageAmount;

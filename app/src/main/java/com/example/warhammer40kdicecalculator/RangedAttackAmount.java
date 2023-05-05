@@ -10,7 +10,13 @@ public class RangedAttackAmount {
 
     public  int numberOfD3;
 
+    public  RangedAttackAmount(DamageAmount Damage)
+    {
 
+        rawNumberOfAttacks = Damage.rawDamageAmount;
+        numberOfD3 = Damage.d3DamageAmount;
+        numberOfD6 = Damage.d6DamageAmount;
+    }
     RangedAttackAmount(int rawNumberOfAttacks, int numberOfD3, int numberOfD6)
     {
         this.rawNumberOfAttacks = rawNumberOfAttacks;

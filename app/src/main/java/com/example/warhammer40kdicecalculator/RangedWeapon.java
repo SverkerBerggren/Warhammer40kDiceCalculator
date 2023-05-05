@@ -10,6 +10,10 @@ public class RangedWeapon {
     public RangedAttackAmount amountOfAttacks;
     public ArrayList<Ability> weaponRules = new ArrayList<>();
 
+    public RangedWeapon()
+    {
+
+    }
 
     public RangedWeapon(int strength, int ap, DamageAmount damageAmount, RangedAttackAmount amountOfAttacks)
     {
