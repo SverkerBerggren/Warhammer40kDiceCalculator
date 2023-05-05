@@ -185,13 +185,23 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
 
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
-            if(resultCode == RESULT_OK) {
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
 
-            }
-        }
+        Intent data = new Intent();
+        data.putExtra("hej hej", "hej");
+
+        setResult(RESULT_OK);
     }
+
+    //  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+  //      super.onActivityResult(requestCode, resultCode, data);
+  //      if (requestCode == 1) {
+  //          if(resultCode == RESULT_OK) {
+//
+  //          }
+  //      }
+  //  }
 
 }

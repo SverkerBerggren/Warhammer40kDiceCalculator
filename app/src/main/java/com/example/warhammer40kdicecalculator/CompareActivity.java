@@ -1,10 +1,16 @@
 package com.example.warhammer40kdicecalculator;
 
+import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.ActivityResultRegistry;
+import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityOptionsCompat;
 
 import android.content.Context;
 import android.content.Intent;
@@ -84,7 +90,7 @@ public class CompareActivity extends AppCompatActivity {
     private EditText InvSaveView;
 
 
-
+    ActivityResultLauncher<Intent>  activityResultLauncher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,17 +99,24 @@ public class CompareActivity extends AppCompatActivity {
         inflater =  getLayoutInflater();
         fileHandler = new FileHandler(getBaseContext());
         matchup = fileHandler.getMatchup( getIntent().getStringExtra("SourceFile"));
-
-        ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
-                new ActivityResultCallback<Uri>() {
-                    @Override
-                    public void onActivityResult(Uri uri) {
-                        // Handle the returned Uri
-                    }
-                });
+        activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),new UpdateUiActivityCallback());
 
         createArmies(matchup,inflater);
     }
+
+
+    private class UpdateUiActivityCallback implements ActivityResultCallback<ActivityResult>
+    {
+
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            int resultCode = result.getResultCode();
+            Intent data = result.getData();
+
+            Log.d("hej","it do be callbacking");
+        }
+    }
+
 
     private HashMap<String, DataSheet> datasheetMap = new HashMap<>();
 
@@ -247,8 +260,9 @@ public class CompareActivity extends AppCompatActivity {
        intent.putExtra("matchupName",identifier.matchupName);
 
 
+       activityResultLauncher.launch(intent);
 
-       startActivity(intent);
+       //startActivity(intent);
 
     }
 
