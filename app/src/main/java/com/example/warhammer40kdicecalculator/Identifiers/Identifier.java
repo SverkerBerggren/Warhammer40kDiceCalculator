@@ -1,7 +1,6 @@
 package com.example.warhammer40kdicecalculator.Identifiers;
 
-public class Identifier {
+public abstract class Identifier {
 
-
-
+    public abstract String toString();
 }

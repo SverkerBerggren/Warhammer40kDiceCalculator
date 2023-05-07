@@ -9,9 +9,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.warhammer40kdicecalculator.Identifiers.Identifier;
-import com.example.warhammer40kdicecalculator.Identifiers.UIUpdateInformation;
+import com.example.warhammer40kdicecalculator.Identifiers.UIIdentifier;
 
-public class ContractUpdateCompareUI extends ActivityResultContract<Identifier, UIUpdateInformation> {
+public class ContractUpdateCompareUI extends ActivityResultContract<Identifier, UIIdentifier> {
 
 
 
@@ -23,7 +23,7 @@ public class ContractUpdateCompareUI extends ActivityResultContract<Identifier, 
     }
 
     @Override
-    public UIUpdateInformation parseResult(int resultCode, @Nullable Intent result) {
+    public UIIdentifier parseResult(int resultCode, @Nullable Intent result) {
         if (resultCode != Activity.RESULT_OK || result == null) {
 
 

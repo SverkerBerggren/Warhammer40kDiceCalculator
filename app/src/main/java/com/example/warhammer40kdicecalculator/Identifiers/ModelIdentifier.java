@@ -2,6 +2,8 @@ package com.example.warhammer40kdicecalculator.Identifiers;
 
 import com.example.warhammer40kdicecalculator.R;
 
+import java.util.Objects;
+
 public class ModelIdentifier extends Identifier{
 
 
@@ -22,5 +24,30 @@ public class ModelIdentifier extends Identifier{
         this.matchupName = matchupName;
 
 
+    }
+
+    @Override
+    public String toString() {
+        return "ModelIdentifier{" +
+                "allegiance='" + allegiance + '\'' +
+                ", tag='" + tag + '\'' +
+                ", indexUnit=" + indexUnit +
+                ", indexModel=" + indexModel +
+                ", matchupName='" + matchupName + '\'' +
+                '}';
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ModelIdentifier that = (ModelIdentifier) o;
+        return indexUnit == that.indexUnit && indexModel == that.indexModel && Objects.equals(allegiance, that.allegiance) && Objects.equals(tag, that.tag) && Objects.equals(matchupName, that.matchupName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(allegiance, tag, indexUnit, indexModel, matchupName);
     }
 }
