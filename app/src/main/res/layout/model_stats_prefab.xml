@@ -285,61 +285,6 @@
 
             </TableRow>
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#DFDADA">
-
-                <TextView
-                    android:id="@+id/WeaponName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textSize="10sp" />
-
-                <TextView
-                    android:id="@+id/WeaponAbilities"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textSize="10sp" />
-
-                <TextView
-                    android:id="@+id/WeaponAttacks"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textSize="10sp" />
-
-                <TextView
-                    android:id="@+id/WeaponStrength"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textSize="10sp" />
-
-                <TextView
-                    android:id="@+id/WeaponAp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textSize="10sp" />
-
-                <TextView
-                    android:id="@+id/WeaponDamage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textSize="10sp" />
-
-            </TableRow>
-
         </TableLayout>
 
         <TableLayout

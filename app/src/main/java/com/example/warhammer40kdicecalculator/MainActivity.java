@@ -369,12 +369,7 @@ public class  MainActivity extends AppCompatActivity {
         startActivity(intenten);
     }
 
-    public void OpenUnitSelection(View v)
-    {
-        Intent intenten = new Intent(this, UnitSelection.class);
 
-        startActivity(intenten);
-    }
 
     public void CreateNewMatchup(View v)
     {
@@ -582,8 +577,9 @@ public class  MainActivity extends AppCompatActivity {
                 if (!weapon.weaponRules.contains(ability))
                 {
                     weapon.weaponRules.add(ability);
+                    abilityUIHolder.AbilityAdded(ability,weapon);
                 }
-                abilityUIHolder.AbilityAdded(ability,weapon);
+
 
             }
             if (model != null)
@@ -591,8 +587,9 @@ public class  MainActivity extends AppCompatActivity {
                 if (!model.listOfAbilites.contains(ability))
                 {
                     model.listOfAbilites.add(ability);
+                    abilityUIHolder.AbilityAdded(ability,model);
                 }
-                abilityUIHolder.AbilityAdded(ability,model);
+
 
             }
             if (unit != null)
@@ -600,17 +597,19 @@ public class  MainActivity extends AppCompatActivity {
                 if (!unit.listOfAbilitys.contains(ability))
                 {
                     unit.listOfAbilitys.add(ability);
+                    abilityUIHolder.AbilityAdded(ability,unit);
                 }
 
-                abilityUIHolder.AbilityAdded(ability,unit);
+
             }
             if (army != null)
             {
                 if (!army.abilities.contains(ability))
                 {
                     army.abilities.add(ability);
+                    abilityUIHolder.AbilityAdded(ability,army);
                 }
-                abilityUIHolder.AbilityAdded(ability,army);
+
 
             }
 
