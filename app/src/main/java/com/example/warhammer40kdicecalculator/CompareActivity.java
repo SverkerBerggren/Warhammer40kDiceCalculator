@@ -214,17 +214,17 @@ public class CompareActivity extends AppCompatActivity {
         {
             UnitIdentifier unitIdentifier = new UnitIdentifier("friendly",null,i,matchup.name);
             verticalLayout = (ViewGroup) inflater.inflate(R.layout.unitviewprefab, ((ViewGroup)findViewById(R.id.VerticalLayoutFriendlyArmy)));
-            instaniateUnitButton(verticalLayout.getChildAt(i +1),matchup.friendlyArmy.units.get(i),unitIdentifier);
+            instaniateUnitButton(verticalLayout.getChildAt(verticalLayout.getChildCount()-1),matchup.friendlyArmy.units.get(i),unitIdentifier);
             CreateUnitAbilites(matchup.friendlyArmy.units.get(i),findViewById(R.id.VerticalLayoutFriendlyArmy),inflater, unitIdentifier);
-            CreateModel(verticalLayout.getChildAt(i +1),matchup.friendlyArmy.units.get(i),i,FRIENDLY,inflater);
+            CreateModel(verticalLayout.getChildAt(verticalLayout.getChildCount()-1),matchup.friendlyArmy.units.get(i),i,FRIENDLY,inflater);
         }
         for(int i = 0; i < matchup.enemyArmy.units.size();i++)
         {
             UnitIdentifier unitIdentifier = new UnitIdentifier("enemy",null,i,matchup.name);
             verticalLayout = (ViewGroup) inflater.inflate(R.layout.unitviewprefab, ((ViewGroup)findViewById(R.id.VerticalLayoutEnemyArmy)));
-            instaniateUnitButton(verticalLayout.getChildAt(i +1),matchup.enemyArmy.units.get(i),unitIdentifier);
+            instaniateUnitButton(verticalLayout.getChildAt(verticalLayout.getChildCount()-1),matchup.enemyArmy.units.get(i),unitIdentifier);
             CreateUnitAbilites(matchup.enemyArmy.units.get(i),findViewById(R.id.VerticalLayoutEnemyArmy),inflater, unitIdentifier);
-            CreateModel(verticalLayout.getChildAt(i +1),matchup.enemyArmy.units.get(i),i,ENEMY,inflater);
+            CreateModel(verticalLayout.getChildAt(verticalLayout.getChildCount()-1),matchup.enemyArmy.units.get(i),i,ENEMY,inflater);
         }
 
     }
