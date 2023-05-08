@@ -9,8 +9,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="30dp"
         android:background="#B83D3D"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.9"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,7 +29,8 @@
 
         <TableLayout
             android:layout_width="300dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
             android:layout_marginBottom="200dp"
             android:stretchColumns="*"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -74,8 +75,11 @@
                     android:id="@+id/AddWeaponAmountD3"
                     android:layout_width="125dp"
                     android:layout_height="48dp"
+                    android:digits="1234567890"
+                    android:ems="10"
                     android:hint="0"
                     android:inputType="number"
+                    android:maxLength="2"
                     android:textAlignment="center" />
             </TableRow>
 
@@ -94,9 +98,11 @@
                     android:id="@+id/AddWeaponAmountD6"
                     android:layout_width="125dp"
                     android:layout_height="48dp"
+                    android:digits="1234567890"
                     android:ems="10"
                     android:hint="0"
                     android:inputType="number"
+                    android:maxLength="2"
                     android:textAlignment="center" />
             </TableRow>
 
@@ -115,9 +121,11 @@
                     android:id="@+id/AddWeaponAmount"
                     android:layout_width="125dp"
                     android:layout_height="48dp"
+                    android:digits="1234567890"
                     android:ems="10"
                     android:hint="0"
                     android:inputType="number"
+                    android:maxLength="2"
                     android:textAlignment="center" />
             </TableRow>
 
@@ -136,9 +144,11 @@
                     android:id="@+id/AddWeaponDamageD3"
                     android:layout_width="125dp"
                     android:layout_height="48dp"
+                    android:digits="1234567890"
                     android:ems="10"
                     android:hint="0"
                     android:inputType="number"
+                    android:maxLength="2"
                     android:textAlignment="center" />
             </TableRow>
 
@@ -157,9 +167,11 @@
                     android:id="@+id/AddWeaponDamageD6"
                     android:layout_width="125dp"
                     android:layout_height="48dp"
+                    android:digits="1234567890"
                     android:ems="10"
                     android:hint="0"
                     android:inputType="number"
+                    android:maxLength="2"
                     android:textAlignment="center" />
             </TableRow>
 
@@ -178,9 +190,11 @@
                     android:id="@+id/AddWeaponDamage"
                     android:layout_width="125dp"
                     android:layout_height="48dp"
+                    android:digits="1234567890"
                     android:ems="10"
                     android:hint="0"
                     android:inputType="number"
+                    android:maxLength="2"
                     android:textAlignment="center" />
             </TableRow>
 
@@ -199,9 +213,11 @@
                     android:id="@+id/AddWeaponStrength"
                     android:layout_width="125dp"
                     android:layout_height="48dp"
+                    android:digits="1234567890"
                     android:ems="10"
                     android:hint="0"
                     android:inputType="number"
+                    android:maxLength="2"
                     android:textAlignment="center" />
 
             </TableRow>
@@ -221,9 +237,11 @@
                     android:id="@+id/AddWeaponAP"
                     android:layout_width="125dp"
                     android:layout_height="48dp"
+                    android:digits="1234567890"
                     android:ems="10"
                     android:hint="0"
                     android:inputType="number"
+                    android:maxLength="2"
                     android:textAlignment="center" />
             </TableRow>
 
