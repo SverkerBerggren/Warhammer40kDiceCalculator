@@ -73,7 +73,7 @@
                 android:id="@+id/TableRowTest"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#B5B2B2"
+                android:background="#B4B2B5"
                 android:textAlignment="center">
 
                 <TextView

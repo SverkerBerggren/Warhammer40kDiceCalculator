@@ -16,5 +16,7 @@
     <string name="UNIT_IDENTIFIER">randomText</string>
     <string name="MODEL_IDENTIFIER">randomText</string>
     <string name="ARMY_IDENTIFIER">randomText</string>
+    <string name="UI_IDENTIFIER">randomText</string>
+    <string name="IDENTIFIER">randomText</string>
 
 </resources>

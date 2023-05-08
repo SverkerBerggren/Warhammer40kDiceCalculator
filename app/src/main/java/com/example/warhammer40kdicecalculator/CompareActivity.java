@@ -18,7 +18,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
-import android.text.TextUtils;
+import android.provider.Contacts;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +38,7 @@ import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedAttackAmou
 import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedWeapon;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
 import com.example.warhammer40kdicecalculator.Identifiers.ModelIdentifier;
+import com.example.warhammer40kdicecalculator.Identifiers.UIIdentifier;
 import com.example.warhammer40kdicecalculator.Identifiers.UnitIdentifier;
 import com.jjoe64.graphview.GraphView;
 
@@ -77,6 +78,9 @@ public class CompareActivity extends AppCompatActivity {
 
     private String FRIENDLY = "friendly";
 
+
+    private final String ABILITY_LAYOUT_UNIT = "AbilityLayoutUnit";
+
     private ArrayList<TableLayout> previousLayouts = new ArrayList<>();
 
     private LayoutInflater inflater;
@@ -92,8 +96,13 @@ public class CompareActivity extends AppCompatActivity {
     private EditText armorSaveView;
     private EditText InvSaveView;
 
+    private ConstraintLayout highestConstraint;
 
     ActivityResultLauncher<Intent>  activityResultLauncher;
+
+    private UIIdentifier firstUIidentifer;
+    private View firstView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,6 +112,8 @@ public class CompareActivity extends AppCompatActivity {
         fileHandler = new FileHandler(getBaseContext());
         matchup = fileHandler.getMatchup( getIntent().getStringExtra("SourceFile"));
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),new UpdateUiActivityCallback());
+
+        highestConstraint = findViewById(R.id.ConstraintLayoutCompare);
 
         createArmies(matchup,inflater);
     }
@@ -115,6 +126,18 @@ public class CompareActivity extends AppCompatActivity {
         public void onActivityResult(ActivityResult result) {
             int resultCode = result.getResultCode();
             Intent data = result.getData();
+
+            String identiferString = data.getStringExtra(""+R.string.IDENTIFIER);
+
+            UnitIdentifier unitId = new UnitIdentifier(identiferString);
+
+            UIIdentifier uiId = new UIIdentifier(data.getStringExtra(""+ R.string.UI_IDENTIFIER),unitId);
+
+            TableLayout test = highestConstraint.findViewWithTag(uiId);
+
+            boolean hej = uiId.equals(firstUIidentifer);
+
+            test.setBackgroundColor( Color.parseColor("##AA00FF"));
 
             Log.d("hej","it do be callbacking");
         }
@@ -183,6 +206,21 @@ public class CompareActivity extends AppCompatActivity {
         TableLayout unitAbilitLayout = linearLayout.findViewWithTag("AbilityLayoutUnit");
         Context context = getBaseContext();
 
+        UIIdentifier uiId = new UIIdentifier(ABILITY_LAYOUT_UNIT, unitIdentifier);
+
+
+        if(firstUIidentifer == null)
+        {
+            firstUIidentifer = uiId;
+            firstView = unitAbilitLayout;
+        }
+
+
+        unitAbilitLayout.setTag(uiId);
+
+
+        //unitAbilitLayout.setTag
+
         for(int i = 0; i < unit.listOfAbilitys.size(); i++)
         {
             TableRow tableRow = new TableRow(context);
@@ -203,11 +241,10 @@ public class CompareActivity extends AppCompatActivity {
 
         editAbilities.setTag(R.string.UNIT_IDENTIFIER,unitIdentifier);
 
-        editAbilities.setOnClickListener(new OnClickListenerEditAbilites(unit));
+        editAbilities.setOnClickListener(new OnClickListenerEditAbilites(unit, uiId));
 
         editAbilities.setId(R.id.noId);
 
-        unitAbilitLayout.setTag("");
     }
 
 
@@ -216,7 +253,7 @@ public class CompareActivity extends AppCompatActivity {
         private Unit unit;
         private Model model;
         private Army army;
-
+        private UIIdentifier uiId;
 
 
         public OnClickListenerEditAbilites(Army army)
@@ -227,9 +264,10 @@ public class CompareActivity extends AppCompatActivity {
         {
             this.model = model;
         }
-        public OnClickListenerEditAbilites(Unit unit)
+        public OnClickListenerEditAbilites(Unit unit, UIIdentifier uiId)
         {
             this.unit = unit;
+            this.uiId = uiId;
         }
 
 
@@ -238,7 +276,7 @@ public class CompareActivity extends AppCompatActivity {
 
             if(unit != null)
             {
-                StartEditAbilites(view, unit);
+                StartEditAbilites(view, unit,uiId);
             }
         }
     }
@@ -251,7 +289,7 @@ public class CompareActivity extends AppCompatActivity {
     {
 
     }
-    public void StartEditAbilites(View view, Unit unit )
+    public void StartEditAbilites(View view, Unit unit, UIIdentifier uiId )
     {
         Intent intent = new Intent(this, Activity_Edit_Abilities.class);
        // Identifier
@@ -261,9 +299,22 @@ public class CompareActivity extends AppCompatActivity {
        intent.putExtra(""+R.string.UNIT_ALLEGIANCE,identifier.allegiance);
        intent.putExtra(""+R.string.UNIT_NUMBER,identifier.index);
        intent.putExtra("matchupName",identifier.matchupName);
+       intent.putExtra(""+R.string.UI_IDENTIFIER, uiId.elementName);
 
 
-       activityResultLauncher.launch(intent);
+
+       String unitString = identifier.toString();
+
+       UnitIdentifier nyUnitId = new UnitIdentifier(unitString);
+
+       Log.d("Unit string  " , unitString);
+        Log.d("Unit string andra " , nyUnitId.toString());
+
+
+        Log.d("ar de lika??  " , "" + nyUnitId.equals(identifier));
+
+
+        activityResultLauncher.launch(intent);
 
        //startActivity(intent);
 
@@ -586,7 +637,7 @@ public class CompareActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View view) {
-            inflater.inflate(R.layout.activity_popup, findViewById(R.id.ConstraintLayoutCompare));
+            inflater.inflate(R.layout.activity_popup, highestConstraint);
         }
     }
 
@@ -862,7 +913,7 @@ public class CompareActivity extends AppCompatActivity {
         public void onClick(View view) {
             if(!inflatedModelStats)
             {
-                inflater.inflate(R.layout.activity_popup,findViewById(R.id.ConstraintLayoutCompare));
+                inflater.inflate(R.layout.activity_popup,highestConstraint);
                 ((Button)findViewById(R.id.SaveModelPopup)).setOnClickListener(new OnClickListenerModelSave(model));
 
                 inflatedModelStats = true;
