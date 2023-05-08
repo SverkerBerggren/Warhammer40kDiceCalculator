@@ -6,4 +6,9 @@ public class WeaponIdentifier extends Identifier{
     public String toString() {
         return null;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return false;
+    }
 }

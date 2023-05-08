@@ -265,9 +265,11 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
    //    fileHandler = new FileHandler(context);
    //    matchup = fileHandler.getMatchup(matchupName);
 
-        setResult(RESULT_OK);
+        setResult(RESULT_OK,data);
 
-        finish();;
+
+
+       finish();;
     }
 
     //  public void onActivityResult(int requestCode, int resultCode, Intent data) {

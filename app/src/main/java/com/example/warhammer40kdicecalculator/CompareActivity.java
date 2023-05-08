@@ -98,6 +98,10 @@ public class CompareActivity extends AppCompatActivity {
     private ConstraintLayout highestConstraint;
 
     ActivityResultLauncher<Intent>  activityResultLauncher;
+
+    private UIIdentifier firstUIidentifer;
+    private View firstView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -130,7 +134,9 @@ public class CompareActivity extends AppCompatActivity {
 
             TableLayout test = highestConstraint.findViewWithTag(uiId);
 
-            test.setBackgroundColor( getResources().getColor(R.color.purple_200));
+            boolean hej = uiId.equals(firstUIidentifer);
+
+            test.setBackgroundColor( Color.parseColor("##AA00FF"));
 
             Log.d("hej","it do be callbacking");
         }
@@ -202,6 +208,12 @@ public class CompareActivity extends AppCompatActivity {
         UIIdentifier uiId = new UIIdentifier(ABILITY_LAYOUT_UNIT, unitIdentifier);
 
 
+        if(firstUIidentifer == null)
+        {
+            firstUIidentifer = uiId;
+            firstView = unitAbilitLayout;
+        }
+
 
         unitAbilitLayout.setTag(uiId);
 
@@ -232,7 +244,6 @@ public class CompareActivity extends AppCompatActivity {
 
         editAbilities.setId(R.id.noId);
 
-        unitAbilitLayout.setTag("");
     }
 
 
