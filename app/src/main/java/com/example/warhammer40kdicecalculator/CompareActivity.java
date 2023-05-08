@@ -27,6 +27,7 @@ import android.widget.TextView;
 
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedAttackAmount;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedWeapon;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
 import com.example.warhammer40kdicecalculator.Identifiers.Identifier;
@@ -380,6 +381,9 @@ public class CompareActivity extends AppCompatActivity {
                 SetModelStats(inflatedView.findViewById(R.id.ModelStatsIndicator), currentModel);
                 inflatedView.findViewById(R.id.ModelStatsIndicator).setId(R.id.noId);
 
+                // Add Weapon Button
+                findViewById(R.id.AddWeaponButton).setOnClickListener(new OnClickAddWeapon(currentModel));
+
 
                 ConstraintLayout constraintLayout = ((ConstraintLayout)inflatedView.getParent()).findViewWithTag("ConstraintLayoutModel");
 
@@ -395,6 +399,123 @@ public class CompareActivity extends AppCompatActivity {
 
        // for(int i = 0; i <  )
     }
+
+
+
+    private class OnClickAddWeapon implements View.OnClickListener
+    {
+        private boolean inflatedAddWeapon = false;
+
+        private ConstraintLayout weaponAddConstraintLayout;
+
+        private EditText weaponAddName;
+        private EditText weaponAddAmountD3;
+        private EditText weaponAddAmountD6;
+        private EditText weaponAddAmount;
+        private EditText weaponAddDamageD3;
+        private EditText weaponAddDamageD6;
+        private EditText weaponAddDamage;
+        private EditText weaponAddStrength;
+        private EditText weaponAddAP;
+
+        private Button addButton;
+        private Button cancelButton;
+        private Model model;
+
+        public OnClickAddWeapon(Model model)
+        {
+            this.model = model;
+        }
+
+        private void ShowAddWeapon()
+        {
+            weaponAddConstraintLayout.setVisibility(View.VISIBLE);
+        }
+        private void HideAddWeapon()
+        {
+            weaponAddConstraintLayout.setVisibility(View.GONE);
+        }
+
+        @Override
+        public void onClick(View view) {
+            if(!inflatedAddWeapon)
+            {
+                inflater.inflate(R.layout.add_weapon_popup,findViewById(R.id.ConstraintLayoutCompare));
+
+                weaponAddConstraintLayout = findViewById(R.id.AddWeaponConstraintLayout);
+                //((Button)findViewById(R.id.SaveModelPopup)).setOnClickListener(new OnClickListenerModelSave(model));
+                weaponAddName = findViewById(R.id.AddWeaponName);
+                weaponAddAmountD3 = findViewById(R.id.AddWeaponAmountD3);
+                weaponAddAmountD6 = findViewById(R.id.AddWeaponAmountD6);
+                weaponAddAmount = findViewById(R.id.AddWeaponAmount);
+                weaponAddDamageD3 = findViewById(R.id.AddWeaponDamageD3);
+                weaponAddDamageD6 = findViewById(R.id.AddWeaponDamageD6);
+                weaponAddDamage = findViewById(R.id.AddWeaponDamage);
+                weaponAddStrength = findViewById(R.id.AddWeaponStrength);
+                weaponAddAP = findViewById(R.id.AddWeaponAP);
+
+                addButton = findViewById(R.id.AddWeaponAddButton);
+                cancelButton = findViewById(R.id.AddWeaponCancelButton);
+
+                addButton.setOnClickListener(new AddWeapon());
+                cancelButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        HideAddWeapon();
+                    }
+                });
+
+                inflatedAddWeapon = true;
+            }
+            else
+            {
+                ShowAddWeapon();
+            }
+        }
+
+        private class AddWeapon implements  View.OnClickListener
+        {
+            private String name;
+            private int amountD3,amountD6, amount,damageD3,damageD6,damage,strength,aP;
+
+
+            @Override
+            public void onClick(View view) {
+                if (weaponAddName.getText().toString().isEmpty())
+                {
+                    weaponAddName.setError("Name is Required");
+                    return;
+                }
+                else name = weaponAddName.getText().toString();
+                if (weaponAddAmountD3.getText().toString().isEmpty()) amountD3 = 0;
+                else amountD3 = Integer.parseInt(weaponAddAmountD3.getText().toString());
+                if (weaponAddAmountD6.getText().toString().isEmpty()) amountD6 = 0;
+                else amountD6 = Integer.parseInt(weaponAddAmountD6.getText().toString());
+                if (weaponAddAmount.getText().toString().isEmpty()) amount = 0;
+                else amount = Integer.parseInt(weaponAddAmount.getText().toString());
+                if (weaponAddDamageD3.getText().toString().isEmpty()) damageD3 = 0;
+                else damageD3 = Integer.parseInt(weaponAddDamageD3.getText().toString());
+                if (weaponAddDamageD6.getText().toString().isEmpty()) damageD6 = 0;
+                else damageD6 = Integer.parseInt(weaponAddDamageD6.getText().toString());
+                if (weaponAddDamage.getText().toString().isEmpty()) damage = 0;
+                else damage = Integer.parseInt(weaponAddDamage.getText().toString());
+                if (weaponAddStrength.getText().toString().isEmpty()) strength = 0;
+                else strength = Integer.parseInt(weaponAddStrength.getText().toString());
+                if (weaponAddAP.getText().toString().isEmpty()) aP = 0;
+                else aP = Integer.parseInt(weaponAddAP.getText().toString());
+
+                DamageAmount dA = new DamageAmount(damage,damageD3,damageD6);
+                RangedAttackAmount rAA = new RangedAttackAmount(amount,amountD3,amountD6);
+
+                RangedWeapon weapon = new RangedWeapon(strength, aP, dA, rAA );
+                weapon.name = name;
+                model.listOfRangedWeapons.add(weapon);
+
+                HideAddWeapon();
+            }
+        }
+    }
+
 
     public void EditWeaponActivityStart(View v)
     {
