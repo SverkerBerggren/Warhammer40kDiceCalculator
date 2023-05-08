@@ -3,22 +3,15 @@ package com.example.warhammer40kdicecalculator;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.ActivityResultRegistry;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityOptionsCompat;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 
-import android.provider.Contacts;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,14 +30,13 @@ import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedAttackAmount;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedWeapon;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
+import com.example.warhammer40kdicecalculator.Identifiers.Identifier;
 import com.example.warhammer40kdicecalculator.Identifiers.ModelIdentifier;
 import com.example.warhammer40kdicecalculator.Identifiers.UIIdentifier;
 import com.example.warhammer40kdicecalculator.Identifiers.UnitIdentifier;
-import com.jjoe64.graphview.GraphView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.zip.Inflater;
 
 public class CompareActivity extends AppCompatActivity {
 
@@ -77,6 +69,7 @@ public class CompareActivity extends AppCompatActivity {
     private String DONT_DROP_DOWN = "dontDropDown";
 
     private String FRIENDLY = "friendly";
+    private String ENEMY = "enemy";
 
 
     private final String ABILITY_LAYOUT_UNIT = "AbilityLayoutUnit";
@@ -111,7 +104,7 @@ public class CompareActivity extends AppCompatActivity {
         inflater =  getLayoutInflater();
         fileHandler = new FileHandler(getBaseContext());
         matchup = fileHandler.getMatchup( getIntent().getStringExtra("SourceFile"));
-        activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),new UpdateUiActivityCallback());
+        activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),new UpdateUiActivityCallbackAbilities());
 
         highestConstraint = findViewById(R.id.ConstraintLayoutCompare);
 
@@ -119,7 +112,7 @@ public class CompareActivity extends AppCompatActivity {
     }
 
 
-    private class UpdateUiActivityCallback implements ActivityResultCallback<ActivityResult>
+    private class UpdateUiActivityCallbackAbilities implements ActivityResultCallback<ActivityResult>
     {
 
         @Override
@@ -129,18 +122,85 @@ public class CompareActivity extends AppCompatActivity {
 
             String identiferString = data.getStringExtra(""+R.string.IDENTIFIER);
 
-            UnitIdentifier unitId = new UnitIdentifier(identiferString);
+            Identifier gameIdentifier = new UnitIdentifier(identiferString);
 
-            UIIdentifier uiId = new UIIdentifier(data.getStringExtra(""+ R.string.UI_IDENTIFIER),unitId);
+            UIIdentifier uiId = new UIIdentifier(data.getStringExtra(""+ R.string.UI_IDENTIFIER),gameIdentifier);
 
-            TableLayout test = highestConstraint.findViewWithTag(uiId);
+            if(gameIdentifier instanceof UnitIdentifier)
+            {
+                TableLayout tableLayout = highestConstraint.findViewWithTag(uiId);
+                tableLayout.getChildAt(0).setBackgroundColor( Color.parseColor("#AA00FF"));
 
-            boolean hej = uiId.equals(firstUIidentifer);
+                ArrayList<String> abilitiesToRemove = StringArrayFromIntent(data,"abilitiesRemoved");
+                ArrayList<String> abilitiesToAdd = StringArrayFromIntent(data, "abilitiesAdded");
 
-            test.setBackgroundColor( Color.parseColor("##AA00FF"));
+                ArrayList<View> viewsToRemove = new ArrayList<>();
+                for(int i = 0; i < tableLayout.getChildCount(); i++)
+                {
+                    TableRow childView = (TableRow) tableLayout.getChildAt(i);
+
+                    for(int z = 0; z < childView.getChildCount(); z++)
+                    {
+                        TextView text = (TextView) childView.getChildAt(z);
+
+                        if(abilitiesToRemove.contains(text.getText().toString()))
+                        {
+                            viewsToRemove.add(childView);
+                        }
+                    }
+                }
+                for( View view : viewsToRemove)
+                {
+                    tableLayout.removeView(view);
+                }
+
+                for(int i = 0; i < abilitiesToAdd.size(); i++)
+                {
+                    tableLayout.addView(CreateTableRow(abilitiesToAdd.get(i)));
+                }
+            }
+
+
+
+
+
 
             Log.d("hej","it do be callbacking");
         }
+    }
+
+    private View CreateTableRow(String text)
+    {
+        Context context = getBaseContext();
+
+        TableRow tableRow = new TableRow(context);
+        tableRow.setBackgroundColor(Color.parseColor("#DFDADA"));
+        tableRow.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+
+        TextView abilityTextView = new TextView(context);
+        abilityTextView.setText(text);
+        abilityTextView.setTextSize(10);
+        abilityTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+        tableRow.addView(abilityTextView);
+
+        return tableRow;
+    }
+
+    private ArrayList<String> StringArrayFromIntent(Intent intent, String key)
+    {
+        ArrayList<String> listToReturn = new ArrayList<>();
+
+        int size = intent.getIntExtra(key,-1);
+
+
+        for(int i = 0; i < size; i++)
+        {
+            listToReturn.add(intent.getStringExtra(key + i));
+        }
+
+        return listToReturn;
     }
 
 
@@ -152,52 +212,20 @@ public class CompareActivity extends AppCompatActivity {
         ViewGroup verticalLayout = null;
         for(int i = 0; i < matchup.friendlyArmy.units.size();i++)
         {
-
-
             UnitIdentifier unitIdentifier = new UnitIdentifier("friendly",null,i,matchup.name);
-
-
-
             verticalLayout = (ViewGroup) inflater.inflate(R.layout.unitviewprefab, ((ViewGroup)findViewById(R.id.VerticalLayoutFriendlyArmy)));
-
-
             instaniateUnitButton(verticalLayout.getChildAt(i +1),matchup.friendlyArmy.units.get(i),unitIdentifier);
-
             CreateUnitAbilites(matchup.friendlyArmy.units.get(i),findViewById(R.id.VerticalLayoutFriendlyArmy),inflater, unitIdentifier);
-            //Log.d("grejer",""+viewToModify.getParent().toString());
-
             CreateModel(verticalLayout.getChildAt(i +1),matchup.friendlyArmy.units.get(i),i,FRIENDLY,inflater);
-
-
-
         }
-
-    //    for(int i = 0; i < matchup.friendlyArmy.units.size();i++)
-    //    {
-//
-//
-//
-//
-    //        verticalLayout = (ViewGroup) inflater.inflate(R.layout.unitviewprefab, ((ViewGroup)findViewById(R.id.VerticalLayoutFriendlyArmy)));
-//
-//
-//
-//
-    //        instaniateUnitButton(verticalLayout.getChildAt(i +1),matchup.friendlyArmy.units.get(i),i, FRIENDLY);
-//
-    //        CreateUnitAbilites(matchup.friendlyArmy.units.get(i),findViewById(R.id.VerticalLayoutFriendlyArmy),inflater);
-    //        //Log.d("grejer",""+viewToModify.getParent().toString());
-//
-    //        CreateModel(verticalLayout.getChildAt(i +1),matchup.friendlyArmy.units.get(i),i,FRIENDLY,inflater);
-//
-//
-//
-    //    }
-
-
-
-        //Log.d("längd", ""+matchup.friendlyArmy.units.size());
-
+        for(int i = 0; i < matchup.enemyArmy.units.size();i++)
+        {
+            UnitIdentifier unitIdentifier = new UnitIdentifier("enemy",null,i,matchup.name);
+            verticalLayout = (ViewGroup) inflater.inflate(R.layout.unitviewprefab, ((ViewGroup)findViewById(R.id.VerticalLayoutEnemyArmy)));
+            instaniateUnitButton(verticalLayout.getChildAt(i +1),matchup.enemyArmy.units.get(i),unitIdentifier);
+            CreateUnitAbilites(matchup.enemyArmy.units.get(i),findViewById(R.id.VerticalLayoutEnemyArmy),inflater, unitIdentifier);
+            CreateModel(verticalLayout.getChildAt(i +1),matchup.enemyArmy.units.get(i),i,ENEMY,inflater);
+        }
 
     }
 
@@ -865,7 +893,7 @@ public class CompareActivity extends AppCompatActivity {
         Context context = v.getContext();
 
 
-        ConstraintLayout constraintLayout = (ConstraintLayout) v.getParent();
+        ViewGroup constraintLayout = (ViewGroup) v.getParent();
 
 
 
@@ -892,11 +920,15 @@ public class CompareActivity extends AppCompatActivity {
             }
         }
 
-        Log.d("Ui grejer", "Vad är höjden efter" +  constraintLayout.getMeasuredHeight());
+    }
 
+    public void OpenUnitSelection(View v)
+    {
+        Intent intenten = new Intent(this, UnitSelection.class);
 
+        intenten.putExtra("SourceFile",matchup.name);
 
-        Log.d("Ui grejer", "" +  v.getParent());
+        startActivity(intenten);
     }
 
 
