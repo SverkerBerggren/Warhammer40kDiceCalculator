@@ -83,7 +83,7 @@
                         android:textSize="24sp" />
 
                     <ImageButton
-                        android:id="@+id/imageButton2"
+                        android:id="@+id/WeaponSkillDecrease"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         app:srcCompat="?attr/actionModeCloseDrawable" />
@@ -101,7 +101,7 @@
                         android:textSize="24sp" />
 
                     <ImageButton
-                        android:id="@+id/imageButton4"
+                        android:id="@+id/WeaponSkillIncrease"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:rotation="180"
@@ -121,7 +121,7 @@
                         android:textSize="24sp" />
 
                     <ImageButton
-                        android:id="@+id/imageButton5"
+                        android:id="@+id/BallisticSkillDecrease"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         app:srcCompat="?attr/actionModeCloseDrawable" />
@@ -139,7 +139,7 @@
                         android:textSize="24sp" />
 
                     <ImageButton
-                        android:id="@+id/imageButton14"
+                        android:id="@+id/BallisticSkillIncrease"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:rotation="180"
@@ -159,7 +159,7 @@
                         android:textSize="24sp" />
 
                     <ImageButton
-                        android:id="@+id/imageButton8"
+                        android:id="@+id/StrengthDecrease"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         app:srcCompat="?attr/actionModeCloseDrawable" />
@@ -177,7 +177,7 @@
                         android:textSize="24sp" />
 
                     <ImageButton
-                        android:id="@+id/imageButton15"
+                        android:id="@+id/StrengthIncrease"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:rotation="180"
@@ -197,7 +197,7 @@
                         android:textSize="24sp" />
 
                     <ImageButton
-                        android:id="@+id/imageButton9"
+                        android:id="@+id/ToughnessDecrease"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         app:srcCompat="?attr/actionModeCloseDrawable" />
@@ -215,7 +215,7 @@
                         android:textSize="24sp" />
 
                     <ImageButton
-                        android:id="@+id/imageButton16"
+                        android:id="@+id/ToughnessIncrease"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:rotation="180"
@@ -235,7 +235,7 @@
                         android:textSize="24sp" />
 
                     <ImageButton
-                        android:id="@+id/imageButton10"
+                        android:id="@+id/WoundsDecrease"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         app:srcCompat="?attr/actionModeCloseDrawable" />
@@ -253,7 +253,7 @@
                         android:textSize="24sp" />
 
                     <ImageButton
-                        android:id="@+id/imageButton17"
+                        android:id="@+id/WoundsIncrease"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:rotation="180"
@@ -273,7 +273,7 @@
                         android:textSize="24sp" />
 
                     <ImageButton
-                        android:id="@+id/imageButton11"
+                        android:id="@+id/AttacksDecrease"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         app:srcCompat="?attr/actionModeCloseDrawable" />
@@ -291,7 +291,7 @@
                         android:textSize="24sp" />
 
                     <ImageButton
-                        android:id="@+id/imageButton18"
+                        android:id="@+id/AttacksIncrease"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:rotation="180"
@@ -311,7 +311,7 @@
                         android:textSize="24sp" />
 
                     <ImageButton
-                        android:id="@+id/imageButton12"
+                        android:id="@+id/SavesDecrease"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         app:srcCompat="?attr/actionModeCloseDrawable" />
@@ -329,7 +329,7 @@
                         android:textSize="24sp" />
 
                     <ImageButton
-                        android:id="@+id/imageButton19"
+                        android:id="@+id/SavesIncrease"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:rotation="180"
@@ -349,7 +349,7 @@
                         android:textSize="24sp" />
 
                     <ImageButton
-                        android:id="@+id/imageButton13"
+                        android:id="@+id/InvulnerableDecrease"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         app:srcCompat="?attr/actionModeCloseDrawable" />
@@ -367,7 +367,7 @@
                         android:textSize="24sp" />
 
                     <ImageButton
-                        android:id="@+id/imageButton20"
+                        android:id="@+id/InvulnerableIncrease"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:rotation="180"
