@@ -21,6 +21,8 @@ public class Unit implements AbilityHolder{
     public int attacksModifier;
 
 
+
+
     public ArrayList<Model> listOfModels = new ArrayList<>();
 
     public ArrayList<Ability> listOfAbilitys = new ArrayList<>( );

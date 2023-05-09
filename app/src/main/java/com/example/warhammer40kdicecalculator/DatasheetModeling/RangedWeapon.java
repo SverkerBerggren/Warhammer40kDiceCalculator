@@ -14,6 +14,17 @@ public class RangedWeapon implements AbilityHolder {
     public ArrayList<Ability> weaponRules = new ArrayList<>();
 
 
+    @Override
+    public Ability GetAbility(int index) {
+
+        return weaponRules.get(index);
+    }
+
+    @Override
+    public boolean RemoveAbility(Ability ability) {
+        return weaponRules.remove(ability);
+    }
+
     public RangedWeapon(int strength, int ap, DamageAmount damageAmount, RangedAttackAmount amountOfAttacks)
     {
         this.damageAmount = damageAmount;

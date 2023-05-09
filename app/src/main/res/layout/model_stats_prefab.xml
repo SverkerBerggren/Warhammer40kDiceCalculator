@@ -288,7 +288,7 @@
         </TableLayout>
 
         <TableLayout
-            android:id="@+id/AbilityLayoutUnit"
+            android:id="@+id/AbilityLayoutUnits"
             android:layout_width="386dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"

@@ -23,9 +23,17 @@ public class Model implements AbilityHolder{
 
     public ArrayList<MeleeWeapons> listOfMeleeWeapons = new ArrayList<>();
 
+    @Override
+    public Ability GetAbility(int index) {
+        return listOfAbilites.get(index);
+    }
 
+    @Override
+    public boolean RemoveAbility(Ability ability) {
+        return listOfAbilites.remove(ability);
+    }
 
-    public Model( Model other)
+    public Model(Model other)
     {
         toughness = other.toughness;
         strength = other.strength;
