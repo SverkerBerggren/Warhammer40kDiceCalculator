@@ -37,6 +37,17 @@ public class ModelIdentifier extends Identifier{
                 '}';
     }
 
+    public ModelIdentifier(String str) {
+        // split the string using regex and extract the values
+        String[] parts = str.split("[{=,',}]");
+        allegiance = parts[1];
+        tag = parts[3];
+        indexUnit = Integer.parseInt(parts[5]);
+        indexModel = Integer.parseInt(parts[7]);
+        matchupName = parts[9];
+    }
+
+
 
     @Override
     public boolean equals(Object o) {

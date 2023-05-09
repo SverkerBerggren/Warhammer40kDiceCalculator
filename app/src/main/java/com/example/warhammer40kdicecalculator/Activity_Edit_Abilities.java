@@ -60,6 +60,11 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
         int indexUnit = intent.getIntExtra(""+R.string.UNIT_NUMBER, -1);
         int indexModel = intent.getIntExtra("indexModel", -1);
         String matchupName = intent.getStringExtra("matchupName");
+
+
+
+        //intent.putExtra("" + R.string.)
+
         fileHandler = new FileHandler(context);
         matchup = fileHandler.getMatchup(matchupName);
 
