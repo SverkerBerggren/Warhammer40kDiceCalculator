@@ -250,11 +250,11 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
     {
         ViewGroup verticalLayout = null;
 
-        ArmyIdentifier armyFirendlyId = new ArmyIdentifier(FRIENDLY, matchup.name);
-        UIIdentifier uiIdArmyFriendly = new UIIdentifier(UI_ARMY_MODIFIER_LAYOUT, armyFirendlyId);
+        ArmyIdentifier armyFriendlyId = new ArmyIdentifier(FRIENDLY, matchup.name);
+        UIIdentifier uiIdArmyFriendly = new UIIdentifier(UI_ARMY_MODIFIER_LAYOUT, armyFriendlyId);
         TableRow friendlyTableRow = (TableRow)findViewById(R.id.TableRowFriendlyArmy);
         ImageButton friendlyEditButton = (ImageButton)findViewById(R.id.EditFriendlyArmyButton);
-        CreateModifiers(matchup.enemyArmy, uiIdArmyFriendly, friendlyTableRow, friendlyEditButton);
+        CreateModifiers(matchup.friendlyArmy, uiIdArmyFriendly, friendlyTableRow, friendlyEditButton);
 
         ArmyIdentifier armyEnemyId = new ArmyIdentifier(ENEMY, matchup.name);
         UIIdentifier uiIdArmyEnemy = new UIIdentifier(UI_ARMY_MODIFIER_LAYOUT, armyEnemyId);
