@@ -136,6 +136,7 @@
                     </TableRow>
 
                     <TableRow
+                        android:id="@+id/TableRowFriendlyArmy"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="#DFDADA">
@@ -200,7 +201,7 @@
                 </TableLayout>
 
                 <ImageButton
-                    android:id="@+id/imageButton21"
+                    android:id="@+id/EditFriendlyArmyButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:srcCompat="@android:drawable/ic_menu_edit" />
@@ -335,6 +336,7 @@
                     </TableRow>
 
                     <TableRow
+                        android:id="@+id/TableRowEnemyArmy"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="#DFDADA">
@@ -399,7 +401,7 @@
                 </TableLayout>
 
                 <ImageButton
-                    android:id="@+id/imageButton24"
+                    android:id="@+id/EditEnemyArmyButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:srcCompat="@android:drawable/ic_menu_edit" />

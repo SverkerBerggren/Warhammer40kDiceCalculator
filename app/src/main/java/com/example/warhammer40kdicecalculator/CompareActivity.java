@@ -32,6 +32,7 @@ import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedAttackAmount;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedWeapon;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
+import com.example.warhammer40kdicecalculator.Identifiers.ArmyIdentifier;
 import com.example.warhammer40kdicecalculator.Identifiers.Identifier;
 import com.example.warhammer40kdicecalculator.Identifiers.ModelIdentifier;
 import com.example.warhammer40kdicecalculator.Identifiers.UIIdentifier;
@@ -248,6 +249,19 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
     private void createArmies(Matchup matchup, LayoutInflater inflater)
     {
         ViewGroup verticalLayout = null;
+
+        ArmyIdentifier armyFirendlyId = new ArmyIdentifier(FRIENDLY, matchup.name);
+        UIIdentifier uiIdArmyFriendly = new UIIdentifier(UI_ARMY_MODIFIER_LAYOUT, armyFirendlyId);
+        TableRow friendlyTableRow = (TableRow)findViewById(R.id.TableRowFriendlyArmy);
+        ImageButton friendlyEditButton = (ImageButton)findViewById(R.id.EditFriendlyArmyButton);
+        CreateModifiers(matchup.enemyArmy, uiIdArmyFriendly, friendlyTableRow, friendlyEditButton);
+
+        ArmyIdentifier armyEnemyId = new ArmyIdentifier(ENEMY, matchup.name);
+        UIIdentifier uiIdArmyEnemy = new UIIdentifier(UI_ARMY_MODIFIER_LAYOUT, armyEnemyId);
+        TableRow enemyTableRow = (TableRow)findViewById(R.id.TableRowEnemyArmy);
+        ImageButton enemyEditButton = (ImageButton)findViewById(R.id.EditEnemyArmyButton);
+        CreateModifiers(matchup.enemyArmy, uiIdArmyEnemy,enemyTableRow,enemyEditButton);
+
         for(int i = 0; i < matchup.friendlyArmy.units.size();i++)
         {
             UnitIdentifier unitIdentifier = new UnitIdentifier("friendly",null,i,matchup.name);
@@ -922,8 +936,6 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
             {
                 inflater.inflate(R.layout.activity_popup,highestConstraint);
 
-
-
                 weaponSkillView = (EditText)findViewById(R.id.WeaponSkillModelPopup);
                 ballisticSkillView   = (EditText)findViewById(R.id.BallisticSkillModelPopup);
                 strengthView  = (EditText)findViewById(R.id.StrengthModelPopup);
@@ -957,33 +969,33 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
                 ShowPopup(view);
             }
 
-                ((Button)findViewById(R.id.SaveModelPopup)).setOnClickListener(new OnClickListenerModelSave(modifierHolder, uiId));
+            ((Button)findViewById(R.id.SaveModelPopup)).setOnClickListener(new OnClickListenerModelSave(modifierHolder, uiId));
 
-                weaponSkillView.setText(""+ modifierHolder.GetModifierValue(UnitAndModelSkill.WeaponSkill));
-                ballisticSkillView.setText(""+ modifierHolder.GetModifierValue(UnitAndModelSkill.BallisticSkill));
-                strengthView.setText(""+ modifierHolder.GetModifierValue(UnitAndModelSkill.Strength));
-                toughnessView.setText(""+ modifierHolder.GetModifierValue(UnitAndModelSkill.Toughness));
-                woundsView.setText(""+ modifierHolder.GetModifierValue(UnitAndModelSkill.Wounds));
-                attacksView.setText(""+ modifierHolder.GetModifierValue(UnitAndModelSkill.Attacks));
-                armorSaveView.setText(""+ modifierHolder.GetModifierValue(UnitAndModelSkill.ArmorSaves));
-                InvSaveView.setText(""+ modifierHolder.GetModifierValue(UnitAndModelSkill.InvulnerableSaves));
+            weaponSkillView.setText(""+ modifierHolder.GetModifierValue(UnitAndModelSkill.WeaponSkill));
+            ballisticSkillView.setText(""+ modifierHolder.GetModifierValue(UnitAndModelSkill.BallisticSkill));
+            strengthView.setText(""+ modifierHolder.GetModifierValue(UnitAndModelSkill.Strength));
+            toughnessView.setText(""+ modifierHolder.GetModifierValue(UnitAndModelSkill.Toughness));
+            woundsView.setText(""+ modifierHolder.GetModifierValue(UnitAndModelSkill.Wounds));
+            attacksView.setText(""+ modifierHolder.GetModifierValue(UnitAndModelSkill.Attacks));
+            armorSaveView.setText(""+ modifierHolder.GetModifierValue(UnitAndModelSkill.ArmorSaves));
+            InvSaveView.setText(""+ modifierHolder.GetModifierValue(UnitAndModelSkill.InvulnerableSaves));
 
-                weaponSkillIncrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, weaponSkillView,UnitAndModelSkill.WeaponSkill,true));
-                weaponSkillDecrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, weaponSkillView,UnitAndModelSkill.WeaponSkill,false));
-                ballisticSkillIncrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, ballisticSkillView,UnitAndModelSkill.BallisticSkill,true));
-                ballisticSkillDecrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, ballisticSkillView,UnitAndModelSkill.BallisticSkill,false));
-                strengthIncrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, strengthView,UnitAndModelSkill.Strength,true));
-                strengthDecrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, strengthView,UnitAndModelSkill.Strength,false));
-                toughnessIncrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, toughnessView,UnitAndModelSkill.Toughness,true));
-                toughnessDecrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, toughnessView,UnitAndModelSkill.Toughness,false));
-                woundsIncrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, woundsView,UnitAndModelSkill.Wounds,true));
-                woundsDecrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, woundsView,UnitAndModelSkill.Wounds,false));
-                attacksIncrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, attacksView,UnitAndModelSkill.Attacks,true));
-                attacksDecrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, attacksView,UnitAndModelSkill.Attacks,false));
-                armorSavesIncrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, armorSaveView,UnitAndModelSkill.ArmorSaves,true));
-                armorSavesDecrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, armorSaveView,UnitAndModelSkill.ArmorSaves,false));
-                invulnerableSavesIncrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, InvSaveView,UnitAndModelSkill.InvulnerableSaves,true));
-                invulnerableSavesDecrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, InvSaveView,UnitAndModelSkill.InvulnerableSaves,false));
+            weaponSkillIncrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, weaponSkillView,UnitAndModelSkill.WeaponSkill,true));
+            weaponSkillDecrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, weaponSkillView,UnitAndModelSkill.WeaponSkill,false));
+            ballisticSkillIncrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, ballisticSkillView,UnitAndModelSkill.BallisticSkill,true));
+            ballisticSkillDecrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, ballisticSkillView,UnitAndModelSkill.BallisticSkill,false));
+            strengthIncrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, strengthView,UnitAndModelSkill.Strength,true));
+            strengthDecrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, strengthView,UnitAndModelSkill.Strength,false));
+            toughnessIncrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, toughnessView,UnitAndModelSkill.Toughness,true));
+            toughnessDecrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, toughnessView,UnitAndModelSkill.Toughness,false));
+            woundsIncrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, woundsView,UnitAndModelSkill.Wounds,true));
+            woundsDecrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, woundsView,UnitAndModelSkill.Wounds,false));
+            attacksIncrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, attacksView,UnitAndModelSkill.Attacks,true));
+            attacksDecrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, attacksView,UnitAndModelSkill.Attacks,false));
+            armorSavesIncrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, armorSaveView,UnitAndModelSkill.ArmorSaves,true));
+            armorSavesDecrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, armorSaveView,UnitAndModelSkill.ArmorSaves,false));
+            invulnerableSavesIncrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, InvSaveView,UnitAndModelSkill.InvulnerableSaves,true));
+            invulnerableSavesDecrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, InvSaveView,UnitAndModelSkill.InvulnerableSaves,false));
         }
     }
 

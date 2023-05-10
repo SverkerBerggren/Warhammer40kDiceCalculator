@@ -180,4 +180,14 @@ public class Unit implements AbilityHolder, ModifierHolder {
                 break;
         }
     }
+
+    @Override
+    public Ability GetAbility(int index) {
+        return null;
+    }
+
+    @Override
+    public boolean RemoveAbility(Ability ability) {
+        return false;
+    }
 }
