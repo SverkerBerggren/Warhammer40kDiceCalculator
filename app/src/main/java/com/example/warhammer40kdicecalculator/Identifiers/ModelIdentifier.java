@@ -29,23 +29,52 @@ public class ModelIdentifier extends Identifier{
     @Override
     public String toString() {
         return "ModelIdentifier{" +
-                "allegiance='" + allegiance + '\'' +
-                ", tag='" + tag + '\'' +
+                "allegiance=" + allegiance +
+                ", tag=" + tag  +
                 ", indexUnit=" + indexUnit +
                 ", indexModel=" + indexModel +
-                ", matchupName='" + matchupName + '\'' +
+                ", matchupName=" + matchupName  +
                 '}';
     }
+    public ModelIdentifier(String identifierString) {
+        if (identifierString != null) {
+            // Remove the "ModelIdentifier{" prefix and "}" suffix from the string
+            identifierString = identifierString.replace("ModelIdentifier{", "").replace("}", "");
 
-    public ModelIdentifier(String str) {
-        // split the string using regex and extract the values
-        String[] parts = str.split("[{=,',}]");
-        allegiance = parts[1];
-        tag = parts[3];
-        indexUnit = Integer.parseInt(parts[5]);
-        indexModel = Integer.parseInt(parts[7]);
-        matchupName = parts[9];
+            // Split the string into key-value pairs
+            String[] pairs = identifierString.split(", ");
+
+            // Process each key-value pair
+            for (String pair : pairs) {
+                // Split the pair into key and value
+                String[] keyValue = pair.split("=");
+                if (keyValue.length == 2) {
+                    String key = keyValue[0].trim();
+                    String value = keyValue[1].trim();
+
+                    // Assign the value to the corresponding field
+                    switch (key) {
+                        case "allegiance":
+                            allegiance = value.equals("null") ? null : value;
+                            break;
+                        case "tag":
+                            tag = value.equals("null") ? null : value;
+                            break;
+                        case "indexUnit":
+                            indexUnit = Integer.parseInt(value);
+                            break;
+                        case "indexModel":
+                            indexModel = Integer.parseInt(value);
+                            break;
+                        case "matchupName":
+                            matchupName = value.equals("null") ? null : value;
+                            break;
+                    }
+                }
+            }
+        }
     }
+
 
 
 

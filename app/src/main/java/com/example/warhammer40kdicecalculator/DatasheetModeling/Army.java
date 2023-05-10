@@ -43,6 +43,23 @@ public class Army implements AbilityHolder, ModifierHolder {
     }
 
     @Override
+    public String toString() {
+        return "Army{" +
+                "name='" + name + '\'' +
+                ", units=" + units +
+                ", abilities=" + abilities +
+                ", toughnessModifier=" + toughnessModifier +
+                ", strengthModifier=" + strengthModifier +
+                ", armorSaveModifier=" + armorSaveModifier +
+                ", invulnerableSaveModifier=" + invulnerableSaveModifier +
+                ", woundsModifier=" + woundsModifier +
+                ", ballisticSkillModifier=" + ballisticSkillModifier +
+                ", weaponSkillModifier=" + weaponSkillModifier +
+                ", attacksModifier=" + attacksModifier +
+                '}';
+    }
+
+    @Override
     public int ChangeModifiers(CompareActivity.UnitAndModelSkill whatToChange, int amount) {
         int valueToReturn = 0;
         switch (whatToChange)

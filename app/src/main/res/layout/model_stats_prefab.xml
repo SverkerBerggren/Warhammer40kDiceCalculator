@@ -288,12 +288,13 @@
         </TableLayout>
 
         <TableLayout
-            android:id="@+id/AbilityLayoutUnits"
+            android:id="@+id/AbilityLayoutModels"
             android:layout_width="386dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="50dp"
             android:background="#B5B2B2"
             android:stretchColumns="*"
+            android:tag="AbilityLayoutModels"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/AddWeaponButton">
@@ -348,6 +349,17 @@
             app:layout_constraintStart_toEndOf="@+id/WeaponsLayout"
             app:layout_constraintTop_toTopOf="@+id/WeaponsLayout"
             app:srcCompat="@android:drawable/ic_menu_edit" />
+
+        <ImageButton
+            android:id="@+id/EditModelAbilities"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tag="EditModelAbilities"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/AbilityLayoutModels"
+            app:srcCompat="@android:drawable/ic_menu_edit" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

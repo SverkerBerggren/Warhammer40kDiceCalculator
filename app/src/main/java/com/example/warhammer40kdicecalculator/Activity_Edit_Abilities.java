@@ -21,6 +21,7 @@ import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
+import com.example.warhammer40kdicecalculator.Identifiers.ArmyIdentifier;
 import com.example.warhammer40kdicecalculator.Identifiers.Identifier;
 import com.example.warhammer40kdicecalculator.Identifiers.ModelIdentifier;
 import com.example.warhammer40kdicecalculator.Identifiers.UIIdentifier;
@@ -65,8 +66,9 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
 
 
 
-        //intent.putExtra("" + R.string.)
+        String typeOfIdentifier = intent.getStringExtra( ""+R.string.TYPE_OF_IDENTIFIER);
 
+        ImageButton addAbilityButton = findViewById(R.id.EditAbilitiesAdd);
         fileHandler = new FileHandler(context);
         matchup = fileHandler.getMatchup(matchupName);
 
@@ -78,60 +80,31 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
 
         Army army = null;
 
-        ImageButton addAbilityButton = findViewById(R.id.EditAbilitiesAdd);
 
-
-
-
-        if(intent.getStringExtra( ""+R.string.TYPE_OF_IDENTIFIER) != null)
+        if(typeOfIdentifier.equals("model"))
         {
-            if(intent.getStringExtra( ""+R.string.TYPE_OF_IDENTIFIER).equals("model"))
+            identifier = new ModelIdentifier(intent.getStringExtra( ""+R.string.MODEL_IDENTIFIER));
+
+            Model model = matchup.GetModel((ModelIdentifier) identifier);
+
+            for(Ability ability : model.listOfAbilites)
             {
-                identifier = new ModelIdentifier(intent.getStringExtra( ""+R.string.MODEL_IDENTIFIER));
+                CreateButton(ability,model);
+            }
 
-                Model model = matchup.GetModel((ModelIdentifier) identifier);
-
-                for(Ability ability : model.listOfAbilites)
-                {
-                    CreateButton(ability,model);
+            MainActivity mainActivity = new MainActivity();
+            Activity_Edit_Abilities abilityHolder = this;
+            addAbilityButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mainActivity.SearchAbility(model,matchup,findViewById(R.id.ConstraintLayoutEditAbilities),context,abilityHolder);
                 }
-
-                MainActivity mainActivity = new MainActivity();
-                Activity_Edit_Abilities abilityHolder = this;
-                addAbilityButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mainActivity.SearchAbility(model,matchup,findViewById(R.id.ConstraintLayoutEditAbilities),context,abilityHolder);
-                    }
-                });
-
-            }
+            });
         }
-
-        if(unitAlliegance != null && unitAlliegance.equals("friendly"))
-        if(unitAlliegance != null && unitAlliegance.equals("friendly"))
+        else if(typeOfIdentifier.equals("unit"))
         {
-            army = matchup.friendlyArmy;
-        }
-        else
-        {
-            army = matchup.enemyArmy;
-        }
-
-        if(indexUnit == -1)
-        {
-
-            for(Ability ability : army.abilities)
-            {
-
-            }
-        }
-        else if(indexModel == -1)
-        {
-            Unit unit = army.units.get(indexUnit);
-
-            identifier = new UnitIdentifier(unitAlliegance,null,indexUnit,matchupName);
-
+            identifier = new UnitIdentifier(intent.getStringExtra( ""+R.string.UNIT_IDENTIFIER));
+            Unit unit = matchup.GetUnit((UnitIdentifier) identifier);
             for(Ability ability : unit.listOfAbilitys)
             {
                 CreateButton(ability,unit);
@@ -145,12 +118,16 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
                     mainActivity.SearchAbility(unit,matchup,findViewById(R.id.ConstraintLayoutEditAbilities),context,abilityHolder);
                 }
             });
-
         }
-        else
+        else if(typeOfIdentifier.equals("army"))
         {
 
         }
+        else if (typeOfIdentifier.equals("weapon"))
+        {
+
+        }
+
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
@@ -245,7 +222,7 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
     public void AbilityAdded(Ability ability, AbilityHolder abilityHolder) {
 
 
-        Unit unit = (Unit)abilityHolder;
+
 
 
         if(abilitiesRemoved.contains(ability.name))
@@ -259,7 +236,7 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
 
 
 
-        CreateButton(ability,unit);
+        CreateButton(ability,abilityHolder);
 
 
     }
@@ -290,6 +267,24 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
         data.putExtra(""+R.string.UI_IDENTIFIER, uiElement);
 
         data.putExtra(""+ R.string.IDENTIFIER, identifier.toString());
+        if(identifier instanceof UnitIdentifier)
+        {
+            data.putExtra(""+R.string.TYPE_OF_IDENTIFIER, "unit");
+            data.putExtra(""+R.string.UNIT_IDENTIFIER, identifier.toString());
+
+        }
+        if(identifier instanceof ModelIdentifier)
+        {
+            data.putExtra(""+R.string.TYPE_OF_IDENTIFIER, "model");
+            data.putExtra(""+R.string.MODEL_IDENTIFIER, identifier.toString());
+
+        }
+        if(identifier instanceof ArmyIdentifier)
+        {
+            data.putExtra(""+R.string.TYPE_OF_IDENTIFIER, "army");
+            data.putExtra(""+R.string.ARMY_IDENTIFIER, identifier.toString());
+
+        }
 
     //    data.putExtra(R.string.UNIT_ALLEGIANCE, );
 

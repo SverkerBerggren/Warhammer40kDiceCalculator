@@ -207,13 +207,12 @@
                     app:srcCompat="@android:drawable/ic_menu_edit" />
 
                 <TableLayout
-                    android:id="@+id/AbilityLayoutEnemyArmy"
+                    android:id="@+id/AbilityLayoutFriendlyArmy"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="20dp"
                     android:background="#B5B2B2"
                     android:stretchColumns="*"
-                    android:tag="AbilityLayoutUnit"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/AddWeaponButton">
@@ -234,7 +233,7 @@
                 </TableLayout>
 
                 <ImageButton
-                    android:id="@+id/imageButton22"
+                    android:id="@+id/EditFriendlyArmyAbilities"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:srcCompat="@android:drawable/ic_menu_edit" />
@@ -407,13 +406,12 @@
                     app:srcCompat="@android:drawable/ic_menu_edit" />
 
                 <TableLayout
-                    android:id="@+id/AbilityLayoutArmy"
+                    android:id="@+id/AbilityLayoutEnemyArmy"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="20dp"
                     android:background="#B5B2B2"
                     android:stretchColumns="*"
-                    android:tag="AbilityLayoutUnit"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/AddWeaponButton">
@@ -434,7 +432,7 @@
                 </TableLayout>
 
                 <ImageButton
-                    android:id="@+id/imageButton25"
+                    android:id="@+id/EditEnemyArmyAbilities"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:srcCompat="@android:drawable/ic_menu_edit" />

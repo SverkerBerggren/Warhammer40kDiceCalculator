@@ -10,6 +10,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.Image;
 import android.os.Bundle;
 
 import android.util.Log;
@@ -81,6 +82,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
     private final String UI_MODEL_MODIFIER_LAYOUT = "ModelModifierLayout";
     private final String UI_ARMY_MODIFIER_LAYOUT = "ArmyModifierLayout";
     private final String UI_ABILITY_LAYOUT_MODEL = "AbilityLayoutModel";
+    private final String UI_ARMY_ABILITY_LAYOUT = "ArmyAbilityLayout";
 
 
 
@@ -159,52 +161,70 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
             int resultCode = result.getResultCode();
             Intent data = result.getData();
 
-            String identiferString = data.getStringExtra(""+R.string.IDENTIFIER);
+            String identifierString = data.getStringExtra(""+R.string.TYPE_OF_IDENTIFIER);
 
-            Identifier gameIdentifier = new UnitIdentifier(identiferString);
+            Identifier abilityHolderIdentifier = null;
 
-            UIIdentifier uiId = new UIIdentifier(data.getStringExtra(""+ R.string.UI_IDENTIFIER),gameIdentifier);
 
-            if(gameIdentifier instanceof UnitIdentifier)
+            if(identifierString.equals("model"))
             {
-                TableLayout tableLayout = highestConstraint.findViewWithTag(uiId);
-                tableLayout.getChildAt(0).setBackgroundColor( Color.parseColor("#AA00FF"));
+                abilityHolderIdentifier = new ModelIdentifier(data.getStringExtra(""+R.string.MODEL_IDENTIFIER));
+            }
 
-                ArrayList<String> abilitiesToRemove = StringArrayFromIntent(data,"abilitiesRemoved");
-                ArrayList<String> abilitiesToAdd = StringArrayFromIntent(data, "abilitiesAdded");
+            if(identifierString.equals("unit"))
+            {
+                abilityHolderIdentifier = new UnitIdentifier(data.getStringExtra(""+R.string.UNIT_IDENTIFIER));
+            }
 
-                ArrayList<View> viewsToRemove = new ArrayList<>();
-                for(int i = 0; i < tableLayout.getChildCount(); i++)
-                {
-                    TableRow childView = (TableRow) tableLayout.getChildAt(i);
 
-                    for(int z = 0; z < childView.getChildCount(); z++)
-                    {
-                        TextView text = (TextView) childView.getChildAt(z);
-
-                        if(abilitiesToRemove.contains(text.getText().toString()))
-                        {
-                            viewsToRemove.add(childView);
-                        }
-                    }
-                }
-                for( View view : viewsToRemove)
-                {
-                    tableLayout.removeView(view);
-                }
-
-                for(int i = 0; i < abilitiesToAdd.size(); i++)
-                {
-                    tableLayout.addView(CreateTableRow(abilitiesToAdd.get(i)));
-                }
+            if(identifierString.equals("army"))
+            {
+               // abilityHolderIdentifier = new ArmyIdentifier(data.getStringExtra(""+R.string.ARMY_IDENTIFIER));
             }
 
 
 
 
+            ArrayList<String> abilitiesToRemove = StringArrayFromIntent(data,"abilitiesRemoved");
+            ArrayList<String> abilitiesToAdd = StringArrayFromIntent(data, "abilitiesAdded");
 
+            UIIdentifier uiId = new UIIdentifier(data.getStringExtra(""+ R.string.UI_IDENTIFIER),abilityHolderIdentifier);
+
+
+            UpdateAbilityRow(abilitiesToAdd,abilitiesToRemove,uiId);
 
             Log.d("hej","it do be callbacking");
+        }
+    }
+
+    private void UpdateAbilityRow(ArrayList<String> abilitiesToAdd, ArrayList<String> abilitiesToRemove, UIIdentifier uiId)
+    {
+        TableLayout tableLayout = highestConstraint.findViewWithTag(uiId);
+        tableLayout.getChildAt(0).setBackgroundColor( Color.parseColor("#AA00FF"));
+        ArrayList<View> viewsToRemove = new ArrayList<>();
+        for(int i = 0; i < tableLayout.getChildCount(); i++)
+        {
+            TableRow childView = (TableRow) tableLayout.getChildAt(i);
+
+            for(int z = 0; z < childView.getChildCount(); z++)
+            {
+
+                TextView text = (TextView) childView.getChildAt(z);
+
+                if(abilitiesToRemove.contains(text.getText().toString()))
+                {
+                    viewsToRemove.add(childView);
+                }
+            }
+        }
+        for( View view : viewsToRemove)
+        {
+            tableLayout.removeView(view);
+        }
+
+        for(int i = 0; i < abilitiesToAdd.size(); i++)
+        {
+            tableLayout.addView(CreateTableRow(abilitiesToAdd.get(i)));
         }
     }
 
@@ -262,6 +282,10 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         ImageButton enemyEditButton = (ImageButton)findViewById(R.id.EditEnemyArmyButton);
         CreateModifiers(matchup.enemyArmy, uiIdArmyEnemy,enemyTableRow,enemyEditButton);
 
+        CreateArmyAbilities(armyFirendlyId, matchup.friendlyArmy);
+        CreateArmyAbilities(armyEnemyId,matchup.enemyArmy);
+
+
         for(int i = 0; i < matchup.friendlyArmy.units.size();i++)
         {
             UnitIdentifier unitIdentifier = new UnitIdentifier("friendly",null,i,matchup.name);
@@ -290,6 +314,44 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
             CreateModifiers(matchup.enemyArmy.units.get(i), uiId, tableRow, button);
         }
 
+    }
+
+    private void CreateArmyAbilities(ArmyIdentifier armyIdentifier, Army army)
+    {
+        if(armyIdentifier.allegiance.equals("friendly"))
+        {
+
+            TableLayout tableLayout = findViewById(R.id.AbilityLayoutFriendlyArmy);
+            for(int i = 0; i < army.abilities.size(); i++)
+            {
+                tableLayout.addView(CreateTableRow(army.abilities.get(i).name));
+            }
+
+            ImageButton editButton = findViewById(R.id.EditFriendlyArmyAbilities);
+
+            editButton.setOnClickListener(new OnClickListenerEditAbilites(army));
+
+            UIIdentifier uiId = new UIIdentifier(UI_ARMY_ABILITY_LAYOUT, armyIdentifier);
+
+            editButton.setTag(uiId);
+
+        }
+        else
+        {
+            TableLayout tableLayout = findViewById(R.id.AbilityLayoutEnemyArmy);
+            for(int i = 0; i < army.abilities.size(); i++)
+            {
+                tableLayout.addView(CreateTableRow(army.abilities.get(i).name));
+            }
+
+            ImageButton editButton = findViewById(R.id.EditEnemyArmyAbilities);
+
+            editButton.setOnClickListener(new OnClickListenerEditAbilites(army));
+
+            UIIdentifier uiId = new UIIdentifier(UI_ARMY_ABILITY_LAYOUT, armyIdentifier);
+
+            editButton.setTag(uiId);
+        }
     }
 
     private void CreateModifiers(ModifierHolder modifierHolder, UIIdentifier uiId, TableRow tableRow, ImageButton button)
@@ -396,20 +458,16 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         Intent intent = new Intent(this, Activity_Edit_Abilities.class);
        // Identifier
         UnitIdentifier identifier = (UnitIdentifier)view.getTag(R.string.UNIT_IDENTIFIER);
-       intent.putExtra(""+R.string.UNIT_ALLEGIANCE,identifier.allegiance);
-       intent.putExtra(""+R.string.UNIT_NUMBER,identifier.index);
-       intent.putExtra("matchupName",identifier.matchupName);
-       intent.putExtra(""+R.string.UI_IDENTIFIER, uiId.elementName);
 
+        intent.putExtra(""+R.string.TYPE_OF_IDENTIFIER,"unit");
 
+        intent.putExtra(""+R.string.UNIT_IDENTIFIER,identifier.toString());
 
-       String unitString = identifier.toString();
-
-       UnitIdentifier nyUnitId = new UnitIdentifier(unitString);
+        intent.putExtra("matchupName",identifier.matchupName);
+        intent.putExtra(""+R.string.UI_IDENTIFIER, uiId.elementName);
 
 
         activityResultLauncher.launch(intent);
-
     }
     public void StartEditAbilites(View view, Model model, UIIdentifier uiId )
     {
@@ -421,6 +479,28 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
         intent.putExtra(""+R.string.TYPE_OF_IDENTIFIER, "model");
         intent.putExtra("" + R.string.MODEL_IDENTIFIER, identifier.toString());
+        intent.putExtra("matchupName", matchup.name);
+
+
+
+
+
+        activityResultLauncher.launch(intent);
+
+    }
+
+
+    public void StartEditAbilites(View view, Army army, UIIdentifier uiId )
+    {
+        Intent intent = new Intent(this, Activity_Edit_Abilities.class);
+        // Identifier
+        ArmyIdentifier identifier = (ArmyIdentifier)view.getTag(R.string.ARMY_IDENTIFIER);
+
+        intent.putExtra(""+R.string.UI_IDENTIFIER, uiId.elementName);
+
+        intent.putExtra(""+R.string.TYPE_OF_IDENTIFIER, "model");
+        intent.putExtra("" + R.string.MODEL_IDENTIFIER, identifier.toString());
+        intent.putExtra("matchupName", matchup.name);
 
 
 
@@ -618,9 +698,10 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
     private void SetModelAbilites(Model model, ConstraintLayout constraintLayout, ModelIdentifier modelId)
     {
-          TableLayout abilityTable =  constraintLayout.findViewById(R.id.AbilityLayoutUnits);
+          TableLayout abilityTable =  highestConstraint.findViewWithTag("AbilityLayoutModels");
 
           Context context = getBaseContext();
+
 
           abilityTable.setBackgroundColor(Color.parseColor("#DFDADA"));
           for(int i = 0; i < model.listOfAbilites.size(); i++)
@@ -640,20 +721,25 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
           TableRow tableRowButton = new TableRow(context);
           tableRowButton.setBackgroundColor(Color.parseColor("#DFDADA"));
 
-          ImageButton addButton = new ImageButton(getBaseContext());
-          addButton.setImageResource(com.google.android.material.R.drawable.abc_ab_share_pack_mtrl_alpha);
+
 
           UIIdentifier uiId = new UIIdentifier(UI_ABILITY_LAYOUT_MODEL,modelId);
+
+          ImageButton addButton = findViewById(R.id.EditModelAbilities);
+
 
           addButton.setOnClickListener(new OnClickListenerAddAbility(model,this,  uiId));
 
           addButton.setTag(R.string.MODEL_IDENTIFIER, modelId);
 
-          tableRowButton.addView(addButton);
+
 
 
           abilityTable.addView(tableRowButton);
 
+          addButton.setId(R.id.noId);
+
+          abilityTable.setTag(uiId);
 
 
     }

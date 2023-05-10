@@ -375,7 +375,7 @@ public class  MainActivity extends AppCompatActivity {
     {
 
         ArrayList<Ability> listOfAbilities = new ArrayList<Ability>();
-        listOfAbilities.add(new HammerOfTheEmperor());
+        listOfAbilities.add(new ReRollOnes());
 
         ArrayList<Model> listOfModels = new ArrayList<>();
 
@@ -388,8 +388,9 @@ public class  MainActivity extends AppCompatActivity {
 
         ArrayList<MeleeWeapons> meleeWeapons = new ArrayList<>();
         meleeWeapons.add(new MeleeWeapons());
-
-        Model intercessor = new Model("Intercessor",4,4,4,0,2,3,3,2,listOfAbilities,bolters,meleeWeapons);
+        ArrayList<Ability> intercessorAbility = new ArrayList<>();
+        intercessorAbility.add(new ReRollOnes());
+        Model intercessor = new Model("Intercessor",4,4,4,0,2,3,3,2,intercessorAbility,bolters,meleeWeapons);
         intercessor.listOfAbilites.add(new ReRollAmountOfHits());
         listOfModels.add(intercessor);
         listOfModels.add(intercessor);
@@ -404,7 +405,10 @@ public class  MainActivity extends AppCompatActivity {
 
         Unit blackTemplar = new Unit("Ny Blacktemplar",100,0,0,0,0,0,0,0,0,listOfModels,listOfAbilities);
 
-        Model guardsman = new Model("Guardsman",3,3,5,0,1,4,4,1,listOfAbilities,bolters,meleeWeapons);
+
+        ArrayList<Ability> guardsmanAbilities = new ArrayList<>();
+        guardsmanAbilities.add(new HammerOfTheEmperor());
+        Model guardsman = new Model("Guardsman",3,3,5,0,1,4,4,1,guardsmanAbilities,bolters,meleeWeapons);
 
         ArrayList<Model> guardsmen = new ArrayList<>();
 
@@ -422,10 +426,9 @@ public class  MainActivity extends AppCompatActivity {
         ArrayList<Ability> abilitiesGuard = new ArrayList<>();
 
         abilitiesGuard.add(new HammerOfTheEmperor());
-        abilitiesGuard.add(new HammerOfTheEmperor());
+       // abilitiesGuard.add(new HammerOfTheEmperor());
 
-        guardsman.listOfAbilites.add(new HammerOfTheEmperor());
-        guardsman.listOfAbilites.add(new HammerOfTheEmperor());
+
 
         Unit infantrySquad = new Unit("Cadian infantry squad",50,0,0,0,0,0,0,0,0,guardsmen,abilitiesGuard);
 

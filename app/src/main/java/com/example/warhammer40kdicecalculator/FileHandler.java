@@ -55,7 +55,7 @@ public  class FileHandler extends AppCompatActivity {
                     try {
 
 
-
+                        String rawJson = gson.toString();
 
                         Matchup matchup = gson.fromJson(new FileReader(child.getAbsolutePath()), Matchup.class);
 
