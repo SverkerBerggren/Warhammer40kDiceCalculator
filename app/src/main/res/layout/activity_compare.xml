@@ -61,7 +61,7 @@
                     android:textSize="24sp" />
 
                 <TableLayout
-                    android:id="@+id/FriendlyArmyModifiers"
+                    android:id="@+id/FriendlyArmyModifier"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="30dp"
@@ -205,12 +205,46 @@
                     android:layout_height="wrap_content"
                     app:srcCompat="@android:drawable/ic_menu_edit" />
 
+                <TableLayout
+                    android:id="@+id/AbilityLayoutEnemyArmy"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp"
+                    android:background="#B5B2B2"
+                    android:stretchColumns="*"
+                    android:tag="AbilityLayoutUnit"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/AddWeaponButton">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="#B5B2B2">
+
+                        <TextView
+                            android:id="@+id/textView480"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Abilities"
+                            android:textAlignment="center" />
+                    </TableRow>
+
+                </TableLayout>
+
+                <ImageButton
+                    android:id="@+id/imageButton22"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@android:drawable/ic_menu_edit" />
+
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/VerticalLayoutEnemyArmy"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:gravity="center_horizontal"
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -224,6 +258,184 @@
                     android:text="Enemy Army"
                     android:textAlignment="center"
                     android:textSize="34sp" />
+
+                <TableLayout
+                    android:id="@+id/FriendlyArmyModifiers"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="40dp"
+                    android:stretchColumns='*'
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="#B5B2B2">
+
+                        <TextView
+                            android:id="@+id/textView150"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="WS"
+                            android:textAlignment="center" />
+
+                        <TextView
+                            android:id="@+id/textView220"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="BS"
+                            android:textAlignment="center" />
+
+                        <TextView
+                            android:id="@+id/textView230"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="S"
+                            android:textAlignment="center" />
+
+                        <TextView
+                            android:id="@+id/textView240"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="T"
+                            android:textAlignment="center" />
+
+                        <TextView
+                            android:id="@+id/textView250"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="W"
+                            android:textAlignment="center" />
+
+                        <TextView
+                            android:id="@+id/textView260"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="A"
+                            android:textAlignment="center" />
+
+                        <TextView
+                            android:id="@+id/textView270"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Sv"
+                            android:textAlignment="center" />
+
+                        <TextView
+                            android:id="@+id/textView280"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="ISv"
+                            android:textAlignment="center" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="#DFDADA">
+
+                        <TextView
+                            android:id="@+id/textView170"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textAlignment="center" />
+
+                        <TextView
+                            android:id="@+id/textView300"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textAlignment="center" />
+
+                        <TextView
+                            android:id="@+id/textView310"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textAlignment="center" />
+
+                        <TextView
+                            android:id="@+id/textView320"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textAlignment="center" />
+
+                        <TextView
+                            android:id="@+id/textView330"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textAlignment="center" />
+
+                        <TextView
+                            android:id="@+id/textView340"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textAlignment="center" />
+
+                        <TextView
+                            android:id="@+id/textView350"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textAlignment="center" />
+
+                        <TextView
+                            android:id="@+id/textView360"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textAlignment="center" />
+                    </TableRow>
+
+                </TableLayout>
+
+                <ImageButton
+                    android:id="@+id/imageButton24"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@android:drawable/ic_menu_edit" />
+
+                <TableLayout
+                    android:id="@+id/AbilityLayoutArmy"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp"
+                    android:background="#B5B2B2"
+                    android:stretchColumns="*"
+                    android:tag="AbilityLayoutUnit"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/AddWeaponButton">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="#B5B2B2">
+
+                        <TextView
+                            android:id="@+id/textView48"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Abilities"
+                            android:textAlignment="center" />
+                    </TableRow>
+
+                </TableLayout>
+
+                <ImageButton
+                    android:id="@+id/imageButton25"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@android:drawable/ic_menu_edit" />
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

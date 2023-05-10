@@ -1,6 +1,7 @@
 package com.example.warhammer40kdicecalculator.DatasheetModeling;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
+import com.example.warhammer40kdicecalculator.Identifiers.ModelIdentifier;
 
 import java.util.ArrayList;
 
@@ -38,6 +39,5 @@ public class Army implements AbilityHolder{
 
         this.abilities = abilities;
     }
-
 
 }

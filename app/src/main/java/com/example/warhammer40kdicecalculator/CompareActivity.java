@@ -79,6 +79,9 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
     private final String UI_UNIT_MODIFIER_LAYOUT = "UnitModifierLayout";
     private final String UI_MODEL_MODIFIER_LAYOUT = "ModelModifierLayout";
     private final String UI_ARMY_MODIFIER_LAYOUT = "ArmyModifierLayout";
+    private final String UI_ABILITY_LAYOUT_MODEL = "AbilityLayoutModel";
+
+
 
     private ArrayList<TableLayout> previousLayouts = new ArrayList<>();
 
@@ -374,10 +377,6 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
     {
 
     }
-    public void StartEditAbilites(View view,Model model )
-    {
-
-    }
     public void StartEditAbilites(View view, Unit unit, UIIdentifier uiId )
     {
         Intent intent = new Intent(this, Activity_Edit_Abilities.class);
@@ -393,12 +392,6 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
        String unitString = identifier.toString();
 
        UnitIdentifier nyUnitId = new UnitIdentifier(unitString);
-
-       Log.d("Unit string  " , unitString);
-        Log.d("Unit string andra " , nyUnitId.toString());
-
-
-        Log.d("ar de lika??  " , "" + nyUnitId.equals(identifier));
 
 
         activityResultLauncher.launch(intent);
@@ -453,7 +446,10 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
 
                 ConstraintLayout constraintLayout = ((ConstraintLayout)inflatedView.getParent()).findViewWithTag("ConstraintLayoutModel");
-                SetModelAbilites(currentModel, constraintLayout);
+
+                SetModelAbilites(currentModel, constraintLayout,  modelId);
+
+
                 constraintLayout.setTag("");
 
                 SetModelStats(inflatedView.findViewById(R.id.ModelStatsIndicator), currentModel, modelId);
@@ -606,9 +602,9 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         startActivity(intent);
     }
 
-    private void SetModelAbilites(Model model, ConstraintLayout constraintLayout)
+    private void SetModelAbilites(Model model, ConstraintLayout constraintLayout, ModelIdentifier modelId)
     {
-          TableLayout abilityTable =  constraintLayout.findViewById(R.id.AbilityLayoutUnit);
+          TableLayout abilityTable =  constraintLayout.findViewById(R.id.AbilityLayoutUnits);
 
           Context context = getBaseContext();
 
@@ -633,13 +629,16 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
           ImageButton addButton = new ImageButton(getBaseContext());
           addButton.setImageResource(com.google.android.material.R.drawable.abc_ab_share_pack_mtrl_alpha);
 
-          addButton.setOnClickListener(new OnClickListenerAddAbility(model,this));
+          UIIdentifier uiId = new UIIdentifier(UI_ABILITY_LAYOUT_MODEL,modelId);
 
+          addButton.setOnClickListener(new OnClickListenerAddAbility(model,this,  uiId));
+
+          addButton.setTag(R.string.MODEL_IDENTIFIER, modelId);
 
           tableRowButton.addView(addButton);
 
 
-        abilityTable.addView(tableRowButton);
+          abilityTable.addView(tableRowButton);
 
 
 
@@ -647,17 +646,20 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
    private class OnClickListenerAddAbility implements View.OnClickListener
    {
-       private  AbilityHolder abilityHolder;
+       private  Model abilityHolder;
        private  CompareActivity compareActivity;
+       private UIIdentifier uiId;
 
-       public OnClickListenerAddAbility(AbilityHolder abilityHolder, CompareActivity compareActivity)
+       public OnClickListenerAddAbility(Model abilityHolder, CompareActivity compareActivity, UIIdentifier uiId)
        {
            this.abilityHolder = abilityHolder;
            this.compareActivity = compareActivity;
+           this.uiId = uiId;
        }
        @Override
        public void onClick(View view) {
 
+           StartEditAbilites(view, abilityHolder, uiId);
 
        }
    }

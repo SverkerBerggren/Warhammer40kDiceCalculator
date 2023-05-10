@@ -19,8 +19,10 @@ import android.widget.TableRow;
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
 import com.example.warhammer40kdicecalculator.Identifiers.Identifier;
+import com.example.warhammer40kdicecalculator.Identifiers.ModelIdentifier;
 import com.example.warhammer40kdicecalculator.Identifiers.UIIdentifier;
 import com.example.warhammer40kdicecalculator.Identifiers.UnitIdentifier;
 
@@ -74,11 +76,40 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
 
         tableLayoutAbilities = findViewById(R.id.TableLayoutEditAbilities);
 
-        Army army;
+        Army army = null;
 
         ImageButton addAbilityButton = findViewById(R.id.EditAbilitiesAdd);
 
-        if( unitAlliegance.equals("friendly"))
+
+
+
+        if(intent.getStringExtra( ""+R.string.TYPE_OF_IDENTIFIER) != null)
+        {
+            if(intent.getStringExtra( ""+R.string.TYPE_OF_IDENTIFIER).equals("model"))
+            {
+                identifier = new ModelIdentifier(intent.getStringExtra( ""+R.string.TYPE_OF_IDENTIFIER));
+
+                Model model = matchup.GetModel((ModelIdentifier) identifier);
+
+                for(Ability ability : model.listOfAbilites)
+                {
+                    CreateButton(ability,model);
+                }
+
+                MainActivity mainActivity = new MainActivity();
+                Activity_Edit_Abilities abilityHolder = this;
+                addAbilityButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mainActivity.SearchAbility(unit,matchup,findViewById(R.id.ConstraintLayoutEditAbilities),context,abilityHolder);
+                    }
+                });
+
+            }
+        }
+
+        if(unitAlliegance != null && unitAlliegance.equals("friendly"))
+        if(unitAlliegance != null && unitAlliegance.equals("friendly"))
         {
             army = matchup.friendlyArmy;
         }
@@ -100,8 +131,6 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
             Unit unit = army.units.get(indexUnit);
 
             identifier = new UnitIdentifier(unitAlliegance,null,indexUnit,matchupName);
-
-            //UIIdentifier.
 
             for(Ability ability : unit.listOfAbilitys)
             {
@@ -133,7 +162,7 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
 
     }
 
-    private void CreateButton(Ability ability, Unit unit)
+    private void CreateButton(Ability ability, AbilityHolder abilityHolder)
     {
         TableRow tableRow = new TableRow(context);
         CheckBox checkBox = new CheckBox(context);
@@ -145,7 +174,7 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
         checkBox.setOnCheckedChangeListener (new OnCheckedChangeAbility(ability));
         imageButton.setImageResource(com.google.android.material.R.drawable.abc_ic_menu_cut_mtrl_alpha);
 
-        imageButton.setOnClickListener(new OnClickRemoveAbility(unit,ability));
+        imageButton.setOnClickListener(new OnClickRemoveAbility(abilityHolder,ability));
 
         tableRow.addView(checkBox);
         tableRow.addView(imageButton);
@@ -157,11 +186,11 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
     {
         Ability ability;
 
-        Unit unit;
+        AbilityHolder abilityHolder;
 
-        public OnClickRemoveAbility(Unit unit,Ability ability)
+        public OnClickRemoveAbility(AbilityHolder abilityHolder,Ability ability)
         {
-            this.unit = unit;
+            this.abilityHolder = abilityHolder;
             this.ability = ability;
 
 
@@ -171,7 +200,7 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
         @Override
         public void onClick(View view) {
 
-            boolean bool = unit.listOfAbilitys.remove(ability);
+            boolean bool = abilityHolder.listOfAbilitys.remove(ability);
 
             Log.d("tog den bort ability", "" + bool);
 
