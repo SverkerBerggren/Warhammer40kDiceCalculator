@@ -33,11 +33,20 @@ public class Army implements AbilityHolder{
         this.woundsModifier = woundsModifier;
         this.ballisticSkillModifier = ballisticSkillModifier;
         this.weaponSkillModifier = weaponSkillModifier;
-        this.attacksModifier = weaponSkillModifier;
+        this.attacksModifier = attacksModifier;
 
         this.units = units;
 
         this.abilities = abilities;
     }
 
+    @Override
+    public Ability GetAbility(int index) {
+        return abilities.get(index);
+    }
+
+    @Override
+    public boolean RemoveAbility(Ability ability) {
+        return abilities.remove(ability);
+    }
 }
