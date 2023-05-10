@@ -87,7 +87,7 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
         {
             if(intent.getStringExtra( ""+R.string.TYPE_OF_IDENTIFIER).equals("model"))
             {
-                identifier = new ModelIdentifier(intent.getStringExtra( ""+R.string.TYPE_OF_IDENTIFIER));
+                identifier = new ModelIdentifier(intent.getStringExtra( ""+R.string.MODEL_IDENTIFIER));
 
                 Model model = matchup.GetModel((ModelIdentifier) identifier);
 
@@ -101,7 +101,7 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
                 addAbilityButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        mainActivity.SearchAbility(unit,matchup,findViewById(R.id.ConstraintLayoutEditAbilities),context,abilityHolder);
+                        mainActivity.SearchAbility(model,matchup,findViewById(R.id.ConstraintLayoutEditAbilities),context,abilityHolder);
                     }
                 });
 
@@ -200,7 +200,7 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
         @Override
         public void onClick(View view) {
 
-            boolean bool = abilityHolder.listOfAbilitys.remove(ability);
+            boolean bool = abilityHolder.RemoveAbility(ability);
 
             Log.d("tog den bort ability", "" + bool);
 

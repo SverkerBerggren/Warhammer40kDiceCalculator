@@ -183,11 +183,11 @@ public class Unit implements AbilityHolder, ModifierHolder {
 
     @Override
     public Ability GetAbility(int index) {
-        return null;
+        return listOfAbilitys.get(index);
     }
 
     @Override
     public boolean RemoveAbility(Ability ability) {
-        return false;
+        return listOfAbilitys.remove(ability);
     }
 }
