@@ -7,31 +7,14 @@
     android:layout_height="wrap_content">
 
     <ImageButton
-        android:id="@+id/imageButton3"
-        android:layout_width="49dp"
-        android:layout_height="49dp"
-        android:tag="dontDropDown"
-        app:layout_constraintBottom_toBottomOf="@+id/inividualModelTopButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.927"
-        app:layout_constraintStart_toEndOf="@+id/inividualModelTopButton"
-        app:layout_constraintTop_toTopOf="@+id/inividualModelTopButton"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@android:drawable/radiobutton_on_background" />
-
-    <ImageButton
         android:id="@+id/imageButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="8dp"
         android:contentDescription="@string/UNIT_MODIFIER"
         android:tag="dontDropDown"
-        app:layout_constraintBottom_toBottomOf="@+id/inividualModelTopButton"
-        app:layout_constraintEnd_toStartOf="@+id/imageButton3"
-        app:layout_constraintStart_toEndOf="@+id/inividualModelTopButton"
+        app:layout_constraintEnd_toStartOf="@+id/DeactivateModelsButton"
         app:layout_constraintTop_toTopOf="@+id/inividualModelTopButton"
-        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@android:drawable/btn_dialog" />
 
     <Button
@@ -349,5 +332,15 @@
             app:layout_constraintTop_toTopOf="@+id/WeaponsLayout"
             app:srcCompat="@android:drawable/ic_menu_edit" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <CheckBox
+        android:id="@+id/DeactivateModelsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:checked="true"
+        android:tag="dontDropDown"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

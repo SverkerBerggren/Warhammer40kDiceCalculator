@@ -28,6 +28,7 @@ import android.widget.TextView;
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.DeactivatableInterface;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedAttackAmount;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedWeapon;
@@ -458,6 +459,8 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
                 highestConstraint.findViewWithTag("AddWeaponModelButton").setOnClickListener(new OnClickAddWeapon(currentModel,modelId));
                 highestConstraint.findViewWithTag("AddWeaponModelButton").setTag("");
 
+                findViewById(R.id.DeactivateModelsButton).setOnClickListener(new OnClickDeactivate(currentModel));
+                findViewById(R.id.DeactivateModelsButton).setId(R.id.noId);
 
                 ConstraintLayout constraintLayout = ((ConstraintLayout)inflatedView.getParent()).findViewWithTag("ConstraintLayoutModel");
 
@@ -474,7 +477,19 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
        // for(int i = 0; i <  )
     }
 
+    public class OnClickDeactivate implements  View.OnClickListener
+    {
+        public DeactivatableInterface deactivatable;
 
+        public OnClickDeactivate(DeactivatableInterface deactivatable)
+        {
+            this.deactivatable = deactivatable;
+        }
+        @Override
+        public void onClick(View view) {
+            deactivatable.FlipActive();
+        }
+    }
 
     private class OnClickAddWeapon implements View.OnClickListener
     {

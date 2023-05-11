@@ -1,12 +1,13 @@
 package com.example.warhammer40kdicecalculator.Abilities;
 
+import com.example.warhammer40kdicecalculator.DatasheetModeling.DeactivatableInterface;
 import com.example.warhammer40kdicecalculator.DiceResult;
 import com.example.warhammer40kdicecalculator.MetricsOfAttacking;
 
 import java.util.List;
 import java.util.Objects;
 
-public abstract class Ability  {
+public abstract class Ability implements DeactivatableInterface {
 
     public String name;
     public boolean active = true;
@@ -57,5 +58,10 @@ public abstract class Ability  {
     @Override
     public int hashCode() {
         return Objects.hash(name, active);
+    }
+
+    @Override
+    public void FlipActive() {
+        active = !active;
     }
 }

@@ -5,11 +5,13 @@ import com.example.warhammer40kdicecalculator.DamageAmount;
 
 import java.util.ArrayList;
 
-public class RangedWeapon implements AbilityHolder {
+public class RangedWeapon implements AbilityHolder, DeactivatableInterface {
     public String name;
     public DamageAmount damageAmount;
     public int ap;
     public int strength;
+
+    public boolean active = true;
     public RangedAttackAmount amountOfAttacks;
     public ArrayList<Ability> weaponRules = new ArrayList<>();
 
@@ -53,6 +55,11 @@ public class RangedWeapon implements AbilityHolder {
         this.ap = ap;
         this.amountOfAttacks = new RangedAttackAmount(amountOfAttacks) ;
         this.weaponRules = weaponRules;
+    }
+
+    @Override
+    public void FlipActive() {
+        active = !active;
     }
 }
 
