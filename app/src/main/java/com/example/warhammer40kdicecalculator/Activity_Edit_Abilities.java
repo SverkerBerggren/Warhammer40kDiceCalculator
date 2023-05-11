@@ -163,7 +163,8 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
         checkBox.setChecked(true);
         checkBox.setText(ability.name);
         checkBox.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        checkBox.setOnCheckedChangeListener (new OnCheckedChangeAbility(ability));
+        CompareActivity compareActivity = new CompareActivity();
+        checkBox.setOnClickListener(compareActivity. new OnClickDeactivate(ability));
         imageButton.setImageResource(com.google.android.material.R.drawable.abc_ic_menu_cut_mtrl_alpha);
 
         imageButton.setOnClickListener(new OnClickRemoveAbility(abilityHolder,ability));
@@ -213,26 +214,6 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
 
         }
     }
-
-    private class OnCheckedChangeAbility implements CheckBox.OnCheckedChangeListener
-    {
-        private Ability ability;
-
-        @Override
-        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-
-
-            ability.active = b;
-
-            Log.d("Abilityns varde ar ", ""+ ability.active);
-        }
-
-        public OnCheckedChangeAbility(Ability ability)
-        {
-            this.ability = ability;
-        }
-    }
-
     @Override
     public void AbilityAdded(Ability ability, AbilityHolder abilityHolder) {
 

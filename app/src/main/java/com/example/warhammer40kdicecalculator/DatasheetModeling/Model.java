@@ -9,7 +9,7 @@ import com.example.warhammer40kdicecalculator.ModifierHolder;
 
 import java.util.ArrayList;
 
-public class Model implements AbilityHolder, ModifierHolder {
+public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterface {
     //public int ap;
     public String name;
     public int toughness;
@@ -20,6 +20,8 @@ public class Model implements AbilityHolder, ModifierHolder {
     public int ballisticSkill;
     public int weaponSkill;
     public int attacks;
+
+    public boolean active = true;
 
     public ArrayList<Ability> listOfAbilites = new ArrayList<>();
 
@@ -187,4 +189,8 @@ public class Model implements AbilityHolder, ModifierHolder {
     }
 
 
+    @Override
+    public void FlipActive() {
+        active = !active;
+    }
 }

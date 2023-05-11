@@ -29,6 +29,7 @@ import android.widget.TextView;
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.DeactivatableInterface;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedAttackAmount;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedWeapon;
@@ -270,11 +271,11 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
     {
         ViewGroup verticalLayout = null;
 
-        ArmyIdentifier armyFirendlyId = new ArmyIdentifier(FRIENDLY, matchup.name);
-        UIIdentifier uiIdArmyFriendly = new UIIdentifier(UI_ARMY_MODIFIER_LAYOUT, armyFirendlyId);
+        ArmyIdentifier armyFriendlyId = new ArmyIdentifier(FRIENDLY, matchup.name);
+        UIIdentifier uiIdArmyFriendly = new UIIdentifier(UI_ARMY_MODIFIER_LAYOUT, armyFriendlyId);
         TableRow friendlyTableRow = (TableRow)findViewById(R.id.TableRowFriendlyArmy);
         ImageButton friendlyEditButton = (ImageButton)findViewById(R.id.EditFriendlyArmyButton);
-        CreateModifiers(matchup.enemyArmy, uiIdArmyFriendly, friendlyTableRow, friendlyEditButton);
+        CreateModifiers(matchup.friendlyArmy, uiIdArmyFriendly, friendlyTableRow, friendlyEditButton);
 
         ArmyIdentifier armyEnemyId = new ArmyIdentifier(ENEMY, matchup.name);
         UIIdentifier uiIdArmyEnemy = new UIIdentifier(UI_ARMY_MODIFIER_LAYOUT, armyEnemyId);
@@ -545,6 +546,8 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
                 highestConstraint.findViewWithTag("AddWeaponModelButton").setOnClickListener(new OnClickAddWeapon(currentModel,modelId));
                 highestConstraint.findViewWithTag("AddWeaponModelButton").setTag("");
 
+                findViewById(R.id.DeactivateModelsButton).setOnClickListener(new OnClickDeactivate(currentModel));
+                findViewById(R.id.DeactivateModelsButton).setId(R.id.noId);
 
                 ConstraintLayout constraintLayout = ((ConstraintLayout)inflatedView.getParent()).findViewWithTag("ConstraintLayoutModel");
 
@@ -561,7 +564,19 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
        // for(int i = 0; i <  )
     }
 
+    public class OnClickDeactivate implements  View.OnClickListener
+    {
+        public DeactivatableInterface deactivatable;
 
+        public OnClickDeactivate(DeactivatableInterface deactivatable)
+        {
+            this.deactivatable = deactivatable;
+        }
+        @Override
+        public void onClick(View view) {
+            deactivatable.FlipActive();
+        }
+    }
 
     private class OnClickAddWeapon implements View.OnClickListener
     {
