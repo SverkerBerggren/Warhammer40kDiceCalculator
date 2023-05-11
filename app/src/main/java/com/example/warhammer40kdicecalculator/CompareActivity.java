@@ -179,7 +179,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
             if(identifierString.equals("army"))
             {
-               // abilityHolderIdentifier = new ArmyIdentifier(data.getStringExtra(""+R.string.ARMY_IDENTIFIER));
+               abilityHolderIdentifier = new ArmyIdentifier(data.getStringExtra(""+R.string.ARMY_IDENTIFIER));
             }
 
 
@@ -329,11 +329,16 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
             ImageButton editButton = findViewById(R.id.EditFriendlyArmyAbilities);
 
-            editButton.setOnClickListener(new OnClickListenerEditAbilites(army));
 
             UIIdentifier uiId = new UIIdentifier(UI_ARMY_ABILITY_LAYOUT, armyIdentifier);
+            editButton.setOnClickListener(new OnClickListenerEditAbilites(army,uiId));
 
-            editButton.setTag(uiId);
+
+            editButton.setTag(R.string.ARMY_IDENTIFIER,armyIdentifier);
+
+
+            tableLayout.setTag(uiId);
+          //  editButton.setTag(uiId);
 
         }
         else
@@ -346,11 +351,16 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
             ImageButton editButton = findViewById(R.id.EditEnemyArmyAbilities);
 
-            editButton.setOnClickListener(new OnClickListenerEditAbilites(army));
 
             UIIdentifier uiId = new UIIdentifier(UI_ARMY_ABILITY_LAYOUT, armyIdentifier);
+            editButton.setOnClickListener(new OnClickListenerEditAbilites(army,uiId));
 
-            editButton.setTag(uiId);
+            editButton.setTag(R.string.ARMY_IDENTIFIER,armyIdentifier);
+
+            tableLayout.setTag(uiId);
+
+
+            //editButton.setTag(uiId);
         }
     }
 
@@ -424,9 +434,10 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         private UIIdentifier uiId;
 
 
-        public OnClickListenerEditAbilites(Army army)
+        public OnClickListenerEditAbilites(Army army,UIIdentifier uiId)
         {
              this.army = army;
+             this.uiId = uiId;
         }
         public OnClickListenerEditAbilites(Model model)
         {
@@ -446,12 +457,12 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
             {
                 StartEditAbilites(view, unit,uiId);
             }
+
+            if(army != null)
+            {
+                StartEditAbilites(view,army,uiId);
+            }
         }
-    }
-
-    public void StartEditAbilites(View view,Army army )
-    {
-
     }
     public void StartEditAbilites(View view, Unit unit, UIIdentifier uiId )
     {
@@ -481,10 +492,6 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         intent.putExtra("" + R.string.MODEL_IDENTIFIER, identifier.toString());
         intent.putExtra("matchupName", matchup.name);
 
-
-
-
-
         activityResultLauncher.launch(intent);
 
     }
@@ -498,8 +505,8 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
         intent.putExtra(""+R.string.UI_IDENTIFIER, uiId.elementName);
 
-        intent.putExtra(""+R.string.TYPE_OF_IDENTIFIER, "model");
-        intent.putExtra("" + R.string.MODEL_IDENTIFIER, identifier.toString());
+        intent.putExtra(""+R.string.TYPE_OF_IDENTIFIER, "army");
+        intent.putExtra("" + R.string.ARMY_IDENTIFIER, identifier.toString());
         intent.putExtra("matchupName", matchup.name);
 
 

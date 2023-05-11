@@ -121,7 +121,22 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
         }
         else if(typeOfIdentifier.equals("army"))
         {
+            identifier = new ArmyIdentifier(intent.getStringExtra(""+R.string.ARMY_IDENTIFIER));
+            Army armyToUse = matchup.GetArmy((ArmyIdentifier) identifier);
 
+            for(Ability ability : armyToUse.abilities)
+            {
+                CreateButton(ability,armyToUse);
+            }
+
+            MainActivity mainActivity = new MainActivity();
+            Activity_Edit_Abilities abilityHolder = this;
+            addAbilityButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mainActivity.SearchAbility(armyToUse,matchup,findViewById(R.id.ConstraintLayoutEditAbilities),context,abilityHolder);
+                }
+            });
         }
         else if (typeOfIdentifier.equals("weapon"))
         {

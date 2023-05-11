@@ -19,8 +19,8 @@ public class ArmyIdentifier extends Identifier{
     @Override
     public String toString() {
         return "ArmyIdentifier{" +
-                "allegiance='" + allegiance + '\'' +
-                ", matchupName='" + matchupName + '\'' +
+                "allegiance=" + allegiance +
+                ", matchupName= " + matchupName +
                 '}';
     }
 
