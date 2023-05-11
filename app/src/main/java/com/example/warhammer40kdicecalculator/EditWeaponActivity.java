@@ -17,6 +17,8 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
@@ -75,7 +77,7 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
             weapons = matchup.enemyArmy.units.get(indexUnit).listOfModels.get(indexModel).listOfRangedWeapons;
         }
 
-        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.WeaponEditLinearLayout);
+        TableLayout tableLayout = (TableLayout) findViewById(R.id.WeaponEditTableLayout);
 
         for (int i = 0; i < weapons.size(); i++) {
             Button weaponButton = new Button(context);
@@ -84,8 +86,14 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
 
             weaponButton.setOnClickListener(new OnClickListenerWeapon(weapons.get(i),context));
 
-
-            linearLayout.addView(weaponButton);
+            TableRow tableRow = new TableRow(context);
+            CheckBox checkBox = new CheckBox(context);
+            checkBox.setChecked(true);
+            CompareActivity compareActivity = new CompareActivity();
+            checkBox.setOnClickListener(compareActivity. new OnClickDeactivate(weapons.get(i)));
+            tableLayout.addView(tableRow);
+            tableRow.addView(weaponButton);
+            tableRow.addView(checkBox);
 
         }
     }
