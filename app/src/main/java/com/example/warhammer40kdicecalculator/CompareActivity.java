@@ -283,7 +283,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         ImageButton enemyEditButton = (ImageButton)findViewById(R.id.EditEnemyArmyButton);
         CreateModifiers(matchup.enemyArmy, uiIdArmyEnemy,enemyTableRow,enemyEditButton);
 
-        CreateArmyAbilities(armyFirendlyId, matchup.friendlyArmy);
+        CreateArmyAbilities(armyFriendlyId, matchup.friendlyArmy);
         CreateArmyAbilities(armyEnemyId,matchup.enemyArmy);
 
 
