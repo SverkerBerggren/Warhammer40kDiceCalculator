@@ -160,7 +160,7 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
         CheckBox checkBox = new CheckBox(context);
         ImageButton imageButton = new ImageButton(context);
 
-        checkBox.setChecked(true);
+        checkBox.setChecked(ability.active);
         checkBox.setText(ability.name);
         checkBox.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         CompareActivity compareActivity = new CompareActivity();

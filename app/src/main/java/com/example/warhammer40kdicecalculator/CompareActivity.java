@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -546,6 +547,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
                 highestConstraint.findViewWithTag("AddWeaponModelButton").setOnClickListener(new OnClickAddWeapon(currentModel,modelId));
                 highestConstraint.findViewWithTag("AddWeaponModelButton").setTag("");
 
+                ((CheckBox)findViewById(R.id.DeactivateModelsButton)).setChecked(currentModel.active);
                 findViewById(R.id.DeactivateModelsButton).setOnClickListener(new OnClickDeactivate(currentModel));
                 findViewById(R.id.DeactivateModelsButton).setId(R.id.noId);
 
