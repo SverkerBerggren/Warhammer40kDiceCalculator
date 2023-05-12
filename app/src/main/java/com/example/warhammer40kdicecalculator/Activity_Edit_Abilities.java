@@ -242,13 +242,6 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
         super.onBackPressed();
 
         Intent data = new Intent();
-
-       // ArrayList<String>
-
-
-    //    ArrayList<String> abilitiesToRemove = abilitiesRemoved.removeAll();
-    //    ArrayList<String> abilitiesAdded = ab
-
         data.putExtra("abilitiesRemoved", abilitiesRemoved.size());
         for(int i = 0; i < abilitiesRemoved.size(); i++)
         {
@@ -281,29 +274,10 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
             data.putExtra(""+R.string.ARMY_IDENTIFIER, identifier.toString());
 
         }
-
-    //    data.putExtra(R.string.UNIT_ALLEGIANCE, );
-
-   //    int indexUnit = intent.getIntExtra(""+R.string.UNIT_NUMBER, -1);
-   //    int indexModel = intent.getIntExtra("indexModel", -1);
-   //    String matchupName = intent.getStringExtra("matchupName");
-   //    fileHandler = new FileHandler(context);
-   //    matchup = fileHandler.getMatchup(matchupName);
-
         setResult(RESULT_OK,data);
-
-
-
-       finish();;
+        finish();;
     }
 
-    //  public void onActivityResult(int requestCode, int resultCode, Intent data) {
-  //      super.onActivityResult(requestCode, resultCode, data);
-  //      if (requestCode == 1) {
-  //          if(resultCode == RESULT_OK) {
-//
-  //          }
-  //      }
-  //  }
+
 
 }

@@ -10,10 +10,10 @@
         android:id="@+id/imageButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="10dp"
         android:contentDescription="@string/UNIT_MODIFIER"
         android:tag="dontDropDown"
-        app:layout_constraintEnd_toStartOf="@+id/DeactivateModelsButton"
+        app:layout_constraintStart_toEndOf="@+id/inividualModelTopButton"
         app:layout_constraintTop_toTopOf="@+id/inividualModelTopButton"
         app:srcCompat="@android:drawable/btn_dialog" />
 
@@ -24,6 +24,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="20dp"
         android:onClick="DropDownClick"
+        android:tag="inividualModelTopButton"
         android:text="ingen model text satt"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

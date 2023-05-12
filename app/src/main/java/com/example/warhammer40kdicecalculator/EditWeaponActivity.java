@@ -1,5 +1,6 @@
 package com.example.warhammer40kdicecalculator;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -23,6 +24,7 @@ import android.widget.TableRow;
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedWeapon;
+import com.example.warhammer40kdicecalculator.Identifiers.ModelIdentifier;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,6 +50,10 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
 
     private EditWeaponActivity abilityHolder = this;
 
+
+    private String uiElementName = "";
+    private ModelIdentifier modelId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,11 +63,13 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
         context = getBaseContext();
         inflater = getLayoutInflater();
 
-        String unitAlliegance = intent.getStringExtra("" + R.string.UNIT_ALLEGIANCE);
-        int indexUnit = intent.getIntExtra("indexUnit", -1);
-        int indexModel = intent.getIntExtra("indexModel", -1);
+
+
         String matchupName = intent.getStringExtra("matchupName");
 
+        modelId = new ModelIdentifier(intent.getStringExtra(""+R.string.MODEL_IDENTIFIER));
+
+        uiElementName = intent.getStringExtra(""+R.string.UI_IDENTIFIER);
 
         fileHandler = new FileHandler(context);
 
@@ -70,12 +78,7 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
 
         ArrayList<RangedWeapon> weapons = new ArrayList<>();
 
-
-        if (unitAlliegance.equals("friendly")) {
-            weapons = matchup.friendlyArmy.units.get(indexUnit).listOfModels.get(indexModel).listOfRangedWeapons;
-        } else {
-            weapons = matchup.enemyArmy.units.get(indexUnit).listOfModels.get(indexModel).listOfRangedWeapons;
-        }
+        weapons = matchup.GetModel(modelId).listOfRangedWeapons;
 
         TableLayout tableLayout = (TableLayout) findViewById(R.id.WeaponEditTableLayout);
 
@@ -96,6 +99,18 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
             tableRow.addView(checkBox);
 
         }
+
+
+
+
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+            @Override
+            public void handleOnBackPressed() {
+                // Handle the back button event
+            }
+        };
+        getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
     @Override
@@ -280,5 +295,24 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
 
             mainActivity.SearchAbility(weapon, matchup, findViewById(R.id.WeaponConstraintLayout), context,abilityHolder);
         }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        Intent data = new Intent();
+    //    data.putExtra("abilitiesRemoved", abilitiesRemoved.size());
+
+
+
+        data.putExtra(""+R.string.MODEL_IDENTIFIER, modelId.toString());
+        data.putExtra(""+R.string.UI_IDENTIFIER, uiElementName);
+
+
+        setResult(RESULT_OK,data);
+        finish();
+
     }
 }

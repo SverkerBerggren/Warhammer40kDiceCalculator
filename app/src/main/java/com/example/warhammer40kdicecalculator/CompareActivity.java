@@ -10,7 +10,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.media.Image;
 import android.os.Bundle;
 
 import android.util.Log;
@@ -84,6 +83,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
     private final String UI_ARMY_MODIFIER_LAYOUT = "ArmyModifierLayout";
     private final String UI_ABILITY_LAYOUT_MODEL = "AbilityLayoutModel";
     private final String UI_ARMY_ABILITY_LAYOUT = "ArmyAbilityLayout";
+    private final String UI_WEAPON_LAYOUT = "UiWeaponLayout";
 
 
 
@@ -124,7 +124,8 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
     private ConstraintLayout highestConstraint;
 
-    ActivityResultLauncher<Intent>  activityResultLauncher;
+    ActivityResultLauncher<Intent> activityResultLauncherAbility;
+    ActivityResultLauncher<Intent> activityResultLauncherWeapon;
 
 
 
@@ -136,7 +137,10 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         inflater =  getLayoutInflater();
         fileHandler = new FileHandler(getBaseContext());
         matchup = fileHandler.getMatchup( getIntent().getStringExtra("SourceFile"));
-        activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),new UpdateUiActivityCallbackAbilities());
+        activityResultLauncherAbility = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),new UpdateUiActivityCallbackAbilities());
+
+        activityResultLauncherWeapon = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),new UpdateUIWeaponCallback());
+
 
         highestConstraint = findViewById(R.id.ConstraintLayoutCompare);
 
@@ -156,7 +160,6 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
     private class UpdateUiActivityCallbackAbilities implements ActivityResultCallback<ActivityResult>
     {
-
         @Override
         public void onActivityResult(ActivityResult result) {
             int resultCode = result.getResultCode();
@@ -196,6 +199,40 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
             Log.d("hej","it do be callbacking");
         }
+    }
+
+    private class UpdateUIWeaponCallback implements ActivityResultCallback<ActivityResult>
+    {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            int resultCode = result.getResultCode();
+            Intent data = result.getData();
+
+            ModelIdentifier modelId =  new ModelIdentifier(data.getStringExtra(""+R.string.MODEL_IDENTIFIER));
+
+
+            ReloadMatchup();
+
+            Model model = matchup.GetModel(modelId);
+
+            UIIdentifier uiId = new UIIdentifier(data.getStringExtra(""+R.string.UI_IDENTIFIER),modelId);
+
+            TableLayout tableLayout = highestConstraint.findViewWithTag(uiId);
+
+            tableLayout.removeViews(1,tableLayout.getChildCount() -1 );
+
+            for(int i = 0; i < model.listOfRangedWeapons.size();i++)
+            {
+                AddWeapon(tableLayout,model.listOfRangedWeapons.get(i));
+            }
+
+
+        }
+    }
+
+    private void ReloadMatchup()
+    {
+        matchup = fileHandler.getMatchup(matchup.name);
     }
 
     private void UpdateAbilityRow(ArrayList<String> abilitiesToAdd, ArrayList<String> abilitiesToRemove, UIIdentifier uiId)
@@ -307,12 +344,14 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
             verticalLayout = (ViewGroup) inflater.inflate(R.layout.unitviewprefab, ((ViewGroup)findViewById(R.id.VerticalLayoutEnemyArmy)));
             instaniateUnitButton(verticalLayout.getChildAt(verticalLayout.getChildCount()-1),matchup.enemyArmy.units.get(i),unitIdentifier);
             CreateUnitAbilites(matchup.enemyArmy.units.get(i),findViewById(R.id.VerticalLayoutEnemyArmy),inflater, unitIdentifier);
-            CreateModel(verticalLayout.getChildAt(verticalLayout.getChildCount()-1),matchup.enemyArmy.units.get(i),i,ENEMY,inflater);
 
             TableRow tableRow = (TableRow)findViewById(R.id.TableRowUnitModifiers);
             ImageButton button = (ImageButton)findViewById(R.id.EditUnitModifierButton);
             UIIdentifier uiId = new UIIdentifier(UI_UNIT_MODIFIER_LAYOUT, unitIdentifier);
             CreateModifiers(matchup.enemyArmy.units.get(i), uiId, tableRow, button);
+            CreateModel(verticalLayout.getChildAt(verticalLayout.getChildCount()-1),matchup.enemyArmy.units.get(i),i,ENEMY,inflater);
+
+
         }
 
     }
@@ -479,7 +518,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         intent.putExtra(""+R.string.UI_IDENTIFIER, uiId.elementName);
 
 
-        activityResultLauncher.launch(intent);
+        activityResultLauncherAbility.launch(intent);
     }
     public void StartEditAbilites(View view, Model model, UIIdentifier uiId )
     {
@@ -493,7 +532,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         intent.putExtra("" + R.string.MODEL_IDENTIFIER, identifier.toString());
         intent.putExtra("matchupName", matchup.name);
 
-        activityResultLauncher.launch(intent);
+        activityResultLauncherAbility.launch(intent);
 
     }
 
@@ -514,7 +553,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
 
 
-        activityResultLauncher.launch(intent);
+        activityResultLauncherAbility.launch(intent);
 
     }
 
@@ -533,13 +572,18 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
                 View inflatedView = inflater.inflate(R.layout.model_stats_prefab,modelsLayout);
 
-                ((Button)inflatedView.findViewById(R.id.inividualModelTopButton)).setText(currentModel.name);
-                ((Button)inflatedView.findViewById(R.id.inividualModelTopButton)).setId(R.id.noId);
+                ((Button)highestConstraint.findViewWithTag("inividualModelTopButton")).setText(currentModel.name);
+
+
+                ((Button)highestConstraint.findViewWithTag("inividualModelTopButton")).setTag("");
+
 
 
                 ModelIdentifier modelId = new ModelIdentifier(FRIENDLY, null, unitNumber,i,matchup.name );
 
                 ((ImageButton)inflatedView.findViewById(R.id.EditWeaponsButton)).setTag(R.string.MODEL_IDENTIFIER,modelId);
+                ((ImageButton)inflatedView.findViewById(R.id.EditWeaponsButton)).setTag(R.string.UI_IDENTIFIER,new UIIdentifier(UI_WEAPON_LAYOUT_MODEL,modelId));
+
                 ((ImageButton)inflatedView.findViewById(R.id.EditWeaponsButton)).setId(R.id.noId);
 
                 // Add Weapon Button
@@ -552,8 +596,47 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
                 ConstraintLayout constraintLayout = ((ConstraintLayout)inflatedView.getParent()).findViewWithTag("ConstraintLayoutModel");
 
                 SetModelAbilites(currentModel, constraintLayout,  modelId);
+                constraintLayout.setTag("");
+
+                SetModelStats(inflatedView.findViewById(R.id.ModelStatsIndicator), currentModel, modelId);
+            }
+
+        }
 
 
+        if(friendlyArmy.equals(ENEMY))
+        {   LinearLayout modelsLayout = (LinearLayout) buttonToModify.findViewById(R.id.ModelsSubLayout);
+            for(int i = 0; i < matchup.enemyArmy.units.get(unitNumber).listOfModels.size();i++)
+            {
+                Log.d("models mangd", "hur manga models " +matchup.enemyArmy.units.get(unitNumber).listOfModels.size() );
+
+
+                Model currentModel = matchup.enemyArmy.units.get(unitNumber).listOfModels.get(i);
+
+                View inflatedView = inflater.inflate(R.layout.model_stats_prefab,modelsLayout);
+
+                ((Button)highestConstraint.findViewWithTag("inividualModelTopButton")).setText(currentModel.name);
+
+
+                ((Button)highestConstraint.findViewWithTag("inividualModelTopButton")).setTag("");
+
+
+
+                ModelIdentifier modelId = new ModelIdentifier(ENEMY, null, unitNumber,i,matchup.name );
+
+                ((ImageButton)inflatedView.findViewById(R.id.EditWeaponsButton)).setTag(R.string.MODEL_IDENTIFIER,modelId);
+                ((ImageButton)inflatedView.findViewById(R.id.EditWeaponsButton)).setTag(R.string.UI_IDENTIFIER,new UIIdentifier(UI_WEAPON_LAYOUT_MODEL,modelId));
+                ((ImageButton)inflatedView.findViewById(R.id.EditWeaponsButton)).setId(R.id.noId);
+                // Add Weapon Button
+                highestConstraint.findViewWithTag("AddWeaponModelButton").setOnClickListener(new OnClickAddWeapon(currentModel,modelId));
+                highestConstraint.findViewWithTag("AddWeaponModelButton").setTag("");
+
+                findViewById(R.id.DeactivateModelsButton).setOnClickListener(new OnClickDeactivate(currentModel));
+                findViewById(R.id.DeactivateModelsButton).setId(R.id.noId);
+
+                ConstraintLayout constraintLayout = ((ConstraintLayout)inflatedView.getParent()).findViewWithTag("ConstraintLayoutModel");
+
+                SetModelAbilites(currentModel, constraintLayout,  modelId);
                 constraintLayout.setTag("");
 
                 SetModelStats(inflatedView.findViewById(R.id.ModelStatsIndicator), currentModel, modelId);
@@ -710,12 +793,19 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
         ModelIdentifier modelId = (ModelIdentifier) v.getTag(R.string.MODEL_IDENTIFIER);
 
-        intent.putExtra(""+UNIT_ALLEGIANCE, modelId.allegiance);
-        intent.putExtra("indexUnit", modelId.indexUnit);
-        intent.putExtra("indexModel", modelId.indexModel);
-        intent.putExtra("matchupName", modelId.matchupName);
+        UIIdentifier uiId = (UIIdentifier) v.getTag(R.string.UI_IDENTIFIER);
 
-        startActivity(intent);
+
+        intent.putExtra(""+R.string.UI_IDENTIFIER,uiId.elementName);
+
+
+        intent.putExtra("" +R.string.MODEL_IDENTIFIER, modelId.toString());
+
+
+        intent.putExtra("matchupName",matchup.name);
+
+        activityResultLauncherWeapon.launch(intent);
+
     }
 
     private void SetModelAbilites(Model model, ConstraintLayout constraintLayout, ModelIdentifier modelId)
