@@ -30,6 +30,7 @@ public class StatisticActivity extends AppCompatActivity {
     private ArrayList<Unit> listOfAttackingUnits = new ArrayList<Unit>();
     private Unit defendingUnit;
     private RollResult rollResult;
+    private Toast activeToast;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -275,8 +276,14 @@ public class StatisticActivity extends AppCompatActivity {
         }
     }
 
+
     private void ShowToastMessage(String message)
     {
-        Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
+        if (activeToast != null)
+        {
+            activeToast.cancel();
+        }
+        activeToast = Toast.makeText(this,message,Toast.LENGTH_SHORT);
+        activeToast.show();
     }
 }
