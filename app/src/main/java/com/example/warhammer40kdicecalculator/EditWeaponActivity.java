@@ -91,7 +91,7 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
 
             TableRow tableRow = new TableRow(context);
             CheckBox checkBox = new CheckBox(context);
-            checkBox.setChecked(true);
+            checkBox.setChecked(weapons.get(i).active);
             CompareActivity compareActivity = new CompareActivity();
             checkBox.setOnClickListener(compareActivity. new OnClickDeactivate(weapons.get(i)));
             tableLayout.addView(tableRow);
@@ -115,7 +115,7 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
 
     @Override
     public void AbilityAdded(Ability ability, AbilityHolder abilityHolder) {
-
+        PopulateAbilites((RangedWeapon) abilityHolder);
     }
 
     private class OnClickListenerWeapon implements View.OnClickListener {
