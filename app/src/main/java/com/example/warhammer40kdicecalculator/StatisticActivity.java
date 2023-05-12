@@ -162,21 +162,29 @@ public class StatisticActivity extends AppCompatActivity {
 
         graphView.addSeries(barSeries);
 
-
-        float percentage = 0;
-
-        for(DataPoint point : dataPoints)
-        {
-            percentage += point.getY();
-        }
-
         float accumulatedPercentage = 100;
         int loopNumber = 0;
-        DataPoint[] lineGraphDatapoint = new DataPoint[dataPoints.length];
+
+        int adding = 0;
+        for (int i = 0; i < dataPoints[0].getX(); i++)
+        {
+            adding++;
+        }
+
+        DataPoint[] lineGraphDatapoint = new DataPoint[dataPoints.length + adding];
+        boolean firstNumbers = true;
         for(DataPoint datapoint : dataPoints)
         {
-
-
+            if (firstNumbers)
+            {
+                for (int i = 0; i < datapoint.getX(); i++)
+                {
+                    lineGraphDatapoint[loopNumber] = new DataPoint(i, 100);
+                    loopNumber++;
+                }
+                firstNumbers = false;
+//
+            }
             lineGraphDatapoint[loopNumber] = new DataPoint(datapoint.getX(),  accumulatedPercentage);
 
             accumulatedPercentage -= datapoint.getY();
