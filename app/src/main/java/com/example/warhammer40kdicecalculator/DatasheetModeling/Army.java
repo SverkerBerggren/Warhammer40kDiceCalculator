@@ -8,11 +8,11 @@ import com.example.warhammer40kdicecalculator.ModifierHolder;
 import java.util.ArrayList;
 
 public class Army implements AbilityHolder, ModifierHolder {
-    public String name;
+    public String name = "";
 
-    public ArrayList<Unit> units;
+    public ArrayList<Unit> units = new ArrayList<>();
 
-    public ArrayList<Ability> abilities;
+    public ArrayList<Ability> abilities = new ArrayList<>();
 
     public int toughnessModifier = 0;
     public int strengthModifier = 0;
@@ -40,6 +40,11 @@ public class Army implements AbilityHolder, ModifierHolder {
         this.units = units;
 
         this.abilities = abilities;
+    }
+
+    public  Army()
+    {
+
     }
 
     public Army(String name,ArrayList<Unit> units,ArrayList<Ability> abilities)

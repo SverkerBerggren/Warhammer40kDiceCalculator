@@ -2,10 +2,10 @@ package com.example.warhammer40kdicecalculator;
 
 public class DamageAmount {
 
-    int rawDamageAmount = 0;
+    public int rawDamageAmount = 0;
 
-    int d3DamageAmount = 0;
-    int d6DamageAmount = 0;
+    public int d3DamageAmount = 0;
+    public int d6DamageAmount = 0;
 
     public DamageAmount()
     {

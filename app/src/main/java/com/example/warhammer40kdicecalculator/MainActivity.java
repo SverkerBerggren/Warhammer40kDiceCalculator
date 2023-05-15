@@ -26,13 +26,12 @@ import com.example.warhammer40kdicecalculator.Abilities.HammerOfTheEmperor;
 import com.example.warhammer40kdicecalculator.Abilities.ReRollAmountOfHits;
 import com.example.warhammer40kdicecalculator.Abilities.ReRollOnes;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
-import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedAttackAmount;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedWeapon;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
 import com.example.warhammer40kdicecalculator.Identifiers.Identifier;
-
+import     com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -90,7 +89,6 @@ public class  MainActivity extends AppCompatActivity {
     private ArrayList<ArrayList<String>> parsedDatasheetList = new ArrayList<>();
     private ArrayList<ArrayList<String>> parsedWeaponList = new ArrayList<>();
     private ArrayList<ArrayList<String>> parsedModelList = new ArrayList<>();
-
     private void InstantiateAbilities()
     {
         abilityMap.put("ReRollAmountOfHits", new ReRollAmountOfHits());
@@ -415,7 +413,7 @@ public class  MainActivity extends AppCompatActivity {
         ArrayList<Ability> armyAbilitiesDefender = new ArrayList<>();
         Army defendingArmy = new Army("defending army  ", defendingUnits,armyAbilitiesDefender);
 
-
+        com.example.warhammer40kdicecalculator.
 
         RollingLogic hej = new RollingLogic();
 
@@ -703,5 +701,12 @@ public class  MainActivity extends AppCompatActivity {
             FileHandler fileHandler = new FileHandler(context);
             fileHandler.saveMatchup(matchup);
         }
+    }
+
+    public void StartParseActivity(View view)
+    {
+        Intent intent = new Intent(this, ParseActivity.class);
+
+        startActivity(intent);
     }
 }

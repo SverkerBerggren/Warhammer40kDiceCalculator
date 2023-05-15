@@ -1,4 +1,11 @@
 package com.example.warhammer40kdicecalculator;
+import com.example.warhammer40kdicecalculator.Abilities.Ability;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedAttackAmount;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedWeapon;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
+
 import org.w3c.dom.*;
 import javax.xml.parsers.*;
 import javax.xml.xpath.XPathConstants;
@@ -37,9 +44,9 @@ public class ROSParser
         }
         return(ReturnValue);
     }
-    Army ParseArmy(String ArmyData)
+    public com.example.warhammer40kdicecalculator.DatasheetModeling.Army ParseArmy(String ArmyData)
     {
-        Army ReturnValue = new Army();
+        com.example.warhammer40kdicecalculator.DatasheetModeling.Army ReturnValue = new Army();
         try{
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -77,6 +84,7 @@ public class ROSParser
                 {
                     ReturnValue.units.add(ParseUnit(Child));
                 }
+
             }
         }
         catch(Exception e)
