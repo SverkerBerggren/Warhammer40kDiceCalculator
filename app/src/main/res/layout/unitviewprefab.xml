@@ -31,415 +31,166 @@
         app:layout_constraintTop_toBottomOf="@+id/UnitTopButton">
 
         <TextView
-            android:id="@+id/BallisticSkill"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Ballistic Skill"
-            android:textSize="28sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.185"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/WeaponSkill"
-            tools:visibility="visible" />
-
-        <ImageButton
-            android:id="@+id/DecreaseStrength"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/app_name"
-            android:minWidth="48dp"
-            android:minHeight="48dp"
-            android:onClick="ChangeUnitModifer"
-            android:rotation="90"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.422"
-            app:layout_constraintStart_toEndOf="@+id/Strength"
-            app:layout_constraintTop_toTopOf="@+id/Strength"
-            app:srcCompat="@android:drawable/arrow_down_float"
-            tools:visibility="visible" />
-
-        <ImageButton
-            android:id="@+id/DecreaseInvul"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/app_name"
-            android:minWidth="48dp"
-            android:minHeight="48dp"
-            android:onClick="ChangeUnitModifer"
-            android:rotation="90"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.106"
-            app:layout_constraintStart_toEndOf="@+id/InvulnerableSave"
-            app:layout_constraintTop_toTopOf="@+id/InvulnerableSave"
-            app:srcCompat="@android:drawable/arrow_down_float"
-            tools:visibility="visible" />
-
-        <ImageButton
-            android:id="@+id/DecreaseWeaponSkill"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/app_name"
-            android:minWidth="48dp"
-            android:minHeight="48dp"
-            android:onClick="ChangeUnitModifer"
-            android:rotation="90"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.282"
-            app:layout_constraintStart_toEndOf="@+id/WeaponSkill"
-            app:layout_constraintTop_toTopOf="@+id/WeaponSkill"
-            app:srcCompat="@android:drawable/arrow_down_float"
-            tools:visibility="visible" />
-
-        <TextView
-            android:id="@+id/BallisticSkillIndicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="0"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toStartOf="@+id/IncreaseBallisticSkill"
-            app:layout_constraintStart_toEndOf="@+id/DecreaseBallisticSkill"
-            app:layout_constraintTop_toTopOf="@+id/BallisticSkill"
-            tools:visibility="visible" />
-
-        <ImageButton
-            android:id="@+id/IncreaseStrength"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="48dp"
-            android:minHeight="48dp"
-            android:onClick="ChangeUnitModifer"
-            android:rotation="-90"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.923"
-            app:layout_constraintStart_toEndOf="@+id/Strength"
-            app:layout_constraintTop_toTopOf="@+id/Strength"
-            app:srcCompat="@android:drawable/arrow_down_float"
-            tools:ignore="SpeakableTextPresentCheck"
-            tools:visibility="visible" />
-
-        <ImageButton
-            android:id="@+id/IncreaseWeaponSkill"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="48dp"
-            android:minHeight="48dp"
-            android:onClick="ChangeUnitModifer"
-            android:rotation="-90"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.901"
-            app:layout_constraintStart_toEndOf="@+id/WeaponSkill"
-            app:layout_constraintTop_toTopOf="@+id/WeaponSkill"
-            app:srcCompat="@android:drawable/arrow_down_float"
-            tools:ignore="SpeakableTextPresentCheck"
-            tools:visibility="visible" />
-
-        <ImageButton
-            android:id="@+id/IncreaseAttacks"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="48dp"
-            android:minHeight="48dp"
-            android:onClick="ChangeUnitModifer"
-            android:rotation="-90"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.927"
-            app:layout_constraintStart_toEndOf="@+id/Attacks"
-            app:layout_constraintTop_toTopOf="@+id/Attacks"
-            app:srcCompat="@android:drawable/arrow_down_float"
-            tools:ignore="SpeakableTextPresentCheck"
-            tools:visibility="visible" />
-
-        <TextView
-            android:id="@+id/Attacks"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Attacks"
-            android:textSize="28sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.148"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/Toughness"
-            tools:visibility="visible" />
-
-        <TextView
-            android:id="@+id/Toughness"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Toughness"
-            android:textSize="28sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.171"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/Strength"
-            tools:visibility="visible" />
-
-        <TextView
-            android:id="@+id/ArmorSaveIndicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="0"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toStartOf="@+id/IncreaseArmorSave"
-            app:layout_constraintStart_toEndOf="@+id/DecreaseArmorSave"
-            app:layout_constraintTop_toTopOf="@+id/save2"
-            tools:visibility="visible" />
-
-        <ImageButton
-            android:id="@+id/IncreaseArmorSave"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="48dp"
-            android:minHeight="48dp"
-            android:onClick="ChangeUnitModifer"
-            android:rotation="-90"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.908"
-            app:layout_constraintStart_toEndOf="@+id/save2"
-            app:layout_constraintTop_toTopOf="@+id/save2"
-            app:srcCompat="@android:drawable/arrow_down_float"
-            tools:ignore="SpeakableTextPresentCheck"
-            tools:visibility="visible" />
-
-        <TextView
-            android:id="@+id/WeaponSkill"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="WeaponSkill"
-            android:textSize="28sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.182"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/UnitModifiers"
-            tools:visibility="visible" />
-
-        <ImageButton
-            android:id="@+id/DecreaseToughness"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/app_name"
-            android:minWidth="48dp"
-            android:minHeight="48dp"
-            android:onClick="ChangeUnitModifer"
-            android:rotation="90"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.336"
-            app:layout_constraintStart_toEndOf="@+id/Toughness"
-            app:layout_constraintTop_toTopOf="@+id/Toughness"
-            app:srcCompat="@android:drawable/arrow_down_float"
-            tools:visibility="visible" />
-
-        <ImageButton
-            android:id="@+id/DecreaseBallisticSkill"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/app_name"
-            android:minWidth="48dp"
-            android:minHeight="48dp"
-            android:onClick="ChangeUnitModifer"
-            android:rotation="90"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.27"
-            app:layout_constraintStart_toEndOf="@+id/BallisticSkill"
-            app:layout_constraintTop_toTopOf="@+id/BallisticSkill"
-            app:srcCompat="@android:drawable/arrow_down_float"
-            tools:visibility="visible" />
-
-        <ImageButton
-            android:id="@+id/IncreaseInvul"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="48dp"
-            android:minHeight="48dp"
-            android:onClick="ChangeUnitModifer"
-            android:rotation="-90"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.872"
-            app:layout_constraintStart_toEndOf="@+id/InvulnerableSave"
-            app:layout_constraintTop_toTopOf="@+id/InvulnerableSave"
-            app:srcCompat="@android:drawable/arrow_down_float"
-            tools:ignore="SpeakableTextPresentCheck"
-            tools:visibility="visible" />
-
-        <TextView
-            android:id="@+id/InvulIndicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="0"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toStartOf="@+id/IncreaseInvul"
-            app:layout_constraintStart_toEndOf="@+id/DecreaseInvul"
-            app:layout_constraintTop_toTopOf="@+id/InvulnerableSave"
-            tools:visibility="visible" />
-
-        <TextView
-            android:id="@+id/StrengthIndicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="0"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toStartOf="@+id/IncreaseStrength"
-            app:layout_constraintStart_toEndOf="@+id/DecreaseStrength"
-            app:layout_constraintTop_toTopOf="@+id/Strength"
-            tools:visibility="visible" />
-
-        <TextView
-            android:id="@+id/ToughnessIndicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="0"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toStartOf="@+id/IncreaseToughness"
-            app:layout_constraintStart_toEndOf="@+id/DecreaseToughness"
-            app:layout_constraintTop_toTopOf="@+id/Toughness"
-            tools:visibility="visible" />
-
-        <TextView
-            android:id="@+id/AttacksIndicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="0"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toStartOf="@+id/IncreaseAttacks"
-            app:layout_constraintStart_toEndOf="@+id/DecreaseAttacks"
-            app:layout_constraintTop_toTopOf="@+id/Attacks"
-            tools:visibility="visible" />
-
-        <TextView
-            android:id="@+id/InvulnerableSave"
-            android:layout_width="191dp"
-            android:layout_height="27dp"
-            android:layout_marginTop="20dp"
-            android:text="Invulnerable save"
-            android:textSize="22sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.213"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/save2"
-            tools:visibility="visible" />
-
-        <TextView
-            android:id="@+id/WeaponSkillInd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="0"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toStartOf="@+id/IncreaseWeaponSkill"
-            app:layout_constraintStart_toEndOf="@+id/DecreaseWeaponSkill"
-            app:layout_constraintTop_toTopOf="@+id/WeaponSkill"
-            tools:visibility="visible" />
-
-        <ImageButton
-            android:id="@+id/IncreaseBallisticSkill"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="48dp"
-            android:minHeight="48dp"
-            android:onClick="ChangeUnitModifer"
-            android:rotation="-90"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.899"
-            app:layout_constraintStart_toEndOf="@+id/BallisticSkill"
-            app:layout_constraintTop_toTopOf="@+id/BallisticSkill"
-            app:srcCompat="@android:drawable/arrow_down_float"
-            tools:ignore="SpeakableTextPresentCheck"
-            tools:visibility="visible" />
-
-        <ImageButton
-            android:id="@+id/DecreaseAttacks"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/app_name"
-            android:minWidth="48dp"
-            android:minHeight="48dp"
-            android:onClick="ChangeUnitModifer"
-            android:rotation="90"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.447"
-            app:layout_constraintStart_toEndOf="@+id/Attacks"
-            app:layout_constraintTop_toTopOf="@+id/Attacks"
-            app:srcCompat="@android:drawable/arrow_down_float"
-            tools:visibility="visible" />
-
-        <TextView
             android:id="@+id/UnitModifiers"
             android:layout_width="200dp"
             android:layout_height="56dp"
             android:layout_marginTop="4dp"
             android:text="Unit Modifiers"
+            android:textAlignment="center"
             android:textSize="28sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.028"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
-            android:id="@+id/DecreaseArmorSave"
+            android:id="@+id/EditUnitModifierButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/app_name"
-            android:minWidth="48dp"
-            android:minHeight="48dp"
-            android:onClick="ChangeUnitModifer"
-            android:rotation="90"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.32"
-            app:layout_constraintStart_toEndOf="@+id/save2"
-            app:layout_constraintTop_toTopOf="@+id/save2"
-            app:srcCompat="@android:drawable/arrow_down_float"
-            tools:visibility="visible" />
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="45dp"
+            app:layout_constraintStart_toEndOf="@+id/UnitTable"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@android:drawable/ic_menu_edit" />
 
-        <ImageButton
-            android:id="@+id/IncreaseToughness"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="48dp"
-            android:minHeight="48dp"
-            android:onClick="ChangeUnitModifer"
-            android:rotation="-90"
+        <TableLayout
+            android:id="@+id/UnitTable"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="75dp"
+            android:stretchColumns='*'
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.91"
-            app:layout_constraintStart_toEndOf="@+id/Toughness"
-            app:layout_constraintTop_toTopOf="@+id/Toughness"
-            app:srcCompat="@android:drawable/arrow_down_float"
-            tools:ignore="SpeakableTextPresentCheck"
-            tools:visibility="visible" />
-
-        <TextView
-            android:id="@+id/save2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Armor save"
-            android:textSize="28sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.174"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/Attacks"
-            tools:visibility="visible" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/Strength"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Strength"
-            android:textSize="28sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.154"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/BallisticSkill"
-            tools:visibility="visible" />
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#B5B2B2">
+
+                <TextView
+                    android:id="@+id/textView15"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="WS"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/textView22"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="BS"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/textView23"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="S"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/textView24"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="T"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/textView25"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="W"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/textView26"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="A"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/textView27"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sv"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/textView28"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ISv"
+                    android:textAlignment="center" />
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/TableRowUnitModifiers"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#DFDADA">
+
+                <TextView
+                    android:id="@+id/textView17"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/textView30"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/textView31"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/textView32"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/textView33"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/textView34"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/textView35"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/textView36"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textAlignment="center" />
+            </TableRow>
+
+        </TableLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/ModelsLayout"
@@ -448,7 +199,7 @@
             android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/DecreaseInvul">
+            app:layout_constraintTop_toBottomOf="@+id/UnitTable">
 
             <Button
                 android:id="@+id/modelsTopButton"
@@ -486,6 +237,15 @@
             app:layout_constraintTop_toBottomOf="@+id/ModelsLayout"
             app:layout_constraintVertical_bias="0.0">
 
+            <ImageButton
+                android:id="@+id/EditUnitAbilities"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
+                app:srcCompat="@android:drawable/ic_menu_edit" />
+
             <Button
                 android:id="@+id/abilitiesTopButton"
                 android:layout_width="wrap_content"
@@ -499,16 +259,15 @@
                 app:layout_constraintVertical_bias="0.0" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="20dp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/abilitiesTopButton">
 
                 <TableLayout
-                    android:id="@+id/AbilityLayoutUnit"
+                    android:id="@+id/AbilityLayoutUnits"
                     android:layout_width="386dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"

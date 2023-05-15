@@ -2,20 +2,16 @@ package com.example.warhammer40kdicecalculator;
 
 import android.content.Context;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.util.ArrayList;
-
-import kotlin.collections.unsigned.UArraysKt;
 
 public  class FileHandler extends AppCompatActivity {
 
@@ -59,7 +55,7 @@ public  class FileHandler extends AppCompatActivity {
                     try {
 
 
-
+                        String rawJson = gson.toString();
 
                         Matchup matchup = gson.fromJson(new FileReader(child.getAbsolutePath()), Matchup.class);
 

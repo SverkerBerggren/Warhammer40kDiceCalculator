@@ -1,5 +1,6 @@
 package com.example.warhammer40kdicecalculator;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -17,11 +18,18 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+
+import com.example.warhammer40kdicecalculator.Abilities.Ability;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedWeapon;
+import com.example.warhammer40kdicecalculator.Identifiers.ModelIdentifier;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class EditWeaponActivity extends AppCompatActivity {
+public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHolder{
     private LayoutInflater inflater;
     private ImageButton abilityPopupButton;
     private boolean inflatedPopup= false;
@@ -40,6 +48,12 @@ public class EditWeaponActivity extends AppCompatActivity {
     private  Matchup matchup;
     private Context context;
 
+    private EditWeaponActivity abilityHolder = this;
+
+
+    private String uiElementName = "";
+    private ModelIdentifier modelId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,11 +63,13 @@ public class EditWeaponActivity extends AppCompatActivity {
         context = getBaseContext();
         inflater = getLayoutInflater();
 
-        String unitAlliegance = intent.getStringExtra("" + R.string.UNIT_ALLEGIANCE);
-        int indexUnit = intent.getIntExtra("indexUnit", -1);
-        int indexModel = intent.getIntExtra("indexModel", -1);
+
+
         String matchupName = intent.getStringExtra("matchupName");
 
+        modelId = new ModelIdentifier(intent.getStringExtra(""+R.string.MODEL_IDENTIFIER));
+
+        uiElementName = intent.getStringExtra(""+R.string.UI_IDENTIFIER);
 
         fileHandler = new FileHandler(context);
 
@@ -62,14 +78,9 @@ public class EditWeaponActivity extends AppCompatActivity {
 
         ArrayList<RangedWeapon> weapons = new ArrayList<>();
 
+        weapons = matchup.GetModel(modelId).listOfRangedWeapons;
 
-        if (unitAlliegance.equals("friendly")) {
-            weapons = matchup.friendlyArmy.units.get(indexUnit).listOfModels.get(indexModel).listOfRangedWeapons;
-        } else {
-            weapons = matchup.enemyArmy.units.get(indexUnit).listOfModels.get(indexModel).listOfRangedWeapons;
-        }
-
-        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.WeaponEditLinearLayout);
+        TableLayout tableLayout = (TableLayout) findViewById(R.id.WeaponEditTableLayout);
 
         for (int i = 0; i < weapons.size(); i++) {
             Button weaponButton = new Button(context);
@@ -78,10 +89,33 @@ public class EditWeaponActivity extends AppCompatActivity {
 
             weaponButton.setOnClickListener(new OnClickListenerWeapon(weapons.get(i),context));
 
-
-            linearLayout.addView(weaponButton);
+            TableRow tableRow = new TableRow(context);
+            CheckBox checkBox = new CheckBox(context);
+            checkBox.setChecked(weapons.get(i).active);
+            CompareActivity compareActivity = new CompareActivity();
+            checkBox.setOnClickListener(compareActivity. new OnClickDeactivate(weapons.get(i)));
+            tableLayout.addView(tableRow);
+            tableRow.addView(weaponButton);
+            tableRow.addView(checkBox);
 
         }
+
+
+
+
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+            @Override
+            public void handleOnBackPressed() {
+                // Handle the back button event
+            }
+        };
+        getOnBackPressedDispatcher().addCallback(this, callback);
+    }
+
+    @Override
+    public void AbilityAdded(Ability ability, AbilityHolder abilityHolder) {
+        PopulateAbilites((RangedWeapon) abilityHolder);
     }
 
     private class OnClickListenerWeapon implements View.OnClickListener {
@@ -254,11 +288,33 @@ public class EditWeaponActivity extends AppCompatActivity {
             this.weapon = weapon;
             this.context = context;
         }
+
         @Override
         public void onClick(View view) {
             MainActivity mainActivity = new MainActivity();
 
-            mainActivity.SearchWeapon(weapon, matchup, findViewById(R.id.WeaponConstraintLayout), context);
+            mainActivity.SearchAbility(weapon, matchup, findViewById(R.id.WeaponConstraintLayout), context,abilityHolder);
         }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+
+
+        super.onBackPressed();
+
+        Intent data = new Intent();
+    //    data.putExtra("abilitiesRemoved", abilitiesRemoved.size());
+
+
+
+        data.putExtra(""+R.string.MODEL_IDENTIFIER, modelId.toString());
+        data.putExtra(""+R.string.UI_IDENTIFIER, uiElementName);
+
+
+        setResult(RESULT_OK,data);
+        finish();
+
     }
 }

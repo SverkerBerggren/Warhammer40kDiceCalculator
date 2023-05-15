@@ -1,4 +1,7 @@
-package com.example.warhammer40kdicecalculator;
+package com.example.warhammer40kdicecalculator.Abilities;
+
+import com.example.warhammer40kdicecalculator.DiceResult;
+import com.example.warhammer40kdicecalculator.MetricsOfAttacking;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -16,6 +19,11 @@ public class ReRollOnes extends Ability{
     public  void hitRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking)
     {
 
+
+        if(diceResult.result == 1)
+        {
+            diceResult.result = ThreadLocalRandom.current().nextInt(1, 6 + 1);
+        }
 
 
     }

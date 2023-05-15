@@ -7,31 +7,14 @@
     android:layout_height="wrap_content">
 
     <ImageButton
-        android:id="@+id/imageButton3"
-        android:layout_width="49dp"
-        android:layout_height="49dp"
-        android:tag="dontDropDown"
-        app:layout_constraintBottom_toBottomOf="@+id/inividualModelTopButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.927"
-        app:layout_constraintStart_toEndOf="@+id/inividualModelTopButton"
-        app:layout_constraintTop_toTopOf="@+id/inividualModelTopButton"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@android:drawable/radiobutton_on_background" />
-
-    <ImageButton
         android:id="@+id/imageButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
         android:contentDescription="@string/UNIT_MODIFIER"
         android:tag="dontDropDown"
-        app:layout_constraintBottom_toBottomOf="@+id/inividualModelTopButton"
-        app:layout_constraintEnd_toStartOf="@+id/imageButton3"
         app:layout_constraintStart_toEndOf="@+id/inividualModelTopButton"
         app:layout_constraintTop_toTopOf="@+id/inividualModelTopButton"
-        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@android:drawable/btn_dialog" />
 
     <Button
@@ -41,6 +24,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="20dp"
         android:onClick="DropDownClick"
+        android:tag="inividualModelTopButton"
         android:text="ingen model text satt"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -73,22 +57,22 @@
                 android:id="@+id/TableRowTest"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#B5B2B2"
+                android:background="#B4B2B5"
                 android:textAlignment="center">
-
-                <TextView
-                    android:id="@+id/BallisticSkillRow"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="BS"
-                    android:textAlignment="center"
-                    android:textSize="10sp" />
 
                 <TextView
                     android:id="@+id/WeaponSkillRow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="WS"
+                    android:textAlignment="center"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/BallisticSkillRow"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="BS"
                     android:textAlignment="center"
                     android:textSize="10sp" />
 
@@ -150,7 +134,7 @@
                 android:tag="TableModelStatsIndicator">
 
                 <TextView
-                    android:id="@+id/BallisticSkillStatIndicator"
+                    android:id="@+id/WeaponSkillStatIndicator"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0"
@@ -158,7 +142,7 @@
                     android:textSize="10sp" />
 
                 <TextView
-                    android:id="@+id/WeaponSkillStatIndicator"
+                    android:id="@+id/BallisticSkillStatIndicator"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0"
@@ -285,70 +269,16 @@
 
             </TableRow>
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#DFDADA">
-
-                <TextView
-                    android:id="@+id/WeaponName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textSize="10sp" />
-
-                <TextView
-                    android:id="@+id/WeaponAbilities"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textSize="10sp" />
-
-                <TextView
-                    android:id="@+id/WeaponAttacks"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textSize="10sp" />
-
-                <TextView
-                    android:id="@+id/WeaponStrength"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textSize="10sp" />
-
-                <TextView
-                    android:id="@+id/WeaponAp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textSize="10sp" />
-
-                <TextView
-                    android:id="@+id/WeaponDamage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textSize="10sp" />
-
-            </TableRow>
-
         </TableLayout>
 
         <TableLayout
-            android:id="@+id/AbilityLayoutUnit"
+            android:id="@+id/AbilityLayoutModels"
             android:layout_width="386dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="50dp"
             android:background="#B5B2B2"
             android:stretchColumns="*"
+            android:tag="AbilityLayoutModels"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/AddWeaponButton">
@@ -374,6 +304,7 @@
             android:layout_width="64dp"
             android:layout_height="51dp"
             android:layout_marginTop="20dp"
+            android:tag="AddWeaponModelButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/WeaponsLayout"
@@ -402,6 +333,27 @@
             app:layout_constraintStart_toEndOf="@+id/WeaponsLayout"
             app:layout_constraintTop_toTopOf="@+id/WeaponsLayout"
             app:srcCompat="@android:drawable/ic_menu_edit" />
+
+        <ImageButton
+            android:id="@+id/EditModelAbilities"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tag="EditModelAbilities"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/AbilityLayoutModels"
+            app:srcCompat="@android:drawable/ic_menu_edit" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <CheckBox
+        android:id="@+id/DeactivateModelsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:checked="true"
+        android:tag="dontDropDown"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

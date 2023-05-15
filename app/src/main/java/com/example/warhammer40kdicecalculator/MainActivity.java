@@ -10,6 +10,7 @@ import android.os.Bundle;
 
 import android.os.Handler;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,18 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.warhammer40kdicecalculator.Abilities.Ability;
+import com.example.warhammer40kdicecalculator.Abilities.HammerOfTheEmperor;
+import com.example.warhammer40kdicecalculator.Abilities.ReRollAmountOfHits;
+import com.example.warhammer40kdicecalculator.Abilities.ReRollOnes;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedAttackAmount;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedWeapon;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
+import com.example.warhammer40kdicecalculator.Identifiers.Identifier;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -343,7 +356,73 @@ public class  MainActivity extends AppCompatActivity {
 
         listToCompare.add(manticore);
    //     manticoreHunterKillerMissile.listOfAbilites.add(new HammerOfTheEmperor());
-        hej.newCalculateDamage(listToCompare,spaceMarineIntercessorUnit);
+       // hej.newCalculateDamage(listToCompare,spaceMarineIntercessorUnit,);
+
+    }
+
+    public void TestDiceRolling(View v)
+    {
+        ArrayList<Ability> lasgunRules = new ArrayList<Ability>();
+
+        RangedWeapon lasgun = new RangedWeapon("Lasgun",3,0,new DamageAmount(1,0,0),new RangedAttackAmount(1,0,0),lasgunRules);
+        ArrayList<RangedWeapon> weaponsGuard = new ArrayList<>();
+        weaponsGuard.add(lasgun);
+
+        lasgunRules.add(new HammerOfTheEmperor());
+
+        Model guardMan = new Model("Guardsman", 3, 3, 5, 0, 1, 4, 4, 1,
+        new ArrayList<>(),weaponsGuard , new ArrayList<>() );
+
+        ArrayList<Ability> abilityGuardsmenUnit = new ArrayList<>();
+     //   abilityGuardsmenUnit.add(new HammerOfTheEmperor());
+
+        Unit guardsmen5 = new Unit(  "Guardsmen 5",65,0, 0, 0,0,0, 0, 0,
+        0, new ArrayList<Model>(),abilityGuardsmenUnit  );
+        for(int i = 0; i < 5; i++)
+        {
+            guardsmen5.listOfModels.add(guardMan);
+        }
+        ArrayList<Unit> attackingUnits = new ArrayList<>();
+        attackingUnits.add(guardsmen5);
+        attackingUnits.add(guardsmen5);
+
+
+        ArrayList<Ability> armyAbilities = new ArrayList<>();
+        armyAbilities.add(new ReRollOnes());
+
+        Army armyAttacker = new Army("attacking army ", attackingUnits,armyAbilities);
+        armyAttacker.ballisticSkillModifier = 0;
+
+        ArrayList<Ability> bolterRules = new ArrayList<Ability>();
+
+        RangedWeapon bolter = new RangedWeapon("Bolter",4,0,new DamageAmount(1,0,0),new RangedAttackAmount(2,0,0),bolterRules);
+        ArrayList<RangedWeapon> weaponsMarines = new ArrayList<>();
+        weaponsMarines.add(bolter);
+
+        Model spaceMarine = new Model("Space marine", 4, 4, 3, 0, 2, 3, 3, 2,
+                new ArrayList<>(),weaponsMarines , new ArrayList<>() );
+
+        ArrayList<Ability> abilitiesSpaceMarine = new ArrayList<>();
+
+        Unit spaceMarine10 = new Unit(  "spaceMarine10",200,0, 0, 0,0,0, 0, 0,
+                0, new ArrayList<>(),abilitiesSpaceMarine  );
+        for(int i = 0; i < 5; i++)
+        {
+            spaceMarine10.listOfModels.add(spaceMarine);
+        }
+        ArrayList<Unit> defendingUnits = new ArrayList<>();
+        defendingUnits.add(spaceMarine10);
+        ArrayList<Ability> armyAbilitiesDefender = new ArrayList<>();
+        Army defendingArmy = new Army("defending army  ", defendingUnits,armyAbilitiesDefender);
+
+
+
+        RollingLogic hej = new RollingLogic();
+
+        hej.newCalculateDamage(attackingUnits,spaceMarine10,armyAttacker,defendingArmy);
+
+
+
 
     }
 
@@ -368,18 +447,13 @@ public class  MainActivity extends AppCompatActivity {
         startActivity(intenten);
     }
 
-    public void OpenUnitSelection(View v)
-    {
-        Intent intenten = new Intent(this, UnitSelection.class);
 
-        startActivity(intenten);
-    }
 
     public void CreateNewMatchup(View v)
     {
 
         ArrayList<Ability> listOfAbilities = new ArrayList<Ability>();
-        listOfAbilities.add(new HammerOfTheEmperor());
+        listOfAbilities.add(new ReRollOnes());
 
         ArrayList<Model> listOfModels = new ArrayList<>();
 
@@ -392,8 +466,9 @@ public class  MainActivity extends AppCompatActivity {
 
         ArrayList<MeleeWeapons> meleeWeapons = new ArrayList<>();
         meleeWeapons.add(new MeleeWeapons());
-
-        Model intercessor = new Model("Intercessor",4,4,4,0,2,3,3,2,listOfAbilities,bolters,meleeWeapons);
+        ArrayList<Ability> intercessorAbility = new ArrayList<>();
+        intercessorAbility.add(new ReRollOnes());
+        Model intercessor = new Model("Intercessor",4,4,4,0,2,3,3,2,intercessorAbility,bolters,meleeWeapons);
         intercessor.listOfAbilites.add(new ReRollAmountOfHits());
         listOfModels.add(intercessor);
         listOfModels.add(intercessor);
@@ -408,7 +483,10 @@ public class  MainActivity extends AppCompatActivity {
 
         Unit blackTemplar = new Unit("Ny Blacktemplar",100,0,0,0,0,0,0,0,0,listOfModels,listOfAbilities);
 
-        Model guardsman = new Model("Guardsman",3,3,5,0,1,4,4,1,listOfAbilities,bolters,meleeWeapons);
+
+        ArrayList<Ability> guardsmanAbilities = new ArrayList<>();
+        guardsmanAbilities.add(new HammerOfTheEmperor());
+        Model guardsman = new Model("Guardsman",3,3,5,0,1,4,4,1,guardsmanAbilities,bolters,meleeWeapons);
 
         ArrayList<Model> guardsmen = new ArrayList<>();
 
@@ -426,10 +504,9 @@ public class  MainActivity extends AppCompatActivity {
         ArrayList<Ability> abilitiesGuard = new ArrayList<>();
 
         abilitiesGuard.add(new HammerOfTheEmperor());
-        abilitiesGuard.add(new HammerOfTheEmperor());
+       // abilitiesGuard.add(new HammerOfTheEmperor());
 
-        guardsman.listOfAbilites.add(new HammerOfTheEmperor());
-        guardsman.listOfAbilites.add(new HammerOfTheEmperor());
+
 
         Unit infantrySquad = new Unit("Cadian infantry squad",50,0,0,0,0,0,0,0,0,guardsmen,abilitiesGuard);
 
@@ -500,7 +577,7 @@ public class  MainActivity extends AppCompatActivity {
     }
 
 
-    public void SearchWeapon(RangedWeapon weapon, Matchup matchup, ViewGroup baseView, Context context)
+    public void SearchAbility(AbilityHolder abilityHolder, Matchup matchup, ViewGroup baseView, Context context, AbilityUIHolder abilityUIHolder)
     {
         InflateSearch(baseView,context);
         SearchView searchView = baseView.findViewById(R.id.searchView);
@@ -516,7 +593,7 @@ public class  MainActivity extends AppCompatActivity {
 
         listView.setAdapter(arrayAdapter);
 
-        listView.setOnItemClickListener(new OnClickAbilityItem(weapon,baseView));
+        listView.setOnItemClickListener(new OnClickAbilityItem(abilityHolder,baseView,matchup,context, abilityUIHolder));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -528,8 +605,6 @@ public class  MainActivity extends AppCompatActivity {
                 arrayAdapter.getFilter().filter(s);
                 return false;
             }
-
-
         });
 
 
@@ -544,29 +619,34 @@ public class  MainActivity extends AppCompatActivity {
         private Model model;
         private RangedWeapon weapon;
         private ViewGroup baseView;
+        private Matchup matchup;
+        private Context context;
+        private AbilityUIHolder abilityUIHolder;
 
+        public OnClickAbilityItem(AbilityHolder abilityHolder, ViewGroup baseView, Matchup matchup, Context context, AbilityUIHolder abilityUIHolder)
+        {
+            this.baseView = baseView;
+            this.matchup = matchup;
+            this.context = context;
+            this.abilityUIHolder = abilityUIHolder;
+            if(abilityHolder instanceof Army)
+            {
+                army = (Army) abilityHolder;
+            }
+            if(abilityHolder instanceof Model)
+            {
+                model = (Model) abilityHolder;
+            }
+            if(abilityHolder instanceof Unit)
+            {
+                unit = (Unit) abilityHolder;
+            }
+            if(abilityHolder instanceof RangedWeapon)
+            {
+                weapon = (RangedWeapon) abilityHolder;
+            }
+        }
 
-
-        public OnClickAbilityItem(Army army, ViewGroup baseView)
-        {
-            this.army = army;
-            this.baseView = baseView;
-        }
-        public OnClickAbilityItem(Unit unit,ViewGroup baseView)
-        {
-            this.unit = unit;
-            this.baseView = baseView;
-        }
-        public OnClickAbilityItem(Model model,ViewGroup baseView)
-        {
-            this.model = model;
-            this.baseView = baseView;
-        }
-        public OnClickAbilityItem(RangedWeapon weapon,ViewGroup baseView)
-        {
-            this.weapon = weapon;
-            this.baseView = baseView;
-        }
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
             String item = ((TextView)view).getText().toString();
@@ -578,33 +658,50 @@ public class  MainActivity extends AppCompatActivity {
                 if (!weapon.weaponRules.contains(ability))
                 {
                     weapon.weaponRules.add(ability);
+                    abilityUIHolder.AbilityAdded(ability,weapon);
                 }
+
+
             }
             if (model != null)
             {
                 if (!model.listOfAbilites.contains(ability))
                 {
                     model.listOfAbilites.add(ability);
+                    abilityUIHolder.AbilityAdded(ability,model);
                 }
+
+
             }
             if (unit != null)
             {
                 if (!unit.listOfAbilitys.contains(ability))
                 {
                     unit.listOfAbilitys.add(ability);
+                    abilityUIHolder.AbilityAdded(ability,unit);
                 }
+
+
             }
             if (army != null)
             {
                 if (!army.abilities.contains(ability))
                 {
                     army.abilities.add(ability);
+                    abilityUIHolder.AbilityAdded(ability,army);
                 }
+
+
             }
 
 
             View searchLayout = baseView.findViewById(R.id.SearchLayout);
             searchLayout.setVisibility(View.GONE);
+
+
+
+            FileHandler fileHandler = new FileHandler(context);
+            fileHandler.saveMatchup(matchup);
         }
     }
 }

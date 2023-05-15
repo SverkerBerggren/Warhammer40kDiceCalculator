@@ -7,268 +7,375 @@
     android:layout_height="match_parent"
     tools:context=".activity_popup">
 
-    <View
-        android:id="@+id/View"
-        android:layout_width="300dp"
-        android:layout_height="600dp"
-        android:background="#C1C62424"
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#AA4C4C"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintHeight_percent="0.9"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.496"
-        tools:visibility="visible" />
+        app:layout_constraintWidth_percent="0.9">
 
-    <Button
-        android:id="@+id/SaveModelPopup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Save"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.287"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.872" />
-
-    <Button
-        android:id="@+id/button4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="ClosePopup"
-        android:text="Cancel"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.732"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.872" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="NameOfModel"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.112" />
-
-    <TableLayout
-        android:id="@+id/tableLayout"
-        android:layout_width="276dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.48000002">
-
-        <TableRow
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            app:layout_constraintHeight_percent="0.95"
+            app:layout_constraintWidth_percent="0.85">
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Weapon Skill"
-                android:textSize="24sp" />
+                android:layout_marginTop="10dp"
+                android:text="NameOfModel/Unit"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.4" />
 
-            <EditText
-                android:id="@+id/WeaponSkillModelPopup"
-                android:layout_width="75dp"
+            <Button
+                android:id="@+id/SaveModelPopup"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:digits="1234567890"
-                android:ems="10"
-                android:inputType="number"
-                android:maxLength="2"
-                android:text="0"
-                android:textAlignment="center"
-                android:textSize="24sp" />
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="10dp"
+                android:text="Save"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tableLayout"
+                app:layout_constraintWidth_percent="0.4" />
 
-        </TableRow>
+            <Button
+                android:id="@+id/button4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="24dp"
+                android:onClick="ClosePopup"
+                android:text="Cancel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tableLayout"
+                app:layout_constraintWidth_percent="0.4" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/textView6"
+            <TableLayout
+                android:id="@+id/tableLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ballistic Skill"
-                android:textSize="24sp" />
+                android:layout_marginTop="5dp"
+                android:layoutDirection="inherit"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView2">
 
-            <EditText
-                android:id="@+id/BallisticSkillModelPopup"
-                android:layout_width="75dp"
-                android:layout_height="wrap_content"
-                android:digits="1234567890"
-                android:ems="10"
-                android:inputType="number"
-                android:maxLength="2"
-                android:text="0"
-                android:textAlignment="center"
-                android:textSize="24sp" />
+                <TableRow
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
 
-        </TableRow>
+                    <TextView
+                        android:id="@+id/textView4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Weapon Skill"
+                        android:textSize="24sp" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+                    <ImageButton
+                        android:id="@+id/WeaponSkillDecrease"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:srcCompat="?attr/actionModeCloseDrawable" />
 
-            <TextView
-                android:id="@+id/textView10"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Strength"
-                android:textSize="24sp" />
+                    <EditText
+                        android:id="@+id/WeaponSkillModelPopup"
+                        android:layout_width="48dp"
+                        android:layout_height="wrap_content"
+                        android:digits="1234567890"
+                        android:ems="10"
+                        android:inputType="number"
+                        android:maxLength="2"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textSize="24sp" />
 
-            <EditText
-                android:id="@+id/StrengthModelPopup"
-                android:layout_width="75dp"
-                android:layout_height="wrap_content"
-                android:digits="1234567890"
-                android:ems="10"
-                android:inputType="number"
-                android:maxLength="2"
-                android:text="0"
-                android:textAlignment="center"
-                android:textSize="24sp" />
+                    <ImageButton
+                        android:id="@+id/WeaponSkillIncrease"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:rotation="180"
+                        app:srcCompat="?attr/actionModeCloseDrawable" />
 
-        </TableRow>
+                </TableRow>
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+                <TableRow
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/textView12"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Toughness"
-                android:textSize="24sp" />
+                    <TextView
+                        android:id="@+id/textView6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ballistic Skill"
+                        android:textSize="24sp" />
 
-            <EditText
-                android:id="@+id/ToughnessModelPopup"
-                android:layout_width="75dp"
-                android:layout_height="wrap_content"
-                android:digits="1234567890"
-                android:ems="10"
-                android:inputType="number"
-                android:maxLength="2"
-                android:text="0"
-                android:textAlignment="center"
-                android:textSize="24sp" />
+                    <ImageButton
+                        android:id="@+id/BallisticSkillDecrease"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:srcCompat="?attr/actionModeCloseDrawable" />
 
-        </TableRow>
+                    <EditText
+                        android:id="@+id/BallisticSkillModelPopup"
+                        android:layout_width="48dp"
+                        android:layout_height="wrap_content"
+                        android:digits="1234567890"
+                        android:ems="10"
+                        android:inputType="number"
+                        android:maxLength="2"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textSize="24sp" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+                    <ImageButton
+                        android:id="@+id/BallisticSkillIncrease"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:rotation="180"
+                        app:srcCompat="?attr/actionModeCloseDrawable" />
 
-            <TextView
-                android:id="@+id/textView14"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Wounds"
-                android:textSize="24sp" />
+                </TableRow>
 
-            <EditText
-                android:id="@+id/WoundsModelPopup"
-                android:layout_width="75dp"
-                android:layout_height="wrap_content"
-                android:digits="1234567890"
-                android:ems="10"
-                android:inputType="number"
-                android:maxLength="2"
-                android:text="0"
-                android:textAlignment="center"
-                android:textSize="24sp" />
+                <TableRow
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
 
-        </TableRow>
+                    <TextView
+                        android:id="@+id/textView10"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Strength"
+                        android:textSize="24sp" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+                    <ImageButton
+                        android:id="@+id/StrengthDecrease"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:srcCompat="?attr/actionModeCloseDrawable" />
 
-            <TextView
-                android:id="@+id/textView16"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Attacks"
-                android:textSize="24sp" />
+                    <EditText
+                        android:id="@+id/StrengthModelPopup"
+                        android:layout_width="48dp"
+                        android:layout_height="wrap_content"
+                        android:digits="1234567890"
+                        android:ems="10"
+                        android:inputType="number"
+                        android:maxLength="2"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textSize="24sp" />
 
-            <EditText
-                android:id="@+id/AttacksModelPopup"
-                android:layout_width="75dp"
-                android:layout_height="wrap_content"
-                android:digits="1234567890"
-                android:ems="10"
-                android:inputType="number"
-                android:maxLength="2"
-                android:text="0"
-                android:textAlignment="center"
-                android:textSize="24sp" />
+                    <ImageButton
+                        android:id="@+id/StrengthIncrease"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:rotation="180"
+                        app:srcCompat="?attr/actionModeCloseDrawable" />
 
-        </TableRow>
+                </TableRow>
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+                <TableRow
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/textView18"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Saves"
-                android:textSize="24sp" />
+                    <TextView
+                        android:id="@+id/textView12"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Toughness"
+                        android:textSize="24sp" />
 
-            <EditText
-                android:id="@+id/ArmorSaveModelPopup"
-                android:layout_width="75dp"
-                android:layout_height="wrap_content"
-                android:digits="1234567890"
-                android:ems="10"
-                android:inputType="number"
-                android:maxLength="2"
-                android:text="0"
-                android:textAlignment="center"
-                android:textSize="24sp" />
+                    <ImageButton
+                        android:id="@+id/ToughnessDecrease"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:srcCompat="?attr/actionModeCloseDrawable" />
 
-        </TableRow>
+                    <EditText
+                        android:id="@+id/ToughnessModelPopup"
+                        android:layout_width="48dp"
+                        android:layout_height="wrap_content"
+                        android:digits="1234567890"
+                        android:ems="10"
+                        android:inputType="number"
+                        android:maxLength="2"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textSize="24sp" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+                    <ImageButton
+                        android:id="@+id/ToughnessIncrease"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:rotation="180"
+                        app:srcCompat="?attr/actionModeCloseDrawable" />
 
-            <TextView
-                android:id="@+id/textView20"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Invulnerable save"
-                android:textSize="24sp" />
+                </TableRow>
 
-            <EditText
-                android:id="@+id/InvSaveModelPopup"
-                android:layout_width="75dp"
-                android:layout_height="wrap_content"
-                android:digits="1234567890"
-                android:ems="10"
-                android:inputType="number"
-                android:maxLength="2"
-                android:text="0"
-                android:textAlignment="center"
-                android:textSize="24sp" />
+                <TableRow
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
 
-        </TableRow>
-    </TableLayout>
+                    <TextView
+                        android:id="@+id/textView14"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Wounds"
+                        android:textSize="24sp" />
+
+                    <ImageButton
+                        android:id="@+id/WoundsDecrease"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:srcCompat="?attr/actionModeCloseDrawable" />
+
+                    <EditText
+                        android:id="@+id/WoundsModelPopup"
+                        android:layout_width="48dp"
+                        android:layout_height="wrap_content"
+                        android:digits="1234567890"
+                        android:ems="10"
+                        android:inputType="number"
+                        android:maxLength="2"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textSize="24sp" />
+
+                    <ImageButton
+                        android:id="@+id/WoundsIncrease"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:rotation="180"
+                        app:srcCompat="?attr/actionModeCloseDrawable" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/textView16"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Attacks"
+                        android:textSize="24sp" />
+
+                    <ImageButton
+                        android:id="@+id/AttacksDecrease"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:srcCompat="?attr/actionModeCloseDrawable" />
+
+                    <EditText
+                        android:id="@+id/AttacksModelPopup"
+                        android:layout_width="48dp"
+                        android:layout_height="wrap_content"
+                        android:digits="1234567890"
+                        android:ems="10"
+                        android:inputType="number"
+                        android:maxLength="2"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textSize="24sp" />
+
+                    <ImageButton
+                        android:id="@+id/AttacksIncrease"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:rotation="180"
+                        app:srcCompat="?attr/actionModeCloseDrawable" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/textView18"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Saves"
+                        android:textSize="24sp" />
+
+                    <ImageButton
+                        android:id="@+id/SavesDecrease"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:srcCompat="?attr/actionModeCloseDrawable" />
+
+                    <EditText
+                        android:id="@+id/ArmorSaveModelPopup"
+                        android:layout_width="48dp"
+                        android:layout_height="wrap_content"
+                        android:digits="1234567890"
+                        android:ems="10"
+                        android:inputType="number"
+                        android:maxLength="2"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textSize="24sp" />
+
+                    <ImageButton
+                        android:id="@+id/SavesIncrease"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:rotation="180"
+                        app:srcCompat="?attr/actionModeCloseDrawable" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/textView20"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Invunerable saves"
+                        android:textSize="24sp" />
+
+                    <ImageButton
+                        android:id="@+id/InvulnerableDecrease"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:srcCompat="?attr/actionModeCloseDrawable" />
+
+                    <EditText
+                        android:id="@+id/InvSaveModelPopup"
+                        android:layout_width="48dp"
+                        android:layout_height="wrap_content"
+                        android:digits="1234567890"
+                        android:ems="10"
+                        android:inputType="number"
+                        android:maxLength="2"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textSize="24sp" />
+
+                    <ImageButton
+                        android:id="@+id/InvulnerableIncrease"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:rotation="180"
+                        app:srcCompat="?attr/actionModeCloseDrawable" />
+
+                </TableRow>
+            </TableLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
