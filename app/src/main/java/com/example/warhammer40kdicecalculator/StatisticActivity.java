@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
+import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
@@ -19,6 +20,7 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.OnDataPointTapListener;
 import com.jjoe64.graphview.series.Series;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.TreeMap;
@@ -49,7 +51,8 @@ public class StatisticActivity extends AppCompatActivity {
 
         boolean myUnitsAttacking = intent.getBooleanExtra("FirendlyArmyAttacking", true);
 
-        String vsString = "";
+        String attackingString = "";
+        String defendingString = "";
         for (int i = 0; i < sizeOfAttack; i++)
         {
             int key = intent.getIntExtra("IndexOfUnitAttacking" + i, -1000);
@@ -58,11 +61,11 @@ public class StatisticActivity extends AppCompatActivity {
                 listOfAttackingUnits.add(matchup.friendlyArmy.units.get(key));
                 if (i == sizeOfAttack -1)
                 {
-                    vsString += matchup.friendlyArmy.units.get(key).unitName + " vs ";
+                    attackingString += matchup.friendlyArmy.units.get(key).unitName;
                 }
                 else
                 {
-                    vsString += matchup.friendlyArmy.units.get(key).unitName + ", ";
+                    attackingString += matchup.friendlyArmy.units.get(key).unitName + ", ";
                 }
             }
             else
@@ -70,11 +73,11 @@ public class StatisticActivity extends AppCompatActivity {
                 listOfAttackingUnits.add(matchup.enemyArmy.units.get(key));
                 if (i == sizeOfAttack -1)
                 {
-                    vsString += matchup.enemyArmy.units.get(key).unitName + " vs ";
+                    attackingString += matchup.enemyArmy.units.get(key).unitName;
                 }
                 else
                 {
-                    vsString += matchup.enemyArmy.units.get(key).unitName + " ,";
+                    attackingString += matchup.enemyArmy.units.get(key).unitName + " ,";
                 }
             }
 
@@ -84,16 +87,18 @@ public class StatisticActivity extends AppCompatActivity {
         if (!myUnitsAttacking)
         {
             defendingUnit = matchup.friendlyArmy.units.get(defendingUnitIndex);
-            vsString += defendingUnit.unitName;
+            defendingString += defendingUnit.unitName;
         }
         else
         {
             defendingUnit = matchup.enemyArmy.units.get(defendingUnitIndex);
-            vsString += defendingUnit.unitName;
+            defendingString += defendingUnit.unitName;
         }
 
-        TextView vsText = (TextView)findViewById(R.id.VSText);
-        vsText.setText(vsString);
+        TextView attackingText = (TextView)findViewById(R.id.AttackingUnitsText);
+        TextView defendingText = (TextView)findViewById(R.id.DefendingUnitText);
+        attackingText.setText(attackingString);
+        defendingText.setText(defendingString);
 
         GraphView graphView1 = findViewById(R.id.Graph1);
         GraphView graphView2 = findViewById(R.id.Graph2);
@@ -122,9 +127,9 @@ public class StatisticActivity extends AppCompatActivity {
         ConvertResult(rollResult);
 
         graphView1.setTitle("Amount of wounds dealt");
-        InstaniateGraph(graphView1,woundsDealtDistribution);
+        InstaniateGraph(graphView1,woundsDealtDistribution, true);
         graphView2.setTitle("Amount of Enemies killed");
-        InstaniateGraph(graphView2, modelsSlainDistribution);
+        InstaniateGraph(graphView2, modelsSlainDistribution, false);
 
         // series.setDrawDataPoints(true);
         // series.setDataPointsRadius(10);
@@ -132,14 +137,17 @@ public class StatisticActivity extends AppCompatActivity {
         // series.setBackgroundColor(Color.argb(80,179, 230, 255));
     }
 
-    private void InstaniateGraph(GraphView graphView, TreeMap<Integer,Integer> distribution)
+    private void InstaniateGraph(GraphView graphView, TreeMap<Integer,Integer> distribution, boolean isGraph1)
     {
 
         // after adding data to our line graph series.
         // on below line we are setting
         // title for our graph view.
 
+        NumberFormat nf = NumberFormat.getInstance();
+        nf.setMaximumFractionDigits(0);
 
+        graphView.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(nf,nf));
         // on below line we are setting
         // text color to our graph view.
         graphView.setTitleColor(R.color.purple_200);
@@ -147,6 +155,7 @@ public class StatisticActivity extends AppCompatActivity {
         // on below line we are setting
         // our title text size.
         graphView.setTitleTextSize(32);
+        graphView.getViewport().setScalable(true);
 
         DataPoint[] dataPoints = CreateDataPoints(distribution);
         BarGraphSeries<DataPoint> barSeries = new BarGraphSeries<>(dataPoints);//new BarGraphSeries<>(CreateDatapoints(distribution))
@@ -154,12 +163,12 @@ public class StatisticActivity extends AppCompatActivity {
 
         graphView.getViewport().setYAxisBoundsManual(true);
 
-        graphView.getViewport().setMaxY(101);
+        graphView.getViewport().setMaxY(100);
         graphView.getViewport().setXAxisBoundsManual(true);
         graphView.getViewport().setMaxX(dataPoints[dataPoints.length - 1].getX());
 
         graphView.getGridLabelRenderer().setHumanRounding(true);
-        graphView.getGridLabelRenderer().setTextSize(25);
+        graphView.getGridLabelRenderer().setTextSize(20);
 
         graphView.getGridLabelRenderer().setNumHorizontalLabels(dataPoints.length);
         graphView.getGridLabelRenderer().setHorizontalAxisTitle("Amount");
@@ -220,11 +229,20 @@ public class StatisticActivity extends AppCompatActivity {
             @Override
             public void onTap(Series series, DataPointInterface dataPoint) {
                 Iterator<DataPoint> barDataPoints = barSeries.getValues(dataPoint.getX() + 1, dataPoint.getX() + 1);
-
-                ShowToastMessage("Amount of Wounds: " + dataPoint.getX() + "\n" +
-                                 "Chance for Wounds: " + Math.round(barDataPoints.next().getY()  * 100.0) / 100.0 + " %\n" +
-                                 "Chance for " + dataPoint.getX() + " or more Wounds: " + + Math.round(dataPoint.getY() * 100.0) / 100.0 + " %"
-                                );
+                if (isGraph1)
+                {
+                    ShowToastMessage("Amount of Wounds: " + dataPoint.getX() + "\n" +
+                            "Chance for Wounds: " + Math.round(barDataPoints.next().getY()  * 100.0) / 100.0 + " %\n" +
+                            "Chance for " + dataPoint.getX() + " or more Wounds: " + + Math.round(dataPoint.getY() * 100.0) / 100.0 + " %"
+                    );
+                }
+               else
+                {
+                    ShowToastMessage("Amount of Models Slain: " + dataPoint.getX() + "\n" +
+                            "Chance for Models Slain: " + Math.round(barDataPoints.next().getY()  * 100.0) / 100.0 + " %\n" +
+                            "Chance for " + dataPoint.getX() + " or more Models Slain: " + + Math.round(dataPoint.getY() * 100.0) / 100.0 + " %"
+                    );
+                }
             }
         });
 
