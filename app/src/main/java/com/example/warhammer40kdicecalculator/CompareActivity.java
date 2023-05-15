@@ -120,7 +120,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
     private ImageButton invulnerableSavesIncrease;
     private ImageButton invulnerableSavesDecrease;
 
-
+    private boolean popupActive = false;
 
 
     private ConstraintLayout highestConstraint;
@@ -1168,7 +1168,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
             {
                 ShowPopup(view);
             }
-
+            popupActive = true;
             ((Button)findViewById(R.id.SaveModelPopup)).setOnClickListener(new OnClickListenerModelSave(modifierHolder, uiId));
 
             weaponSkillView.setText(""+ modifierHolder.GetModifierValue(UnitAndModelSkill.WeaponSkill));
@@ -1259,6 +1259,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
             SetModifiers(uiId, modifierHolder);
 
             fileHandler.saveMatchup(matchup);
+            ClosePopup(view);
         }
     }
 
@@ -1273,6 +1274,16 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
     {
         View popup = findViewById(R.id.ConstraintLayoutModelPopup);
         popup.setVisibility(View.GONE);
+        popupActive = false;
     }
 
+    @Override
+    public void onBackPressed() {
+        if (popupActive)
+        {
+            ClosePopup(null);
+            return;
+        }
+        super.onBackPressed();
+    }
 }
