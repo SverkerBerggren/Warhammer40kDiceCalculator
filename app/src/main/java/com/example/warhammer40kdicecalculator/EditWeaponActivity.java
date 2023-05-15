@@ -300,6 +300,8 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
 
     @Override
     public void onBackPressed() {
+
+
         super.onBackPressed();
 
         Intent data = new Intent();

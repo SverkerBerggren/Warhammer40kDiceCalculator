@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.BarGraphSeries;
@@ -100,7 +101,22 @@ public class StatisticActivity extends AppCompatActivity {
 
         RollingLogic rollLogic = new RollingLogic();
 
-        rollResult = rollLogic.newCalculateDamage(listOfAttackingUnits, defendingUnit);
+        Army attackingArmy;
+        Army defendingArmy;
+
+        if(myUnitsAttacking)
+        {
+            attackingArmy = matchup.friendlyArmy;
+            defendingArmy = matchup.enemyArmy;
+        }
+        else
+        {
+            attackingArmy = matchup.enemyArmy;
+            defendingArmy = matchup.friendlyArmy;
+        }
+
+
+        rollResult = rollLogic.newCalculateDamage(listOfAttackingUnits, defendingUnit, attackingArmy,defendingArmy);
 
         ConvertResult(rollResult);
 

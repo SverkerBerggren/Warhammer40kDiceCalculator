@@ -14,14 +14,14 @@ public class Army implements AbilityHolder, ModifierHolder {
 
     public ArrayList<Ability> abilities;
 
-    public int toughnessModifier;
-    public int strengthModifier;
-    public int armorSaveModifier;
-    public int invulnerableSaveModifier;
-    public int woundsModifier;
-    public int ballisticSkillModifier;
-    public int weaponSkillModifier;
-    public int attacksModifier;
+    public int toughnessModifier = 0;
+    public int strengthModifier = 0;
+    public int armorSaveModifier = 0;
+    public int invulnerableSaveModifier = 0;
+    public int woundsModifier = 0;
+    public int ballisticSkillModifier = 0;
+    public int weaponSkillModifier = 0;
+    public int attacksModifier = 0;
 
     public  Army( String  name,int toughnessModifier, int strengthModifier, int armorSaveModifier,int invulnerableSaveModifier,int woundsModifier, int ballisticSkillModifier, int weaponSkillModifier,
                   int attacksModifier, ArrayList<Unit> units,ArrayList<Ability> abilities )
@@ -39,6 +39,13 @@ public class Army implements AbilityHolder, ModifierHolder {
 
         this.units = units;
 
+        this.abilities = abilities;
+    }
+
+    public Army(String name,ArrayList<Unit> units,ArrayList<Ability> abilities)
+    {
+        this.name = name;
+        this.units = units;
         this.abilities = abilities;
     }
 

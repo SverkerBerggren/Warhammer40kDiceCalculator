@@ -20,6 +20,11 @@ public class ReRollOnes extends Ability{
     {
 
 
+        if(diceResult.result == 1)
+        {
+            diceResult.result = ThreadLocalRandom.current().nextInt(1, 6 + 1);
+        }
+
 
     }
     public   void woundRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking)

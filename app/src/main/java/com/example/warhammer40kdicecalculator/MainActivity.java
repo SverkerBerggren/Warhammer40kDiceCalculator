@@ -344,7 +344,73 @@ public class  MainActivity extends AppCompatActivity {
 
         listToCompare.add(manticore);
    //     manticoreHunterKillerMissile.listOfAbilites.add(new HammerOfTheEmperor());
-        hej.newCalculateDamage(listToCompare,spaceMarineIntercessorUnit);
+       // hej.newCalculateDamage(listToCompare,spaceMarineIntercessorUnit,);
+
+    }
+
+    public void TestDiceRolling(View v)
+    {
+        ArrayList<Ability> lasgunRules = new ArrayList<Ability>();
+
+        RangedWeapon lasgun = new RangedWeapon("Lasgun",3,0,new DamageAmount(1,0,0),new RangedAttackAmount(1,0,0),lasgunRules);
+        ArrayList<RangedWeapon> weaponsGuard = new ArrayList<>();
+        weaponsGuard.add(lasgun);
+
+        lasgunRules.add(new HammerOfTheEmperor());
+
+        Model guardMan = new Model("Guardsman", 3, 3, 5, 0, 1, 4, 4, 1,
+        new ArrayList<>(),weaponsGuard , new ArrayList<>() );
+
+        ArrayList<Ability> abilityGuardsmenUnit = new ArrayList<>();
+     //   abilityGuardsmenUnit.add(new HammerOfTheEmperor());
+
+        Unit guardsmen5 = new Unit(  "Guardsmen 5",65,0, 0, 0,0,0, 0, 0,
+        0, new ArrayList<Model>(),abilityGuardsmenUnit  );
+        for(int i = 0; i < 5; i++)
+        {
+            guardsmen5.listOfModels.add(guardMan);
+        }
+        ArrayList<Unit> attackingUnits = new ArrayList<>();
+        attackingUnits.add(guardsmen5);
+        attackingUnits.add(guardsmen5);
+
+
+        ArrayList<Ability> armyAbilities = new ArrayList<>();
+        armyAbilities.add(new ReRollOnes());
+
+        Army armyAttacker = new Army("attacking army ", attackingUnits,armyAbilities);
+        armyAttacker.ballisticSkillModifier = 0;
+
+        ArrayList<Ability> bolterRules = new ArrayList<Ability>();
+
+        RangedWeapon bolter = new RangedWeapon("Bolter",4,0,new DamageAmount(1,0,0),new RangedAttackAmount(2,0,0),bolterRules);
+        ArrayList<RangedWeapon> weaponsMarines = new ArrayList<>();
+        weaponsMarines.add(bolter);
+
+        Model spaceMarine = new Model("Space marine", 4, 4, 3, 0, 2, 3, 3, 2,
+                new ArrayList<>(),weaponsMarines , new ArrayList<>() );
+
+        ArrayList<Ability> abilitiesSpaceMarine = new ArrayList<>();
+
+        Unit spaceMarine10 = new Unit(  "spaceMarine10",200,0, 0, 0,0,0, 0, 0,
+                0, new ArrayList<>(),abilitiesSpaceMarine  );
+        for(int i = 0; i < 5; i++)
+        {
+            spaceMarine10.listOfModels.add(spaceMarine);
+        }
+        ArrayList<Unit> defendingUnits = new ArrayList<>();
+        defendingUnits.add(spaceMarine10);
+        ArrayList<Ability> armyAbilitiesDefender = new ArrayList<>();
+        Army defendingArmy = new Army("defending army  ", defendingUnits,armyAbilitiesDefender);
+
+
+
+        RollingLogic hej = new RollingLogic();
+
+        hej.newCalculateDamage(attackingUnits,spaceMarine10,armyAttacker,defendingArmy);
+
+
+
 
     }
 
