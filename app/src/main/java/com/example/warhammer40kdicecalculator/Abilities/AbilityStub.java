@@ -27,7 +27,17 @@ public class AbilityStub extends Ability{
     }
     public AbilityStub(String name)
     {
-        super(name + ": no behaviour");
+        super("");
+
+        if(name.contains(": no behaviour"))
+        {
+
+            this.name = name;
+        }
+        else
+        {
+            this.name = name + ": no behaviour";
+        }
 
 
     }

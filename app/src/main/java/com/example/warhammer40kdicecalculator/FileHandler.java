@@ -182,6 +182,7 @@ public  class FileHandler extends AppCompatActivity {
         try {
 
             String jsonString = gson.toJson(TestArmy);
+
             File armySave = new File(armyDirectory, TestArmy.name);
             FileWriter writer = new FileWriter(armySave);
             writer.write(jsonString);
