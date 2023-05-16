@@ -110,7 +110,7 @@ public class ActivityCreateMatchup extends AppCompatActivity {
         TextInputEditText nameText = findViewById(R.id.InputFieldName);
 
         Army friendlyArmy = fileHandler.getArmy(clickedCheckBoxes.get(0).getText().toString());
-        Army enemyArmy = fileHandler.getArmy(clickedCheckBoxes.get(0).getText().toString());
+        Army enemyArmy = fileHandler.getArmy(clickedCheckBoxes.get(1).getText().toString());
 
         Matchup matchup = new Matchup(nameText.getText().toString(),friendlyArmy,enemyArmy);
 
