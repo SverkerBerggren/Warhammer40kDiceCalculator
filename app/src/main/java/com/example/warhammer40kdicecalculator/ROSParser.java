@@ -1,5 +1,6 @@
 package com.example.warhammer40kdicecalculator;
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
+import com.example.warhammer40kdicecalculator.Abilities.AbilityStub;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedAttackAmount;
@@ -159,6 +160,7 @@ public class ROSParser
             if(CurrentNode.getAttributes().getNamedItem("typeName").getNodeValue().equals("Abilities"))
             {
                 Ability NewAbility = Ability.getAbilityType(CurrentNode.getAttributes().getNamedItem("name").getNodeValue());
+                BaseModel.listOfAbilites.add(NewAbility);
             }
             else if(CurrentNode.getAttributes().getNamedItem("typeName").getNodeValue().equals("Unit"))
             {
@@ -217,7 +219,7 @@ public class ROSParser
                 if(CharacteristicNode.getChildNodes().getLength() < 5)
                 {
                     String AbilityName =    CurrentProfile.getAttributes().getNamedItem("name").getNodeValue();
-                    Ability NewAbility = null;
+                    Ability NewAbility = Ability.getAbilityType(AbilityName);
                     continue;
                 }
                 RangedWeapon NewWeapon = new RangedWeapon();
@@ -260,41 +262,8 @@ public class ROSParser
         ArrayList<Ability> ReturnValue = new ArrayList<>();
         for(int i = 0; i < RuleNode.getChildNodes().getLength();i++)
         {
-            Ability abilityToAdd = null;
             String AbilityName = RuleNode.getChildNodes().item(i).getAttributes().getNamedItem("name").getNodeValue();
-            Ability abilityFromName = Ability.getAbilityType(AbilityName);
-
-            abilityToAdd = abilityFromName;
-
-            if(abilityFromName == null)
-            {
-                Ability abilityStub = new Ability(AbilityName) {
-                    @Override
-                    public void hitRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking) {
-
-                    }
-
-                    @Override
-                    public void woundRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking) {
-
-                    }
-
-                    @Override
-                    public void saveRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking) {
-
-                    }
-
-                    @Override
-                    public void rollNumberOfShots(List<DiceResult> diceResult, MetricsOfAttacking metricsOfAttacking) {
-
-                    }
-                };
-
-                abilityStub.name = AbilityName;
-
-                abilityToAdd = abilityStub;
-            }
-            ReturnValue.add(abilityToAdd);
+            ReturnValue.add(Ability.getAbilityType(AbilityName));
         }
         return(ReturnValue);
     }

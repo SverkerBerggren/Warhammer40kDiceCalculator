@@ -44,7 +44,7 @@ public abstract class Ability implements DeactivatableInterface {
             return new ReRollOnes();
         }
 
-        return null;
+        return new AbilityStub(name );
     }
 
     @Override

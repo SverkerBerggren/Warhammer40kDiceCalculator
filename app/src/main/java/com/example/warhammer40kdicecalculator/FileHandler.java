@@ -63,7 +63,9 @@ public  class FileHandler extends AppCompatActivity {
                     try {
 
 
-                        String rawJson = gson.toString();
+                        Scanner s = new Scanner(child).useDelimiter("\\A");
+                        String result = s.hasNext() ? s.next() : "";
+
 
                         Matchup matchup = gson.fromJson(new FileReader(child.getAbsolutePath()), Matchup.class);
 
@@ -104,9 +106,9 @@ public  class FileHandler extends AppCompatActivity {
 
                         String rawJson = gson.toString();
 
-                        Army matchup = gson.fromJson(new FileReader(child.getAbsolutePath()), Army.class);
+                        Army army = gson.fromJson(new FileReader(child.getAbsolutePath()), Army.class);
 
-                        return matchup;
+                        return army;
                     }
                     catch (Exception e)
                     {
