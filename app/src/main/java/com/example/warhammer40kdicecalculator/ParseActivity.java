@@ -5,20 +5,21 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
-import java.io.File;
-import java.net.URI;
+import java.util.ArrayList;
 
 public class ParseActivity extends AppCompatActivity {
 
@@ -46,42 +47,46 @@ public class ParseActivity extends AppCompatActivity {
                         Intent data = result.getData();
 
                         Uri uri = data.getData();
+
+                        fileHandler.CreateArmyFromFile(uri);
+
+
+                        CreateArmyButtons(fileHandler.GetSavedArmies());
                     }
                 }
             }
     );
 
 
+    private FileHandler fileHandler;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parse);
 
+        fileHandler = new FileHandler(getBaseContext());
 
         CheckAndRequestPermission();
 
-   //     int permissionCheck = ContextCompat.checkSelfPermission(ParseActivity.this,
-   //             Manifest.permission.READ_EXTERNAL_STORAGE);
-//
-   //     if (ContextCompat.checkSelfPermission(ParseActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)
-   //             != PackageManager.PERMISSION_GRANTED)
-   //     {
-   //         // OPCIONAL(explicaciones de poque pedimos los permisos)
-   //         if (ActivityCompat.shouldShowRequestPermissionRationale(ParseActivity.this,
-   //                 Manifest.permission.READ_EXTERNAL_STORAGE))
-   //         {
-//
-   //         }
-   //         else
-   //         {
-   //             //pedir permisos
-   //             ActivityCompat.requestPermissions(ParseActivity.this,
-   //                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-   //                     permissionCheck);
-   //         }
-   //     }
+        findViewById(R.id.ParseArmyButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ReadFiles();
+            }
+        });
 
+        findViewById(R.id.CreateMatchupButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                StartCreateMatchup();
+            }
+        });
+
+
+
+        CreateArmyButtons(fileHandler.GetSavedArmies());
 
     }
 
@@ -121,14 +126,40 @@ public class ParseActivity extends AppCompatActivity {
     private void ReadFiles()
     {
 
-        Intent intentTest = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+        Intent intentTest = new Intent(Intent.ACTION_OPEN_DOCUMENT);
 
+        intentTest.setType("*/*");
 
         intentTest = Intent.createChooser(intentTest,"choose a file");
 
 
         activityChooseFileLauncher.launch(intentTest);
 
+    }
+
+    private void CreateArmyButtons(ArrayList<String> listOfNames)
+    {
+        LinearLayout linearLayout = findViewById(R.id.SavedArmiesList);
+
+
+        linearLayout.removeAllViews();
+
+        for(String string : listOfNames)
+        {
+            Button armyButton = new Button(getBaseContext());
+            armyButton.setText(string);
+
+
+            linearLayout.addView(armyButton);
+        }
+    }
+
+
+    private void StartCreateMatchup()
+    {
+        Intent intent = new Intent(this, ActivityCreateMatchup.class);
+
+        startActivity(intent);
     }
 
 }

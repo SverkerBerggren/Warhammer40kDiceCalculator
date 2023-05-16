@@ -9,7 +9,7 @@ import java.util.Objects;
 
 public abstract class Ability implements DeactivatableInterface {
 
-    public String name;
+    public String name = "";
     public boolean active = true;
 
 
@@ -21,7 +21,7 @@ public abstract class Ability implements DeactivatableInterface {
 
     public abstract void rollNumberOfShots(List<DiceResult> diceResult, MetricsOfAttacking metricsOfAttacking);
 
-    Ability(String name)
+    public Ability(String name)
     {
         this.name = name;
     }

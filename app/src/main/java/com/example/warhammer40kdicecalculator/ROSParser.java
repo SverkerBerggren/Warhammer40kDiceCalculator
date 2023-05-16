@@ -15,6 +15,7 @@ import javax.xml.xpath.XPathFactory;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ROSParser
 {
@@ -259,10 +260,44 @@ public class ROSParser
         ArrayList<Ability> ReturnValue = new ArrayList<>();
         for(int i = 0; i < RuleNode.getChildNodes().getLength();i++)
         {
-            Ability NewAbility = null;
+            Ability abilityToAdd = null;
             String AbilityName = RuleNode.getChildNodes().item(i).getAttributes().getNamedItem("name").getNodeValue();
-            ReturnValue.add(NewAbility);
+            Ability abilityFromName = Ability.getAbilityType(AbilityName);
+
+            abilityToAdd = abilityFromName;
+
+            if(abilityFromName == null)
+            {
+                Ability abilityStub = new Ability(AbilityName) {
+                    @Override
+                    public void hitRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking) {
+
+                    }
+
+                    @Override
+                    public void woundRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking) {
+
+                    }
+
+                    @Override
+                    public void saveRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking) {
+
+                    }
+
+                    @Override
+                    public void rollNumberOfShots(List<DiceResult> diceResult, MetricsOfAttacking metricsOfAttacking) {
+
+                    }
+                };
+
+                abilityStub.name = AbilityName;
+
+                abilityToAdd = abilityStub;
+            }
+            ReturnValue.add(abilityToAdd);
         }
         return(ReturnValue);
     }
+
+
 }
