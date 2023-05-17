@@ -38,8 +38,10 @@
         android:id="@+id/ConstraintLayoutModel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="76dp"
         android:tag="ConstraintLayoutModel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -276,13 +278,12 @@
             android:id="@+id/AbilityLayoutModels"
             android:layout_width="386dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
             android:background="#B5B2B2"
             android:stretchColumns="*"
             android:tag="AbilityLayoutModels"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/AddWeaponButton">
+            tools:layout_editor_absoluteY="213dp">
 
             <TableRow
                 android:layout_width="match_parent"
@@ -304,7 +305,7 @@
             android:id="@+id/AddWeaponButton"
             android:layout_width="64dp"
             android:layout_height="51dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="50dp"
             android:tag="AddWeaponModelButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
