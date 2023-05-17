@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.warhammer40kdicecalculator">
+    package="com.egenapp.warhammer40kdicecalculator">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -17,42 +17,42 @@
         android:theme="@style/Theme.Warhammer40kDiceCalculator"
         tools:targetApi="31">
         <activity
-            android:name=".ActivityCreateMatchup"
+            android:name="com.egenapp.warhammer40kdicecalculator.ActivityCreateMatchup"
             android:exported="false" />
         <activity
-            android:name=".ParseActivity"
+            android:name="com.egenapp.warhammer40kdicecalculator.ParseActivity"
             android:exported="false" />
         <activity
-            android:name=".Activity_Edit_Abilities"
+            android:name="com.egenapp.warhammer40kdicecalculator.Activity_Edit_Abilities"
             android:exported="false" />
         <activity
-            android:name=".EditWeaponActivity"
+            android:name="com.egenapp.warhammer40kdicecalculator.EditWeaponActivity"
             android:exported="false" />
         <activity
-            android:name=".UnitSelection"
+            android:name="com.egenapp.warhammer40kdicecalculator.UnitSelection"
             android:exported="false" />
         <activity
-            android:name=".Weapon_Popup"
+            android:name="com.egenapp.warhammer40kdicecalculator.Weapon_Popup"
             android:exported="false" />
         <activity
-            android:name=".StatisticActivity"
+            android:name="com.egenapp.warhammer40kdicecalculator.StatisticActivity"
             android:exported="false" />
         <activity
-            android:name=".activity_popup"
+            android:name="com.egenapp.warhammer40kdicecalculator.activity_popup"
             android:exported="false" />
         <activity
-            android:name=".SavedMatchupsActivity"
+            android:name="com.egenapp.warhammer40kdicecalculator.SavedMatchupsActivity"
             android:exported="false" />
         <activity
-            android:name=".SkaDeletas"
+            android:name="com.egenapp.warhammer40kdicecalculator.SkaDeletas"
             android:exported="false"
             android:label="@string/title_activity_saved_matchups"
             android:theme="@style/Theme.Warhammer40kDiceCalculator.NoActionBar" />
         <activity
-            android:name=".CompareActivity"
+            android:name="com.egenapp.warhammer40kdicecalculator.CompareActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name="com.egenapp.warhammer40kdicecalculator.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
