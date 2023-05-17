@@ -296,6 +296,18 @@ public class ROSParser
             {
                 ReturnValue.listOfModels.addAll(ParseModel(SelectionsNode.getChildNodes().item(i)));
             }
+            else if(SelectionsNode.getChildNodes().item(i).getAttributes().getNamedItem("type").getNodeValue().equals("unit"))
+            {
+                Unit SubUnit = ParseUnit(SelectionsNode.getChildNodes().item(i));
+                for(Ability SubAbility : SubUnit.listOfAbilitys)
+                {
+                    for(Model SubModel : SubUnit.listOfModels)
+                    {
+                        SubModel.listOfAbilites.add(SubAbility);
+                    }
+                }
+                ReturnValue.listOfModels.addAll(SubUnit.listOfModels);
+            }
         }
         Node ProfilesNode = p_FirsChildByType(UnitNode,"profiles");
         if(ProfilesNode != null)
@@ -309,6 +321,7 @@ public class ROSParser
             for(int i = 0; i < ReturnValue.listOfModels.size();i++)
             {
                 ReturnValue.listOfModels.get(i).listOfRangedWeapons.addAll(TemporaryModel.listOfRangedWeapons);
+                break;
             }
         }
         return(ReturnValue);

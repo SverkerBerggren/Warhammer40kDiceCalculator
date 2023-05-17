@@ -17,19 +17,21 @@
         app:layout_constraintTop_toTopOf="@+id/inividualModelTopButton"
         app:srcCompat="@android:drawable/btn_dialog" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/inividualModelTopButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
         android:layout_marginTop="20dp"
+        android:backgroundTint="#4CAF50"
         android:maxWidth="220dp"
+        android:maxEms="11"
         android:onClick="DropDownClick"
         android:tag="inividualModelTopButton"
-        android:text="ingen model text satt"
+        android:text="ingen model text satt men jag vill testa längden på denna knapp"
+        android:textAlignment="center"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
@@ -38,12 +40,10 @@
         android:id="@+id/ConstraintLayoutModel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="76dp"
         android:tag="ConstraintLayoutModel"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/inividualModelTopButton">
 
         <TableLayout
             android:id="@+id/layoutStatsen"
@@ -278,12 +278,13 @@
             android:id="@+id/AbilityLayoutModels"
             android:layout_width="386dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
             android:background="#B5B2B2"
             android:stretchColumns="*"
             android:tag="AbilityLayoutModels"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="213dp">
+            app:layout_constraintTop_toBottomOf="@+id/AddWeaponButton">
 
             <TableRow
                 android:layout_width="match_parent"
@@ -305,7 +306,7 @@
             android:id="@+id/AddWeaponButton"
             android:layout_width="64dp"
             android:layout_height="51dp"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="20dp"
             android:tag="AddWeaponModelButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
