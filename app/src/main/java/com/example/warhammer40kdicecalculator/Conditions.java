@@ -7,6 +7,7 @@ public class Conditions {
 
     public boolean rapidFireRange = false;
     public boolean meleeCombat = false;
+    public boolean rangedCombat = true;
     public boolean mediumBlast = false;
     public boolean fullBlast = false;
 
@@ -16,6 +17,7 @@ public class Conditions {
         return "Conditions{" +
                 "rapidFireRange=" + rapidFireRange +
                 ", meleeCombat=" + meleeCombat +
+                ", rangedCombat=" + rangedCombat +
                 ", mediumBlast=" + mediumBlast +
                 ", fullBlast=" + fullBlast +
                 '}';
@@ -29,6 +31,14 @@ public class Conditions {
             rapidFireRange = false;
         else
             rapidFireRange = true;
+        if(splittedString[1].contains("false"))
+            meleeCombat = false;
+        else
+            meleeCombat = true;
+        if(splittedString[2].contains("false"))
+            rangedCombat = false;
+        else
+            rangedCombat = true;
 
 
 

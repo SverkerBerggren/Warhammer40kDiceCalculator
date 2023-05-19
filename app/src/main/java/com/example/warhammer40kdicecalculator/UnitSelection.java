@@ -191,6 +191,8 @@ public class UnitSelection extends AppCompatActivity {
         intenten.putExtra("IndexOfUnitDefending", defendingUnitIndex);
         intenten.putExtra("FirendlyArmyAttacking", myUnitsAttacking);
 
+        intenten.putExtra("" + R.string.CONDITIONS, conditions.toString());
+
         startActivity(intenten);
     }
 

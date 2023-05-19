@@ -164,6 +164,8 @@ public class ROSParser
         }
         if(CurrentInteger != -1)
         {
+
+
             ReturnValue.rawDamageAmount = CurrentInteger;
         }
         return(ReturnValue);
@@ -176,6 +178,7 @@ public class ROSParser
             ResultWeapon.amountOfAttacks.rawNumberOfAttacks = 1;
             return;
         }
+
         int ParseOffset = 0;
         while(ParseOffset < TypeString.length())
         {
@@ -351,6 +354,13 @@ public class ROSParser
                         int WeaponAmount = Integer.parseInt(CurrentSelection.getAttributes().getNamedItem("number").getNodeValue())/ModelCount;
                         for(int k = 0; k < WeaponAmount;k++)
                         {
+                            for(Ability ability : NewWeapon.weaponRules)
+                            {
+                                if(ability.name.contains("grenade") ||ability.name.contains("Grenade")  )
+                                {
+                                    NewWeapon.active = false;
+                                }
+                            }
                             BaseModel.listOfRangedWeapons.add(NewWeapon);
                         }
                     }

@@ -37,4 +37,9 @@ public class RangedAttackAmount {
         this.numberOfD6 = other.numberOfD6;
         this.numberOfD3 = other.numberOfD3;
     }
+
+    public RangedAttackAmount Copy()
+    {
+        return new RangedAttackAmount(rawNumberOfAttacks,numberOfD3,numberOfD6);
+    }
 }

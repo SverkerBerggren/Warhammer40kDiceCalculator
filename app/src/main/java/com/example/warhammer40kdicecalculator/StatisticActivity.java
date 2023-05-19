@@ -124,6 +124,11 @@ public class StatisticActivity extends AppCompatActivity {
             defendingArmy = matchup.friendlyArmy;
         }
 
+        conditions = new Conditions(intent.getStringExtra(""+R.string.CONDITIONS));
+        if(conditions == null)
+        {
+            conditions = new Conditions();
+        }
 
         rollResult = rollLogic.newCalculateDamage(listOfAttackingUnits, defendingUnit, attackingArmy,defendingArmy,conditions);
 

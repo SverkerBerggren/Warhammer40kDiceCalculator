@@ -40,6 +40,18 @@ public class Unit implements AbilityHolder, ModifierHolder {
         {
             tempUnit.listOfAbilitys.add( listOfAbilitys.get(i));
         }
+
+        tempUnit.toughnessModifier = toughnessModifier;
+        tempUnit.strengthModifier = strengthModifier;
+        tempUnit.armorSaveModifier = armorSaveModifier;
+        tempUnit.invulnerableSaveModifier = invulnerableSaveModifier;
+        tempUnit.woundsModifier = woundsModifier;
+        tempUnit.ballisticSkillModifier = ballisticSkillModifier;
+        tempUnit.weaponSkillModifier = weaponSkillModifier;
+        tempUnit.attacksModifier = attacksModifier;
+
+
+
         return  tempUnit;
     }
     public Unit()

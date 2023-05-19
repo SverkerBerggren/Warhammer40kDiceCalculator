@@ -19,6 +19,8 @@ public class RollingLogic {
         Log.d(("hej"), "hejhej");
     }
 
+
+
     public RollResult newCalculateDamage(ArrayList<Unit> attackerList, Unit defender, Army attackingArmy, Army defendingArmy, Conditions condtitions) {
         int amountOfWoundsTotal;
         int amountOfModelsKilled;
@@ -30,12 +32,22 @@ public class RollingLogic {
 
 
         //Army armyDefenderRules = null;
+
         Unit OriginalUnit = defender.copy();
+        ArrayList<Unit> originalAttackers = new ArrayList<>();
+        for(Unit unit : attackerList)
+        {
+            originalAttackers.add(unit.copy());
+        }
+
+        ArrayList<Unit> currentAttackers;
+
         double averageAmountOfAttacks = 0;
 
         for (int z = 0; z < 10000; z++)
         {   Unit attacker;
             OriginalUnit = defender.copy();
+
             //  averageAmountOfAttacks = 0;
             amountOfWoundsTotal = 0;
             amountOfModelsKilled = 0;
@@ -43,8 +55,12 @@ public class RollingLogic {
             int currentDefendingModelInteger = 0;
             Model currentDefendingModel = OriginalUnit.listOfModels.get(0);
             //  amountOfWoundsTotal = currentDefendingModel.wounds;
-
-            for(int q = 0; q < attackerList.size(); q++)
+            currentAttackers = new ArrayList<>();
+            for(Unit unit : originalAttackers)
+            {
+                currentAttackers.add(unit.copy());
+            }
+            for(int q = 0; q < currentAttackers.size(); q++)
             {
                 attacker = attackerList.get(q);
 
@@ -56,23 +72,41 @@ public class RollingLogic {
                     {
                         continue;
                     }
-                    for (int f = 0; f < currentAttackingModel.listOfRangedWeapons.size(); f++) {
+                    AddAllModifiersAttacker(attackingArmy,attacker,currentAttackingModel);
+                    for (int f = 0; f < currentAttackingModel.listOfRangedWeapons.size(); f++)
+                    {
                         RangedWeapon currentWeapon = currentAttackingModel.listOfRangedWeapons.get(f);
-                        if(!currentWeapon.active )
+
+                        if(ShouldSkipWeapon(currentWeapon,condtitions))
                         {
                             continue;
                         }
+
+                        if(currentWeapon.IsMelee)
+                        {
+                            currentWeapon.amountOfAttacks.rawNumberOfAttacks = currentAttackingModel.attacks;
+                            currentWeapon.strength += currentAttackingModel.strength;
+                        }
+
                         int requiredBallisticSkill = currentAttackingModel.ballisticSkill;
+                        if(currentWeapon.IsMelee)
+                        {
+                            requiredBallisticSkill = currentAttackingModel.weaponSkill;
+                        }
                         int damage = currentWeapon.damageAmount.rawDamageAmount;
                         int ap = currentWeapon.ap;
                         int strength = currentWeapon.strength;
 
-                        requiredBallisticSkill += CalculateModifierHitRoll(attackingArmy,attacker,defendingArmy,defender) * -1;
+                    //    requiredBallisticSkill += CalculateModifierHitRoll(attackingArmy,attacker,defendingArmy,defender) * -1;
+
+                        if(requiredBallisticSkill < 2)
+                            requiredBallisticSkill = 2;
 
                         MetricsOfAttacking currentMetricsOfAttacking = new MetricsOfAttacking(0, ap, damage, 0, 0);
                         int amountOfAttacks = AmountOfAttacks(currentMetricsOfAttacking, attacker, currentWeapon, defender, currentAttackingModel);
 
                         averageAmountOfAttacks +=amountOfAttacks;
+
 
                         for (int p = 0; p < amountOfAttacks; p++) {
 
@@ -87,7 +121,7 @@ public class RollingLogic {
                                 WoundRoll(currentMetricsOfAttacking, attacker, defender, currentAttackingModel, currentDefendingModel, woundRoll, currentWeapon);
                             }
                             int requiredSaveRoll = currentDefendingModel.armorSave - currentMetricsOfAttacking.ap;
-                            if(requiredSaveRoll > currentDefendingModel.invulnerableSave && currentDefendingModel.invulnerableSave != 0)
+                            if(requiredSaveRoll > currentDefendingModel.invulnerableSave && currentDefendingModel.invulnerableSave != 7)
                             {
                                 requiredSaveRoll = currentDefendingModel.invulnerableSave;
                             }
@@ -303,6 +337,29 @@ public class RollingLogic {
 
 
 
+    private void AddAllModifiersAttacker(Army attackingArmy, Unit currentAttackingUnit, Model currentAttackingModel)
+    {
+
+        currentAttackingModel.toughness += attackingArmy.toughnessModifier +  currentAttackingUnit.toughnessModifier;
+        currentAttackingModel.strength += attackingArmy.strengthModifier +  currentAttackingUnit.strengthModifier;
+        currentAttackingModel.armorSave -= attackingArmy.armorSaveModifier +  currentAttackingUnit.armorSaveModifier;
+        currentAttackingModel.invulnerableSave -= attackingArmy.invulnerableSaveModifier +  currentAttackingUnit.invulnerableSaveModifier;
+        currentAttackingModel.wounds += attackingArmy.woundsModifier +  currentAttackingUnit.woundsModifier;
+        currentAttackingModel.ballisticSkill -= attackingArmy.ballisticSkillModifier +  currentAttackingUnit.ballisticSkillModifier;
+        currentAttackingModel.weaponSkill += attackingArmy.weaponSkillModifier +  currentAttackingUnit.weaponSkillModifier;
+        currentAttackingModel.attacks +=  attackingArmy.attacksModifier +  currentAttackingUnit.attacksModifier;
+    }
+
+
+
+    private void AddAllModifiersDefender(Army defendingArmy, Unit defendingUnit, Model defendingModel)
+    {
+
+    }
+
+
+
+
     private int CalculateModifierHitRoll(Army attackerArmy, Unit attackingUnit, Army defendingArmy, Unit defendingUnit)
     {
         int modifierToReturn = 0;
@@ -344,6 +401,23 @@ public class RollingLogic {
         return modifierToReturn;
     }
 
+
+
+    private boolean ShouldSkipWeapon(RangedWeapon rangedWeapon, Conditions conditions)
+    {
+
+
+        if(!rangedWeapon.active)
+            return true;
+
+        if(rangedWeapon.IsMelee && !conditions.meleeCombat)
+            return true;
+
+        if(!rangedWeapon.IsMelee && !conditions.rangedCombat)
+            return true;
+
+        return false;
+    }
 
 
 }

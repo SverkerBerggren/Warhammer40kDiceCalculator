@@ -49,6 +49,9 @@ public class ConditionsActivity extends AppCompatActivity {
     {
 
         CreateCheckBox("rapidFireRange",condition.rapidFireRange);
+        CreateCheckBox("Resolve melee attacks",condition.meleeCombat);
+        CreateCheckBox("Resolve ranged attacks",condition.rangedCombat);
+
     }
 
     private void CreateCheckBox(String tag, Boolean active)
@@ -59,6 +62,18 @@ public class ConditionsActivity extends AppCompatActivity {
         {
             checkBox.setTag("rapidFireRange");
             checkBox.setText("In rapid fire range");
+            checkBox.setChecked(active);
+        }
+        if(tag.equals("Resolve melee attacks"))
+        {
+            checkBox.setTag("Resolve melee attacks");
+            checkBox.setText("Resolve melee attacks");
+            checkBox.setChecked(active);
+        }
+        if(tag.equals("Resolve ranged attacks"))
+        {
+            checkBox.setTag("Resolve ranged attacks");
+            checkBox.setText("Resolve ranged attacks");
             checkBox.setChecked(active);
         }
         checkBox.setOnCheckedChangeListener(new OnCheckBoxChange());
@@ -76,6 +91,11 @@ public class ConditionsActivity extends AppCompatActivity {
 
             if(tag.equals("rapidFireRange"))
                 conditions.rapidFireRange = b;
+
+            if(tag.equals("Resolve melee attacks"))
+                conditions.meleeCombat = b;
+            if(tag.equals("Resolve ranged attacks"))
+                conditions.rangedCombat = b;
         }
     }
 

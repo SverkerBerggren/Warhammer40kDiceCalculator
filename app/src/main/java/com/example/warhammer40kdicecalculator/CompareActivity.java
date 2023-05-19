@@ -14,6 +14,7 @@ import android.os.Bundle;
 
 import android.text.Layout;
 import android.util.Log;
+import android.util.Range;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -1023,6 +1024,22 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         tableLayout.addView(tableRow);
 
     }
+
+    private String SetWeaponAttacks(RangedWeapon rangedWeapon)
+    {
+        String stringToReturn = "";
+        RangedAttackAmount amount = rangedWeapon.amountOfAttacks;
+
+        if(amount.rawNumberOfAttacks != 0)
+        {
+            stringToReturn+= "" + amount.rawNumberOfAttacks;
+        }
+
+
+        return stringToReturn;
+    }
+
+
 
     public void instaniateUnitButton(View buttonToModify, Unit unit, UnitIdentifier unitId)
     {

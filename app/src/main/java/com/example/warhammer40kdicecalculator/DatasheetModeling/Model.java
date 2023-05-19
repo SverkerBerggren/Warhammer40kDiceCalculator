@@ -15,7 +15,7 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
     public int toughness = -1;;
     public int strength = -1;
     public int armorSave = -1;
-    public int invulnerableSave = -1;
+    public int invulnerableSave = 7;
     public int wounds = -1;
     public int ballisticSkill = -1;
     public int weaponSkill = -1;
@@ -72,6 +72,23 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
         listOfMeleeWeapons = new ArrayList<>(other.listOfMeleeWeapons);
 
      }
+
+    public Model Copy()
+    {
+        Model modelToReturn = new Model();
+        modelToReturn.toughness = -1;;
+        modelToReturn.strength = -1;
+        modelToReturn.armorSave = -1;
+        modelToReturn.invulnerableSave = 7;
+        modelToReturn.wounds = -1;
+        modelToReturn.ballisticSkill = -1;
+        modelToReturn.weaponSkill = -1;
+        modelToReturn.attacks=  -1;
+
+        return modelToReturn;
+
+    }
+
     public Model()
     {
 
