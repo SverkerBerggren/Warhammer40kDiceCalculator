@@ -17,6 +17,12 @@
         android:theme="@style/Theme.Warhammer40kDiceCalculator"
         tools:targetApi="31">
         <activity
+            android:name=".ConditionsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".EditUnitActivity"
+            android:exported="false" />
+        <activity
             android:name=".ActivityCreateMatchup"
             android:exported="false" />
         <activity

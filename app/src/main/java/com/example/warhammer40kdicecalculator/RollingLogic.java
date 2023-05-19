@@ -19,7 +19,7 @@ public class RollingLogic {
         Log.d(("hej"), "hejhej");
     }
 
-    public RollResult newCalculateDamage(ArrayList<Unit> attackerList, Unit defender, Army attackingArmy, Army defendingArmy) {
+    public RollResult newCalculateDamage(ArrayList<Unit> attackerList, Unit defender, Army attackingArmy, Army defendingArmy, Conditions condtitions) {
         int amountOfWoundsTotal;
         int amountOfModelsKilled;
         int currentModelDamage;
@@ -47,11 +47,21 @@ public class RollingLogic {
             for(int q = 0; q < attackerList.size(); q++)
             {
                 attacker = attackerList.get(q);
+
+
                 for (int i = 0; i < attacker.listOfModels.size(); i++)
                 {
                     Model currentAttackingModel = attacker.listOfModels.get(i);
+                    if(!currentAttackingModel.active)
+                    {
+                        continue;
+                    }
                     for (int f = 0; f < currentAttackingModel.listOfRangedWeapons.size(); f++) {
                         RangedWeapon currentWeapon = currentAttackingModel.listOfRangedWeapons.get(f);
+                        if(!currentWeapon.active )
+                        {
+                            continue;
+                        }
                         int requiredBallisticSkill = currentAttackingModel.ballisticSkill;
                         int damage = currentWeapon.damageAmount.rawDamageAmount;
                         int ap = currentWeapon.ap;
@@ -77,7 +87,10 @@ public class RollingLogic {
                                 WoundRoll(currentMetricsOfAttacking, attacker, defender, currentAttackingModel, currentDefendingModel, woundRoll, currentWeapon);
                             }
                             int requiredSaveRoll = currentDefendingModel.armorSave - currentMetricsOfAttacking.ap;
-
+                            if(requiredSaveRoll > currentDefendingModel.invulnerableSave && currentAttackingModel.invulnerableSave != 0)
+                            {
+                                requiredSaveRoll = currentDefendingModel.invulnerableSave;
+                            }
 
                             for (int e = 0; e < currentMetricsOfAttacking.wounds; e++)
                             {

@@ -10,7 +10,6 @@ import android.os.Bundle;
 
 import android.os.Handler;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +36,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.ResourceBundle;
 import java.util.Scanner;
 import java.util.function.Function;
 
@@ -108,43 +106,41 @@ public class  MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         context = getApplicationContext();
 
-
-
         InstantiateAbilities();
 
-        try {
-            InputStream Input = this.getAssets().open("TestParing.txt");
-            BattlescribeParser Parser = new BattlescribeParser();
-            ArrayList<BattlescribeUnit> Models = Parser.ParseUnits(Input);
-
-            int Hej2 = 0;
-        }
-        catch (Exception e)
-        {
-            String Error = e.getMessage();
-            int hej = 2;
-        }
-
-
-
-        EXAMPLEUPDATE();
+    //    try {
+    //        InputStream Input = this.getAssets().open("TestParing.txt");
+    //        BattlescribeParser Parser = new BattlescribeParser();
+    //        ArrayList<BattlescribeUnit> Models = Parser.ParseUnits(Input);
+//
+    //        int Hej2 = 0;
+    //    }
+    //    catch (Exception e)
+    //    {
+    //        String Error = e.getMessage();
+    //        int hej = 2;
+    //    }
 
 
-        TestLasaCsv csvParser = new TestLasaCsv(this.context);
-        parsedDatasheetList =   csvParser.ReadCsvFile("Datasheets.csv");
-        parsedWeaponList = csvParser.ReadCsvFile("Wargear_list.csv");
-        parsedModelList = csvParser.ReadCsvFile("Datasheets_models.csv");
-        try
-        {
-            Scanner s = new Scanner(context.getAssets().open("TestRos.ros")).useDelimiter("\\A");
-            String result = s.hasNext() ? s.next() : "";
-            ROSParser Parser = new ROSParser();
-            Army TestArmy = Parser.ParseArmy(result);
-        }
-        catch(Exception e)
-        {
 
-        }
+    //    EXAMPLEUPDATE();
+
+
+    //    TestLasaCsv csvParser = new TestLasaCsv(this.context);
+    //    parsedDatasheetList =   csvParser.ReadCsvFile("Datasheets.csv");
+    //    parsedWeaponList = csvParser.ReadCsvFile("Wargear_list.csv");
+    //    parsedModelList = csvParser.ReadCsvFile("Datasheets_models.csv");
+    //    try
+    //    {
+    //        Scanner s = new Scanner(context.getAssets().open("TestRos.ros")).useDelimiter("\\A");
+    //        String result = s.hasNext() ? s.next() : "";
+    //        ROSParser Parser = new ROSParser();
+    //        Army TestArmy = Parser.ParseArmy(result);
+    //    }
+    //    catch(Exception e)
+    //    {
+//
+    //    }
     }
 
 
@@ -417,7 +413,7 @@ public class  MainActivity extends AppCompatActivity {
 
         RollingLogic hej = new RollingLogic();
 
-        hej.newCalculateDamage(attackingUnits,spaceMarine10,armyAttacker,defendingArmy);
+        hej.newCalculateDamage(attackingUnits,spaceMarine10,armyAttacker,defendingArmy, new Conditions());
 
 
 

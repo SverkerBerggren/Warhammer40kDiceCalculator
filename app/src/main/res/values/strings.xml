@@ -19,6 +19,7 @@
     <string name="UI_IDENTIFIER">randomText</string>
     <string name="IDENTIFIER">randomText</string>
     <string name="TYPE_OF_IDENTIFIER">randomText</string>
+    <string name="CONDITIONS">randomText</string>
 
 
 </resources>

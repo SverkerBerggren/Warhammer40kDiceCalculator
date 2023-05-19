@@ -151,6 +151,12 @@ public class ROSParser
         NewWeapon.strength = p_ParseUnitStat(CharacteristicNode.getChildNodes().item(2).getTextContent());
         NewWeapon.ap = p_ParseUnitStat(CharacteristicNode.getChildNodes().item(3).getTextContent());
         NewWeapon.damageAmount = p_DamageFromString(CharacteristicNode.getChildNodes().item(4).getTextContent());
+
+        if(NewWeapon.name.contains("grenade") || NewWeapon.name.contains("Grenade"))
+        {
+            NewWeapon.active = false;
+        }
+
         return(NewWeapon);
     }
 
@@ -331,7 +337,14 @@ public class ROSParser
         ArrayList<Ability> ReturnValue = new ArrayList<>();
         for(int i = 0; i < RuleNode.getChildNodes().getLength();i++)
         {
+
+
             String AbilityName = RuleNode.getChildNodes().item(i).getAttributes().getNamedItem("name").getNodeValue();
+
+            if(AbilityName.equals("Hammer of the Emperor"))
+            {
+                int hej = 5;
+            }
             ReturnValue.add(Ability.getAbilityType(AbilityName));
         }
         return(ReturnValue);

@@ -9,7 +9,7 @@ public class HammerOfTheEmperor extends Ability{
 
     public HammerOfTheEmperor()
     {
-        super("HammerOfTheEmperor");
+        super("Hammer of the Emperor");
     }
 
     public  void hitRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking)

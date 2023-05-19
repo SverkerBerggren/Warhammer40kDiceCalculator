@@ -24,9 +24,6 @@ public class Unit implements AbilityHolder, ModifierHolder {
     public int weaponSkillModifier;
     public int attacksModifier;
 
-
-
-
     public ArrayList<Model> listOfModels = new ArrayList<>();
 
     public ArrayList<Ability> listOfAbilitys = new ArrayList<>( );
@@ -43,7 +40,6 @@ public class Unit implements AbilityHolder, ModifierHolder {
         {
             tempUnit.listOfAbilitys.add( listOfAbilitys.get(i));
         }
-
         return  tempUnit;
     }
     public Unit()

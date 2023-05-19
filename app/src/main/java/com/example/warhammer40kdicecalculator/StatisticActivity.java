@@ -34,6 +34,9 @@ public class StatisticActivity extends AppCompatActivity {
     private Unit defendingUnit;
     private RollResult rollResult;
     private Toast activeToast;
+
+    private Conditions conditions;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,7 +125,7 @@ public class StatisticActivity extends AppCompatActivity {
         }
 
 
-        rollResult = rollLogic.newCalculateDamage(listOfAttackingUnits, defendingUnit, attackingArmy,defendingArmy);
+        rollResult = rollLogic.newCalculateDamage(listOfAttackingUnits, defendingUnit, attackingArmy,defendingArmy,conditions);
 
         ConvertResult(rollResult);
 
