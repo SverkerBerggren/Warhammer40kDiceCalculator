@@ -88,7 +88,14 @@ public class ROSParser
                 {
                     ReturnValue.units.add(ParseUnit(Child));
                 }
-
+                else if(Child.getAttributes().getNamedItem("type").getNodeValue().equals("upgrade"))
+                {
+                    Ability NewArmyRule = p_ParseArmyRule(Child);
+                    if(NewArmyRule != null)
+                    {
+                        ReturnValue.abilities.add(NewArmyRule);
+                    }
+                }
             }
         }
         catch(Exception e)
@@ -96,6 +103,20 @@ public class ROSParser
             String Error = e.getMessage();
             String Error2 = e.getMessage();
         }
+        return(ReturnValue);
+    }
+    Ability p_ParseArmyRule(Node SelectionsNode)
+    {
+        Ability ReturnValue = null;
+        Node SubSelections = p_FirsChildByType(SelectionsNode,"selections");
+        if(SubSelections == null)
+        {
+            return ReturnValue;
+        }
+        Node RuleSelection = p_FirsChildByType(SubSelections,"selection");
+        if(RuleSelection == null) return ReturnValue;
+
+        ReturnValue = Ability.getAbilityType(RuleSelection.getAttributes().getNamedItem("name").getNodeValue());
         return(ReturnValue);
     }
     DamageAmount p_DamageFromString(String StringToConvert)
@@ -142,15 +163,46 @@ public class ROSParser
         }
         return(ReturnValue);
     }
+    void p_ParseWeaponType(RangedWeapon ResultWeapon,String TypeString)
+    {
+        if(TypeString.equals("Melee"))
+        {
+            ResultWeapon.IsMelee = true;
+            ResultWeapon.amountOfAttacks.rawNumberOfAttacks = 1;
+            return;
+        }
+        int ParseOffset = 0;
+        while(ParseOffset < TypeString.length())
+        {
+            char CurrentChar = TypeString.charAt(ParseOffset);
+            if(CurrentChar == 'D' || CurrentChar >= '0' && CurrentChar <= '9')
+            {
+                break;
+            }
+            ParseOffset += 1;
+        }
+        if(ParseOffset != 0)
+        {
+            ResultWeapon.weaponRules.add(Ability.getAbilityType(TypeString.substring(0,ParseOffset)));
+        }
+        ResultWeapon.amountOfAttacks =new RangedAttackAmount(p_DamageFromString(TypeString));
+    }
     RangedWeapon p_ParseWeapon(Node ProfileNode)
     {
         Node CharacteristicNode = p_FirsChildByType(ProfileNode,"characteristics");
         RangedWeapon NewWeapon = new RangedWeapon();
         NewWeapon.name =ProfileNode.getAttributes().getNamedItem("name").getNodeValue();
-        NewWeapon.amountOfAttacks = new RangedAttackAmount(p_DamageFromString(CharacteristicNode.getChildNodes().item(1).getTextContent()));
+
+        p_ParseWeaponType(NewWeapon,CharacteristicNode.getChildNodes().item(1).getTextContent());
+
         NewWeapon.strength = p_ParseUnitStat(CharacteristicNode.getChildNodes().item(2).getTextContent());
         NewWeapon.ap = p_ParseUnitStat(CharacteristicNode.getChildNodes().item(3).getTextContent());
         NewWeapon.damageAmount = p_DamageFromString(CharacteristicNode.getChildNodes().item(4).getTextContent());
+        String WeaponAbilityString = CharacteristicNode.getChildNodes().item(5).getTextContent();
+        if(!WeaponAbilityString.equals("-"))
+        {
+            NewWeapon.weaponRules.addAll(Ability.getWeaponAbilities(WeaponAbilityString));
+        }
         return(NewWeapon);
     }
 
@@ -158,8 +210,20 @@ public class ROSParser
     {
         if(ProfileNode.getAttributes().getNamedItem("typeName").getNodeValue().equals("Abilities"))
         {
-            Ability NewAbility = Ability.getAbilityType(ProfileNode.getAttributes().getNamedItem("name").getNodeValue());
-            ModelToModify.listOfAbilites.add(NewAbility);
+            String AbilityName =ProfileNode.getAttributes().getNamedItem("name").getNodeValue();
+            String AbilityDescription = "";
+            Node CharacteristicsNode = p_FirsChildByType(ProfileNode,"characteristics");
+            if(CharacteristicsNode != null)
+            {
+                Node DescriptionNode = p_FirsChildByType(CharacteristicsNode,"characteristic");
+                if(DescriptionNode != null)
+                {
+                    AbilityDescription = DescriptionNode.getTextContent();
+                }
+            }
+            Ability.addModelAbility(ModelToModify,AbilityName,AbilityDescription);
+            //Ability NewAbility = Ability.getAbilityType(ProfileNode.getAttributes().getNamedItem("name").getNodeValue());
+            //ModelToModify.listOfAbilites.add(NewAbility);
         }
         else if(ProfileNode.getAttributes().getNamedItem("typeName").getNodeValue().equals("Unit"))
         {
@@ -281,7 +345,7 @@ public class ROSParser
 
         for(int i = 0; i < ModelCount;i++)
         {
-            ReturnValue.add(BaseModel);
+            ReturnValue.add(new Model(BaseModel));
         }
         return(ReturnValue);
     }
@@ -308,6 +372,28 @@ public class ROSParser
                 }
                 ReturnValue.listOfModels.addAll(SubUnit.listOfModels);
             }
+            else if(SelectionsNode.getChildNodes().item(i).getAttributes().getNamedItem("type").getNodeValue().equals("upgrade"))
+            {
+                Node Child = SelectionsNode.getChildNodes().item(i);
+                Node ChildProfiles = p_FirsChildByType(Child,"profiles");
+                if(ChildProfiles == null)
+                {
+                    continue;
+                }
+                Node ChildProfileNode = p_FirsChildByType(ChildProfiles,"profile");
+                if(ChildProfileNode == null)
+                {
+                    continue;
+                }
+                if(ChildProfileNode.getAttributes().getNamedItem("typeName").getNodeValue().equals("Abilities"))
+                {
+                    ReturnValue.listOfAbilitys.add(Ability.getAbilityType(Child.getAttributes().getNamedItem("name").getNodeValue()));
+                }
+                else if(ChildProfileNode.getAttributes().getNamedItem("typeName").getNodeValue().equals("Unit"))
+                {
+                    ReturnValue.listOfModels.addAll(ParseModel(SelectionsNode.getChildNodes().item(i)));
+                }
+            }
         }
         Node ProfilesNode = p_FirsChildByType(UnitNode,"profiles");
         if(ProfilesNode != null)
@@ -321,7 +407,6 @@ public class ROSParser
             for(int i = 0; i < ReturnValue.listOfModels.size();i++)
             {
                 ReturnValue.listOfModels.get(i).listOfRangedWeapons.addAll(TemporaryModel.listOfRangedWeapons);
-                break;
             }
         }
         return(ReturnValue);

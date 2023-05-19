@@ -6,11 +6,16 @@ public class RangedAttackAmount {
 
 
 
-    public int rawNumberOfAttacks;
+    public int rawNumberOfAttacks = 0;
 
-    public int numberOfD6;
+    public int numberOfD6 = 0;
 
-    public  int numberOfD3;
+    public  int numberOfD3 = 0;
+
+    public  RangedAttackAmount()
+    {
+
+    }
 
     public  RangedAttackAmount(DamageAmount Damage)
     {

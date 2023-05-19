@@ -49,6 +49,8 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
         ballisticSkill = other.ballisticSkill;
         weaponSkill = other.weaponSkill;
         attacks = other.attacks;
+        name = other.name;
+        active = other.active;
 
         listOfAbilites = new ArrayList<>(other.listOfAbilites);
 
