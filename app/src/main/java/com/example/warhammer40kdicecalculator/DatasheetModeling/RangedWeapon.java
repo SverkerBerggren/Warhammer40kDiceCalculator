@@ -10,9 +10,9 @@ public class RangedWeapon implements AbilityHolder, DeactivatableInterface {
     public DamageAmount damageAmount;
     public int ap;
     public int strength;
-
+    public boolean IsMelee = false;
     public boolean active = true;
-    public RangedAttackAmount amountOfAttacks;
+    public RangedAttackAmount amountOfAttacks = new RangedAttackAmount();
     public ArrayList<Ability> weaponRules = new ArrayList<>();
 
     public RangedWeapon()

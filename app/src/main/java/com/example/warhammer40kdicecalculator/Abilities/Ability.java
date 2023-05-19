@@ -1,9 +1,11 @@
 package com.example.warhammer40kdicecalculator.Abilities;
 
 import com.example.warhammer40kdicecalculator.DatasheetModeling.DeactivatableInterface;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 import com.example.warhammer40kdicecalculator.DiceResult;
 import com.example.warhammer40kdicecalculator.MetricsOfAttacking;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -29,7 +31,7 @@ public abstract class Ability implements DeactivatableInterface {
 
     public static Ability getAbilityType(String name)
     {
-        if(name.equals("Hammer of the Emperor"))
+        if(name.equals("HammerOfTheEmperor"))
         {
             return new HammerOfTheEmperor();
         }
@@ -47,6 +49,16 @@ public abstract class Ability implements DeactivatableInterface {
         return new AbilityStub(name );
     }
 
+
+    public static ArrayList<Ability> getWeaponAbilities(String AbilitiesString)
+    {
+        return new ArrayList<Ability>();
+    }
+
+    public  static void addModelAbility(Model ModelToParse,String AbilityName,String AbilityDescription)
+    {
+        ModelToParse.listOfAbilites.add(getAbilityType(AbilityName));
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

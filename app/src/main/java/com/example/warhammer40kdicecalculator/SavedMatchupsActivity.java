@@ -35,7 +35,7 @@ public class SavedMatchupsActivity extends AppCompatActivity {
 
 
 
-        Log.d("sus","kommer den hit");
+
 
         LayoutInflater inflater = getLayoutInflater();
 
@@ -68,7 +68,7 @@ public class SavedMatchupsActivity extends AppCompatActivity {
                 // Do something with child
 
 
-                Log.d("filer", "filens namn " + child.getName());
+
 
                 View matchupButton = inflater.inflate(R.layout.matchupbutton,findViewById(R.id.SavedMatchupLinearLayout));
 
