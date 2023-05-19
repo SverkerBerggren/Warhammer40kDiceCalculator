@@ -19,7 +19,7 @@ public abstract class Ability implements DeactivatableInterface {
 
     public abstract void woundRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking);
 
-    public abstract void saveRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking);
+    public abstract int saveRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int damageToBeTaken);
 
     public abstract void rollNumberOfShots(List<DiceResult> diceResult, MetricsOfAttacking metricsOfAttacking);
 
@@ -44,6 +44,10 @@ public abstract class Ability implements DeactivatableInterface {
         if(name.equals("ReRollOnes"))
         {
             return new ReRollOnes();
+        }
+        if(name.equals("FeelNoPain6"))
+        {
+            return new FeelNoPain6();
         }
 
         return new AbilityStub(name );

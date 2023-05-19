@@ -76,14 +76,27 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
     public Model Copy()
     {
         Model modelToReturn = new Model();
-        modelToReturn.toughness = -1;;
-        modelToReturn.strength = -1;
-        modelToReturn.armorSave = -1;
-        modelToReturn.invulnerableSave = 7;
-        modelToReturn.wounds = -1;
-        modelToReturn.ballisticSkill = -1;
-        modelToReturn.weaponSkill = -1;
-        modelToReturn.attacks=  -1;
+        modelToReturn.toughness = toughness;
+        modelToReturn.strength = strength;
+        modelToReturn.armorSave = armorSave;
+        modelToReturn.invulnerableSave = invulnerableSave;
+        modelToReturn.wounds = wounds;
+        modelToReturn.ballisticSkill = ballisticSkill;
+        modelToReturn.weaponSkill = weaponSkill;
+        modelToReturn.attacks=  attacks;
+
+        modelToReturn.listOfAbilites = new ArrayList<>(listOfAbilites);
+
+        ArrayList<RangedWeapon> newList = new ArrayList<>();
+
+        for(RangedWeapon weapon : listOfRangedWeapons)
+        {
+            newList.add(weapon.Copy());
+        }
+
+        modelToReturn.listOfRangedWeapons = newList;
+
+        modelToReturn.listOfMeleeWeapons = new ArrayList<>();
 
         return modelToReturn;
 

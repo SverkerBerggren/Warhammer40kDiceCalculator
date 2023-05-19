@@ -24,9 +24,9 @@ public class ReRollAmountOfHits extends Ability {
 
     }
 
-    public   void saveRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking)
+    public int saveRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int damageToBeTaken)
     {
-
+        return 0;
     }
 
     public   void rollNumberOfShots( List<DiceResult>  diceResultList, MetricsOfAttacking metricsOfAttacking)

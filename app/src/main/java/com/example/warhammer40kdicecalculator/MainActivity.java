@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
+import com.example.warhammer40kdicecalculator.Abilities.FeelNoPain6;
 import com.example.warhammer40kdicecalculator.Abilities.HammerOfTheEmperor;
 import com.example.warhammer40kdicecalculator.Abilities.ReRollAmountOfHits;
 import com.example.warhammer40kdicecalculator.Abilities.ReRollOnes;
@@ -32,11 +33,9 @@ import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
 import com.example.warhammer40kdicecalculator.Identifiers.Identifier;
 import     com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Scanner;
 import java.util.function.Function;
 
 class Runnable_Function<FunctionArgument,FunctionReturnValue> implements Runnable
@@ -92,6 +91,7 @@ public class  MainActivity extends AppCompatActivity {
         abilityMap.put("ReRollAmountOfHits", new ReRollAmountOfHits());
         abilityMap.put("HammerOfTheEmperor", new HammerOfTheEmperor());
         abilityMap.put("ReRollOnes", new ReRollOnes());
+        abilityMap.put("FeelNoPain6",new FeelNoPain6());
     }
 
     public  MainActivity()

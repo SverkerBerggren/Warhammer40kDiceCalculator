@@ -28,18 +28,19 @@ public class Unit implements AbilityHolder, ModifierHolder {
 
     public ArrayList<Ability> listOfAbilitys = new ArrayList<>( );
 
-    public Unit copy()
+    public Unit Copy()
     {
         Unit tempUnit = new Unit();
 
+        tempUnit.unitName = unitName;
+
         for(int i = 0; i < listOfModels.size(); i++)
         {
-            tempUnit.listOfModels.add(new Model(listOfModels.get(i)));
+            tempUnit.listOfModels.add(listOfModels.get(i).Copy());
         }
-        for(int i = 0; i < listOfAbilitys.size(); i++)
-        {
-            tempUnit.listOfAbilitys.add( listOfAbilitys.get(i));
-        }
+
+        tempUnit.listOfAbilitys.addAll( listOfAbilitys);
+
 
         tempUnit.toughnessModifier = toughnessModifier;
         tempUnit.strengthModifier = strengthModifier;

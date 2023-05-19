@@ -252,6 +252,9 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
             int resultCode = result.getResultCode();
             Intent data = result.getData();
 
+
+            //boolean applyToAllModels = data.getBooleanExtra(""+ R.string.APPLY_TO_ALL, false);
+
             ModelIdentifier modelId =  new ModelIdentifier(data.getStringExtra(""+R.string.MODEL_IDENTIFIER));
 
 

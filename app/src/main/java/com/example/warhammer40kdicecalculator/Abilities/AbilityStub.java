@@ -17,8 +17,8 @@ public class AbilityStub extends Ability{
     }
 
     @Override
-    public void saveRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking) {
-
+    public int saveRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int damageToBeTaken) {
+    return  0;
     }
 
     @Override

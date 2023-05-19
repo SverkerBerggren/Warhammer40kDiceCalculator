@@ -33,11 +33,11 @@ public class RollingLogic {
 
         //Army armyDefenderRules = null;
 
-        Unit OriginalUnit = defender.copy();
+        Unit OriginalUnit = defender.Copy();
         ArrayList<Unit> originalAttackers = new ArrayList<>();
         for(Unit unit : attackerList)
         {
-            originalAttackers.add(unit.copy());
+            originalAttackers.add(unit.Copy());
         }
 
         ArrayList<Unit> currentAttackers;
@@ -46,7 +46,7 @@ public class RollingLogic {
 
         for (int z = 0; z < 10000; z++)
         {   Unit attacker;
-            OriginalUnit = defender.copy();
+            OriginalUnit = defender.Copy();
 
             //  averageAmountOfAttacks = 0;
             amountOfWoundsTotal = 0;
@@ -58,11 +58,11 @@ public class RollingLogic {
             currentAttackers = new ArrayList<>();
             for(Unit unit : originalAttackers)
             {
-                currentAttackers.add(unit.copy());
+                currentAttackers.add(unit.Copy());
             }
             for(int q = 0; q < currentAttackers.size(); q++)
             {
-                attacker = attackerList.get(q);
+                attacker = currentAttackers.get(q);
 
 
                 for (int i = 0; i < attacker.listOfModels.size(); i++)
@@ -129,7 +129,10 @@ public class RollingLogic {
                             for (int e = 0; e < currentMetricsOfAttacking.wounds; e++)
                             {
                                 DiceResult defenderSaveRoll = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 + 1));
-                                int damageToBeTaken = SaveRoll(currentMetricsOfAttacking,attacker,defender,currentAttackingModel,currentDefendingModel,currentWeapon,defenderSaveRoll,requiredSaveRoll);
+                                int damageToBeTaken = SaveRoll(currentMetricsOfAttacking,attackingArmy,attacker,defendingArmy,defender,currentAttackingModel,currentDefendingModel,currentWeapon,defenderSaveRoll,requiredSaveRoll);
+
+
+
                                 amountOfWoundsTotal += damageToBeTaken;
 
                                 currentModelDamage += damageToBeTaken;
@@ -267,13 +270,11 @@ public class RollingLogic {
     }
 
 
-    private int SaveRoll(MetricsOfAttacking metrics, Unit currentAttackingUnit, Unit defendingUnit, Model currentAttackingModel, Model currentDefendingModel, RangedWeapon weapon, DiceResult saveRoll, int requiredSaveRoll)
+    private int SaveRoll(MetricsOfAttacking metrics,Army attackingArmy, Unit currentAttackingUnit, Army defendingArmy, Unit defendingUnit, Model currentAttackingModel, Model currentDefendingModel, RangedWeapon weapon, DiceResult saveRoll, int requiredSaveRoll)
     {
 
         int damageToBeTaken = 0;
-        for (int w = 0; w < currentDefendingModel.listOfAbilites.size(); w++) {
-            currentDefendingModel.listOfAbilites.get(w).saveRollAbility(saveRoll, metrics);
-        }
+
         if (saveRoll.result < requiredSaveRoll) {
             //amountOfWoundsTotal += currentWeapon.damageAmount.rawDamageAmount;
             damageToBeTaken = weapon.damageAmount.rawDamageAmount;
@@ -302,6 +303,9 @@ public class RollingLogic {
                 damageToBeTaken += diceResult.result;
             }
         }
+
+        damageToBeTaken = SaveRollAbilities(metrics,attackingArmy,defendingArmy,currentAttackingUnit,defendingUnit,weapon,damageToBeTaken);
+
         return damageToBeTaken;
     }
 
@@ -333,6 +337,27 @@ public class RollingLogic {
             ability.hitRollAbility(diceResult,metrics);
         }
 
+    }
+
+    private int SaveRollAbilities(MetricsOfAttacking metrics,  Army attackingArmy, Army defendingArmy, Unit attackingUnit, Unit defendingUnit, RangedWeapon attackingWeapon, int damageToBeTaken)
+    {
+        DiceResult diceResult = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 + 1));
+
+
+        int damageToReduce = 0;
+
+
+        for(Ability ability : defendingArmy.abilities)
+        {
+           damageToReduce += ability.saveRollAbility(diceResult,metrics, damageToBeTaken);
+        }
+        for(Ability ability : defendingUnit.listOfAbilitys)
+        {
+            damageToReduce+= ability.saveRollAbility(diceResult,metrics, damageToBeTaken);
+        }
+
+
+        return damageToBeTaken -damageToReduce;
     }
 
 
