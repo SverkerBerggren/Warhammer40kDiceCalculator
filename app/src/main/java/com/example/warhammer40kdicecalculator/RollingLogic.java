@@ -87,7 +87,7 @@ public class RollingLogic {
                                 WoundRoll(currentMetricsOfAttacking, attacker, defender, currentAttackingModel, currentDefendingModel, woundRoll, currentWeapon);
                             }
                             int requiredSaveRoll = currentDefendingModel.armorSave - currentMetricsOfAttacking.ap;
-                            if(requiredSaveRoll > currentDefendingModel.invulnerableSave && currentAttackingModel.invulnerableSave != 0)
+                            if(requiredSaveRoll > currentDefendingModel.invulnerableSave && currentDefendingModel.invulnerableSave != 0)
                             {
                                 requiredSaveRoll = currentDefendingModel.invulnerableSave;
                             }

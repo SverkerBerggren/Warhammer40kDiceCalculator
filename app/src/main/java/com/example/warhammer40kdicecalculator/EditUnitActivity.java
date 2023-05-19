@@ -105,7 +105,7 @@ public class EditUnitActivity extends AppCompatActivity implements AbilityUIHold
         UIIdentifier uiId = new UIIdentifier(compareActivity.UI_UNIT_MODIFIER_LAYOUT, unitIdentifier);
 
         compareActivity.CreateModifiers(army.units.get(unitIdentifier.index), uiId, tableRow, button);
-        compareActivity.CreateModel(highestConstraint,army.units.get(unitIdentifier.index),unitIdentifier.index,"friendly",inflater);
+        compareActivity.CreateModel(highestConstraint,army.units.get(unitIdentifier.index),unitIdentifier.index,unitIdentifier.allegiance,inflater);
 
 
 

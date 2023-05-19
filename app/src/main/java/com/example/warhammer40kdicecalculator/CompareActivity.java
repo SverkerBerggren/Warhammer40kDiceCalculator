@@ -694,8 +694,8 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
                 highestConstraint.findViewWithTag("AddWeaponModelButton").setOnClickListener(new OnClickAddWeapon(currentModel,modelId));
                 highestConstraint.findViewWithTag("AddWeaponModelButton").setTag("");
 
-                findViewById(R.id.DeactivateModelsButton).setOnClickListener(new OnClickDeactivate(currentModel));
-                findViewById(R.id.DeactivateModelsButton).setId(R.id.noId);
+                highestConstraint.findViewById(R.id.DeactivateModelsButton).setOnClickListener(new OnClickDeactivate(currentModel));
+                highestConstraint.findViewById(R.id.DeactivateModelsButton).setId(R.id.noId);
 
                 ConstraintLayout constraintLayout = ((ConstraintLayout)inflatedView.getParent()).findViewWithTag("ConstraintLayoutModel");
 
