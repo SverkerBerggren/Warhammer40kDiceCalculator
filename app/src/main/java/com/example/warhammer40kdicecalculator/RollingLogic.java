@@ -3,6 +3,7 @@ package com.example.warhammer40kdicecalculator;
 import android.util.Log;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
+import com.example.warhammer40kdicecalculator.Abilities.Dakka;
 import com.example.warhammer40kdicecalculator.Abilities.IncreaseAp1;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
@@ -104,7 +105,7 @@ public class RollingLogic {
                         if(requiredHitRoll < 2)
                             requiredHitRoll = 2;
 
-                        if(condtitions.rapidFireRange)
+                        if(condtitions.rapidFireRange )
                         {
                             for(Ability ability : currentWeapon.weaponRules)
                             {
@@ -114,6 +115,18 @@ public class RollingLogic {
                                 }
                             }
                         }
+                        if(condtitions.dakkaHalfRange )
+                        {
+                            for(Ability ability : currentWeapon.weaponRules)
+                            {
+                                if( ability.name.contains("Dakka"))
+                                {
+                                    currentWeapon.amountOfAttacks.rawNumberOfAttacks = ((Dakka)ability).dakkaAmount;
+                                }
+                            }
+                        }
+
+
                         CheckWeaponConditions(currentWeapon,condtitions);
                         for(Ability ability : attacker.listOfAbilitys)
                         {

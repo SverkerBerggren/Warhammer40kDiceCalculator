@@ -14,6 +14,7 @@ public class Conditions {
     public boolean devastatorDoctrine = false;
     public boolean assaultDoctrine = false;
     public boolean plusOneToWound = false;
+    public boolean dakkaHalfRange = false;
 
     @Override
     public String toString() {
@@ -27,6 +28,7 @@ public class Conditions {
                 ", devastatorDoctrine=" + devastatorDoctrine +
                 ", assaultDoctrine=" + assaultDoctrine +
                 ", plusOneToWound=" + plusOneToWound +
+                ", dakkaHalfRange=" + dakkaHalfRange +
                 '}';
     }
 
@@ -70,6 +72,10 @@ public class Conditions {
             plusOneToWound = false;
         else
             plusOneToWound = true;
+        if(splittedString[9].contains("false"))
+            dakkaHalfRange = false;
+        else
+            dakkaHalfRange = true;
 
 
 

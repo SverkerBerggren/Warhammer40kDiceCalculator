@@ -57,6 +57,7 @@ public class ConditionsActivity extends AppCompatActivity {
         CreateCheckBox("Devastator doctrine",condition.devastatorDoctrine);
         CreateCheckBox("Assault doctrine",condition.assaultDoctrine);
         CreateCheckBox("Plus one to wound",condition.plusOneToWound);
+        CreateCheckBox("Dakka half range",condition.dakkaHalfRange);
     }
 
     private void CreateCheckBox(String tag, Boolean active)
@@ -117,6 +118,12 @@ public class ConditionsActivity extends AppCompatActivity {
             checkBox.setText("Plus one to wound");
             checkBox.setChecked(active);
         }
+        if(tag.equals("Dakka half range"))
+        {
+            checkBox.setTag("Dakka half range");
+            checkBox.setText("Dakka half range");
+            checkBox.setChecked(active);
+        }
         checkBox.setOnCheckedChangeListener(new OnCheckBoxChange());
 
         linearLayout.addView(checkBox);
@@ -148,6 +155,8 @@ public class ConditionsActivity extends AppCompatActivity {
                 conditions.assaultDoctrine = b;
             if(tag.equals("Plus one to wound"))
                 conditions.plusOneToWound = b;
+            if(tag.equals("Dakka half range"))
+                conditions.dakkaHalfRange = b;
         }
     }
 

@@ -84,6 +84,14 @@ public abstract class Ability implements DeactivatableInterface {
         {
             return new MinusOneToWound();
         }
+        if(name.equals("Dakka5"))
+        {
+            return new Dakka(5);
+        }
+        if(name.equals("Dakka3"))
+        {
+            return new Dakka(3);
+        }
 
         return new AbilityStub(name );
     }
