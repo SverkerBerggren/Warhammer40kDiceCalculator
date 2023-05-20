@@ -72,8 +72,11 @@ public class ROSParser
             //END COPY PASTE
             Node ForceNode = p_FirsChildByType(p_FirsChildByType(doc.getDocumentElement(),"forces"),"force");
             Node ArmyRules = p_FirsChildByType(ForceNode,"rules");
+            if(ArmyRules != null)
+            {
+                ReturnValue.abilities.addAll(ParseRule(ArmyRules));
+            }
             Node ArmyModels = p_FirsChildByType(ForceNode,"selections");
-            ReturnValue.abilities.addAll(ParseRule(ArmyRules));
             for(int i = 0; i < ArmyModels.getChildNodes().getLength();i++)
             {
                 Node Child = ArmyModels.getChildNodes().item(i);
@@ -256,10 +259,22 @@ public class ROSParser
             BaseModel.listOfAbilites = ParseRule(p_FirsChildByType(ModelNode,"rules"));
         }
         Node ProfileNode = p_FirsChildByType(ModelNode,"profiles");
+        boolean ParsedStat = false;
         for(int i = 0; i < ProfileNode.getChildNodes().getLength();i++)
         {
             Node CurrentNode = ProfileNode.getChildNodes().item(i);
-            p_ParseProfile(CurrentNode,BaseModel);
+            if(CurrentNode.getAttributes().getNamedItem("typeName").getNodeValue().equals("Unit"))
+            {
+                if(!ParsedStat)
+                {
+                    p_ParseProfile(CurrentNode,BaseModel);
+                }
+                ParsedStat = true;
+            }
+            else
+            {
+                p_ParseProfile(CurrentNode,BaseModel);
+            }
         }
         Node WeaponsNode = p_FirsChildByType(ModelNode,"selections");
         for(int i = 0; i < WeaponsNode.getChildNodes().getLength();i++)
