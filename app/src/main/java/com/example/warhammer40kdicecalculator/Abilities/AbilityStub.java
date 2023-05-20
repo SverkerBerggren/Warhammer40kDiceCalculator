@@ -7,12 +7,17 @@ import java.util.List;
 
 public class AbilityStub extends Ability{
     @Override
-    public void hitRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int requiredResult) {
+    public void hitRollAbilityAttacking(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int requiredResult) {
 
     }
 
     @Override
-    public void woundRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking) {
+    public void HitRollAbilityDefender(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int requiredResult) {
+
+    }
+
+    @Override
+    public void woundRollAbilityAttacker(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking) {
 
     }
 

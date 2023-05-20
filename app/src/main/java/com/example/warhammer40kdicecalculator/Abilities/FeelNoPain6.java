@@ -15,12 +15,12 @@ public class FeelNoPain6 extends Ability {
     }
 
     @Override
-    public void hitRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int requiredResult) {
+    public void hitRollAbilityAttacking(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int requiredResult) {
 
     }
 
     @Override
-    public void woundRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking) {
+    public void woundRollAbilityAttacker(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking) {
 
     }
 

@@ -30,10 +30,6 @@ public class RollingLogic {
         int currentModelDamage;
         ArrayList<Integer> resultWoundsDealt = new ArrayList<Integer>();
         ArrayList<Integer> resultModelsSlain = new ArrayList<Integer>();
-
-
-
-
         conditionen = condtitions;
 
         //Army armyDefenderRules = null;
@@ -93,19 +89,19 @@ public class RollingLogic {
                             currentWeapon.strength += currentAttackingModel.strength;
                         }
 
-                        int requiredBallisticSkill = currentAttackingModel.ballisticSkill;
+                        int requiredHitRoll = currentAttackingModel.ballisticSkill;
                         if(currentWeapon.IsMelee)
                         {
-                            requiredBallisticSkill = currentAttackingModel.weaponSkill;
+                            requiredHitRoll = currentAttackingModel.weaponSkill;
                         }
                         int damage = currentWeapon.damageAmount.rawDamageAmount;
                         int ap = currentWeapon.ap;
                         int strength = currentWeapon.strength;
 
-                    //    requiredBallisticSkill += CalculateModifierHitRoll(attackingArmy,attacker,defendingArmy,defender) * -1;
+                    //    requiredHitRoll += CalculateModifierHitRoll(attackingArmy,attacker,defendingArmy,defender) * -1;
 
-                        if(requiredBallisticSkill < 2)
-                            requiredBallisticSkill = 2;
+                        if(requiredHitRoll < 2)
+                            requiredHitRoll = 2;
 
                         if(condtitions.rapidFireRange)
                         {
@@ -117,9 +113,7 @@ public class RollingLogic {
                                 }
                             }
                         }
-
                         CheckWeaponConditions(currentWeapon,condtitions);
-
                         for(Ability ability : attacker.listOfAbilitys)
                         {
                             if(ability instanceof IncreaseAp1)
@@ -127,9 +121,6 @@ public class RollingLogic {
                                 currentWeapon.ap -=1;
                             }
                         }
-
-
-
                         MetricsOfAttacking currentMetricsOfAttacking = new MetricsOfAttacking(0, currentWeapon.ap, damage, 0, 0);
                         int amountOfAttacks = AmountOfAttacks(currentMetricsOfAttacking, attacker, currentWeapon, defender, currentAttackingModel);
 
@@ -141,7 +132,7 @@ public class RollingLogic {
                             // Log.d(("Testar loopar: "),"Fungerar amount of attacks loopen loopen " + p);
                             DiceResult hitRoll = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 + 1));
 
-                            HitRoll(currentMetricsOfAttacking, attackingArmy,attacker,currentWeapon,defendingArmy, defender, currentAttackingModel, hitRoll,requiredBallisticSkill);
+                            HitRoll(currentMetricsOfAttacking, attackingArmy,attacker,currentWeapon,defendingArmy, defender, currentAttackingModel, hitRoll,requiredHitRoll);
 
                             for (int j = 0; j < currentMetricsOfAttacking.extraHits; j++) {
                                 DiceResult woundRoll = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 + 1));
@@ -288,7 +279,7 @@ public class RollingLogic {
                                        int requiredHit) {
 
 
-        AbilitiesHitRoll(metrics,hitRoll,attackingArmy,defendingArmy,currentAttackingUnit,defendingUnit,attackingWeapon, requiredHit);
+        AbilitiesHitRollAttacker(metrics,hitRoll,attackingArmy, currentAttackingModel,defendingArmy,currentAttackingUnit,defendingUnit,attackingWeapon, requiredHit);
 
 
         if (hitRoll.result >= requiredHit) {
@@ -301,10 +292,10 @@ public class RollingLogic {
 
         int amountOfWoundsDealt = 0;
         for (int m = 0; m < currentAttackingModel.listOfAbilites.size(); m++) {
-            currentAttackingModel.listOfAbilites.get(m).woundRollAbility(woundRoll, metrics);
+            currentAttackingModel.listOfAbilites.get(m).woundRollAbilityAttacker(woundRoll, metrics);
         }
         for (int m = 0; m < currentAttackingModel.listOfAbilites.size(); m++) {
-            currentAttackingModel.listOfAbilites.get(m).woundRollAbility(woundRoll, metrics);
+            currentAttackingModel.listOfAbilites.get(m).woundRollAbilityAttacker(woundRoll, metrics);
         }
 
         int requiredResult = -1;
@@ -346,7 +337,7 @@ public class RollingLogic {
                 DiceResult diceResult = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 + 1));
 
                 for (int c = 0; c < currentAttackingModel.listOfAbilites.size(); c++) {
-                    currentAttackingModel.listOfAbilites.get(c).woundRollAbility(diceResult, metrics);
+                    currentAttackingModel.listOfAbilites.get(c).woundRollAbilityAttacker(diceResult, metrics);
                 }
                 if (diceResult.result == 1 || diceResult.result == 2) {
                     damageToBeTaken += 1;
@@ -361,7 +352,7 @@ public class RollingLogic {
             for (int o = 0; o < weapon.damageAmount.d6DamageAmount; o++) {
                 DiceResult diceResult = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 + 1));
                 for (int c = 0; c < currentAttackingModel.listOfAbilites.size(); c++) {
-                    currentAttackingModel.listOfAbilites.get(c).woundRollAbility(diceResult, metrics);
+                    currentAttackingModel.listOfAbilites.get(c).woundRollAbilityAttacker(diceResult, metrics);
                 }
                 damageToBeTaken += diceResult.result;
             }
@@ -377,21 +368,41 @@ public class RollingLogic {
 
     }
 
-    private void AbilitiesHitRoll(MetricsOfAttacking metrics, DiceResult diceResult,  Army attackingArmy, Army defendingArmy, Unit attackingUnit, Unit defendingUnit, RangedWeapon attackingWeapon, int requiredResult)
+    private void AbilitiesHitRollAttacker(MetricsOfAttacking metrics, DiceResult diceResult, Army attackingArmy, Model currentAttackingModel, Army defendingArmy, Unit attackingUnit, Unit defendingUnit, RangedWeapon attackingWeapon, int requiredResult)
     {
         for(Ability ability : attackingArmy.abilities)
         {
-            ability.hitRollAbility(diceResult,metrics, requiredResult);
+            ability.hitRollAbilityAttacking(diceResult,metrics, requiredResult);
         }
         for(Ability ability : attackingUnit.listOfAbilitys)
         {
-            ability.hitRollAbility(diceResult,metrics, requiredResult);
+            ability.hitRollAbilityAttacking(diceResult,metrics, requiredResult);
+        }
+        for(Ability ability : currentAttackingModel.listOfAbilites)
+        {
+            ability.hitRollAbilityAttacking(diceResult,metrics, requiredResult);
         }
         for(Ability ability : attackingWeapon.weaponRules)
         {
-            ability.hitRollAbility(diceResult,metrics, requiredResult);
+            ability.hitRollAbilityAttacking(diceResult,metrics, requiredResult);
         }
 
+
+    }
+    private void AbilitiesHitRollDefender(MetricsOfAttacking metrics, DiceResult diceResult, Army defendingArmy, Unit defendingUnit, Model defendingModel, int requiredResult)
+    {
+        for(Ability ability : defendingArmy.abilities)
+        {
+            ability.HitRollAbilityDefender(diceResult,metrics, requiredResult);
+        }
+        for(Ability ability : defendingUnit.listOfAbilitys)
+        {
+            ability.hitRollAbilityAttacking(diceResult,metrics, requiredResult);
+        }
+        for(Ability ability : defendingModel.listOfAbilites)
+        {
+            ability.hitRollAbilityAttacking(diceResult,metrics, requiredResult);
+        }
 
     }
 
@@ -427,7 +438,7 @@ public class RollingLogic {
         currentAttackingModel.invulnerableSave -= attackingArmy.invulnerableSaveModifier +  currentAttackingUnit.invulnerableSaveModifier;
         currentAttackingModel.wounds += attackingArmy.woundsModifier +  currentAttackingUnit.woundsModifier;
         currentAttackingModel.ballisticSkill -= attackingArmy.ballisticSkillModifier +  currentAttackingUnit.ballisticSkillModifier;
-        currentAttackingModel.weaponSkill += attackingArmy.weaponSkillModifier +  currentAttackingUnit.weaponSkillModifier;
+        currentAttackingModel.weaponSkill -= attackingArmy.weaponSkillModifier +  currentAttackingUnit.weaponSkillModifier;
         currentAttackingModel.attacks +=  attackingArmy.attacksModifier +  currentAttackingUnit.attacksModifier;
     }
 

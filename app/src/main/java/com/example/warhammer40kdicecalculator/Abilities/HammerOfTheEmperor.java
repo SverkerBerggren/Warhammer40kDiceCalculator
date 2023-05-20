@@ -12,7 +12,7 @@ public class HammerOfTheEmperor extends Ability{
         super("Hammer of the Emperor");
     }
 
-    public  void hitRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int requiredResult)
+    public  void hitRollAbilityAttacking(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int requiredResult)
     {
         if(diceResult.result == 6)
         {
@@ -22,7 +22,13 @@ public class HammerOfTheEmperor extends Ability{
 
 
     }
-    public   void woundRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking)
+
+    @Override
+    public void HitRollAbilityDefender(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int requiredResult) {
+
+    }
+
+    public   void woundRollAbilityAttacker(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking)
     {
 
     }

@@ -16,7 +16,7 @@ public class ReRollOnes extends Ability{
         super("ReRollOnes");
     }
 
-    public  void hitRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int requiredResult)
+    public  void hitRollAbilityAttacking(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int requiredResult)
     {
 
 
@@ -27,7 +27,13 @@ public class ReRollOnes extends Ability{
 
 
     }
-    public   void woundRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking)
+
+    @Override
+    public void HitRollAbilityDefender(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int requiredResult) {
+
+    }
+
+    public   void woundRollAbilityAttacker(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking)
     {
 
     }

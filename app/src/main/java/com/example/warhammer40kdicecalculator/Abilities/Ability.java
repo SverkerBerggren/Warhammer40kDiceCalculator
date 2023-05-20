@@ -15,9 +15,11 @@ public abstract class Ability implements DeactivatableInterface {
     public boolean active = true;
 
 
-    public abstract void hitRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int requiredResult);
+    public abstract void hitRollAbilityAttacking(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int requiredResult);
 
-    public abstract void woundRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking);
+    public abstract void HitRollAbilityDefender(DiceResult diceResult,MetricsOfAttacking metricsOfAttacking, int requiredResult);
+
+    public abstract void woundRollAbilityAttacker(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking);
 
     public abstract int saveRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int damageToBeTaken);
 

@@ -15,7 +15,7 @@ public class ReRollHits extends Ability{
 
 
     @Override
-    public void hitRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int requiredResult) {
+    public void hitRollAbilityAttacking(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int requiredResult) {
 
         if (diceResult.result < requiredResult) {
             DiceResult newDiceRoll = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 + 1));
@@ -27,7 +27,12 @@ public class ReRollHits extends Ability{
     }
 
     @Override
-    public void woundRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking) {
+    public void HitRollAbilityDefender(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int requiredResult) {
+
+    }
+
+    @Override
+    public void woundRollAbilityAttacker(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking) {
 
     }
 

@@ -12,12 +12,12 @@ public class IncreaseAp1 extends Ability{
         super("IncreaseAp1");
     };
     @Override
-    public void hitRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int requiredResult) {
+    public void hitRollAbilityAttacking(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int requiredResult) {
         //metricsOfAttacking.ap -=1;
     }
 
     @Override
-    public void woundRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking) {
+    public void woundRollAbilityAttacker(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking) {
 
     }
 
