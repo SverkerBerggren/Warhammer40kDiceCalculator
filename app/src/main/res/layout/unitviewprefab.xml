@@ -24,7 +24,7 @@
         android:id="@+id/UnitStatsLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -201,12 +201,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/UnitTable">
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/modelsTopButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:backgroundTint="#4CAF50"
                 android:onClick="DropDownClick"
                 android:text="Models"
+                android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.498"
@@ -246,12 +248,14 @@
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
                 app:srcCompat="@android:drawable/ic_menu_edit" />
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/abilitiesTopButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:backgroundTint="#0055FF"
                 android:onClick="DropDownClick"
                 android:text="Abilites"
+                android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

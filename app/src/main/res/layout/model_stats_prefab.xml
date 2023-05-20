@@ -17,19 +17,21 @@
         app:layout_constraintTop_toTopOf="@+id/inividualModelTopButton"
         app:srcCompat="@android:drawable/btn_dialog" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/inividualModelTopButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
         android:layout_marginTop="20dp"
+        android:backgroundTint="#4CAF50"
         android:maxWidth="220dp"
+        android:maxEms="11"
         android:onClick="DropDownClick"
         android:tag="inividualModelTopButton"
-        android:text="ingen model text satt"
+        android:text="ingen model text satt men jag vill testa längden på denna knapp"
+        android:textAlignment="center"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
@@ -38,10 +40,10 @@
         android:id="@+id/ConstraintLayoutModel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
         android:tag="ConstraintLayoutModel"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/inividualModelTopButton">
 
         <TableLayout
             android:id="@+id/layoutStatsen"
