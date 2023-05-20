@@ -28,6 +28,8 @@ import com.example.warhammer40kdicecalculator.Abilities.MinusOneToHit;
 import com.example.warhammer40kdicecalculator.Abilities.ReRollAmountOfHits;
 import com.example.warhammer40kdicecalculator.Abilities.ReRollHits;
 import com.example.warhammer40kdicecalculator.Abilities.ReRollOnes;
+import com.example.warhammer40kdicecalculator.Abilities.ReRollOnesWound;
+import com.example.warhammer40kdicecalculator.Abilities.ReRollWoundRoll;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedAttackAmount;
@@ -98,6 +100,8 @@ public class  MainActivity extends AppCompatActivity {
         abilityMap.put("FeelNoPain6",new FeelNoPain6());
         abilityMap.put("IncreaseAp1", new IncreaseAp1());
         abilityMap.put("MinusOneToHit", new MinusOneToHit());
+        abilityMap.put("ReRollOnesWound", new ReRollOnesWound());
+        abilityMap.put("ReRollWounds", new ReRollWoundRoll());
     }
 
     public  MainActivity()

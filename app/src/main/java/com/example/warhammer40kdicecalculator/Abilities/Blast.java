@@ -30,6 +30,11 @@ public class Blast extends Ability{
     }
 
     @Override
+    public void woundRollAbilityDefender(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult) {
+
+    }
+
+    @Override
     public int saveRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int damageToBeTaken) {
         return 0;
     }

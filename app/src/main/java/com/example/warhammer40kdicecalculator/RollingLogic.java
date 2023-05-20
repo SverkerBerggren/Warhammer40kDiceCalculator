@@ -138,7 +138,7 @@ public class RollingLogic {
                             for (int j = 0; j < currentMetricsOfAttacking.extraHits; j++) {
                                 DiceResult woundRoll = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 + 1));
 
-                                WoundRoll(currentMetricsOfAttacking, attacker, defender, currentAttackingModel, currentDefendingModel, woundRoll, currentWeapon);
+                                WoundRoll(currentMetricsOfAttacking, attackingArmy,defendingArmy,attacker, defender, currentAttackingModel, currentDefendingModel, woundRoll, currentWeapon);
                             }
                             int requiredSaveRoll = currentDefendingModel.armorSave - currentMetricsOfAttacking.ap;
                             if(requiredSaveRoll > currentDefendingModel.invulnerableSave && currentDefendingModel.invulnerableSave != 7)
@@ -291,11 +291,10 @@ public class RollingLogic {
         return metrics;
     }
 
-    private int WoundRoll(MetricsOfAttacking metrics,Army army,  Unit currentAttackingUnit, Unit defendingUnit, Model currentAttackingModel, Model defendingModel, DiceResult woundRoll, RangedWeapon weapon) {
+    private int WoundRoll(MetricsOfAttacking metrics,Army attackingArmy, Army defendingArmy,  Unit currentAttackingUnit, Unit defendingUnit, Model currentAttackingModel, Model defendingModel, DiceResult woundRoll, RangedWeapon weapon) {
 
+        int amountOfWoundsDealt = 0;
 
-
-        AbilitiesWoundRollAttacker(metrics,);
 
         int requiredResult = -1;
         if (weapon.strength == defendingModel.toughness) {
@@ -315,6 +314,15 @@ public class RollingLogic {
         {
             requiredResult-=1;
         }
+
+        AtomicInteger atomicInteger = new AtomicInteger(requiredResult);
+
+        AbilitiesWoundRollAttacker(metrics,woundRoll, attackingArmy,  currentAttackingModel,  defendingArmy,  currentAttackingUnit,  defendingUnit, weapon , atomicInteger);
+        AbilitiesWoundRollDefender(metrics,woundRoll, attackingArmy,  currentAttackingModel,  defendingArmy,  currentAttackingUnit,  defendingUnit, weapon , atomicInteger);
+
+
+        requiredResult = atomicInteger.get();
+
         if (woundRoll.result >= requiredResult) {
             metrics.wounds += 1;
             amountOfWoundsDealt+=1;
@@ -335,9 +343,7 @@ public class RollingLogic {
                 //  Log.d(("Testar loopar: "),"Fungerar vapen loopen loopen");
                 DiceResult diceResult = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 + 1));
 
-                for (int c = 0; c < currentAttackingModel.listOfAbilites.size(); c++) {
-                    currentAttackingModel.listOfAbilites.get(c).woundRollAbilityAttacker(diceResult, metrics, );
-                }
+
                 if (diceResult.result == 1 || diceResult.result == 2) {
                     damageToBeTaken += 1;
                 }
@@ -350,9 +356,7 @@ public class RollingLogic {
             }
             for (int o = 0; o < weapon.damageAmount.d6DamageAmount; o++) {
                 DiceResult diceResult = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 + 1));
-                for (int c = 0; c < currentAttackingModel.listOfAbilites.size(); c++) {
-                    currentAttackingModel.listOfAbilites.get(c).woundRollAbilityAttacker(diceResult, metrics, );
-                }
+
                 damageToBeTaken += diceResult.result;
             }
         }
@@ -403,6 +407,25 @@ public class RollingLogic {
         for(Ability ability : attackingWeapon.weaponRules)
         {
             ability.hitRollAbilityAttacking(diceResult,metrics, requiredResult);
+        }
+    }
+    private void AbilitiesWoundRollDefender(MetricsOfAttacking metrics, DiceResult diceResult, Army attackingArmy, Model currentAttackingModel, Army defendingArmy, Unit attackingUnit, Unit defendingUnit, RangedWeapon attackingWeapon, AtomicInteger requiredResult)
+    {
+        for(Ability ability : attackingArmy.abilities)
+        {
+            ability.woundRollAbilityDefender(diceResult,metrics, requiredResult);
+        }
+        for(Ability ability : attackingUnit.listOfAbilitys)
+        {
+            ability.woundRollAbilityDefender(diceResult,metrics, requiredResult);
+        }
+        for(Ability ability : currentAttackingModel.listOfAbilites)
+        {
+            ability.woundRollAbilityDefender(diceResult,metrics, requiredResult);
+        }
+        for(Ability ability : attackingWeapon.weaponRules)
+        {
+            ability.woundRollAbilityDefender(diceResult,metrics, requiredResult);
         }
     }
     private void AbilitiesHitRollDefender(MetricsOfAttacking metrics, DiceResult diceResult, Army defendingArmy, Unit defendingUnit, Model defendingModel, AtomicInteger requiredResult)

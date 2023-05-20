@@ -31,6 +31,11 @@ public class FeelNoPain6 extends Ability {
     }
 
     @Override
+    public void woundRollAbilityDefender(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult) {
+
+    }
+
+    @Override
     public int saveRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int damageToBeTaken) {
        int damageToReduce = 0;
        for(int i = 0; i < damageToBeTaken; i++)
