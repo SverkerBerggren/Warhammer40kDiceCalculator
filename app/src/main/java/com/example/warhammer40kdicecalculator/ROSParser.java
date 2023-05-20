@@ -449,10 +449,10 @@ public class ROSParser
                 }
             }
         }
-        Node ProfilesNode = p_FirsChildByType(UnitNode,"profiles");
+       // Node ProfilesNode = p_FirsChildByType(UnitNode,"profiles");
         if(ProfilesNode != null)
         {
-            Model TemporaryModel = new Model();
+         //   Model TemporaryModel = new Model();
             for(int i = 0; i < ProfilesNode.getChildNodes().getLength();i++)
             {
                 p_ParseProfile(ProfilesNode.getChildNodes().item(i),TemporaryModel);

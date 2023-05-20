@@ -39,6 +39,11 @@ public class ReRollOnes extends Ability{
 
     }
 
+    @Override
+    public void woundRollAbilityDefender(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult) {
+
+    }
+
     public int saveRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int damageToBeTaken)
     {
         return 0;
