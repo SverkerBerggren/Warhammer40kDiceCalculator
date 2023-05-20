@@ -24,6 +24,7 @@ import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.Abilities.FeelNoPain6;
 import com.example.warhammer40kdicecalculator.Abilities.HammerOfTheEmperor;
 import com.example.warhammer40kdicecalculator.Abilities.IncreaseAp1;
+import com.example.warhammer40kdicecalculator.Abilities.MinusOneToHit;
 import com.example.warhammer40kdicecalculator.Abilities.ReRollAmountOfHits;
 import com.example.warhammer40kdicecalculator.Abilities.ReRollHits;
 import com.example.warhammer40kdicecalculator.Abilities.ReRollOnes;
@@ -96,6 +97,7 @@ public class  MainActivity extends AppCompatActivity {
         abilityMap.put("ReRollHits",new ReRollHits());
         abilityMap.put("FeelNoPain6",new FeelNoPain6());
         abilityMap.put("IncreaseAp1", new IncreaseAp1());
+        abilityMap.put("MinusOneToHit", new MinusOneToHit());
     }
 
     public  MainActivity()

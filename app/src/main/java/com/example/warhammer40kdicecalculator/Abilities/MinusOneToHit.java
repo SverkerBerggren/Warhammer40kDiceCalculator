@@ -4,32 +4,26 @@ import com.example.warhammer40kdicecalculator.DiceResult;
 import com.example.warhammer40kdicecalculator.MetricsOfAttacking;
 
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ReRollHits extends Ability{
-
-    public ReRollHits()
+public class MinusOneToHit extends Ability{
+    
+    
+    public MinusOneToHit()
     {
-        super("ReRollHits");
+        super("MinusOneToHit");
     }
-
-
+    
     @Override
     public void hitRollAbilityAttacking(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult) {
-
-        if (diceResult.result < requiredResult.get()) {
-            DiceResult newDiceRoll = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 + 1));
-
-            diceResult.result = newDiceRoll.result;
-
-        }
-
+        
     }
 
     @Override
     public void HitRollAbilityDefender(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult) {
 
+
+        requiredResult.set(requiredResult.get()+1);
     }
 
     @Override

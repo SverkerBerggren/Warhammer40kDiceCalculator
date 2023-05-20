@@ -4,20 +4,21 @@ import com.example.warhammer40kdicecalculator.DiceResult;
 import com.example.warhammer40kdicecalculator.MetricsOfAttacking;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class AbilityStub extends Ability{
     @Override
-    public void hitRollAbilityAttacking(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int requiredResult) {
+    public void hitRollAbilityAttacking(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult) {
 
     }
 
     @Override
-    public void HitRollAbilityDefender(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int requiredResult) {
+    public void HitRollAbilityDefender(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult) {
 
     }
 
     @Override
-    public void woundRollAbilityAttacker(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking) {
+    public void woundRollAbilityAttacker(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult) {
 
     }
 

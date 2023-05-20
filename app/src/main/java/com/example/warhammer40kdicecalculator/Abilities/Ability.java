@@ -8,6 +8,7 @@ import com.example.warhammer40kdicecalculator.MetricsOfAttacking;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class Ability implements DeactivatableInterface {
 
@@ -15,11 +16,11 @@ public abstract class Ability implements DeactivatableInterface {
     public boolean active = true;
 
 
-    public abstract void hitRollAbilityAttacking(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int requiredResult);
+    public abstract void hitRollAbilityAttacking(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult);
 
-    public abstract void HitRollAbilityDefender(DiceResult diceResult,MetricsOfAttacking metricsOfAttacking, int requiredResult);
+    public abstract void HitRollAbilityDefender(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult);
 
-    public abstract void woundRollAbilityAttacker(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking);
+    public abstract void woundRollAbilityAttacker(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult);
 
     public abstract int saveRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int damageToBeTaken);
 
@@ -63,6 +64,18 @@ public abstract class Ability implements DeactivatableInterface {
         if(name.equals("IncreaseAp1"))
         {
             return new IncreaseAp1();
+        }
+        if(name.equals("MinusOneToHit"))
+        {
+            return new MinusOneToHit();
+        }
+        if(name.equals("ReRollWoundRoll"))
+        {
+            return new ReRollWoundRoll();
+        }
+        if(name.equals("ReRollOnesWound"))
+        {
+            return new ReRollOnesWound();
         }
 
         return new AbilityStub(name );
