@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Scanner;
 import java.util.function.Function;
 
 class Runnable_Function<FunctionArgument,FunctionReturnValue> implements Runnable
@@ -140,17 +141,17 @@ public class  MainActivity extends AppCompatActivity {
     //    parsedDatasheetList =   csvParser.ReadCsvFile("Datasheets.csv");
     //    parsedWeaponList = csvParser.ReadCsvFile("Wargear_list.csv");
     //    parsedModelList = csvParser.ReadCsvFile("Datasheets_models.csv");
-    //    try
-    //    {
-    //        Scanner s = new Scanner(context.getAssets().open("TestRos.ros")).useDelimiter("\\A");
-    //        String result = s.hasNext() ? s.next() : "";
-    //        ROSParser Parser = new ROSParser();
-    //        Army TestArmy = Parser.ParseArmy(result);
-    //    }
-    //    catch(Exception e)
-    //    {
+   try
+   {
+       Scanner s = new Scanner(context.getAssets().open("TestRos.ros")).useDelimiter("\\A");
+       String result = s.hasNext() ? s.next() : "";
+       ROSParser Parser = new ROSParser();
+       Army TestArmy = Parser.ParseArmy(result);
+   }
+   catch(Exception e)
+   {
 //
-    //    }
+   }
     }
 
 
