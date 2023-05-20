@@ -186,7 +186,11 @@ public class ROSParser
         }
         if(ParseOffset != 0)
         {
-            ResultWeapon.weaponRules.add(Ability.getAbilityType(TypeString.substring(0,ParseOffset)));
+            String AbilityString = TypeString.substring(0,ParseOffset);
+            if(AbilityString.contains("/"))
+            {
+                ResultWeapon.weaponRules.add(Ability.getAbilityType(TypeString.substring(0,ParseOffset)));
+            }
         }
         ResultWeapon.amountOfAttacks =new RangedAttackAmount(p_DamageFromString(TypeString));
     }
