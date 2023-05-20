@@ -7,6 +7,9 @@ public class RollResult {
     public ArrayList<Integer> woundsDealt;
     public ArrayList<Integer> modelsSlain;
 
+
+
     public float averageAmountOfWounds;
+    public float averageAmountOfModelsSlain;
 
 }

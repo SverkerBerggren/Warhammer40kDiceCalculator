@@ -2,6 +2,7 @@ package com.example.warhammer40kdicecalculator.DatasheetModeling;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.DamageAmount;
+import com.example.warhammer40kdicecalculator.R;
 
 import java.util.ArrayList;
 
@@ -39,6 +40,22 @@ public class RangedWeapon implements AbilityHolder, DeactivatableInterface {
         this.amountOfAttacks = new RangedAttackAmount(amountOfAttacks) ;
     }
 
+
+    public RangedWeapon Copy( )
+    {
+        RangedWeapon weaponToReturn = new RangedWeapon();
+        weaponToReturn.name = name;
+        weaponToReturn.damageAmount = damageAmount.Copy();
+        weaponToReturn.ap = ap;
+        weaponToReturn.strength = strength;
+        weaponToReturn.IsMelee = IsMelee;
+        weaponToReturn.active = active;
+        weaponToReturn.amountOfAttacks = amountOfAttacks.Copy();
+
+        weaponToReturn.weaponRules = new ArrayList<>(weaponRules);
+
+        return weaponToReturn;
+    }
 
 
     public RangedWeapon(int strength, int ap, DamageAmount damageAmount, RangedAttackAmount amountOfAttacks, ArrayList<Ability> weaponRules)

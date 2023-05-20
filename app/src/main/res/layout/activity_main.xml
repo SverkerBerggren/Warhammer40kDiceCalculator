@@ -11,118 +11,33 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hello World!"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/ForstaKnappen"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="TestDiceRolling"
-        android:text="Rull test"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.137" />
-
-    <Button
-        android:id="@+id/laddaNerDataKnappen"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="testNedladdning"
-        android:text="Download data"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.294" />
-
-    <Button
-        android:id="@+id/parseList"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="testBattleScribeParse"
-        android:text="parse battlescribe"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/buttonTestParse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="testParseDownloadedCsv"
-        android:text="Las nedladdade grejen"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.733" />
 
     <Button
         android:id="@+id/ButtonTestActivity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="192dp"
         android:onClick="OpenSavedMatchups"
-        android:text="Testa aktivitet 2"
+        android:text="Open matchup"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonTestParse" />
-
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="OpenPopup"
-        android:text="Popup"
-        app:layout_constraintBottom_toTopOf="@+id/buttonTestParse"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/parseList"
-        app:layout_constraintVertical_bias="0.507" />
-
-    <Button
-        android:id="@+id/CreateMatchup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="CreateNewMatchup"
-        android:text="Gör matchupen"
-        app:layout_constraintBottom_toTopOf="@+id/parseList"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/laddaNerDataKnappen" />
-
-    <Button
-        android:id="@+id/button5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="150dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="167dp"
-        android:layout_marginBottom="7dp"
-        android:onClick="OpenWeaponPopup"
-        android:text="To Weapon Popup"
-        app:layout_constraintBottom_toTopOf="@+id/ButtonTestActivity"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonTestParse" />
+        app:layout_constraintTop_toBottomOf="@+id/button7" />
 
     <Button
         android:id="@+id/button7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="220dp"
         android:onClick="StartParseActivity"
-        android:text="Button"
+        android:text="Parse and create matchups"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

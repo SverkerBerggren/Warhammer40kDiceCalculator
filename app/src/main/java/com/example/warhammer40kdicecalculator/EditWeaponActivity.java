@@ -93,7 +93,9 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
             CheckBox checkBox = new CheckBox(context);
             checkBox.setChecked(weapons.get(i).active);
             CompareActivity compareActivity = new CompareActivity();
-            checkBox.setOnClickListener(compareActivity. new OnClickDeactivate(weapons.get(i)));
+            compareActivity.Setup(context,matchup);
+
+            checkBox.setOnClickListener(compareActivity.new OnClickDeactivate(weapons.get(i)));
             tableLayout.addView(tableRow);
             tableRow.addView(weaponButton);
             tableRow.addView(checkBox);

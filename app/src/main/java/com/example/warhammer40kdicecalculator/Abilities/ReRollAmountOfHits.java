@@ -5,6 +5,7 @@ import com.example.warhammer40kdicecalculator.MetricsOfAttacking;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ReRollAmountOfHits extends Ability {
 
@@ -13,20 +14,24 @@ public class ReRollAmountOfHits extends Ability {
         super("ReRollAmountOfHits");
     }
 
-    public  void hitRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking)
-    {
-
-
-
-    }
-    public   void woundRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking)
+    public  void hitRollAbilityAttacking(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult)
     {
 
     }
 
-    public   void saveRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking)
+    @Override
+    public void HitRollAbilityDefender(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult) {
+
+    }
+
+    public   void woundRollAbilityAttacker(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult)
     {
 
+    }
+
+    public int saveRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int damageToBeTaken)
+    {
+        return 0;
     }
 
     public   void rollNumberOfShots( List<DiceResult>  diceResultList, MetricsOfAttacking metricsOfAttacking)
