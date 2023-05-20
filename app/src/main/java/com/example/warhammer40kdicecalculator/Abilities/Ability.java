@@ -80,6 +80,10 @@ public abstract class Ability implements DeactivatableInterface {
         {
             return new ReRollOnesWound();
         }
+        if(name.equals("MinusOneToWound"))
+        {
+            return new MinusOneToWound();
+        }
 
         return new AbilityStub(name );
     }
