@@ -13,10 +13,8 @@ public class ReRollAmountOfHits extends Ability {
         super("ReRollAmountOfHits");
     }
 
-    public  void hitRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking)
+    public  void hitRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int requiredResult)
     {
-
-
 
     }
     public   void woundRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking)

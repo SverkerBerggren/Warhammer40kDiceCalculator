@@ -10,7 +10,10 @@ public class Conditions {
     public boolean rangedCombat = true;
     public boolean mediumBlast = false;
     public boolean fullBlast = false;
-
+    public boolean tacticalDoctrine = false;
+    public boolean devastatorDoctrine = false;
+    public boolean assaultDoctrine = false;
+    public boolean plusOneToWound = false;
 
     @Override
     public String toString() {
@@ -20,6 +23,10 @@ public class Conditions {
                 ", rangedCombat=" + rangedCombat +
                 ", mediumBlast=" + mediumBlast +
                 ", fullBlast=" + fullBlast +
+                ", tacticalDoctrine=" + tacticalDoctrine +
+                ", devastatorDoctrine=" + devastatorDoctrine +
+                ", assaultDoctrine=" + assaultDoctrine +
+                ", plusOneToWound=" + plusOneToWound +
                 '}';
     }
 
@@ -39,6 +46,30 @@ public class Conditions {
             rangedCombat = false;
         else
             rangedCombat = true;
+        if(splittedString[3].contains("false"))
+            mediumBlast = false;
+        else
+            mediumBlast = true;
+        if(splittedString[4].contains("false"))
+            fullBlast = false;
+        else
+            fullBlast = true;
+        if(splittedString[5].contains("false"))
+            tacticalDoctrine = false;
+        else
+            tacticalDoctrine = true;
+        if(splittedString[6].contains("false"))
+            devastatorDoctrine = false;
+        else
+            devastatorDoctrine = true;
+        if(splittedString[7].contains("false"))
+            assaultDoctrine = false;
+        else
+            assaultDoctrine = true;
+        if(splittedString[8].contains("false"))
+            plusOneToWound = false;
+        else
+            plusOneToWound = true;
 
 
 

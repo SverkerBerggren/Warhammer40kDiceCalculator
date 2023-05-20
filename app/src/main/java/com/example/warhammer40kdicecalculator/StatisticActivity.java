@@ -2,10 +2,14 @@ package com.example.warhammer40kdicecalculator;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +26,7 @@ import com.jjoe64.graphview.series.Series;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.TreeMap;
 
@@ -37,10 +42,14 @@ public class StatisticActivity extends AppCompatActivity {
 
     private Conditions conditions;
 
+    private Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistic);
+
+        context = getBaseContext();
 
         Intent intent = getIntent();
 
@@ -134,6 +143,8 @@ public class StatisticActivity extends AppCompatActivity {
 
         ConvertResult(rollResult);
 
+        CreateStastisticalMetrics(rollResult);
+
         graphView1.setTitle("Amount of wounds dealt");
         InstaniateGraph(graphView1,woundsDealtDistribution, true);
         graphView2.setTitle("Amount of Enemies killed");
@@ -143,6 +154,98 @@ public class StatisticActivity extends AppCompatActivity {
         // series.setDataPointsRadius(10);
         // series.setDrawBackground(true);
         // series.setBackgroundColor(Color.argb(80,179, 230, 255));
+    }
+
+    private void CreateStastisticalMetrics(RollResult rollResult)
+    {
+        TableLayout tableLayout = findViewById(R.id.TableLayoutStatisticMetrics);
+
+        tableLayout.addView(CreateTableRow("Average Wounds:", ""+rollResult.averageAmountOfWounds));
+        tableLayout.addView(CreateTableRow("Median Wounds:", ""+MedianWounds(rollResult)));
+        tableLayout.addView(CreateTableRow("Variance Wounds:", ""+VarianceWounds(rollResult)));
+        tableLayout.addView(CreateTableRow("Average Models Slain:", ""+rollResult.averageAmountOfModelsSlain));
+        tableLayout.addView(CreateTableRow("Median Models Slain:", ""+MedianModelsSlain(rollResult)));
+        tableLayout.addView(CreateTableRow("Variance Wounds:", ""+VarianceModelsSlain(rollResult)));
+
+
+
+    }
+
+    public View CreateTableRow(String textStatisticalMetric, String statisticalValue)
+    {
+        TableRow tableRow = new TableRow(context);
+        tableRow.setBackgroundColor(Color.parseColor("#919191"));
+        tableRow.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+
+        TextView statisticalMetric = new TextView(context);
+        statisticalMetric.setText(textStatisticalMetric);
+        statisticalMetric.setTextSize(10);
+        statisticalMetric.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+        TextView statisticalValueText = new TextView(context);
+        statisticalValueText.setText(statisticalValue);
+        statisticalValueText.setTextSize(10);
+        statisticalValueText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        statisticalValueText.setBackgroundColor(Color.parseColor("#F6EFEF"));
+
+        tableRow.addView(statisticalMetric);
+        tableRow.addView(statisticalValueText);
+
+        return tableRow;
+    }
+
+
+    private double VarianceWounds(RollResult rollResult)
+    {
+        double variance = 0;
+
+        ArrayList<Integer> amountOfWounds = rollResult.woundsDealt;
+
+        for(Integer integer : amountOfWounds)
+        {
+            variance += (integer - rollResult.averageAmountOfWounds ) *(integer - rollResult.averageAmountOfWounds );
+        }
+
+        return Math.sqrt(variance/ rollResult.woundsDealt.size());
+    }
+    private double VarianceModelsSlain(RollResult rollResult)
+    {
+        double variance = 0;
+
+        ArrayList<Integer> amountOfWounds = rollResult.modelsSlain;
+
+        for(Integer integer : amountOfWounds)
+        {
+            variance += (integer - rollResult.averageAmountOfModelsSlain ) *(integer - rollResult.averageAmountOfModelsSlain );
+        }
+
+        return Math.sqrt(variance/ rollResult.modelsSlain.size());
+    }
+
+    private int MedianWounds(RollResult rollResult)
+    {
+
+
+        ArrayList<Integer> arrayListWounds = rollResult.woundsDealt;
+
+        Collections.sort(arrayListWounds);
+
+
+
+        return arrayListWounds.get(arrayListWounds.size()/2);
+    }
+    private int MedianModelsSlain(RollResult rollResult)
+    {
+
+
+        ArrayList<Integer> arrayListWounds = rollResult.modelsSlain;
+
+        Collections.sort(arrayListWounds);
+
+
+
+        return arrayListWounds.get(arrayListWounds.size()/2);
     }
 
     private void InstaniateGraph(GraphView graphView, TreeMap<Integer,Integer> distribution, boolean isGraph1)
@@ -237,20 +340,28 @@ public class StatisticActivity extends AppCompatActivity {
             @Override
             public void onTap(Series series, DataPointInterface dataPoint) {
                 Iterator<DataPoint> barDataPoints = barSeries.getValues(dataPoint.getX() + 1, dataPoint.getX() + 1);
-                if (isGraph1)
-                {
-                    ShowToastMessage("Amount of Wounds: " + dataPoint.getX() + "\n" +
-                            "Chance for Wounds: " + Math.round(barDataPoints.next().getY()  * 100.0) / 100.0 + " %\n" +
-                            "Chance for " + dataPoint.getX() + " or more Wounds: " + + Math.round(dataPoint.getY() * 100.0) / 100.0 + " %"
-                    );
+
+                try {
+                    if (isGraph1)
+                    {
+                        ShowToastMessage("Amount of Wounds: " + dataPoint.getX() + "\n" +
+                                "Chance for Wounds: " + Math.round(barDataPoints.next().getY()  * 100.0) / 100.0 + " %\n" +
+                                "Chance for " + dataPoint.getX() + " or more Wounds: " + + Math.round(dataPoint.getY() * 100.0) / 100.0 + " %"
+                        );
+                    }
+                    else
+                    {
+                        ShowToastMessage("Amount of Models Slain: " + dataPoint.getX() + "\n" +
+                                "Chance for Models Slain: " + Math.round(barDataPoints.next().getY()  * 100.0) / 100.0 + " %\n" +
+                                "Chance for " + dataPoint.getX() + " or more Models Slain: " + + Math.round(dataPoint.getY() * 100.0) / 100.0 + " %"
+                        );
+                    }
                 }
-               else
+                catch (Exception  e)
                 {
-                    ShowToastMessage("Amount of Models Slain: " + dataPoint.getX() + "\n" +
-                            "Chance for Models Slain: " + Math.round(barDataPoints.next().getY()  * 100.0) / 100.0 + " %\n" +
-                            "Chance for " + dataPoint.getX() + " or more Models Slain: " + + Math.round(dataPoint.getY() * 100.0) / 100.0 + " %"
-                    );
+
                 }
+
             }
         });
 

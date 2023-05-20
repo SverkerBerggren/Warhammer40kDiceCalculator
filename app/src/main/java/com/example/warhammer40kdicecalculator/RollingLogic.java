@@ -3,6 +3,7 @@ package com.example.warhammer40kdicecalculator;
 import android.util.Log;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
+import com.example.warhammer40kdicecalculator.Abilities.IncreaseAp1;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedWeapon;
@@ -21,6 +22,8 @@ public class RollingLogic {
 
 
 
+    private Conditions conditionen;
+
     public RollResult newCalculateDamage(ArrayList<Unit> attackerList, Unit defender, Army attackingArmy, Army defendingArmy, Conditions condtitions) {
         int amountOfWoundsTotal;
         int amountOfModelsKilled;
@@ -30,6 +33,8 @@ public class RollingLogic {
 
 
 
+
+        conditionen = condtitions;
 
         //Army armyDefenderRules = null;
 
@@ -102,7 +107,30 @@ public class RollingLogic {
                         if(requiredBallisticSkill < 2)
                             requiredBallisticSkill = 2;
 
-                        MetricsOfAttacking currentMetricsOfAttacking = new MetricsOfAttacking(0, ap, damage, 0, 0);
+                        if(condtitions.rapidFireRange)
+                        {
+                            for(Ability ability : currentWeapon.weaponRules)
+                            {
+                                if( ability.name.contains("Rapid Fire"))
+                                {
+                                    currentWeapon.amountOfAttacks.rawNumberOfAttacks*=2;
+                                }
+                            }
+                        }
+
+                        CheckWeaponConditions(currentWeapon,condtitions);
+
+                        for(Ability ability : attacker.listOfAbilitys)
+                        {
+                            if(ability instanceof IncreaseAp1)
+                            {
+                                currentWeapon.ap -=1;
+                            }
+                        }
+
+
+
+                        MetricsOfAttacking currentMetricsOfAttacking = new MetricsOfAttacking(0, currentWeapon.ap, damage, 0, 0);
                         int amountOfAttacks = AmountOfAttacks(currentMetricsOfAttacking, attacker, currentWeapon, defender, currentAttackingModel);
 
                         averageAmountOfAttacks +=amountOfAttacks;
@@ -173,6 +201,7 @@ public class RollingLogic {
         for (int result : resultModelsSlain) {
             anotherSum += result;
         }
+
         average = sum / 10000;
         averageModelsKilled = anotherSum / 10000;
         Log.d("Result", "Average amount of attacks: " + averageAmountOfAttacks / 10000);
@@ -182,9 +211,38 @@ public class RollingLogic {
         returnResult.modelsSlain = resultModelsSlain;
         returnResult.woundsDealt = resultWoundsDealt;
         returnResult.averageAmountOfWounds = average;
+        returnResult.averageAmountOfModelsSlain = averageModelsKilled;
         return returnResult;
     }
 
+
+    private void CheckWeaponConditions(RangedWeapon weapon,Conditions conditions)
+    {
+
+        for(Ability ability : weapon.weaponRules)
+        {
+            if((ability.name.contains("Heavy") || ability.name.contains("Grenade")) && conditions.devastatorDoctrine)
+            {
+                weapon.ap -= 1;
+            }
+            if((ability.name.contains("Rapid Fire") || ability.name.contains("Assault")) && conditions.tacticalDoctrine)
+            {
+                weapon.ap -= 1;
+            }
+            if((ability.name.contains("Pistol") )&& conditions.assaultDoctrine)
+            {
+                weapon.ap -= 1;
+            }
+        }
+
+
+        if(conditions.assaultDoctrine && weapon.IsMelee)
+        {
+            weapon.ap -=1;
+        }
+
+
+    }
 
     private int AmountOfAttacks(MetricsOfAttacking metrics, Unit currentAttackingUnit, RangedWeapon currentWeapon, Unit defendingUnit, Model currentAttackingModel) {
         int amountOfAttacks = 0;
@@ -230,7 +288,7 @@ public class RollingLogic {
                                        int requiredHit) {
 
 
-        AbilitiesHitRoll(metrics,hitRoll,attackingArmy,defendingArmy,currentAttackingUnit,defendingUnit,attackingWeapon);
+        AbilitiesHitRoll(metrics,hitRoll,attackingArmy,defendingArmy,currentAttackingUnit,defendingUnit,attackingWeapon, requiredHit);
 
 
         if (hitRoll.result >= requiredHit) {
@@ -261,6 +319,11 @@ public class RollingLogic {
             requiredResult = 6;
         } else if (weapon.strength < defendingModel.toughness) {
             requiredResult = 5;
+        }
+
+        if(conditionen.plusOneToWound)
+        {
+            requiredResult-=1;
         }
         if (woundRoll.result >= requiredResult) {
             metrics.wounds += 1;
@@ -314,28 +377,21 @@ public class RollingLogic {
 
     }
 
-    private void AbilitiesHitRoll(MetricsOfAttacking metrics, DiceResult diceResult,  Army attackingArmy, Army defendingArmy, Unit attackingUnit, Unit defendingUnit, RangedWeapon attackingWeapon)
+    private void AbilitiesHitRoll(MetricsOfAttacking metrics, DiceResult diceResult,  Army attackingArmy, Army defendingArmy, Unit attackingUnit, Unit defendingUnit, RangedWeapon attackingWeapon, int requiredResult)
     {
         for(Ability ability : attackingArmy.abilities)
         {
-            ability.hitRollAbility(diceResult,metrics);
+            ability.hitRollAbility(diceResult,metrics, requiredResult);
         }
         for(Ability ability : attackingUnit.listOfAbilitys)
         {
-            ability.hitRollAbility(diceResult,metrics);
+            ability.hitRollAbility(diceResult,metrics, requiredResult);
         }
         for(Ability ability : attackingWeapon.weaponRules)
         {
-            ability.hitRollAbility(diceResult,metrics);
+            ability.hitRollAbility(diceResult,metrics, requiredResult);
         }
-        for(Ability ability : defendingArmy.abilities)
-        {
-            ability.hitRollAbility(diceResult,metrics);
-        }
-        for(Ability ability : defendingUnit.listOfAbilitys)
-        {
-            ability.hitRollAbility(diceResult,metrics);
-        }
+
 
     }
 

@@ -15,7 +15,7 @@ public class FeelNoPain6 extends Ability {
     }
 
     @Override
-    public void hitRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking) {
+    public void hitRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int requiredResult) {
 
     }
 
@@ -26,8 +26,6 @@ public class FeelNoPain6 extends Ability {
 
     @Override
     public int saveRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int damageToBeTaken) {
-
-
        int damageToReduce = 0;
        for(int i = 0; i < damageToBeTaken; i++)
        {
@@ -38,7 +36,6 @@ public class FeelNoPain6 extends Ability {
                damageToReduce += 1;
            }
        }
-
        return damageToReduce;
     }
 

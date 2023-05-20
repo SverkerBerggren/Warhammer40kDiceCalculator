@@ -85,6 +85,8 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
         modelToReturn.weaponSkill = weaponSkill;
         modelToReturn.attacks=  attacks;
 
+        modelToReturn.active = active;
+
         modelToReturn.listOfAbilites = new ArrayList<>(listOfAbilites);
 
         ArrayList<RangedWeapon> newList = new ArrayList<>();

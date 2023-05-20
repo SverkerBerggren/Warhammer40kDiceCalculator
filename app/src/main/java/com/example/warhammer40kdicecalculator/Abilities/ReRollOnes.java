@@ -16,7 +16,7 @@ public class ReRollOnes extends Ability{
         super("ReRollOnes");
     }
 
-    public  void hitRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking)
+    public  void hitRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int requiredResult)
     {
 
 
@@ -39,25 +39,6 @@ public class ReRollOnes extends Ability{
 
     public   void rollNumberOfShots(List<DiceResult> diceResultList, MetricsOfAttacking metricsOfAttacking)
     {
-        //    if(diceResult.isD3Roll)
-        //    {
-        //        if(diceResult.result <3)
-        //        {
-        //            DiceResult reRoll = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 +1 ));
-//
-        //            diceResult.result = reRoll.result;
-        //        }
-        //    }
-        //    if(diceResult.isD6Roll)
-        //    {
-        //        if(diceResult.result <4)
-        //        {
-        //            DiceResult reRoll = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 +1 ));
-//
-        //            diceResult.result = reRoll.result;
-        //        }
-        //    }
-
         int currentAmountOfAttacks = 0;
 
         for(int i = 0; i < diceResultList.size(); i++)

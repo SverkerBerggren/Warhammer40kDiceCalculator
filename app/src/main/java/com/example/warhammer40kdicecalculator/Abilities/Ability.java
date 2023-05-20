@@ -15,7 +15,7 @@ public abstract class Ability implements DeactivatableInterface {
     public boolean active = true;
 
 
-    public abstract void hitRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking);
+    public abstract void hitRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int requiredResult);
 
     public abstract void woundRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking);
 
@@ -49,6 +49,19 @@ public abstract class Ability implements DeactivatableInterface {
         {
             return new FeelNoPain6();
         }
+        if(name.equals("Blast"))
+        {
+            return new Blast();
+        }
+        if(name.equals("ReRollHits"))
+        {
+            return new ReRollHits();
+        }
+
+        if(name.equals("IncreaseAp1"))
+        {
+            return new IncreaseAp1();
+        }
 
         return new AbilityStub(name );
     }
@@ -56,7 +69,14 @@ public abstract class Ability implements DeactivatableInterface {
 
     public static ArrayList<Ability> getWeaponAbilities(String AbilitiesString)
     {
-        return new ArrayList<Ability>();
+        ArrayList<Ability> abilitiesToReturn = new ArrayList<>();
+
+        if(AbilitiesString.contains("Blast") ||  AbilitiesString.contains("blast"))
+        {
+            abilitiesToReturn.add(new Blast());
+        }
+
+        return abilitiesToReturn;
     }
 
     public  static void addModelAbility(Model ModelToParse,String AbilityName,String AbilityDescription)

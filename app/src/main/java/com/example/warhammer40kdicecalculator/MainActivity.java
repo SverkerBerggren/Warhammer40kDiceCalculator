@@ -23,7 +23,9 @@ import android.widget.Toast;
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.Abilities.FeelNoPain6;
 import com.example.warhammer40kdicecalculator.Abilities.HammerOfTheEmperor;
+import com.example.warhammer40kdicecalculator.Abilities.IncreaseAp1;
 import com.example.warhammer40kdicecalculator.Abilities.ReRollAmountOfHits;
+import com.example.warhammer40kdicecalculator.Abilities.ReRollHits;
 import com.example.warhammer40kdicecalculator.Abilities.ReRollOnes;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
@@ -91,7 +93,9 @@ public class  MainActivity extends AppCompatActivity {
         abilityMap.put("ReRollAmountOfHits", new ReRollAmountOfHits());
         abilityMap.put("HammerOfTheEmperor", new HammerOfTheEmperor());
         abilityMap.put("ReRollOnes", new ReRollOnes());
+        abilityMap.put("ReRollHits",new ReRollHits());
         abilityMap.put("FeelNoPain6",new FeelNoPain6());
+        abilityMap.put("IncreaseAp1", new IncreaseAp1());
     }
 
     public  MainActivity()

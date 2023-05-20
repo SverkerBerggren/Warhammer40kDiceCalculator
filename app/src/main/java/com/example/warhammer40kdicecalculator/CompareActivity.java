@@ -631,16 +631,9 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         {   LinearLayout modelsLayout = (LinearLayout) buttonToModify.findViewById(R.id.ModelsSubLayout);
             for(int i = 0; i < matchup.friendlyArmy.units.get(unitNumber).listOfModels.size();i++)
             {
-
-
-
                 Model currentModel = matchup.friendlyArmy.units.get(unitNumber).listOfModels.get(i);
-
                 View inflatedView = inflater.inflate(R.layout.model_stats_prefab,modelsLayout);
-
                 ((Button)highestConstraint.findViewWithTag("inividualModelTopButton")).setText(currentModel.name);
-
-
                 ((Button)highestConstraint.findViewWithTag("inividualModelTopButton")).setTag("");
 
 
@@ -698,6 +691,8 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
                 highestConstraint.findViewWithTag("AddWeaponModelButton").setOnClickListener(new OnClickAddWeapon(currentModel,modelId));
                 highestConstraint.findViewWithTag("AddWeaponModelButton").setTag("");
 
+
+                ((CheckBox)highestConstraint.findViewById(R.id.DeactivateModelsButton)).setChecked(currentModel.active);
                 highestConstraint.findViewById(R.id.DeactivateModelsButton).setOnClickListener(new OnClickDeactivate(currentModel));
                 highestConstraint.findViewById(R.id.DeactivateModelsButton).setId(R.id.noId);
 
@@ -990,8 +985,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         abilityText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
         TextView attacksText = new TextView(context);
-        attacksText.setText(weapon.amountOfAttacks.numberOfD6 +"D6 + " + weapon.amountOfAttacks.numberOfD3
-                +"D3 +" +weapon.amountOfAttacks.rawNumberOfAttacks);
+        attacksText.setText(SetWeaponAttacks(weapon));
         attacksText.setTextSize(10);
         attacksText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
@@ -1007,7 +1001,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
 
         TextView damageText = new TextView(context);
-        damageText.setText(weapon.damageAmount.d6DamageAmount + "D6 +" + weapon.damageAmount.d3DamageAmount + "D3 +" + weapon.damageAmount.rawDamageAmount);
+        damageText.setText(SetWeaponDamage(weapon));
         damageText.setTextSize(10);
         damageText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
@@ -1033,9 +1027,42 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         String stringToReturn = "";
         RangedAttackAmount amount = rangedWeapon.amountOfAttacks;
 
+
+        if(amount.numberOfD6 != 0)
+        {
+            stringToReturn+=  amount.numberOfD6 +"D6 ";
+        }
+        if(amount.numberOfD3 != 0)
+        {
+            stringToReturn+=  amount.numberOfD3 +"D3 ";
+        }
+
         if(amount.rawNumberOfAttacks != 0)
         {
             stringToReturn+= "" + amount.rawNumberOfAttacks;
+        }
+
+
+        return stringToReturn;
+    }
+    private String SetWeaponDamage(RangedWeapon rangedWeapon)
+    {
+        String stringToReturn = "";
+        DamageAmount amount = rangedWeapon.damageAmount;
+
+
+        if(amount.d6DamageAmount != 0)
+        {
+            stringToReturn+=  amount.d6DamageAmount +"D6 ";
+        }
+        if(amount.d3DamageAmount != 0)
+        {
+            stringToReturn+=  amount.d3DamageAmount +"D3 ";
+        }
+
+        if(amount.rawDamageAmount != 0)
+        {
+            stringToReturn+= "" + amount.rawDamageAmount;
         }
 
 

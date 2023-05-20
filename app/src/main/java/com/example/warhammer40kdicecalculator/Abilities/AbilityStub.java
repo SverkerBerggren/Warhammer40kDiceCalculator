@@ -7,7 +7,7 @@ import java.util.List;
 
 public class AbilityStub extends Ability{
     @Override
-    public void hitRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking) {
+    public void hitRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int requiredResult) {
 
     }
 

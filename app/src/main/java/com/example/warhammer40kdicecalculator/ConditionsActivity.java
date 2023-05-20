@@ -51,7 +51,12 @@ public class ConditionsActivity extends AppCompatActivity {
         CreateCheckBox("rapidFireRange",condition.rapidFireRange);
         CreateCheckBox("Resolve melee attacks",condition.meleeCombat);
         CreateCheckBox("Resolve ranged attacks",condition.rangedCombat);
-
+        CreateCheckBox("Medium blast",condition.mediumBlast);
+        CreateCheckBox("Full blast",condition.fullBlast);
+        CreateCheckBox("Tactical doctrine",condition.tacticalDoctrine);
+        CreateCheckBox("Devastator doctrine",condition.devastatorDoctrine);
+        CreateCheckBox("Assault doctrine",condition.assaultDoctrine);
+        CreateCheckBox("Plus one to wound",condition.plusOneToWound);
     }
 
     private void CreateCheckBox(String tag, Boolean active)
@@ -76,6 +81,42 @@ public class ConditionsActivity extends AppCompatActivity {
             checkBox.setText("Resolve ranged attacks");
             checkBox.setChecked(active);
         }
+        if(tag.equals("Medium blast"))
+        {
+            checkBox.setTag("Medium blast");
+            checkBox.setText("Medium blast");
+            checkBox.setChecked(active);
+        }
+        if(tag.equals("Full blast"))
+        {
+            checkBox.setTag("Full blast");
+            checkBox.setText("Full blast");
+            checkBox.setChecked(active);
+        }
+        if(tag.equals("Tactical doctrine"))
+        {
+            checkBox.setTag("Tactical doctrine");
+            checkBox.setText("Tactical doctrine");
+            checkBox.setChecked(active);
+        }
+        if(tag.equals("Devastator doctrine"))
+        {
+            checkBox.setTag("Devastator doctrine");
+            checkBox.setText("Devastator doctrine");
+            checkBox.setChecked(active);
+        }
+        if(tag.equals("Assault doctrine"))
+        {
+            checkBox.setTag("Assault doctrine");
+            checkBox.setText("Assault doctrine");
+            checkBox.setChecked(active);
+        }
+        if(tag.equals("Plus one to wound"))
+        {
+            checkBox.setTag("Plus one to wound");
+            checkBox.setText("Plus one to wound");
+            checkBox.setChecked(active);
+        }
         checkBox.setOnCheckedChangeListener(new OnCheckBoxChange());
 
         linearLayout.addView(checkBox);
@@ -91,11 +132,22 @@ public class ConditionsActivity extends AppCompatActivity {
 
             if(tag.equals("rapidFireRange"))
                 conditions.rapidFireRange = b;
-
             if(tag.equals("Resolve melee attacks"))
                 conditions.meleeCombat = b;
             if(tag.equals("Resolve ranged attacks"))
                 conditions.rangedCombat = b;
+            if(tag.equals("Medium blast"))
+                conditions.mediumBlast = b;
+            if(tag.equals("Full blast"))
+                conditions.fullBlast = b;
+            if(tag.equals("Tactical doctrine"))
+                conditions.tacticalDoctrine = b;
+            if(tag.equals("Devastator doctrine"))
+                conditions.devastatorDoctrine = b;
+            if(tag.equals("Assault doctrine"))
+                conditions.assaultDoctrine = b;
+            if(tag.equals("Plus one to wound"))
+                conditions.plusOneToWound = b;
         }
     }
 
