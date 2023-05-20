@@ -164,6 +164,7 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
         checkBox.setText(ability.name);
         checkBox.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         CompareActivity compareActivity = new CompareActivity();
+        compareActivity.Setup(context,matchup);
         checkBox.setOnClickListener(compareActivity. new OnClickDeactivate(ability));
         imageButton.setImageResource(com.google.android.material.R.drawable.abc_ic_menu_cut_mtrl_alpha);
 

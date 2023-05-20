@@ -8,6 +8,7 @@ import com.example.warhammer40kdicecalculator.MetricsOfAttacking;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class Ability implements DeactivatableInterface {
 
@@ -15,11 +16,13 @@ public abstract class Ability implements DeactivatableInterface {
     public boolean active = true;
 
 
-    public abstract void hitRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking);
+    public abstract void hitRollAbilityAttacking(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult);
 
-    public abstract void woundRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking);
+    public abstract void HitRollAbilityDefender(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult);
 
-    public abstract void saveRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking);
+    public abstract void woundRollAbilityAttacker(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult);
+
+    public abstract int saveRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int damageToBeTaken);
 
     public abstract void rollNumberOfShots(List<DiceResult> diceResult, MetricsOfAttacking metricsOfAttacking);
 
@@ -45,6 +48,35 @@ public abstract class Ability implements DeactivatableInterface {
         {
             return new ReRollOnes();
         }
+        if(name.equals("FeelNoPain6"))
+        {
+            return new FeelNoPain6();
+        }
+        if(name.equals("Blast"))
+        {
+            return new Blast();
+        }
+        if(name.equals("ReRollHits"))
+        {
+            return new ReRollHits();
+        }
+
+        if(name.equals("IncreaseAp1"))
+        {
+            return new IncreaseAp1();
+        }
+        if(name.equals("MinusOneToHit"))
+        {
+            return new MinusOneToHit();
+        }
+        if(name.equals("ReRollWoundRoll"))
+        {
+            return new ReRollWoundRoll();
+        }
+        if(name.equals("ReRollOnesWound"))
+        {
+            return new ReRollOnesWound();
+        }
 
         return new AbilityStub(name );
     }
@@ -52,7 +84,14 @@ public abstract class Ability implements DeactivatableInterface {
 
     public static ArrayList<Ability> getWeaponAbilities(String AbilitiesString)
     {
-        return new ArrayList<Ability>();
+        ArrayList<Ability> abilitiesToReturn = new ArrayList<>();
+
+        if(AbilitiesString.contains("Blast") ||  AbilitiesString.contains("blast"))
+        {
+            abilitiesToReturn.add(new Blast());
+        }
+
+        return abilitiesToReturn;
     }
 
     public  static void addModelAbility(Model ModelToParse,String AbilityName,String AbilityDescription)

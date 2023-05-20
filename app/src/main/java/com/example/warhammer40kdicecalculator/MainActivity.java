@@ -10,7 +10,6 @@ import android.os.Bundle;
 
 import android.os.Handler;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +21,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
+import com.example.warhammer40kdicecalculator.Abilities.FeelNoPain6;
 import com.example.warhammer40kdicecalculator.Abilities.HammerOfTheEmperor;
+import com.example.warhammer40kdicecalculator.Abilities.IncreaseAp1;
+import com.example.warhammer40kdicecalculator.Abilities.MinusOneToHit;
 import com.example.warhammer40kdicecalculator.Abilities.ReRollAmountOfHits;
+import com.example.warhammer40kdicecalculator.Abilities.ReRollHits;
 import com.example.warhammer40kdicecalculator.Abilities.ReRollOnes;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
@@ -33,12 +36,9 @@ import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
 import com.example.warhammer40kdicecalculator.Identifiers.Identifier;
 import     com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.ResourceBundle;
-import java.util.Scanner;
 import java.util.function.Function;
 
 class Runnable_Function<FunctionArgument,FunctionReturnValue> implements Runnable
@@ -94,6 +94,10 @@ public class  MainActivity extends AppCompatActivity {
         abilityMap.put("ReRollAmountOfHits", new ReRollAmountOfHits());
         abilityMap.put("HammerOfTheEmperor", new HammerOfTheEmperor());
         abilityMap.put("ReRollOnes", new ReRollOnes());
+        abilityMap.put("ReRollHits",new ReRollHits());
+        abilityMap.put("FeelNoPain6",new FeelNoPain6());
+        abilityMap.put("IncreaseAp1", new IncreaseAp1());
+        abilityMap.put("MinusOneToHit", new MinusOneToHit());
     }
 
     public  MainActivity()
@@ -108,43 +112,41 @@ public class  MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         context = getApplicationContext();
 
-
-
         InstantiateAbilities();
 
-        try {
-            InputStream Input = this.getAssets().open("TestParing.txt");
-            BattlescribeParser Parser = new BattlescribeParser();
-            ArrayList<BattlescribeUnit> Models = Parser.ParseUnits(Input);
-
-            int Hej2 = 0;
-        }
-        catch (Exception e)
-        {
-            String Error = e.getMessage();
-            int hej = 2;
-        }
-
-
-
-        EXAMPLEUPDATE();
+    //    try {
+    //        InputStream Input = this.getAssets().open("TestParing.txt");
+    //        BattlescribeParser Parser = new BattlescribeParser();
+    //        ArrayList<BattlescribeUnit> Models = Parser.ParseUnits(Input);
+//
+    //        int Hej2 = 0;
+    //    }
+    //    catch (Exception e)
+    //    {
+    //        String Error = e.getMessage();
+    //        int hej = 2;
+    //    }
 
 
-        TestLasaCsv csvParser = new TestLasaCsv(this.context);
-        parsedDatasheetList =   csvParser.ReadCsvFile("Datasheets.csv");
-        parsedWeaponList = csvParser.ReadCsvFile("Wargear_list.csv");
-        parsedModelList = csvParser.ReadCsvFile("Datasheets_models.csv");
-        try
-        {
-            Scanner s = new Scanner(context.getAssets().open("TestRos.ros")).useDelimiter("\\A");
-            String result = s.hasNext() ? s.next() : "";
-            ROSParser Parser = new ROSParser();
-            Army TestArmy = Parser.ParseArmy(result);
-        }
-        catch(Exception e)
-        {
 
-        }
+    //    EXAMPLEUPDATE();
+
+
+    //    TestLasaCsv csvParser = new TestLasaCsv(this.context);
+    //    parsedDatasheetList =   csvParser.ReadCsvFile("Datasheets.csv");
+    //    parsedWeaponList = csvParser.ReadCsvFile("Wargear_list.csv");
+    //    parsedModelList = csvParser.ReadCsvFile("Datasheets_models.csv");
+    //    try
+    //    {
+    //        Scanner s = new Scanner(context.getAssets().open("TestRos.ros")).useDelimiter("\\A");
+    //        String result = s.hasNext() ? s.next() : "";
+    //        ROSParser Parser = new ROSParser();
+    //        Army TestArmy = Parser.ParseArmy(result);
+    //    }
+    //    catch(Exception e)
+    //    {
+//
+    //    }
     }
 
 
@@ -417,7 +419,7 @@ public class  MainActivity extends AppCompatActivity {
 
         RollingLogic hej = new RollingLogic();
 
-        hej.newCalculateDamage(attackingUnits,spaceMarine10,armyAttacker,defendingArmy);
+        hej.newCalculateDamage(attackingUnits,spaceMarine10,armyAttacker,defendingArmy, new Conditions());
 
 
 
