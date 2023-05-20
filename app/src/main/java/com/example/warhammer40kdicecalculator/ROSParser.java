@@ -203,9 +203,10 @@ public class ROSParser
         {
             String AbilityString = TypeString.substring(0,ParseOffset);
             if(AbilityString.contains("Dakka")) {
+                char LastCharacter = DamageString.charAt(DamageString.length()-1);
+                ResultWeapon.weaponRules.add(new Dakka(Character.getNumericValue(TypeString.charAt(ParseOffset))));
                 DamageString = "";
-                DamageString += Character.getNumericValue(DamageString.charAt(DamageString.length()-1));
-                ResultWeapon.weaponRules.add(new Dakka(Character.getNumericValue(DamageString.charAt(ParseOffset))));
+                DamageString += LastCharacter;
 
             }
             else{
