@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.Abilities.AbilityStub;
+import com.example.warhammer40kdicecalculator.Abilities.Dakka;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedAttackAmount;
@@ -159,6 +160,10 @@ public class ROSParser
                 }
                 ParseOffset += 1;
             }
+            else if(StringToConvert.charAt(ParseOffset) == '/')
+            {
+                break;
+            }
             else
             {
                 CurrentInteger = Character.getNumericValue(StringToConvert.charAt(ParseOffset));
@@ -185,21 +190,26 @@ public class ROSParser
         while(ParseOffset < TypeString.length())
         {
             char CurrentChar = TypeString.charAt(ParseOffset);
-            if(CurrentChar == 'D' || CurrentChar >= '0' && CurrentChar <= '9')
+            if( (CurrentChar == 'D' && ParseOffset + 1 < TypeString.length() && TypeString.charAt(ParseOffset+1) >= '0' &&
+                    TypeString.charAt(ParseOffset+1) <= '9')
+                    || CurrentChar >= '0' && CurrentChar <= '9')
             {
                 break;
             }
             ParseOffset += 1;
         }
+        String DamageString = TypeString.substring(ParseOffset);
         if(ParseOffset != 0)
         {
             String AbilityString = TypeString.substring(0,ParseOffset);
-            if(AbilityString.contains("/"))
-            {
-                ResultWeapon.weaponRules.add(Ability.getAbilityType(TypeString.substring(0,ParseOffset)));
+            if(AbilityString.contains("Dakka")) {
+                ResultWeapon.weaponRules.add(new Dakka(Character.getNumericValue(DamageString.charAt(DamageString.length()-1))));
+            }
+            else{
+                ResultWeapon.weaponRules.add(Ability.getAbilityType(TypeString.substring(0, ParseOffset)));
             }
         }
-        ResultWeapon.amountOfAttacks =new RangedAttackAmount(p_DamageFromString(TypeString));
+        ResultWeapon.amountOfAttacks =new RangedAttackAmount(p_DamageFromString(DamageString));
     }
     RangedWeapon p_ParseWeapon(Node ProfileNode)
     {
@@ -209,7 +219,15 @@ public class ROSParser
 
         p_ParseWeaponType(NewWeapon,CharacteristicNode.getChildNodes().item(1).getTextContent());
 
-        NewWeapon.strength = p_ParseUnitStat(CharacteristicNode.getChildNodes().item(2).getTextContent());
+        String StrengthString = CharacteristicNode.getChildNodes().item(2).getTextContent();
+        if(StrengthString.equals("x2"))
+        {
+            NewWeapon.strength = -2;
+        }
+        else
+        {
+            NewWeapon.strength = p_ParseUnitStat(StrengthString);
+        }
         NewWeapon.ap = p_ParseUnitStat(CharacteristicNode.getChildNodes().item(3).getTextContent());
         NewWeapon.damageAmount = p_DamageFromString(CharacteristicNode.getChildNodes().item(4).getTextContent());
         String WeaponAbilityString = CharacteristicNode.getChildNodes().item(5).getTextContent();

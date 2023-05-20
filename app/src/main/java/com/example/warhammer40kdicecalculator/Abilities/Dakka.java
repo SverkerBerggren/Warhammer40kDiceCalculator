@@ -13,6 +13,11 @@ public class Dakka extends Ability {
     {
         super("Dakka");
     }
+    public Dakka(int Amount)
+    {
+        super("Dakka");
+        dakkaAmount = Amount;
+    }
     public  void hitRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking)
     {
 
