@@ -6,12 +6,11 @@ import com.example.warhammer40kdicecalculator.MetricsOfAttacking;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MinusOneToWound extends Ability{
+public class MinusOneDamage extends Ability{
 
-
-    public MinusOneToWound()
+    public MinusOneDamage()
     {
-        super("MinusOneToWound");
+        super("MinusOneDamage");
     }
 
     @Override
@@ -21,8 +20,6 @@ public class MinusOneToWound extends Ability{
 
     @Override
     public void HitRollAbilityDefender(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult) {
-
-
 
     }
 
@@ -34,13 +31,20 @@ public class MinusOneToWound extends Ability{
     @Override
     public void woundRollAbilityDefender(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult) {
 
-
-        requiredResult.set(requiredResult.get()+1);
     }
 
     @Override
     public int saveRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int damageToBeTaken) {
-        return 0;
+
+        if(damageToBeTaken == 1)
+        {
+            return 0;
+        }
+        else
+        {
+            return 1;
+        }
+
     }
 
     @Override

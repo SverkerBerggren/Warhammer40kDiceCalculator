@@ -294,9 +294,10 @@ public class RollingLogic {
                                        AtomicInteger requiredHit) {
 
 
-        AbilitiesHitRollAttacker(metrics,hitRoll,attackingArmy, currentAttackingModel,defendingArmy,currentAttackingUnit,defendingUnit,attackingWeapon, requiredHit);
 
         AbilitiesHitRollDefender(metrics,hitRoll,defendingArmy,defendingUnit,defendingModel,requiredHit);
+        AbilitiesHitRollAttacker(metrics,hitRoll,attackingArmy, currentAttackingModel,defendingArmy,currentAttackingUnit,defendingUnit,attackingWeapon, requiredHit);
+
 
         if (hitRoll.result >= requiredHit.get()) {
             metrics.extraHits += 1;
@@ -330,8 +331,8 @@ public class RollingLogic {
 
         AtomicInteger atomicInteger = new AtomicInteger(requiredResult);
 
+        AbilitiesWoundRollDefender(metrics,woundRoll, attackingArmy,  currentAttackingModel,defendingModel,  defendingArmy,  currentAttackingUnit,  defendingUnit, weapon , atomicInteger);
         AbilitiesWoundRollAttacker(metrics,woundRoll, attackingArmy,  currentAttackingModel,  defendingArmy,  currentAttackingUnit,  defendingUnit, weapon , atomicInteger);
-        AbilitiesWoundRollDefender(metrics,woundRoll, attackingArmy,  currentAttackingModel,  defendingArmy,  currentAttackingUnit,  defendingUnit, weapon , atomicInteger);
 
 
         requiredResult = atomicInteger.get();
@@ -411,35 +412,32 @@ public class RollingLogic {
         }
         for(Ability ability : attackingUnit.listOfAbilitys)
         {
-            ability.hitRollAbilityAttacking(diceResult,metrics, requiredResult);
+            ability.woundRollAbilityAttacker(diceResult,metrics, requiredResult);
         }
         for(Ability ability : currentAttackingModel.listOfAbilites)
         {
-            ability.hitRollAbilityAttacking(diceResult,metrics, requiredResult);
+            ability.woundRollAbilityAttacker(diceResult,metrics, requiredResult);
         }
         for(Ability ability : attackingWeapon.weaponRules)
         {
-            ability.hitRollAbilityAttacking(diceResult,metrics, requiredResult);
+            ability.woundRollAbilityAttacker(diceResult,metrics, requiredResult);
         }
     }
-    private void AbilitiesWoundRollDefender(MetricsOfAttacking metrics, DiceResult diceResult, Army attackingArmy, Model currentAttackingModel, Army defendingArmy, Unit attackingUnit, Unit defendingUnit, RangedWeapon attackingWeapon, AtomicInteger requiredResult)
+    private void AbilitiesWoundRollDefender(MetricsOfAttacking metrics, DiceResult diceResult, Army attackingArmy, Model currentAttackingModel, Model defendingModel, Army defendingArmy, Unit attackingUnit, Unit defendingUnit, RangedWeapon attackingWeapon, AtomicInteger requiredResult)
     {
-        for(Ability ability : attackingArmy.abilities)
+        for(Ability ability : defendingArmy.abilities)
         {
             ability.woundRollAbilityDefender(diceResult,metrics, requiredResult);
         }
-        for(Ability ability : attackingUnit.listOfAbilitys)
+        for(Ability ability : defendingUnit.listOfAbilitys)
         {
             ability.woundRollAbilityDefender(diceResult,metrics, requiredResult);
         }
-        for(Ability ability : currentAttackingModel.listOfAbilites)
+        for(Ability ability : defendingModel.listOfAbilites)
         {
             ability.woundRollAbilityDefender(diceResult,metrics, requiredResult);
         }
-        for(Ability ability : attackingWeapon.weaponRules)
-        {
-            ability.woundRollAbilityDefender(diceResult,metrics, requiredResult);
-        }
+
     }
     private void AbilitiesHitRollDefender(MetricsOfAttacking metrics, DiceResult diceResult, Army defendingArmy, Unit defendingUnit, Model defendingModel, AtomicInteger requiredResult)
     {
@@ -469,6 +467,10 @@ public class RollingLogic {
         for(Ability ability : defendingArmy.abilities)
         {
            damageToReduce += ability.saveRollAbility(diceResult,metrics, damageToBeTaken);
+        }
+        for(Ability ability : defendingUnit.listOfAbilitys)
+        {
+            damageToReduce+= ability.saveRollAbility(diceResult,metrics, damageToBeTaken);
         }
         for(Ability ability : defendingUnit.listOfAbilitys)
         {
