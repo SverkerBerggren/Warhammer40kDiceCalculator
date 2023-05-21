@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
+import com.example.warhammer40kdicecalculator.Abilities.FeelNoPain5;
 import com.example.warhammer40kdicecalculator.Abilities.FeelNoPain6;
 import com.example.warhammer40kdicecalculator.Abilities.HammerOfTheEmperor;
 import com.example.warhammer40kdicecalculator.Abilities.IncreaseAp1;
@@ -32,6 +33,7 @@ import com.example.warhammer40kdicecalculator.Abilities.ReRollHits;
 import com.example.warhammer40kdicecalculator.Abilities.ReRollOnes;
 import com.example.warhammer40kdicecalculator.Abilities.ReRollOnesWound;
 import com.example.warhammer40kdicecalculator.Abilities.ReRollWoundRoll;
+import com.example.warhammer40kdicecalculator.Abilities.TransHuman4;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedAttackAmount;
@@ -107,6 +109,8 @@ public class  MainActivity extends AppCompatActivity {
         abilityMap.put("ReRollWounds", new ReRollWoundRoll());
         abilityMap.put("MinusOneToWound", new MinusOneToWound());
         abilityMap.put("MinusOneDamage", new MinusOneDamage());
+        abilityMap.put("FeelNoPain5", new FeelNoPain5());
+        abilityMap.put("TransHuman4", new TransHuman4());
     }
 
     public  MainActivity()

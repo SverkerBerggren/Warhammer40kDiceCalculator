@@ -97,6 +97,15 @@ public abstract class Ability implements DeactivatableInterface {
         {
             return new MinusOneDamage();
         }
+        if(name.equals("FeelNoPain5"))
+        {
+            return new FeelNoPain5();
+        }
+
+        if(name.equals("TransHuman4"))
+        {
+            return new TransHuman4();
+        }
 
         return new AbilityStub(name );
     }

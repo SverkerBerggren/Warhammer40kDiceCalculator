@@ -472,11 +472,6 @@ public class RollingLogic {
         {
             damageToReduce+= ability.saveRollAbility(diceResult,metrics, damageToBeTaken);
         }
-        for(Ability ability : defendingUnit.listOfAbilitys)
-        {
-            damageToReduce+= ability.saveRollAbility(diceResult,metrics, damageToBeTaken);
-        }
-
 
         return damageToBeTaken -damageToReduce;
     }

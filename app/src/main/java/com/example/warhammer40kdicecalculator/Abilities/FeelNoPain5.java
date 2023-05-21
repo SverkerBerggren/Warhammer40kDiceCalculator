@@ -4,13 +4,14 @@ import com.example.warhammer40kdicecalculator.DiceResult;
 import com.example.warhammer40kdicecalculator.MetricsOfAttacking;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MinusOneDamage extends Ability{
+public class FeelNoPain5 extends Ability{
 
-    public MinusOneDamage()
+    public FeelNoPain5()
     {
-        super("MinusOneDamage");
+        super("FeelNoPain5");
     }
 
     @Override
@@ -35,16 +36,17 @@ public class MinusOneDamage extends Ability{
 
     @Override
     public int saveRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int damageToBeTaken) {
-
-        if(damageToBeTaken > 1)
+        int damageToReduce = 0;
+        for(int i = 0; i < damageToBeTaken; i++)
         {
-            return 1;
-        }
-        else
-        {
-            return 0;
-        }
+            DiceResult feelNoPainDice = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 + 1));
 
+            if(feelNoPainDice.result== 5 || feelNoPainDice.result == 6)
+            {
+                damageToReduce += 1;
+            }
+        }
+        return damageToReduce;
     }
 
     @Override
