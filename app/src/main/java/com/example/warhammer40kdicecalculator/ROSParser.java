@@ -239,8 +239,16 @@ public class ROSParser
         {
             NewWeapon.weaponRules.addAll(Ability.getWeaponAbilities(WeaponAbilityString));
         }
+        for(Ability ability : NewWeapon.weaponRules)
+        {
+            if(ability.name.contains("grenade") ||ability.name.contains("Grenade")  )
+            {
+                NewWeapon.active = false;
+            }
+        }
         return(NewWeapon);
     }
+
 
     void p_ParseProfile(Node ProfileNode,Model ModelToModify)
     {
@@ -387,13 +395,6 @@ public class ROSParser
                         int WeaponAmount = Integer.parseInt(CurrentSelection.getAttributes().getNamedItem("number").getNodeValue())/ModelCount;
                         for(int k = 0; k < WeaponAmount;k++)
                         {
-                            for(Ability ability : NewWeapon.weaponRules)
-                            {
-                                if(ability.name.contains("grenade") ||ability.name.contains("Grenade")  )
-                                {
-                                    NewWeapon.active = false;
-                                }
-                            }
                             BaseModel.listOfRangedWeapons.add(NewWeapon);
                         }
                     }
@@ -421,10 +422,11 @@ public class ROSParser
                 p_ParseProfile(ProfilesNode.getChildNodes().item(i),TemporaryModel);
             }
             ReturnValue.listOfAbilitys.addAll(TemporaryModel.listOfAbilites);
-            for(int i = 0; i < ReturnValue.listOfModels.size();i++)
-            {
-                ReturnValue.listOfModels.get(i).listOfRangedWeapons.addAll(TemporaryModel.listOfRangedWeapons);
-            }
+            TemporaryModel.listOfAbilites.clear();
+            //for(int i = 0; i < ReturnValue.listOfModels.size();i++)
+            //{
+            //    ReturnValue.listOfModels.get(i).listOfRangedWeapons.addAll(TemporaryModel.listOfRangedWeapons);
+            //}
         }
         for(int i = 0; i < SelectionsNode.getChildNodes().getLength();i++)
         {
@@ -473,17 +475,29 @@ public class ROSParser
                 {
                     ReturnValue.listOfModels.addAll(ParseModel(SelectionsNode.getChildNodes().item(i)));
                 }
+                else if(ChildProfileNode.getAttributes().getNamedItem("typeName").getNodeValue().equals("Weapon"))
+                {
+                    for(int j = 0; j < ChildProfiles.getChildNodes().getLength();j++)
+                    {
+                        if(ChildProfiles.getChildNodes().item(j).getNodeName().equals("profile"))
+                        {
+                            TemporaryModel.listOfRangedWeapons.add(p_ParseWeapon(ChildProfiles.getChildNodes().item(j)));
+                        }
+                    }
+                }
             }
         }
-       // Node ProfilesNode = p_FirsChildByType(UnitNode,"profiles");
-        if(ProfilesNode != null)
+        if(ReturnValue.listOfModels.size() == 0 && TemporaryModel.strength != -1)
         {
-         //   Model TemporaryModel = new Model();
-            for(int i = 0; i < ProfilesNode.getChildNodes().getLength();i++)
+            int Number = Integer.parseInt(UnitNode.getAttributes().getNamedItem("number").getNodeValue());
+            TemporaryModel.name = ReturnValue.unitName;
+            for(int i = 0; i < Number;i++)
             {
-                p_ParseProfile(ProfilesNode.getChildNodes().item(i),TemporaryModel);
+                ReturnValue.listOfModels.add(TemporaryModel);
             }
-            ReturnValue.listOfAbilitys.addAll(TemporaryModel.listOfAbilites);
+        }
+        else
+        {
             for(int i = 0; i < ReturnValue.listOfModels.size();i++)
             {
                 ReturnValue.listOfModels.get(i).listOfRangedWeapons.addAll(TemporaryModel.listOfRangedWeapons);
