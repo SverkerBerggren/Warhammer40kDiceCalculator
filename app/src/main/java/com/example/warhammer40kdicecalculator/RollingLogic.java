@@ -88,7 +88,15 @@ public class RollingLogic {
                         if(currentWeapon.IsMelee)
                         {
                             currentWeapon.amountOfAttacks.rawNumberOfAttacks = currentAttackingModel.attacks;
-                            currentWeapon.strength += currentAttackingModel.strength;
+
+                            if(currentWeapon.strength == -2)
+                            {
+                                currentWeapon.strength = currentAttackingModel.strength *2;
+                            }
+                            else
+                            {
+                                currentWeapon.strength += currentAttackingModel.strength;
+                            }
                         }
 
                         int requiredHitRoll = currentAttackingModel.ballisticSkill;
