@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -178,12 +179,12 @@ public class StatisticActivity extends AppCompatActivity {
         tableRow.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
 
-        TextView statisticalMetric = new TextView(context);
+        TextView statisticalMetric = new TextView(new ContextThemeWrapper(this, androidx.appcompat.R.style.Widget_AppCompat_TextView));
         statisticalMetric.setText(textStatisticalMetric);
         statisticalMetric.setTextSize(10);
         statisticalMetric.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
-        TextView statisticalValueText = new TextView(context);
+        TextView statisticalValueText = new TextView(new ContextThemeWrapper(this, androidx.appcompat.R.style.Widget_AppCompat_TextView));
         statisticalValueText.setText(statisticalValue);
         statisticalValueText.setTextSize(10);
         statisticalValueText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);

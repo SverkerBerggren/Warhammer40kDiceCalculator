@@ -3,16 +3,21 @@ package com.example.warhammer40kdicecalculator;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
+
+import kotlinx.coroutines.CompletionHandlerException;
 
 public class ActivityCreateMatchup extends AppCompatActivity {
 
@@ -54,13 +59,17 @@ public class ActivityCreateMatchup extends AppCompatActivity {
 
         for(String army : armies )
         {
-            CheckBox checkBox = new CheckBox(context);
+            CheckBox checkBox = new CheckBox(new ContextThemeWrapper(this, androidx.appcompat.R.style.Base_Widget_AppCompat_CompoundButton_CheckBox));
 
             checkBox.setText(army);
 
 
+            checkBox.setTextSize(20);
+        //    checkBox.setTextColor(androidx.appcompat.R.attr.colorPrimaryDark);
+
 
             checkBox.setOnClickListener(new OnCheckBoxClick());
+
 
 
             linearLayout.addView(checkBox);

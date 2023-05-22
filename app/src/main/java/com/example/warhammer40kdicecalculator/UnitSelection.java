@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -119,7 +120,9 @@ public class UnitSelection extends AppCompatActivity {
 
             for (int i = 0; i < friendlyArmy.size(); i++)
             {
-                CheckBox checkBox = new CheckBox(context);
+                CheckBox checkBox = new CheckBox(new ContextThemeWrapper(this, androidx.appcompat.R.style.Base_Widget_AppCompat_CompoundButton_CheckBox));
+                checkBox.setTextSize(14);
+
                 checkBox.setText(friendlyArmy.get(i).unitName);
                 checkBox.setOnClickListener(new ClickListenerChoice( true, friendlyArmy.get(i), i,"friendly"));
                 attackingLayout.addView(checkBox);
@@ -128,7 +131,9 @@ public class UnitSelection extends AppCompatActivity {
             }
             for (int i = 0; i < enemyArmy.size(); i++)
             {
-                RadioButton radioButton = new RadioButton(context);
+                RadioButton radioButton = new RadioButton(new ContextThemeWrapper(this, androidx.appcompat.R.style.Base_Widget_AppCompat_CompoundButton_RadioButton));
+                radioButton.setTextSize(14);
+
                 radioButton.setText(enemyArmy.get(i).unitName);
                 radioButton.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
                 radioButton.setOnClickListener(new ClickListenerChoice(false, enemyArmy.get(i), i,"enemy"));
@@ -145,14 +150,17 @@ public class UnitSelection extends AppCompatActivity {
 
             for (int i = 0; i < enemyArmy.size(); i++)
             {
-                CheckBox checkBox = new CheckBox(context);
+                CheckBox checkBox = new CheckBox(new ContextThemeWrapper(this, androidx.appcompat.R.style.Base_Widget_AppCompat_CompoundButton_CheckBox));
+                checkBox.setTextSize(14);
+
                 checkBox.setText(enemyArmy.get(i).unitName);
                 checkBox.setOnClickListener(new ClickListenerChoice(true, enemyArmy.get(i), i,"enemy"));
                 attackingLayout.addView(checkBox);
             }
             for (int i = 0; i < friendlyArmy.size(); i++)
             {
-                RadioButton radioButton = new RadioButton(context);
+                RadioButton radioButton = new RadioButton(new ContextThemeWrapper(this, androidx.appcompat.R.style.Base_Widget_AppCompat_CompoundButton_RadioButton));
+                radioButton.setTextSize(14);
                 radioButton.setText(friendlyArmy.get(i).unitName);
                 radioButton.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
                 radioButton.setOnClickListener(new ClickListenerChoice(false, friendlyArmy.get(i), i,"friendly"));
