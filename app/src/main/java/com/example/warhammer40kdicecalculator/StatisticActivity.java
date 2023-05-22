@@ -1,11 +1,13 @@
 package com.example.warhammer40kdicecalculator;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.TableLayout;
@@ -29,11 +31,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 
 public class StatisticActivity extends AppCompatActivity {
 
     private TreeMap<Integer,Integer> woundsDealtDistribution = new TreeMap<>();
     private TreeMap<Integer,Integer> modelsSlainDistribution = new TreeMap<>();
+
+    private ConstraintLayout popupLayout;
+    private TextView topTextPopup;
+    private TextView middleTextPopup;
+    private TextView bottomTextPopup;
 
     private ArrayList<Unit> listOfAttackingUnits = new ArrayList<Unit>();
     private Unit defendingUnit;
@@ -41,6 +49,8 @@ public class StatisticActivity extends AppCompatActivity {
     private Toast activeToast;
 
     private Conditions conditions;
+
+    private StatisticActivity statisticActivity;
 
     private Context context;
 
@@ -62,6 +72,13 @@ public class StatisticActivity extends AppCompatActivity {
         Matchup matchup = fileHandler.getMatchup(matchupName);
 
         boolean myUnitsAttacking = intent.getBooleanExtra("FirendlyArmyAttacking", true);
+
+        popupLayout = findViewById(R.id.graphPopup);
+        topTextPopup = findViewById(R.id.TopTextPopup);
+        middleTextPopup = findViewById(R.id.MiddleTextPopup);
+        bottomTextPopup = findViewById(R.id.BottomTextPopup);
+
+        statisticActivity = this;
 
         String attackingString = "";
         String defendingString = "";
@@ -340,36 +357,38 @@ public class StatisticActivity extends AppCompatActivity {
             @Override
             public void onTap(Series series, DataPointInterface dataPoint) {
                 Iterator<DataPoint> barDataPoints = barSeries.getValues(dataPoint.getX() + 1, dataPoint.getX() + 1);
+                ShowPopup(isGraph1,dataPoint,barDataPoints);
 
-                try {
-                    if (isGraph1)
-                    {
-                        ShowToastMessage("Amount of Wounds: " + dataPoint.getX() + "\n" +
-                                "Chance for Wounds: " + Math.round(barDataPoints.next().getY()  * 100.0) / 100.0 + " %\n" +
-                                "Chance for " + dataPoint.getX() + " or more Wounds: " + + Math.round(dataPoint.getY() * 100.0) / 100.0 + " %"
-                        );
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        ClosePopup();
                     }
-                    else
-                    {
-                        ShowToastMessage("Amount of Models Slain: " + dataPoint.getX() + "\n" +
-                                "Chance for Models Slain: " + Math.round(barDataPoints.next().getY()  * 100.0) / 100.0 + " %\n" +
-                                "Chance for " + dataPoint.getX() + " or more Models Slain: " + + Math.round(dataPoint.getY() * 100.0) / 100.0 + " %"
-                        );
-                    }
-                }
-                catch (Exception  e)
-                {
-
-                }
-
+                }, 3000);
             }
         });
-
-
-        //graphView.addSeries();
-
     }
 
+    private void ClosePopup()
+    {
+        popupLayout.setVisibility(View.GONE);
+    }
+    private void ShowPopup(boolean isGraph1, DataPointInterface dataPoint, Iterator<DataPoint> barDataPoints)
+    {
+        popupLayout.setVisibility(View.VISIBLE);
+        if (isGraph1)
+        {
+            topTextPopup.setText("Amount of Wounds: " + dataPoint.getX());
+            middleTextPopup.setText("Chance for Wounds: " + Math.round(barDataPoints.next().getY() * 100.0) / 100.0 + "%");
+            bottomTextPopup.setText("Chance for " + dataPoint.getX() + " or more Wounds: " + +Math.round(dataPoint.getY() * 100.0) / 100.0 + "%");
+        }
+        else
+        {
+            topTextPopup.setText("Amount of Models Slain: " + dataPoint.getX());
+            middleTextPopup.setText("Chance for Models Slain: " + Math.round(barDataPoints.next().getY() * 100.0) / 100.0 + "%");
+            bottomTextPopup.setText("Chance for " + dataPoint.getX() + " or more Models Slain: " + +Math.round(dataPoint.getY() * 100.0) / 100.0 + "%");
+        }
+    }
     private class LineGraphSeriesSelfMade<E extends DataPointInterface> extends LineGraphSeries
     {
         public LineGraphSeriesSelfMade(E[] data) {
