@@ -12,14 +12,14 @@ import java.util.ArrayList;
 public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterface {
     //public int ap;
     public String name;
-    public int toughness;
-    public int strength;
-    public int armorSave;
-    public int invulnerableSave;
-    public int wounds;
-    public int ballisticSkill;
-    public int weaponSkill;
-    public int attacks;
+    public int toughness = -1;;
+    public int strength = -1;
+    public int armorSave = -1;
+    public int invulnerableSave = 7;
+    public int wounds = -1;
+    public int ballisticSkill = -1;
+    public int weaponSkill = -1;
+    public int attacks=  -1;
 
     public boolean active = true;
 
@@ -28,6 +28,19 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
     public ArrayList<RangedWeapon> listOfRangedWeapons = new ArrayList<>();
 
     public ArrayList<MeleeWeapons> listOfMeleeWeapons = new ArrayList<>();
+
+    public void CopyStats(Model OtherModel)
+    {
+        OtherModel.toughness = toughness;
+        OtherModel.strength = strength;
+        OtherModel.armorSave = armorSave;
+        OtherModel.invulnerableSave = invulnerableSave;
+        OtherModel.wounds = wounds;
+        OtherModel.ballisticSkill = ballisticSkill;
+        OtherModel.weaponSkill = weaponSkill;
+        OtherModel.attacks = attacks;
+
+    }
 
     @Override
     public Ability GetAbility(int index) {
@@ -49,6 +62,8 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
         ballisticSkill = other.ballisticSkill;
         weaponSkill = other.weaponSkill;
         attacks = other.attacks;
+        name = other.name;
+        active = other.active;
 
         listOfAbilites = new ArrayList<>(other.listOfAbilites);
 
@@ -57,6 +72,38 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
         listOfMeleeWeapons = new ArrayList<>(other.listOfMeleeWeapons);
 
      }
+
+    public Model Copy()
+    {
+        Model modelToReturn = new Model();
+        modelToReturn.toughness = toughness;
+        modelToReturn.strength = strength;
+        modelToReturn.armorSave = armorSave;
+        modelToReturn.invulnerableSave = invulnerableSave;
+        modelToReturn.wounds = wounds;
+        modelToReturn.ballisticSkill = ballisticSkill;
+        modelToReturn.weaponSkill = weaponSkill;
+        modelToReturn.attacks=  attacks;
+
+        modelToReturn.active = active;
+
+        modelToReturn.listOfAbilites = new ArrayList<>(listOfAbilites);
+
+        ArrayList<RangedWeapon> newList = new ArrayList<>();
+
+        for(RangedWeapon weapon : listOfRangedWeapons)
+        {
+            newList.add(weapon.Copy());
+        }
+
+        modelToReturn.listOfRangedWeapons = newList;
+
+        modelToReturn.listOfMeleeWeapons = new ArrayList<>();
+
+        return modelToReturn;
+
+    }
+
     public Model()
     {
 

@@ -6,11 +6,16 @@ public class RangedAttackAmount {
 
 
 
-    public int rawNumberOfAttacks;
+    public int rawNumberOfAttacks = 0;
 
-    public int numberOfD6;
+    public int numberOfD6 = 0;
 
-    public  int numberOfD3;
+    public  int numberOfD3 = 0;
+
+    public  RangedAttackAmount()
+    {
+
+    }
 
     public  RangedAttackAmount(DamageAmount Damage)
     {
@@ -31,5 +36,10 @@ public class RangedAttackAmount {
         this.rawNumberOfAttacks = other.rawNumberOfAttacks;
         this.numberOfD6 = other.numberOfD6;
         this.numberOfD3 = other.numberOfD3;
+    }
+
+    public RangedAttackAmount Copy()
+    {
+        return new RangedAttackAmount(rawNumberOfAttacks,numberOfD3,numberOfD6);
     }
 }

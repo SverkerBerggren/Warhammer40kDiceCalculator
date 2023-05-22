@@ -27,4 +27,10 @@ public class DamageAmount {
         this.d3DamageAmount = other.d3DamageAmount;
         this.d6DamageAmount = other.d6DamageAmount;
     }
+
+    public DamageAmount Copy()
+    {
+        DamageAmount damageToReturn = new DamageAmount(rawDamageAmount,d3DamageAmount,d6DamageAmount);
+        return damageToReturn;
+    }
 }

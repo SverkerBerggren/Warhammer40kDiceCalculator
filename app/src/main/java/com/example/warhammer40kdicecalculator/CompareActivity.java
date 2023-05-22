@@ -12,7 +12,9 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import android.text.Layout;
 import android.util.Log;
+import android.util.Range;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +48,7 @@ import java.util.HashMap;
 public class CompareActivity extends AppCompatActivity implements AbilityUIHolder{
 
     private  FileHandler  fileHandler;
-    private Matchup matchup;
+    public Matchup matchup;
 
     private int UNIT_ALLEGIANCE = R.string.UNIT_ALLEGIANCE;
     private int UNIT_MODIFIER = R.string.UNIT_MODIFIER;
@@ -77,14 +79,14 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
     private String ENEMY = "enemy";
 
 
-    private final String ABILITY_LAYOUT_UNIT = "AbilityLayoutUnit";
-    private final String UI_WEAPON_LAYOUT_MODEL = "WeaponLayoutModel";
-    private final String UI_UNIT_MODIFIER_LAYOUT = "UnitModifierLayout";
-    private final String UI_MODEL_MODIFIER_LAYOUT = "ModelModifierLayout";
-    private final String UI_ARMY_MODIFIER_LAYOUT = "ArmyModifierLayout";
-    private final String UI_ABILITY_LAYOUT_MODEL = "AbilityLayoutModel";
-    private final String UI_ARMY_ABILITY_LAYOUT = "ArmyAbilityLayout";
-    private final String UI_WEAPON_LAYOUT = "UiWeaponLayout";
+    public final String ABILITY_LAYOUT_UNIT = "AbilityLayoutUnit";
+    public final String UI_WEAPON_LAYOUT_MODEL = "WeaponLayoutModel";
+    public final String UI_UNIT_MODIFIER_LAYOUT = "UnitModifierLayout";
+    public final String UI_MODEL_MODIFIER_LAYOUT = "ModelModifierLayout";
+    public final String UI_ARMY_MODIFIER_LAYOUT = "ArmyModifierLayout";
+    public final String UI_ABILITY_LAYOUT_MODEL = "AbilityLayoutModel";
+    public final String UI_ARMY_ABILITY_LAYOUT = "ArmyAbilityLayout";
+    public final String UI_WEAPON_LAYOUT = "UiWeaponLayout";
 
 
 
@@ -123,11 +125,27 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
     private boolean popupActive = false;
 
 
-    private ConstraintLayout highestConstraint;
+    public ConstraintLayout highestConstraint;
 
     ActivityResultLauncher<Intent> activityResultLauncherAbility;
     ActivityResultLauncher<Intent> activityResultLauncherWeapon;
 
+
+
+    private Context context;
+    private boolean shouldStartActivityFromEditUnitContext = false;
+    private EditUnitActivity editUnitActivity;
+
+
+    public void SetShouldStartActivityFromEditUnitContext(boolean bool)
+    {
+        shouldStartActivityFromEditUnitContext = bool;
+    }
+
+    public void SetEditUnitActivity(EditUnitActivity appCompat)
+    {
+        editUnitActivity = appCompat;
+    }
 
 
     @Override
@@ -136,16 +154,41 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         setContentView(R.layout.activity_compare);
 
         inflater =  getLayoutInflater();
-        fileHandler = new FileHandler(getBaseContext());
+        context = getBaseContext();
+
+        fileHandler = new FileHandler(context);
         matchup = fileHandler.getMatchup( getIntent().getStringExtra("SourceFile"));
         activityResultLauncherAbility = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),new UpdateUiActivityCallbackAbilities());
 
         activityResultLauncherWeapon = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),new UpdateUIWeaponCallback());
 
 
+
         highestConstraint = findViewById(R.id.ConstraintLayoutCompare);
 
         createArmies(matchup,inflater);
+    }
+
+    public void Setup(Context context, Matchup matchup)
+    {
+        this.context =context ;
+        fileHandler = new FileHandler(context);
+        this.matchup = matchup;
+
+        activityResultLauncherAbility = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),new UpdateUiActivityCallbackAbilities());
+
+        activityResultLauncherWeapon = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),new UpdateUIWeaponCallback());
+
+    }
+
+    public void SetInflater(LayoutInflater inflater)
+    {
+        this.inflater = inflater;
+    }
+
+    public void SetContext(Context context)
+    {
+        this.context = context;
     }
 
     @Override
@@ -202,12 +245,15 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         }
     }
 
-    private class UpdateUIWeaponCallback implements ActivityResultCallback<ActivityResult>
+    public class UpdateUIWeaponCallback implements ActivityResultCallback<ActivityResult>
     {
         @Override
         public void onActivityResult(ActivityResult result) {
             int resultCode = result.getResultCode();
             Intent data = result.getData();
+
+
+            //boolean applyToAllModels = data.getBooleanExtra(""+ R.string.APPLY_TO_ALL, false);
 
             ModelIdentifier modelId =  new ModelIdentifier(data.getStringExtra(""+R.string.MODEL_IDENTIFIER));
 
@@ -267,9 +313,9 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         }
     }
 
-    private View CreateTableRow(String text)
+    public View CreateTableRow(String text)
     {
-        Context context = getBaseContext();
+
 
         TableRow tableRow = new TableRow(context);
         tableRow.setBackgroundColor(Color.parseColor("#DFDADA"));
@@ -405,7 +451,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         }
     }
 
-    private void CreateModifiers(ModifierHolder modifierHolder, UIIdentifier uiId, TableRow tableRow, ImageButton button)
+    public void CreateModifiers(ModifierHolder modifierHolder, UIIdentifier uiId, TableRow tableRow, ImageButton button)
     {
         tableRow.setTag(uiId);
         tableRow.setId(R.id.noId);
@@ -429,10 +475,10 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
     }
 
 
-    private void CreateUnitAbilites(Unit unit, LinearLayout linearLayout, LayoutInflater inflater, UnitIdentifier unitIdentifier)
+    public void CreateUnitAbilites(Unit unit, LinearLayout linearLayout, LayoutInflater inflater, UnitIdentifier unitIdentifier)
     {
         TableLayout unitAbilitLayout = linearLayout.findViewWithTag("AbilityLayoutUnit");
-        Context context = getBaseContext();
+
 
         UIIdentifier uiId = new UIIdentifier(ABILITY_LAYOUT_UNIT, unitIdentifier);
 
@@ -456,7 +502,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
             unitAbilitLayout.addView(tableRow);
         }
 
-        ImageButton editAbilities = findViewById(R.id.EditUnitAbilities);
+        ImageButton editAbilities = highestConstraint.findViewById(R.id.EditUnitAbilities);
 
         editAbilities.setTag(R.string.UNIT_IDENTIFIER,unitIdentifier);
 
@@ -507,7 +553,9 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
     }
     public void StartEditAbilites(View view, Unit unit, UIIdentifier uiId )
     {
-        Intent intent = new Intent(this, Activity_Edit_Abilities.class);
+        Intent intent = new Intent(context, Activity_Edit_Abilities.class);
+
+
        // Identifier
         UnitIdentifier identifier = (UnitIdentifier)view.getTag(R.string.UNIT_IDENTIFIER);
 
@@ -518,12 +566,20 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         intent.putExtra("matchupName",identifier.matchupName);
         intent.putExtra(""+R.string.UI_IDENTIFIER, uiId.elementName);
 
+        if(shouldStartActivityFromEditUnitContext)
+        {
 
-        activityResultLauncherAbility.launch(intent);
+
+            editUnitActivity.StartEditAbilites(view, uiId);
+        }
+        else
+        {
+            activityResultLauncherAbility.launch(intent);
+        }
     }
     public void StartEditAbilites(View view, Model model, UIIdentifier uiId )
     {
-        Intent intent = new Intent(this, Activity_Edit_Abilities.class);
+        Intent intent = new Intent(context, Activity_Edit_Abilities.class);
         // Identifier
         ModelIdentifier identifier = (ModelIdentifier)view.getTag(R.string.MODEL_IDENTIFIER);
 
@@ -533,7 +589,16 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         intent.putExtra("" + R.string.MODEL_IDENTIFIER, identifier.toString());
         intent.putExtra("matchupName", matchup.name);
 
-        activityResultLauncherAbility.launch(intent);
+        if(shouldStartActivityFromEditUnitContext)
+        {
+
+
+            editUnitActivity.StartEditAbilites(view, uiId);
+        }
+        else
+        {
+            activityResultLauncherAbility.launch(intent);
+        }
 
     }
 
@@ -560,22 +625,15 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
 
 
-    private void CreateModel(View buttonToModify, Unit unit, int unitNumber,String friendlyArmy , LayoutInflater inflater)
+    public void CreateModel(View buttonToModify, Unit unit, int unitNumber,String friendlyArmy , LayoutInflater inflater)
     {
         if(friendlyArmy.equals(FRIENDLY))
         {   LinearLayout modelsLayout = (LinearLayout) buttonToModify.findViewById(R.id.ModelsSubLayout);
             for(int i = 0; i < matchup.friendlyArmy.units.get(unitNumber).listOfModels.size();i++)
             {
-                Log.d("models mangd", "hur manga models " +matchup.friendlyArmy.units.get(unitNumber).listOfModels.size() );
-
-
                 Model currentModel = matchup.friendlyArmy.units.get(unitNumber).listOfModels.get(i);
-
                 View inflatedView = inflater.inflate(R.layout.model_stats_prefab,modelsLayout);
-
                 ((Button)highestConstraint.findViewWithTag("inividualModelTopButton")).setText(currentModel.name);
-
-
                 ((Button)highestConstraint.findViewWithTag("inividualModelTopButton")).setTag("");
 
 
@@ -591,9 +649,9 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
                 highestConstraint.findViewWithTag("AddWeaponModelButton").setOnClickListener(new OnClickAddWeapon(currentModel,modelId));
                 highestConstraint.findViewWithTag("AddWeaponModelButton").setTag("");
 
-                ((CheckBox)findViewById(R.id.DeactivateModelsButton)).setChecked(currentModel.active);
-                findViewById(R.id.DeactivateModelsButton).setOnClickListener(new OnClickDeactivate(currentModel));
-                findViewById(R.id.DeactivateModelsButton).setId(R.id.noId);
+                ((CheckBox)highestConstraint.findViewById(R.id.DeactivateModelsButton)).setChecked(currentModel.active);
+                highestConstraint.findViewById(R.id.DeactivateModelsButton).setOnClickListener(new OnClickDeactivate(currentModel));
+                highestConstraint.findViewById(R.id.DeactivateModelsButton).setId(R.id.noId);
 
                 ConstraintLayout constraintLayout = ((ConstraintLayout)inflatedView.getParent()).findViewWithTag("ConstraintLayoutModel");
 
@@ -610,7 +668,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         {   LinearLayout modelsLayout = (LinearLayout) buttonToModify.findViewById(R.id.ModelsSubLayout);
             for(int i = 0; i < matchup.enemyArmy.units.get(unitNumber).listOfModels.size();i++)
             {
-                Log.d("models mangd", "hur manga models " +matchup.enemyArmy.units.get(unitNumber).listOfModels.size() );
+                //Log.d("models mangd", "hur manga models " +matchup.enemyArmy.units.get(unitNumber).listOfModels.size() );
 
 
                 Model currentModel = matchup.enemyArmy.units.get(unitNumber).listOfModels.get(i);
@@ -633,8 +691,10 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
                 highestConstraint.findViewWithTag("AddWeaponModelButton").setOnClickListener(new OnClickAddWeapon(currentModel,modelId));
                 highestConstraint.findViewWithTag("AddWeaponModelButton").setTag("");
 
-                findViewById(R.id.DeactivateModelsButton).setOnClickListener(new OnClickDeactivate(currentModel));
-                findViewById(R.id.DeactivateModelsButton).setId(R.id.noId);
+
+                ((CheckBox)highestConstraint.findViewById(R.id.DeactivateModelsButton)).setChecked(currentModel.active);
+                highestConstraint.findViewById(R.id.DeactivateModelsButton).setOnClickListener(new OnClickDeactivate(currentModel));
+                highestConstraint.findViewById(R.id.DeactivateModelsButton).setId(R.id.noId);
 
                 ConstraintLayout constraintLayout = ((ConstraintLayout)inflatedView.getParent()).findViewWithTag("ConstraintLayoutModel");
 
@@ -660,6 +720,8 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         @Override
         public void onClick(View view) {
             deactivatable.FlipActive();
+
+            fileHandler.saveMatchup(matchup);
         }
     }
 
@@ -814,7 +876,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
     {
           TableLayout abilityTable =  highestConstraint.findViewWithTag("AbilityLayoutModels");
 
-          Context context = getBaseContext();
+
 
 
           abilityTable.setBackgroundColor(Color.parseColor("#DFDADA"));
@@ -839,7 +901,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
           UIIdentifier uiId = new UIIdentifier(UI_ABILITY_LAYOUT_MODEL,modelId);
 
-          ImageButton addButton = findViewById(R.id.EditModelAbilities);
+          ImageButton addButton = highestConstraint.findViewById(R.id.EditModelAbilities);
 
 
           addButton.setOnClickListener(new OnClickListenerAddAbility(model,this,  uiId));
@@ -882,17 +944,8 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
     {
 
         UIIdentifier uiId = new UIIdentifier(UI_MODEL_MODIFIER_LAYOUT, modelId);
-        ImageButton button = (ImageButton)findViewById(R.id.EditModelStatsButton);
+        ImageButton button = (ImageButton)highestConstraint.findViewById(R.id.EditModelStatsButton);
         CreateModifiers(model,uiId, tableRow, button);
-
-      //((TextView)tableRow.findViewById(R.id.BallisticSkillStatIndicator)).setText("" + model.ballisticSkill + "+");
-      //((TextView)tableRow.findViewById(R.id.WeaponSkillStatIndicator)).setText("" + model.weaponSkill + "+");
-      //((TextView)tableRow.findViewById(R.id.StrengthStatIndicator)).setText("" + model.strength + "+");
-      //((TextView)tableRow.findViewById(R.id.ToughnessStatIndicator)).setText("" + model.toughness + "+");
-      //((TextView)tableRow.findViewById(R.id.AttacksStatIndicator)).setText("" + model.attacks + "+");
-      //((TextView)tableRow.findViewById(R.id.SaveStatIndicator)).setText("" + model.armorSave + "+");
-      //((TextView)tableRow.findViewById(R.id.WoundsStatIndicator)).setText("" + model.wounds + "+");
-      //((TextView)tableRow.findViewById(R.id.InvulStatIndicator)).setText("" + model.invulnerableSave + "+");
 
 
 
@@ -919,37 +972,36 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
     private void AddWeapon(TableLayout tableLayout, RangedWeapon weapon)
     {
-        TableRow tableRow = new TableRow(getBaseContext());
+        TableRow tableRow = new TableRow(context);
 
-        TextView nameText = new TextView(getBaseContext());
+        TextView nameText = new TextView(context);
         nameText.setText(weapon.name);
         nameText.setTextSize(10);
         nameText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
-        TextView abilityText = new TextView(getBaseContext());
+        TextView abilityText = new TextView(context);
         abilityText.setText(""+weapon.weaponRules.size());
         abilityText.setTextSize(10);
         abilityText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
-        TextView attacksText = new TextView(getBaseContext());
-        attacksText.setText(weapon.amountOfAttacks.numberOfD6 +"D6 + " + weapon.amountOfAttacks.numberOfD3
-                +"D3 +" +weapon.amountOfAttacks.rawNumberOfAttacks);
+        TextView attacksText = new TextView(context);
+        attacksText.setText(SetWeaponAttacks(weapon));
         attacksText.setTextSize(10);
         attacksText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
-        TextView strengthText = new TextView(getBaseContext());
+        TextView strengthText = new TextView(context);
         strengthText.setText("" +weapon.strength);
         strengthText.setTextSize(10);
         strengthText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
-        TextView apText = new TextView(getBaseContext());
+        TextView apText = new TextView(context);
         apText.setText(""+weapon.ap);
         apText.setTextSize(10);
         apText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
 
-        TextView damageText = new TextView(getBaseContext());
-        damageText.setText(weapon.damageAmount.d6DamageAmount + "D6 +" + weapon.damageAmount.d3DamageAmount + "D3 +" + weapon.damageAmount.rawDamageAmount);
+        TextView damageText = new TextView(context);
+        damageText.setText(SetWeaponDamage(weapon));
         damageText.setTextSize(10);
         damageText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
@@ -970,7 +1022,56 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
     }
 
-    private  void instaniateUnitButton(View buttonToModify, Unit unit, UnitIdentifier unitId)
+    private String SetWeaponAttacks(RangedWeapon rangedWeapon)
+    {
+        String stringToReturn = "";
+        RangedAttackAmount amount = rangedWeapon.amountOfAttacks;
+
+
+        if(amount.numberOfD6 != 0)
+        {
+            stringToReturn+=  amount.numberOfD6 +"D6 ";
+        }
+        if(amount.numberOfD3 != 0)
+        {
+            stringToReturn+=  amount.numberOfD3 +"D3 ";
+        }
+
+        if(amount.rawNumberOfAttacks != 0)
+        {
+            stringToReturn+= "" + amount.rawNumberOfAttacks;
+        }
+
+
+        return stringToReturn;
+    }
+    private String SetWeaponDamage(RangedWeapon rangedWeapon)
+    {
+        String stringToReturn = "";
+        DamageAmount amount = rangedWeapon.damageAmount;
+
+
+        if(amount.d6DamageAmount != 0)
+        {
+            stringToReturn+=  amount.d6DamageAmount +"D6 ";
+        }
+        if(amount.d3DamageAmount != 0)
+        {
+            stringToReturn+=  amount.d3DamageAmount +"D3 ";
+        }
+
+        if(amount.rawDamageAmount != 0)
+        {
+            stringToReturn+= "" + amount.rawDamageAmount;
+        }
+
+
+        return stringToReturn;
+    }
+
+
+
+    public void instaniateUnitButton(View buttonToModify, Unit unit, UnitIdentifier unitId)
     {
         Button topButton = (Button)buttonToModify.findViewById(R.id.UnitTopButton);
         topButton.setText(unit.unitName);
@@ -978,7 +1079,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
     public void ChangeUnitModifer(View buttonClicked)
     {
-        Log.d("hej", "kallas metoden");
+     //   Log.d("hej", "kallas metoden");
 
         Unit unitToModify = null;
         ViewGroup parent = (ViewGroup) buttonClicked.getParent();
@@ -993,91 +1094,12 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
         String buttonTag = (String) buttonClicked.getTag(UNIT_MODIFIER);
 
-     //  if(buttonTag.equals(DECREASE_WEAPONSKILL))
-     //  {
-     //      unitToModify.weaponSkillModifier-=1;
-     //      ((TextView)parent.findViewById(R.id.WeaponSkillInd)).setText(Integer.toString(unitToModify.weaponSkillModifier));
-     //  }
-     //  if(buttonTag.equals(DECREASE_BALLISTICSKILL))
-     //  {
-     //      unitToModify.ballisticSkillModifier-=1;
-     //      ((TextView)parent.findViewById(R.id.BallisticSkillIndicator)).setText(Integer.toString(unitToModify.ballisticSkillModifier));
-     //  }
-     //  if(buttonTag.equals(DECREASE_STRENGTH))
-     //  {
-     //      unitToModify.strengthModifier-=1;
-     //      ((TextView)parent.findViewById(R.id.StrengthIndicator)).setText(Integer.toString(unitToModify.strengthModifier));
-     //  }
-     //  if(buttonTag.equals(DECREASE_TOUGHNESS))
-     //  {
-     //      unitToModify.toughnessModifier-=1;
-     //      ((TextView)parent.findViewById(R.id.ToughnessIndicator)).setText(Integer.toString(unitToModify.toughnessModifier));
-     //  }
-     //  if(buttonTag.equals(DECREASE_ARMORSAVE))
-     //  {
-     //      unitToModify.armorSaveModifier-=1;
-     //      ((TextView)parent.findViewById(R.id.ArmorSaveIndicator)).setText(Integer.toString(unitToModify.armorSaveModifier));
-     //  }
-     //  if(buttonTag.equals(DECREASE_INVUL))
-     //  {
-     //      unitToModify.invulnerableSaveModifier-=1;
-     //      ((TextView)parent.findViewById(R.id.InvulIndicator)).setText(Integer.toString(unitToModify.invulnerableSaveModifier));
-     //  }
-     //  if(buttonTag.equals(DECREASE_ATTACKS))
-     //  {
-     //      unitToModify.attacksModifier-=1;
-     //      ((TextView)parent.findViewById(R.id.AttacksIndicator)).setText(Integer.toString(unitToModify.attacksModifier));
-     //  }
-
-
-
-
-
-     //  if(buttonTag.equals(INCREASE_WEAPONSKILL))
-     //  {
-     //      unitToModify.weaponSkillModifier+=1;
-     //      ((TextView)parent.findViewById(R.id.WeaponSkillInd)).setText(Integer.toString(unitToModify.weaponSkillModifier));
-     //  }
-     //  if(buttonTag.equals(INCREASE_BALLISTICSKILL))
-     //  {
-     //      unitToModify.ballisticSkillModifier+=1;
-     //      ((TextView)parent.findViewById(R.id.BallisticSkillIndicator)).setText(Integer.toString(unitToModify.ballisticSkillModifier));
-     //  }
-     //  if(buttonTag.equals(INCREASE_STRENGTH))
-     //  {
-     //      unitToModify.strengthModifier+=1;
-     //      ((TextView)parent.findViewById(R.id.StrengthIndicator)).setText(Integer.toString(unitToModify.strengthModifier));
-     //  }
-     //  if(buttonTag.equals(INCREASE_TOUGHNESS))
-     //  {
-     //      unitToModify.toughnessModifier+=1;
-     //      ((TextView)parent.findViewById(R.id.ToughnessIndicator)).setText(Integer.toString(unitToModify.toughnessModifier));
-     //  }
-     //  if(buttonTag.equals(INCREASE_ARMORSAVE))
-     //  {
-     //      unitToModify.armorSaveModifier+=1;
-     //      ((TextView)parent.findViewById(R.id.ArmorSaveIndicator)).setText(Integer.toString(unitToModify.armorSaveModifier));
-     //  }
-     //  if(buttonTag.equals(INCREASE_INVUL))
-     //  {
-     //      unitToModify.invulnerableSaveModifier+=1;
-     //      ((TextView)parent.findViewById(R.id.InvulIndicator)).setText(Integer.toString(unitToModify.invulnerableSaveModifier));
-     //  }
-     //  if(buttonTag.equals(INCREASE_ATTACKS))
-     //  {
-     //      unitToModify.attacksModifier+=1;
-     //      ((TextView)parent.findViewById(R.id.AttacksIndicator)).setText(Integer.toString(unitToModify.attacksModifier));
-     //  }
-
     }
 
 
 
     public void DropDownClick(View v)
     {
-        Context context = v.getContext();
-
-
         ViewGroup constraintLayout = (ViewGroup) v.getParent();
 
 
@@ -1136,31 +1158,31 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
             {
                 inflater.inflate(R.layout.activity_popup,highestConstraint);
 
-                weaponSkillView = (EditText)findViewById(R.id.WeaponSkillModelPopup);
-                ballisticSkillView   = (EditText)findViewById(R.id.BallisticSkillModelPopup);
-                strengthView  = (EditText)findViewById(R.id.StrengthModelPopup);
-                toughnessView = (EditText)findViewById(R.id.ToughnessModelPopup);
-                woundsView  = (EditText)findViewById(R.id.WoundsModelPopup);
-                attacksView  = (EditText)findViewById(R.id.AttacksModelPopup);
-                armorSaveView  = (EditText)findViewById(R.id.ArmorSaveModelPopup);
-                InvSaveView  = (EditText)findViewById(R.id.InvSaveModelPopup);
+                weaponSkillView = (EditText)highestConstraint.findViewById(R.id.WeaponSkillModelPopup);
+                ballisticSkillView   = (EditText)highestConstraint.findViewById(R.id.BallisticSkillModelPopup);
+                strengthView  = (EditText)highestConstraint.findViewById(R.id.StrengthModelPopup);
+                toughnessView = (EditText)highestConstraint.findViewById(R.id.ToughnessModelPopup);
+                woundsView  = (EditText)highestConstraint.findViewById(R.id.WoundsModelPopup);
+                attacksView  = (EditText)highestConstraint.findViewById(R.id.AttacksModelPopup);
+                armorSaveView  = (EditText)highestConstraint.findViewById(R.id.ArmorSaveModelPopup);
+                InvSaveView  = (EditText)highestConstraint.findViewById(R.id.InvSaveModelPopup);
 
-                weaponSkillIncrease = (ImageButton)findViewById(R.id.WeaponSkillIncrease);
-                weaponSkillDecrease = (ImageButton)findViewById(R.id.WeaponSkillDecrease);
-                ballisticSkillIncrease = (ImageButton)findViewById(R.id.BallisticSkillIncrease);
-                ballisticSkillDecrease = (ImageButton)findViewById(R.id.BallisticSkillDecrease);
-                strengthIncrease = (ImageButton)findViewById(R.id.StrengthIncrease);
-                strengthDecrease = (ImageButton)findViewById(R.id.StrengthDecrease);
-                toughnessIncrease = (ImageButton)findViewById(R.id.ToughnessIncrease);
-                toughnessDecrease = (ImageButton)findViewById(R.id.ToughnessDecrease);
-                woundsIncrease = (ImageButton)findViewById(R.id.WoundsIncrease);
-                woundsDecrease = (ImageButton)findViewById(R.id.WoundsDecrease);
-                attacksIncrease = (ImageButton)findViewById(R.id.AttacksIncrease);
-                attacksDecrease = (ImageButton)findViewById(R.id.AttacksDecrease);
-                armorSavesIncrease = (ImageButton)findViewById(R.id.SavesIncrease);
-                armorSavesDecrease = (ImageButton)findViewById(R.id.SavesDecrease);
-                invulnerableSavesIncrease = (ImageButton)findViewById(R.id.InvulnerableIncrease);
-                invulnerableSavesDecrease = (ImageButton)findViewById(R.id.InvulnerableDecrease);
+                weaponSkillIncrease = (ImageButton)highestConstraint.findViewById(R.id.WeaponSkillIncrease);
+                weaponSkillDecrease = (ImageButton)highestConstraint.findViewById(R.id.WeaponSkillDecrease);
+                ballisticSkillIncrease = (ImageButton)highestConstraint.findViewById(R.id.BallisticSkillIncrease);
+                ballisticSkillDecrease = (ImageButton)highestConstraint.findViewById(R.id.BallisticSkillDecrease);
+                strengthIncrease = (ImageButton)highestConstraint.findViewById(R.id.StrengthIncrease);
+                strengthDecrease = (ImageButton)highestConstraint.findViewById(R.id.StrengthDecrease);
+                toughnessIncrease = (ImageButton)highestConstraint.findViewById(R.id.ToughnessIncrease);
+                toughnessDecrease = (ImageButton)highestConstraint.findViewById(R.id.ToughnessDecrease);
+                woundsIncrease = (ImageButton)highestConstraint.findViewById(R.id.WoundsIncrease);
+                woundsDecrease = (ImageButton)highestConstraint.findViewById(R.id.WoundsDecrease);
+                attacksIncrease = (ImageButton)highestConstraint.findViewById(R.id.AttacksIncrease);
+                attacksDecrease = (ImageButton)highestConstraint.findViewById(R.id.AttacksDecrease);
+                armorSavesIncrease = (ImageButton)highestConstraint.findViewById(R.id.SavesIncrease);
+                armorSavesDecrease = (ImageButton)highestConstraint.findViewById(R.id.SavesDecrease);
+                invulnerableSavesIncrease = (ImageButton)highestConstraint.findViewById(R.id.InvulnerableIncrease);
+                invulnerableSavesDecrease = (ImageButton)highestConstraint.findViewById(R.id.InvulnerableDecrease);
 
                 inflatedModelStats = true;
             }
@@ -1169,7 +1191,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
                 ShowPopup(view);
             }
             popupActive = true;
-            ((Button)findViewById(R.id.SaveModelPopup)).setOnClickListener(new OnClickListenerModelSave(modifierHolder, uiId));
+            ((Button)highestConstraint.findViewById(R.id.SaveModelPopup)).setOnClickListener(new OnClickListenerModelSave(modifierHolder, uiId));
 
             weaponSkillView.setText(""+ modifierHolder.GetModifierValue(UnitAndModelSkill.WeaponSkill));
             ballisticSkillView.setText(""+ modifierHolder.GetModifierValue(UnitAndModelSkill.BallisticSkill));
@@ -1266,13 +1288,13 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
     public void ShowPopup(View v)
     {
-        View popup = findViewById(R.id.ConstraintLayoutModelPopup);
+        View popup = highestConstraint.findViewById(R.id.ConstraintLayoutModelPopup);
         popup.setVisibility(View.VISIBLE);
     }
 
     public void ClosePopup(View v)
     {
-        View popup = findViewById(R.id.ConstraintLayoutModelPopup);
+        View popup = highestConstraint.findViewById(R.id.ConstraintLayoutModelPopup);
         popup.setVisibility(View.GONE);
         popupActive = false;
     }

@@ -5,6 +5,7 @@ import com.example.warhammer40kdicecalculator.MetricsOfAttacking;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ReRollOnes extends Ability{
 
@@ -16,7 +17,7 @@ public class ReRollOnes extends Ability{
         super("ReRollOnes");
     }
 
-    public  void hitRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking)
+    public  void hitRollAbilityAttacking(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult)
     {
 
 
@@ -27,37 +28,29 @@ public class ReRollOnes extends Ability{
 
 
     }
-    public   void woundRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking)
+
+    @Override
+    public void HitRollAbilityDefender(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult) {
+
+    }
+
+    public   void woundRollAbilityAttacker(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult)
     {
 
     }
 
-    public   void saveRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking)
-    {
+    @Override
+    public void woundRollAbilityDefender(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult) {
 
+    }
+
+    public int saveRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int damageToBeTaken)
+    {
+        return 0;
     }
 
     public   void rollNumberOfShots(List<DiceResult> diceResultList, MetricsOfAttacking metricsOfAttacking)
     {
-        //    if(diceResult.isD3Roll)
-        //    {
-        //        if(diceResult.result <3)
-        //        {
-        //            DiceResult reRoll = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 +1 ));
-//
-        //            diceResult.result = reRoll.result;
-        //        }
-        //    }
-        //    if(diceResult.isD6Roll)
-        //    {
-        //        if(diceResult.result <4)
-        //        {
-        //            DiceResult reRoll = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 +1 ));
-//
-        //            diceResult.result = reRoll.result;
-        //        }
-        //    }
-
         int currentAmountOfAttacks = 0;
 
         for(int i = 0; i < diceResultList.size(); i++)
