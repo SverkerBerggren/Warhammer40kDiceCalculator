@@ -1,11 +1,13 @@
 package com.example.warhammer40kdicecalculator;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,11 +26,17 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 
 public class StatisticActivity extends AppCompatActivity {
 
     private TreeMap<Integer,Integer> woundsDealtDistribution = new TreeMap<>();
     private TreeMap<Integer,Integer> modelsSlainDistribution = new TreeMap<>();
+
+    private ConstraintLayout popupLayout;
+    private TextView topTextPopup;
+    private TextView middleTextPopup;
+    private TextView bottomTextPopup;
 
     private ArrayList<Unit> listOfAttackingUnits = new ArrayList<Unit>();
     private Unit defendingUnit;
@@ -50,6 +58,12 @@ public class StatisticActivity extends AppCompatActivity {
         Matchup matchup = fileHandler.getMatchup(matchupName);
 
         boolean myUnitsAttacking = intent.getBooleanExtra("FirendlyArmyAttacking", true);
+
+        popupLayout = findViewById(R.id.graphPopup);
+        topTextPopup = findViewById(R.id.TopTextPopup);
+        middleTextPopup = findViewById(R.id.MiddleTextPopup);
+        bottomTextPopup = findViewById(R.id.BottomTextPopup);
+
 
         String attackingString = "";
         String defendingString = "";
@@ -231,17 +245,42 @@ public class StatisticActivity extends AppCompatActivity {
                 Iterator<DataPoint> barDataPoints = barSeries.getValues(dataPoint.getX() + 1, dataPoint.getX() + 1);
                 if (isGraph1)
                 {
-                    ShowToastMessage("Amount of Wounds: " + dataPoint.getX() + "\n" +
-                            "Chance for Wounds: " + Math.round(barDataPoints.next().getY()  * 100.0) / 100.0 + " %\n" +
-                            "Chance for " + dataPoint.getX() + " or more Wounds: " + + Math.round(dataPoint.getY() * 100.0) / 100.0 + " %"
-                    );
+                    popupLayout.setVisibility(View.VISIBLE);
+                    topTextPopup.setText("Amount of Wounds: " + dataPoint.getX());
+                    middleTextPopup.setText("Chance for Wounds: " + Math.round(barDataPoints.next().getY()  * 100.0) / 100.0);
+                    bottomTextPopup.setText("Chance for " + dataPoint.getX() + " or more Wounds: " + + Math.round(dataPoint.getY() * 100.0) / 100.0);
+
+                    try{
+                        TimeUnit.SECONDS.sleep(2);
+                        popupLayout.setVisibility(View.GONE);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+
+
+                    // ShowToastMessage("Amount of Wounds: " + dataPoint.getX() + "\n" +
+                   //         "Chance for Wounds: " + Math.round(barDataPoints.next().getY()  * 100.0) / 100.0 + " %\n" +
+                   //         "Chance for " + dataPoint.getX() + " or more Wounds: " + + Math.round(dataPoint.getY() * 100.0) / 100.0 + " %"
+                   // );
                 }
                else
                 {
-                    ShowToastMessage("Amount of Models Slain: " + dataPoint.getX() + "\n" +
-                            "Chance for Models Slain: " + Math.round(barDataPoints.next().getY()  * 100.0) / 100.0 + " %\n" +
-                            "Chance for " + dataPoint.getX() + " or more Models Slain: " + + Math.round(dataPoint.getY() * 100.0) / 100.0 + " %"
-                    );
+                    popupLayout.setVisibility(View.VISIBLE);
+                    topTextPopup.setText("Amount of Models Slain: " + dataPoint.getX());
+                    middleTextPopup.setText("Chance for Models Slain: " + Math.round(barDataPoints.next().getY()  * 100.0) / 100.0);
+                    bottomTextPopup.setText("Chance for " + dataPoint.getX() + " or more Models Slain: " + + Math.round(dataPoint.getY() * 100.0) / 100.0);
+
+                    try{
+                        TimeUnit.SECONDS.sleep(2);
+                        popupLayout.setVisibility(View.GONE);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                   //ShowToastMessage("Amount of Models Slain: " + dataPoint.getX() + "\n" +
+                   //        "Chance for Models Slain: " + Math.round(barDataPoints.next().getY()  * 100.0) / 100.0 + " %\n" +
+                   //        "Chance for " + dataPoint.getX() + " or more Models Slain: " + + Math.round(dataPoint.getY() * 100.0) / 100.0 + " %"
+                   //);
                 }
             }
         });

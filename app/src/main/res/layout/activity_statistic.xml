@@ -106,61 +106,47 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/graphPopup"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="30dp"
+        android:elevation="10dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintStart_toStartOf="parent">
 
         <TextView
-            android:id="@+id/textView13"
+            android:id="@+id/TopTextPopup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Graph1"
-            android:textAlignment="textEnd"
-            android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/amountOfWoundsText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="18dp"
             android:text="Numbers of Wounds: 100"
             android:textAlignment="center"
-            android:textSize="10sp"
+            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@+id/view4" />
 
         <TextView
-            android:id="@+id/chanceOfWoundsText"
+            android:id="@+id/MiddleTextPopup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="42dp"
             android:text="Chance: 100%"
             android:textAlignment="center"
-            android:textSize="10sp"
+            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/TopTextPopup" />
 
         <TextView
-            android:id="@+id/chanceForMoreWoundsText"
+            android:id="@+id/BottomTextPopup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="68dp"
             android:text="Chance for more Wounds: "
             android:textAlignment="center"
-            android:textSize="10sp"
+            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/MiddleTextPopup" />
 
         <View
             android:id="@+id/view4"
