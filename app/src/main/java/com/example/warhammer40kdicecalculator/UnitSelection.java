@@ -16,9 +16,13 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
+import com.example.warhammer40kdicecalculator.Identifiers.ModelIdentifier;
+import com.example.warhammer40kdicecalculator.Identifiers.UIIdentifier;
 import com.example.warhammer40kdicecalculator.Identifiers.UnitIdentifier;
 
 import java.util.ArrayList;
@@ -45,6 +49,8 @@ public class UnitSelection extends AppCompatActivity {
 
     private ActivityResultLauncher<Intent> launchUnitEditActivity;
 
+
+    private ActivityResultLauncher<Intent> activityResultLauncherAbility;
 
     private Conditions conditions = new Conditions();
 
@@ -79,6 +85,9 @@ public class UnitSelection extends AppCompatActivity {
 
         friendlyArmy = matchup.friendlyArmy.units;
         enemyArmy = matchup.enemyArmy.units;
+
+        activityResultLauncherAbility = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new UpdateAbilitiesStub());
+
 
         CreateUnits(myUnitsAttacking);
     }
@@ -171,6 +180,16 @@ public class UnitSelection extends AppCompatActivity {
     }
 
 
+    private class  UpdateAbilitiesStub implements ActivityResultCallback<ActivityResult>
+    {
+
+        @Override
+        public void onActivityResult(ActivityResult result) {
+
+        }
+    }
+
+
 
 
 
@@ -238,22 +257,24 @@ public class UnitSelection extends AppCompatActivity {
             {
                 if (attacking)
                 {
-                    Button bttnToRemove = chosenAttackingUnits.findViewWithTag(name);
+                    View bttnToRemove = chosenAttackingUnits.findViewWithTag(name);
                     listOfAttackingUnits.remove(index);
                     chosenAttackingUnits.removeView(bttnToRemove);
                 }
                 else
                 {
-                    Button bttnToRemove = chosenDefendingUnits.findViewWithTag(name);
+                    View bttnToRemove = chosenDefendingUnits.findViewWithTag(name);
                     chosenDefendingUnits.removeView(bttnToRemove);
                     defendingUnitIndex = -1;
                 }
             }
             else
             {
-                Button bttn = new Button(context);
-                bttn.setTag(name);
-                bttn.setText(name);
+            //    Button bttn = new Button(context);
+            //    bttn.setTag(name);
+            //    bttn.setText(name);
+
+                View bttn = CreateTableRow(name,index,allegiance);
                 if (attacking)
                 {
                     chosenAttackingUnits.addView(bttn);
@@ -267,10 +288,90 @@ public class UnitSelection extends AppCompatActivity {
                 }
 
 
-                bttn.setOnClickListener(new OnClickListenerEditUnit( new UnitIdentifier(allegiance,null,index,matchup.name)));
+            //    bttn.setOnClickListener(new OnClickListenerEditUnit( new UnitIdentifier(allegiance,null,index,matchup.name)));
             }
         }
     }
+
+    private View CreateTableRow(String name,int index,String allegiance)
+    {
+
+        UnitIdentifier unitId = new UnitIdentifier(allegiance,null,index,matchup.name);
+        Button bttn = new Button(context);
+        bttn.setTag(name);
+        bttn.setText(name);
+        bttn.setOnClickListener(new OnClickListenerEditUnit( unitId));
+
+
+        Button editAbilitiesButton = new Button(context);
+        editAbilitiesButton.setTag(name);
+        editAbilitiesButton.setText("Abilities");
+
+        editAbilitiesButton.setOnClickListener(new StartAbilitiesEdit(unitId));
+
+
+        TableRow tableRow = new TableRow(context);
+
+        tableRow.addView(bttn);
+        tableRow.addView(editAbilitiesButton);
+
+        tableRow.setTag(name);
+
+
+        TableLayout tableLayout = new TableLayout(context);
+
+        tableLayout.setTag(name);
+
+        tableLayout.addView(tableRow);
+
+
+
+
+      //  editAbilitiesButton.setOnClickListener();
+
+
+
+        return tableLayout;
+    }
+
+    private class StartAbilitiesEdit implements View.OnClickListener
+    {
+
+        private UnitIdentifier unitIdentifier;
+
+
+        public StartAbilitiesEdit(UnitIdentifier unitIdentifier)
+        {
+            this.unitIdentifier = unitIdentifier;
+
+        }
+
+        @Override
+        public void onClick(View view) {
+
+
+
+            Intent intent = new Intent(context, Activity_Edit_Abilities.class);
+            // Identifier
+
+            //UnitIdentifier identifier = (UnitIdentifier)view.getTag(R.string.UNIT_IDENTIFIER);
+            intent.putExtra("" + R.string.UNIT_IDENTIFIER, unitIdentifier.toString());
+            intent.putExtra(""+R.string.TYPE_OF_IDENTIFIER, "unit");
+
+
+            UIIdentifier uiId = new UIIdentifier("stub??",unitIdentifier);
+
+            intent.putExtra(""+R.string.UI_IDENTIFIER, uiId.elementName);
+
+            intent.putExtra("matchupName", matchup.name);
+
+
+
+            activityResultLauncherAbility.launch(intent);
+        }
+    }
+
+
 
     private class OnClickListenerEditUnit implements View.OnClickListener
     {
