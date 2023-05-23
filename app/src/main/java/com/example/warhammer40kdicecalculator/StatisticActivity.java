@@ -191,8 +191,8 @@ public class StatisticActivity extends AppCompatActivity {
 
     public View CreateTableRow(String textStatisticalMetric, String statisticalValue)
     {
-        TableRow tableRow = new TableRow(context);
-        tableRow.setBackgroundColor(Color.parseColor("#919191"));
+        TableRow tableRow = new TableRow(new ContextThemeWrapper(this, androidx.appcompat.R.style.Base_ThemeOverlay_AppCompat_Dark));
+   //     tableRow.setBackgroundColor(Color.parseColor("#919191"));
         tableRow.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
 
@@ -205,7 +205,7 @@ public class StatisticActivity extends AppCompatActivity {
         statisticalValueText.setText(statisticalValue);
         statisticalValueText.setTextSize(10);
         statisticalValueText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        statisticalValueText.setBackgroundColor(Color.parseColor("#F6EFEF"));
+    //    statisticalValueText.setBackgroundColor(Color.parseColor("#F6EFEF"));
 
         tableRow.addView(statisticalMetric);
         tableRow.addView(statisticalValueText);

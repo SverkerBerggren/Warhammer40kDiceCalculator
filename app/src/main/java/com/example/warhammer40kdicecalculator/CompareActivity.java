@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.text.Layout;
 import android.util.Log;
 import android.util.Range;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -322,7 +323,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         tableRow.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
 
-        TextView abilityTextView = new TextView(context);
+        TextView abilityTextView = new TextView(new ContextThemeWrapper(context, com.google.android.material.R.style.Widget_AppCompat_TextView));
         abilityTextView.setText(text);
         abilityTextView.setTextSize(10);
         abilityTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -765,22 +766,22 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         public void onClick(View view) {
             if(!inflatedAddWeapon)
             {
-                inflater.inflate(R.layout.add_weapon_popup,findViewById(R.id.ConstraintLayoutCompare));
+                inflater.inflate(R.layout.add_weapon_popup,highestConstraint.findViewById(R.id.ConstraintLayoutCompare));
 
-                weaponAddConstraintLayout = findViewById(R.id.AddWeaponConstraintLayout);
+                weaponAddConstraintLayout = highestConstraint.findViewById(R.id.AddWeaponConstraintLayout);
                 //((Button)findViewById(R.id.SaveModelPopup)).setOnClickListener(new OnClickListenerModelSave(model));
-                weaponAddName = findViewById(R.id.AddWeaponName);
-                weaponAddAmountD3 = findViewById(R.id.AddWeaponAmountD3);
-                weaponAddAmountD6 = findViewById(R.id.AddWeaponAmountD6);
-                weaponAddAmount = findViewById(R.id.AddWeaponAmount);
-                weaponAddDamageD3 = findViewById(R.id.AddWeaponDamageD3);
-                weaponAddDamageD6 = findViewById(R.id.AddWeaponDamageD6);
-                weaponAddDamage = findViewById(R.id.AddWeaponDamage);
-                weaponAddStrength = findViewById(R.id.AddWeaponStrength);
-                weaponAddAP = findViewById(R.id.AddWeaponAP);
+                weaponAddName = highestConstraint.findViewById(R.id.AddWeaponName);
+                weaponAddAmountD3 = highestConstraint.findViewById(R.id.AddWeaponAmountD3);
+                weaponAddAmountD6 = highestConstraint.findViewById(R.id.AddWeaponAmountD6);
+                weaponAddAmount = highestConstraint.findViewById(R.id.AddWeaponAmount);
+                weaponAddDamageD3 = highestConstraint.findViewById(R.id.AddWeaponDamageD3);
+                weaponAddDamageD6 = highestConstraint.findViewById(R.id.AddWeaponDamageD6);
+                weaponAddDamage = highestConstraint.findViewById(R.id.AddWeaponDamage);
+                weaponAddStrength = highestConstraint.findViewById(R.id.AddWeaponStrength);
+                weaponAddAP = highestConstraint.findViewById(R.id.AddWeaponAP);
 
-                addButton = findViewById(R.id.AddWeaponAddButton);
-                cancelButton = findViewById(R.id.AddWeaponCancelButton);
+                addButton = highestConstraint.findViewById(R.id.AddWeaponAddButton);
+                cancelButton = highestConstraint.findViewById(R.id.AddWeaponCancelButton);
 
                 addButton.setOnClickListener(new AddWeapon());
                 cancelButton.setOnClickListener(new View.OnClickListener() {

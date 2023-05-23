@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,7 +91,8 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
             weaponButton.setOnClickListener(new OnClickListenerWeapon(weapons.get(i),context));
 
             TableRow tableRow = new TableRow(context);
-            CheckBox checkBox = new CheckBox(context);
+            CheckBox checkBox = new CheckBox(new ContextThemeWrapper(context, androidx.appcompat.R.style.Widget_AppCompat_CompoundButton_CheckBox));
+            checkBox.setTextSize(20);
             checkBox.setChecked(weapons.get(i).active);
             CompareActivity compareActivity = new CompareActivity();
             compareActivity.Setup(context,matchup);
@@ -179,7 +181,8 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
         for(Ability ability : weapon.weaponRules)
         {
 
-            CheckBox abilityCheckBox = new CheckBox(context);
+            CheckBox abilityCheckBox = new CheckBox(new ContextThemeWrapper(context, androidx.appcompat.R.style.Base_Widget_AppCompat_CompoundButton_CheckBox));
+            abilityCheckBox.setTextSize(20);
             abilityCheckBox.setText(ability.name);
 
             linearLayout.addView(abilityCheckBox);

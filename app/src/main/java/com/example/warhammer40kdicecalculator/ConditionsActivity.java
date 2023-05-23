@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextThemeWrapper;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -62,7 +63,8 @@ public class ConditionsActivity extends AppCompatActivity {
 
     private void CreateCheckBox(String tag, Boolean active)
     {
-        CheckBox checkBox = new CheckBox(context);
+        CheckBox checkBox = new CheckBox(new ContextThemeWrapper(this, androidx.appcompat.R.style.Base_ThemeOverlay_AppCompat_Dark));
+        checkBox.setTextSize(14);
 
         if(tag.equals("rapidFireRange"))
         {

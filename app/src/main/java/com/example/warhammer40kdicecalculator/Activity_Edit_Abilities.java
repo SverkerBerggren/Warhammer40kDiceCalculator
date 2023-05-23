@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -156,8 +157,9 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
 
     private void CreateButton(Ability ability, AbilityHolder abilityHolder)
     {
-        TableRow tableRow = new TableRow(context);
-        CheckBox checkBox = new CheckBox(context);
+        TableRow tableRow = new TableRow(new ContextThemeWrapper(this, androidx.appcompat.R.style.Base_ThemeOverlay_AppCompat_Dark));
+        CheckBox checkBox = new CheckBox(new ContextThemeWrapper(context, androidx.appcompat.R.style.Base_Widget_AppCompat_CompoundButton_CheckBox));
+        checkBox.setTextSize(20);
         ImageButton imageButton = new ImageButton(context);
 
         checkBox.setChecked(ability.active);
