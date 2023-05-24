@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
@@ -78,6 +79,12 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
 
 
         tableLayoutAbilities = findViewById(R.id.TableLayoutEditAbilities);
+
+
+        ScrollView scrollView = findViewById(R.id.ScrollViewEditAbilites);
+
+
+
 
         Army army = null;
 
@@ -157,8 +164,8 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
 
     private void CreateButton(Ability ability, AbilityHolder abilityHolder)
     {
-        TableRow tableRow = new TableRow(new ContextThemeWrapper(this, androidx.appcompat.R.style.Base_ThemeOverlay_AppCompat_Dark));
-        CheckBox checkBox = new CheckBox(new ContextThemeWrapper(context, androidx.appcompat.R.style.Base_Widget_AppCompat_CompoundButton_CheckBox));
+        TableRow tableRow = new TableRow(context);
+        CheckBox checkBox = new CheckBox(new ContextThemeWrapper(this, androidx.appcompat.R.style.Base_Widget_AppCompat_CompoundButton_CheckBox));
         checkBox.setTextSize(20);
         ImageButton imageButton = new ImageButton(context);
 

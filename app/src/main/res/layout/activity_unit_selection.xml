@@ -143,6 +143,7 @@
         app:layout_constraintTop_toBottomOf="@+id/divider2">
 
         <ScrollView
+            android:id="@+id/ScrollViewAttacker"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -158,18 +159,20 @@
 
                 <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:gravity="fill">
 
                     <Button
                         android:id="@+id/button10"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="wewerewwer" />
+                        android:layout_height="50dp"
+                        android:maxWidth="100sp"
+                        android:text="asdfasdsadfsadsdf" />
 
                     <Button
                         android:id="@+id/button9"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
                         android:text="asasd" />
                 </TableRow>
             </TableLayout>

@@ -4,18 +4,21 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Dimension;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -301,37 +304,57 @@ public class UnitSelection extends AppCompatActivity {
         bttn.setText(name);
         bttn.setOnClickListener(new OnClickListenerEditUnit( unitId));
 
+        ResizeButtonFont(bttn);
+
+        //bttn.setAutoSizeTextTypeUniformWithConfiguration(6,20,2,TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM);
+        ScrollView scrollViewAttacker = findViewById(R.id.ScrollViewAttacker);
+
+        int scrollViewWidth = scrollViewAttacker.getWidth();
+
+        bttn.setMaxWidth( (int)(scrollViewWidth *0.7));
+        bttn.setMinWidth( (int)(scrollViewWidth *0.7));
+
+        int bttnHeight = bttn.getHeight();
+
+
 
         Button editAbilitiesButton = new Button(context);
         editAbilitiesButton.setTag(name);
         editAbilitiesButton.setText("Abilities");
 
+        editAbilitiesButton.setMaxWidth((int)(scrollViewWidth * 0.25));
+        editAbilitiesButton.setMinWidth((int)(scrollViewWidth * 0.25));
+
+
         editAbilitiesButton.setOnClickListener(new StartAbilitiesEdit(unitId));
 
+        editAbilitiesButton.setTextSize(Dimension.DP,28);
 
         TableRow tableRowUnit = new TableRow(context);
-        TableRow tableRowAbility = new TableRow(context);
+       // TableRow tableRowAbility = new TableRow(context);
 
         tableRowUnit.addView(bttn);
-        tableRowAbility.addView(editAbilitiesButton);
+        tableRowUnit.addView(editAbilitiesButton);
+
+        tableRowUnit.setTag(name);
+
+        tableRowUnit.setGravity(Gravity.FILL);
+
+
+   //    TableLayout tableLayout = new TableLayout(context);
+
+   //    tableLayout.setTag(name);
+
+   //    tableLayout.addView(tableRowUnit);
+   //    tableLayout.addView(tableRowAbility);
 
 
 
-
-        TableLayout tableLayout = new TableLayout(context);
-
-        tableLayout.setTag(name);
-
-        tableLayout.addView(tableRowUnit);
-        tableLayout.addView(tableRowAbility);
+     //   tableLayout.setShrinkAllColumns(true);
 
 
 
-        tableLayout.setShrinkAllColumns(true);
-
-
-
-        return tableLayout;
+        return tableRowUnit;
     }
 
     private class StartAbilitiesEdit implements View.OnClickListener
@@ -411,5 +434,26 @@ public class UnitSelection extends AppCompatActivity {
         launchUnitEditActivity.launch(intent);
 
     }
+
+    private void ResizeButtonFont(Button button)
+    {
+
+       //Button textView = new Button(context);
+
+
+
+        if(button.getText().length() > 15 &&button.getText().length() < 30 )
+        {
+            button.setTextSize(Dimension.DP,(float) (button.getTextSize() * 0.75));
+        }else if(button.getText().length() > 30)
+        {
+            button.setTextSize( Dimension.DP,(float) (button.getTextSize() * 0.5));
+        }
+
+      //  textView.autosize
+
+
+    }
+
 }
 
