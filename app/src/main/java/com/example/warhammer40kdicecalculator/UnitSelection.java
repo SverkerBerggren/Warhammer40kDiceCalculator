@@ -21,7 +21,6 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
-import com.example.warhammer40kdicecalculator.Identifiers.ModelIdentifier;
 import com.example.warhammer40kdicecalculator.Identifiers.UIIdentifier;
 import com.example.warhammer40kdicecalculator.Identifiers.UnitIdentifier;
 
@@ -39,7 +38,7 @@ public class UnitSelection extends AppCompatActivity {
     private TextView defendingText;
     private ArrayList<Unit> friendlyArmy;
     private ArrayList<Unit> enemyArmy;
-    private LinearLayout chosenAttackingUnits;
+    private TableLayout chosenAttackingUnits;
     private LinearLayout chosenDefendingUnits;
 
     private HashMap<Integer,Unit> listOfAttackingUnits = new HashMap<Integer,Unit>();
@@ -79,7 +78,7 @@ public class UnitSelection extends AppCompatActivity {
         attackingText = findViewById(R.id.attackingText);
         defendingGroup = findViewById(R.id.DefendingGroup);
         defendingText = findViewById(R.id.defendingText);
-        chosenAttackingUnits = findViewById(R.id.ChosenAttackingUnits);
+        chosenAttackingUnits = findViewById(R.id.ChosenAttackingUnitsTable);
         chosenDefendingUnits = findViewById(R.id.ChosenDefendingUnit);
 
 
@@ -310,24 +309,25 @@ public class UnitSelection extends AppCompatActivity {
         editAbilitiesButton.setOnClickListener(new StartAbilitiesEdit(unitId));
 
 
-        TableRow tableRow = new TableRow(context);
+        TableRow tableRowUnit = new TableRow(context);
+        TableRow tableRowAbility = new TableRow(context);
 
-        tableRow.addView(bttn);
-        tableRow.addView(editAbilitiesButton);
+        tableRowUnit.addView(bttn);
+        tableRowAbility.addView(editAbilitiesButton);
 
-        tableRow.setTag(name);
+
 
 
         TableLayout tableLayout = new TableLayout(context);
 
         tableLayout.setTag(name);
 
-        tableLayout.addView(tableRow);
+        tableLayout.addView(tableRowUnit);
+        tableLayout.addView(tableRowAbility);
 
 
 
-
-      //  editAbilitiesButton.setOnClickListener();
+        tableLayout.setShrinkAllColumns(true);
 
 
 
