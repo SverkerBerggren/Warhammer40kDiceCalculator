@@ -37,7 +37,7 @@ public abstract class Ability implements DeactivatableInterface {
 
     public static Ability getAbilityType(String name)
     {
-        if(name.equals("HammerOfTheEmperor"))
+        if(name.equals("Hammer of the Emperor"))
         {
             return new HammerOfTheEmperor();
         }
