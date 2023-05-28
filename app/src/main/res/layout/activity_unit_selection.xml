@@ -155,27 +155,7 @@
                 android:id="@+id/ChosenAttackingUnitsTable"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:shrinkColumns="*">
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="fill">
-
-                    <Button
-                        android:id="@+id/button10"
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:maxWidth="100sp"
-                        android:text="asdfasdsadfsadsdf" />
-
-                    <Button
-                        android:id="@+id/button9"
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:text="asasd" />
-                </TableRow>
-            </TableLayout>
+                android:shrinkColumns="*"/>
         </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -208,11 +188,11 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <LinearLayout
+            <TableLayout
                 android:id="@+id/ChosenDefendingUnit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" />
+                android:shrinkColumns="*" />
         </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

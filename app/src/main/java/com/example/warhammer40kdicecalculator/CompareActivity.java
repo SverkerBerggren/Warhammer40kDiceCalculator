@@ -647,7 +647,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
                 ((ImageButton)inflatedView.findViewById(R.id.EditWeaponsButton)).setId(R.id.noId);
 
                 // Add Weapon Button
-                highestConstraint.findViewWithTag("AddWeaponModelButton").setOnClickListener(new OnClickAddWeapon(currentModel,modelId));
+                highestConstraint.findViewWithTag("AddWeaponModelButton").setOnClickListener(new OnClickAddWeapon(modelId));
                 highestConstraint.findViewWithTag("AddWeaponModelButton").setTag("");
 
                 ((CheckBox)highestConstraint.findViewById(R.id.DeactivateModelsButton)).setChecked(currentModel.active);
@@ -689,7 +689,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
                 ((ImageButton)inflatedView.findViewById(R.id.EditWeaponsButton)).setTag(R.string.UI_IDENTIFIER,new UIIdentifier(UI_WEAPON_LAYOUT_MODEL,modelId));
                 ((ImageButton)inflatedView.findViewById(R.id.EditWeaponsButton)).setId(R.id.noId);
                 // Add Weapon Button
-                highestConstraint.findViewWithTag("AddWeaponModelButton").setOnClickListener(new OnClickAddWeapon(currentModel,modelId));
+                highestConstraint.findViewWithTag("AddWeaponModelButton").setOnClickListener(new OnClickAddWeapon(modelId));
                 highestConstraint.findViewWithTag("AddWeaponModelButton").setTag("");
 
 
@@ -744,11 +744,11 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
         private Button addButton;
         private Button cancelButton;
-        private Model model;
+    //    private Model model;
         private ModelIdentifier modelId;
-        public OnClickAddWeapon(Model model, ModelIdentifier modelId)
+        public OnClickAddWeapon(ModelIdentifier modelId)
         {
-            this.model = model;
+    //        this.model = model;
 
             this.modelId = modelId;
         }
@@ -766,7 +766,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         public void onClick(View view) {
             if(!inflatedAddWeapon)
             {
-                inflater.inflate(R.layout.add_weapon_popup,highestConstraint.findViewById(R.id.ConstraintLayoutCompare));
+                inflater.inflate(R.layout.add_weapon_popup,highestConstraint);
 
                 weaponAddConstraintLayout = highestConstraint.findViewById(R.id.AddWeaponConstraintLayout);
                 //((Button)findViewById(R.id.SaveModelPopup)).setOnClickListener(new OnClickListenerModelSave(model));
@@ -783,20 +783,23 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
                 addButton = highestConstraint.findViewById(R.id.AddWeaponAddButton);
                 cancelButton = highestConstraint.findViewById(R.id.AddWeaponCancelButton);
 
-                addButton.setOnClickListener(new AddWeapon());
-                cancelButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        HideAddWeapon();
-                    }
-                });
+
 
                 inflatedAddWeapon = true;
             }
             else
             {
                 ShowAddWeapon();
+
             }
+
+            addButton.setOnClickListener(new AddWeapon());
+            cancelButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    HideAddWeapon();
+                }
+            });
         }
 
         private class AddWeapon implements  View.OnClickListener
@@ -835,7 +838,12 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
                 RangedWeapon weapon = new RangedWeapon(strength, aP, dA, rAA );
                 weapon.name = name;
-                model.listOfRangedWeapons.add(weapon);
+
+                Model modelToAddWeapon = matchup.GetModel(modelId);
+                modelToAddWeapon.listOfRangedWeapons.add(weapon);
+
+
+
 
                 fileHandler.saveMatchup(matchup);
 

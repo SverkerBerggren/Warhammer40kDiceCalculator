@@ -27,6 +27,7 @@ import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedAttackAmount;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedWeapon;
 import com.example.warhammer40kdicecalculator.Identifiers.ArmyIdentifier;
 import com.example.warhammer40kdicecalculator.Identifiers.Identifier;
@@ -151,6 +152,8 @@ public class EditUnitActivity extends AppCompatActivity implements AbilityUIHold
 
         };
         getOnBackPressedDispatcher().addCallback(this, callback);
+
+        topButton.callOnClick();
     }
 
     public void Setup(Context context, Matchup matchup)
@@ -353,8 +356,7 @@ public class EditUnitActivity extends AppCompatActivity implements AbilityUIHold
         abilityText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
         TextView attacksText = new TextView(context);
-        attacksText.setText(weapon.amountOfAttacks.numberOfD6 +"D6 + " + weapon.amountOfAttacks.numberOfD3
-                +"D3 +" +weapon.amountOfAttacks.rawNumberOfAttacks);
+        attacksText.setText(SetWeaponAttacks(weapon));
         attacksText.setTextSize(10);
         attacksText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
@@ -370,7 +372,7 @@ public class EditUnitActivity extends AppCompatActivity implements AbilityUIHold
 
 
         TextView damageText = new TextView(context);
-        damageText.setText(weapon.damageAmount.d6DamageAmount + "D6 +" + weapon.damageAmount.d3DamageAmount + "D3 +" + weapon.damageAmount.rawDamageAmount);
+        damageText.setText(SetWeaponDamage(weapon));
         damageText.setTextSize(10);
         damageText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
@@ -437,5 +439,54 @@ public class EditUnitActivity extends AppCompatActivity implements AbilityUIHold
         }
 
         return listToReturn;
+    }
+
+
+
+    private String SetWeaponAttacks(RangedWeapon rangedWeapon)
+    {
+        String stringToReturn = "";
+        RangedAttackAmount amount = rangedWeapon.amountOfAttacks;
+
+
+        if(amount.numberOfD6 != 0)
+        {
+            stringToReturn+=  amount.numberOfD6 +"D6 ";
+        }
+        if(amount.numberOfD3 != 0)
+        {
+            stringToReturn+=  amount.numberOfD3 +"D3 ";
+        }
+
+        if(amount.rawNumberOfAttacks != 0)
+        {
+            stringToReturn+= "" + amount.rawNumberOfAttacks;
+        }
+
+
+        return stringToReturn;
+    }
+    private String SetWeaponDamage(RangedWeapon rangedWeapon)
+    {
+        String stringToReturn = "";
+        DamageAmount amount = rangedWeapon.damageAmount;
+
+
+        if(amount.d6DamageAmount != 0)
+        {
+            stringToReturn+=  amount.d6DamageAmount +"D6 ";
+        }
+        if(amount.d3DamageAmount != 0)
+        {
+            stringToReturn+=  amount.d3DamageAmount +"D3 ";
+        }
+
+        if(amount.rawDamageAmount != 0)
+        {
+            stringToReturn+= "" + amount.rawDamageAmount;
+        }
+
+
+        return stringToReturn;
     }
 }
