@@ -375,19 +375,25 @@ public class StatisticActivity extends AppCompatActivity {
         popupLayout.setVisibility(View.GONE);
     }
     private void ShowPopup(boolean isGraph1, DataPointInterface dataPoint, Iterator<DataPoint> barDataPoints)
-    {
-        popupLayout.setVisibility(View.VISIBLE);
-        if (isGraph1)
+    {   try
         {
-            topTextPopup.setText("Amount of Wounds: " + dataPoint.getX());
-            middleTextPopup.setText("Chance for Wounds: " + Math.round(barDataPoints.next().getY() * 100.0) / 100.0 + "%");
-            bottomTextPopup.setText("Chance for " + dataPoint.getX() + " or more Wounds: " + +Math.round(dataPoint.getY() * 100.0) / 100.0 + "%");
+            popupLayout.setVisibility(View.VISIBLE);
+            if (isGraph1)
+            {
+                topTextPopup.setText("Amount of Wounds: " + dataPoint.getX());
+                middleTextPopup.setText("Chance for Wounds: " + Math.round(barDataPoints.next().getY() * 100.0) / 100.0 + "%");
+                bottomTextPopup.setText("Chance for " + dataPoint.getX() + " or more Wounds: " + +Math.round(dataPoint.getY() * 100.0) / 100.0 + "%");
+            }
+            else
+            {
+                topTextPopup.setText("Amount of Models Slain: " + dataPoint.getX());
+                middleTextPopup.setText("Chance for Models Slain: " + Math.round(barDataPoints.next().getY() * 100.0) / 100.0 + "%");
+                bottomTextPopup.setText("Chance for " + dataPoint.getX() + " or more Models Slain: " + +Math.round(dataPoint.getY() * 100.0) / 100.0 + "%");
+            }
         }
-        else
+        catch (Exception e)
         {
-            topTextPopup.setText("Amount of Models Slain: " + dataPoint.getX());
-            middleTextPopup.setText("Chance for Models Slain: " + Math.round(barDataPoints.next().getY() * 100.0) / 100.0 + "%");
-            bottomTextPopup.setText("Chance for " + dataPoint.getX() + " or more Models Slain: " + +Math.round(dataPoint.getY() * 100.0) / 100.0 + "%");
+
         }
     }
     private class LineGraphSeriesSelfMade<E extends DataPointInterface> extends LineGraphSeries
