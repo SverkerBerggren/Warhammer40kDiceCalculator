@@ -3,7 +3,6 @@ package com.example.warhammer40kdicecalculator;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -213,6 +212,34 @@ public  class FileHandler extends AppCompatActivity {
         } catch (Exception e){
             e.printStackTrace();
             Log.d("json skrivning", "det sket sig");
+        }
+
+    }
+
+    public void DeleteMatchup(String matchupName)
+    {
+        File fileToDelete = null;
+        try {
+            for(File file : matchupDirectory.listFiles())
+            {
+                if(file.getName().equals(matchupName))
+                {
+                    fileToDelete = file;
+
+
+                    break;
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Log.d("FileHandler", "DeleteMatchup: knasade vid deleten )");
+
+
+        }
+        if(fileToDelete != null)
+        {
+            fileToDelete.delete();
         }
 
     }
