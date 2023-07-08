@@ -13,8 +13,8 @@
         <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/activity_edit_weapon.xml" value="0.33" />
         <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/activity_parse.xml" value="0.25" />
-        <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/activity_popup.xml" value="0.23550724637681159" />
-        <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/activity_saved_matchups.xml" value="0.5" />
+        <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/activity_popup.xml" value="0.5" />
+        <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/activity_saved_matchups.xml" value="0.22" />
         <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/activity_saved_matchups2.xml" value="0.1524822695035461" />
         <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/activity_saved_matchups3.xml" value="0.19807497467071936" />
         <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/activity_statistic.xml" value="0.33" />
@@ -24,10 +24,10 @@
         <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/content_saved_matchups.xml" value="0.25" />
         <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/content_saved_matchups2.xml" value="0.1524822695035461" />
         <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/edit_unit.xml" value="0.22871376811594202" />
-        <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/fragment_first.xml" value="0.1524822695035461" />
+        <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/fragment_first.xml" value="0.22" />
         <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/fragment_first2.xml" value="0.26902173913043476" />
         <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/fragment_second.xml" value="0.19807497467071936" />
-        <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/fragment_second2.xml" value="0.1524822695035461" />
+        <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/fragment_second2.xml" value="0.2" />
         <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/matchupbutton.xml" value="0.5" />
         <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/model_stats_prefab.xml" value="0.5" />
         <entry key="..\:/Users/Smenker/AndroidStudioProjects/Warhammer40kDiceCalculator/app/src/main/res/layout/popup_weapon.xml" value="0.33" />

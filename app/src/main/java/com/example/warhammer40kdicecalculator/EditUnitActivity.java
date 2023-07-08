@@ -27,8 +27,8 @@ import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
-import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedAttackAmount;
-import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedWeapon;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.AttackAmount;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.Weapon;
 import com.example.warhammer40kdicecalculator.Identifiers.ArmyIdentifier;
 import com.example.warhammer40kdicecalculator.Identifiers.Identifier;
 import com.example.warhammer40kdicecalculator.Identifiers.ModelIdentifier;
@@ -341,7 +341,7 @@ public class EditUnitActivity extends AppCompatActivity implements AbilityUIHold
         activityResultLauncherWeapon.launch(intent);
 
     }
-    private void AddWeapon(TableLayout tableLayout, RangedWeapon weapon)
+    private void AddWeapon(TableLayout tableLayout, Weapon weapon)
     {
         TableRow tableRow = new TableRow(context);
 
@@ -443,10 +443,10 @@ public class EditUnitActivity extends AppCompatActivity implements AbilityUIHold
 
 
 
-    private String SetWeaponAttacks(RangedWeapon rangedWeapon)
+    private String SetWeaponAttacks(Weapon rangedWeapon)
     {
         String stringToReturn = "";
-        RangedAttackAmount amount = rangedWeapon.amountOfAttacks;
+        AttackAmount amount = rangedWeapon.amountOfAttacks;
 
 
         if(amount.numberOfD6 != 0)
@@ -466,7 +466,7 @@ public class EditUnitActivity extends AppCompatActivity implements AbilityUIHold
 
         return stringToReturn;
     }
-    private String SetWeaponDamage(RangedWeapon rangedWeapon)
+    private String SetWeaponDamage(Weapon rangedWeapon)
     {
         String stringToReturn = "";
         DamageAmount amount = rangedWeapon.damageAmount;

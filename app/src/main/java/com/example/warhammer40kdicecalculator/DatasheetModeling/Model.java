@@ -1,7 +1,5 @@
 package com.example.warhammer40kdicecalculator.DatasheetModeling;
 
-import android.widget.EditText;
-
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.CompareActivity;
 import com.example.warhammer40kdicecalculator.MeleeWeapons;
@@ -17,15 +15,13 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
     public int armorSave = -1;
     public int invulnerableSave = 7;
     public int wounds = -1;
-    public int ballisticSkill = -1;
-    public int weaponSkill = -1;
     public int attacks=  -1;
 
     public boolean active = true;
 
     public ArrayList<Ability> listOfAbilites = new ArrayList<>();
 
-    public ArrayList<RangedWeapon> listOfRangedWeapons = new ArrayList<>();
+    public ArrayList<Weapon> listOfRangedWeapons = new ArrayList<>();
 
     public ArrayList<MeleeWeapons> listOfMeleeWeapons = new ArrayList<>();
 
@@ -36,8 +32,6 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
         OtherModel.armorSave = armorSave;
         OtherModel.invulnerableSave = invulnerableSave;
         OtherModel.wounds = wounds;
-        OtherModel.ballisticSkill = ballisticSkill;
-        OtherModel.weaponSkill = weaponSkill;
         OtherModel.attacks = attacks;
 
     }
@@ -59,8 +53,6 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
         armorSave = other.armorSave;
         invulnerableSave = other.invulnerableSave;
         wounds = other.wounds;
-        ballisticSkill = other.ballisticSkill;
-        weaponSkill = other.weaponSkill;
         attacks = other.attacks;
         name = other.name;
         active = other.active;
@@ -81,17 +73,15 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
         modelToReturn.armorSave = armorSave;
         modelToReturn.invulnerableSave = invulnerableSave;
         modelToReturn.wounds = wounds;
-        modelToReturn.ballisticSkill = ballisticSkill;
-        modelToReturn.weaponSkill = weaponSkill;
         modelToReturn.attacks=  attacks;
 
         modelToReturn.active = active;
 
         modelToReturn.listOfAbilites = new ArrayList<>(listOfAbilites);
 
-        ArrayList<RangedWeapon> newList = new ArrayList<>();
+        ArrayList<Weapon> newList = new ArrayList<>();
 
-        for(RangedWeapon weapon : listOfRangedWeapons)
+        for(Weapon weapon : listOfRangedWeapons)
         {
             newList.add(weapon.Copy());
         }
@@ -109,8 +99,8 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
 
     }
 
-    public Model(String name, int toughness, int strength, int armorSave, int invulnerableSave, int wounds, int ballisticSkill, int weaponSkill, int attacks,
-                 ArrayList<Ability> listOfAbilites,ArrayList<RangedWeapon> listOfRangedWeapons, ArrayList<MeleeWeapons> listOfMeleeWeapons)
+    public Model(String name, int toughness, int strength, int armorSave, int invulnerableSave, int wounds, int attacks,
+                 ArrayList<Ability> listOfAbilites, ArrayList<Weapon> listOfRangedWeapons, ArrayList<MeleeWeapons> listOfMeleeWeapons)
     {
         this.name = name;
         this.toughness = toughness;
@@ -118,8 +108,6 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
         this.armorSave = armorSave;
         this.invulnerableSave = invulnerableSave;
         this.wounds = wounds;
-        this.ballisticSkill = ballisticSkill;
-        this.weaponSkill = weaponSkill;
         this.attacks = attacks;
 
         this.listOfAbilites = listOfAbilites;
@@ -134,14 +122,6 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
         int valueToReturn = 0;
         switch (whatToChange)
         {
-            case WeaponSkill:
-                weaponSkill += amount;
-                valueToReturn = weaponSkill;
-                break;
-            case BallisticSkill:
-                ballisticSkill += amount;
-                valueToReturn = ballisticSkill;
-                break;
             case Strength:
                 strength += amount;
                 valueToReturn = strength;
@@ -176,12 +156,6 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
         int valueToReturn = 0;
         switch (mod)
         {
-            case WeaponSkill:
-                valueToReturn = weaponSkill;
-                break;
-            case BallisticSkill:
-                valueToReturn = ballisticSkill;
-                break;
             case Strength:
                 valueToReturn = strength;
                 break;
@@ -208,12 +182,6 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
     public void SetModifierValue(CompareActivity.UnitAndModelSkill mod, int amount) {
         switch (mod)
         {
-            case WeaponSkill:
-                weaponSkill = amount;
-                break;
-            case BallisticSkill:
-                 ballisticSkill = amount;
-                break;
             case Strength:
                 strength = amount;
                 break;

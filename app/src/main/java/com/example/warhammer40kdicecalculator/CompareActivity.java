@@ -12,9 +12,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
-import android.text.Layout;
 import android.util.Log;
-import android.util.Range;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,8 +32,8 @@ import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.DeactivatableInterface;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
-import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedAttackAmount;
-import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedWeapon;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.AttackAmount;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.Weapon;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
 import com.example.warhammer40kdicecalculator.Identifiers.ArmyIdentifier;
 import com.example.warhammer40kdicecalculator.Identifiers.Identifier;
@@ -465,14 +463,12 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
     {
         TableRow tableRow = (TableRow)highestConstraint.findViewWithTag(uiId);
 
-        ((TextView) (tableRow.getChildAt(0))).setText("" + modifierHolder.GetModifierValue(UnitAndModelSkill.WeaponSkill));
-        ((TextView) (tableRow.getChildAt(1))).setText("" + modifierHolder.GetModifierValue(UnitAndModelSkill.BallisticSkill));
-        ((TextView) (tableRow.getChildAt(2))).setText("" + modifierHolder.GetModifierValue(UnitAndModelSkill.Strength));
-        ((TextView) (tableRow.getChildAt(3))).setText("" + modifierHolder.GetModifierValue(UnitAndModelSkill.Toughness));
-        ((TextView) (tableRow.getChildAt(4))).setText("" + modifierHolder.GetModifierValue(UnitAndModelSkill.Wounds));
-        ((TextView) (tableRow.getChildAt(5))).setText("" + modifierHolder.GetModifierValue(UnitAndModelSkill.Attacks));
-        ((TextView) (tableRow.getChildAt(6))).setText("" + modifierHolder.GetModifierValue(UnitAndModelSkill.ArmorSaves));
-        ((TextView) (tableRow.getChildAt(7))).setText("" + modifierHolder.GetModifierValue(UnitAndModelSkill.InvulnerableSaves));
+        ((TextView) (tableRow.getChildAt(0))).setText("" + modifierHolder.GetModifierValue(UnitAndModelSkill.Strength));
+        ((TextView) (tableRow.getChildAt(1))).setText("" + modifierHolder.GetModifierValue(UnitAndModelSkill.Toughness));
+        ((TextView) (tableRow.getChildAt(2))).setText("" + modifierHolder.GetModifierValue(UnitAndModelSkill.Wounds));
+        ((TextView) (tableRow.getChildAt(3))).setText("" + modifierHolder.GetModifierValue(UnitAndModelSkill.Attacks));
+        ((TextView) (tableRow.getChildAt(4))).setText("" + modifierHolder.GetModifierValue(UnitAndModelSkill.ArmorSaves));
+        ((TextView) (tableRow.getChildAt(5))).setText("" + modifierHolder.GetModifierValue(UnitAndModelSkill.InvulnerableSaves));
     }
 
 
@@ -834,9 +830,9 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
                 else aP = Integer.parseInt(weaponAddAP.getText().toString());
 
                 DamageAmount dA = new DamageAmount(damage,damageD3,damageD6);
-                RangedAttackAmount rAA = new RangedAttackAmount(amount,amountD3,amountD6);
+                AttackAmount rAA = new AttackAmount(amount,amountD3,amountD6);
 
-                RangedWeapon weapon = new RangedWeapon(strength, aP, dA, rAA );
+                Weapon weapon = new Weapon(strength, aP, dA, rAA );
                 weapon.name = name;
 
                 Model modelToAddWeapon = matchup.GetModel(modelId);
@@ -979,7 +975,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
     }
 
-    private void AddWeapon(TableLayout tableLayout, RangedWeapon weapon)
+    private void AddWeapon(TableLayout tableLayout, Weapon weapon)
     {
         TableRow tableRow = new TableRow(context);
 
@@ -1031,10 +1027,10 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
     }
 
-    private String SetWeaponAttacks(RangedWeapon rangedWeapon)
+    private String SetWeaponAttacks(Weapon rangedWeapon)
     {
         String stringToReturn = "";
-        RangedAttackAmount amount = rangedWeapon.amountOfAttacks;
+        AttackAmount amount = rangedWeapon.amountOfAttacks;
 
 
         if(amount.numberOfD6 != 0)
@@ -1054,7 +1050,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
         return stringToReturn;
     }
-    private String SetWeaponDamage(RangedWeapon rangedWeapon)
+    private String SetWeaponDamage(Weapon rangedWeapon)
     {
         String stringToReturn = "";
         DamageAmount amount = rangedWeapon.damageAmount;
@@ -1202,8 +1198,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
             popupActive = true;
             ((Button)highestConstraint.findViewById(R.id.SaveModelPopup)).setOnClickListener(new OnClickListenerModelSave(modifierHolder, uiId));
 
-            weaponSkillView.setText(""+ modifierHolder.GetModifierValue(UnitAndModelSkill.WeaponSkill));
-            ballisticSkillView.setText(""+ modifierHolder.GetModifierValue(UnitAndModelSkill.BallisticSkill));
+
             strengthView.setText(""+ modifierHolder.GetModifierValue(UnitAndModelSkill.Strength));
             toughnessView.setText(""+ modifierHolder.GetModifierValue(UnitAndModelSkill.Toughness));
             woundsView.setText(""+ modifierHolder.GetModifierValue(UnitAndModelSkill.Wounds));
@@ -1211,10 +1206,6 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
             armorSaveView.setText(""+ modifierHolder.GetModifierValue(UnitAndModelSkill.ArmorSaves));
             InvSaveView.setText(""+ modifierHolder.GetModifierValue(UnitAndModelSkill.InvulnerableSaves));
 
-            weaponSkillIncrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, weaponSkillView,UnitAndModelSkill.WeaponSkill,true));
-            weaponSkillDecrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, weaponSkillView,UnitAndModelSkill.WeaponSkill,false));
-            ballisticSkillIncrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, ballisticSkillView,UnitAndModelSkill.BallisticSkill,true));
-            ballisticSkillDecrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, ballisticSkillView,UnitAndModelSkill.BallisticSkill,false));
             strengthIncrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, strengthView,UnitAndModelSkill.Strength,true));
             strengthDecrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, strengthView,UnitAndModelSkill.Strength,false));
             toughnessIncrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, toughnessView,UnitAndModelSkill.Toughness,true));
@@ -1231,9 +1222,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
     }
 
     public enum UnitAndModelSkill
-    {
-        WeaponSkill,
-        BallisticSkill,
+    {   HitSkill,
         Strength,
         Toughness,
         Wounds,
@@ -1278,8 +1267,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         @Override
         public void onClick(View view)
         {
-            modifierHolder.SetModifierValue(UnitAndModelSkill.WeaponSkill, Integer.parseInt(weaponSkillView.getText().toString()));
-            modifierHolder.SetModifierValue(UnitAndModelSkill.BallisticSkill, Integer.parseInt(ballisticSkillView.getText().toString()));
+
             modifierHolder.SetModifierValue(UnitAndModelSkill.Strength, Integer.parseInt(strengthView.getText().toString()));
             modifierHolder.SetModifierValue(UnitAndModelSkill.Toughness, Integer.parseInt(toughnessView.getText().toString()));
             modifierHolder.SetModifierValue(UnitAndModelSkill.Wounds, Integer.parseInt(woundsView.getText().toString()));

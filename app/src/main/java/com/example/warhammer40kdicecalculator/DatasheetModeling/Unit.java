@@ -1,7 +1,5 @@
 package com.example.warhammer40kdicecalculator.DatasheetModeling;
 
-import android.widget.EditText;
-
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.CompareActivity;
 import com.example.warhammer40kdicecalculator.ModifierHolder;
@@ -20,8 +18,7 @@ public class Unit implements AbilityHolder, ModifierHolder {
     public int armorSaveModifier;
     public int invulnerableSaveModifier;
     public int woundsModifier;
-    public int ballisticSkillModifier;
-    public int weaponSkillModifier;
+    public int hitSkill;
     public int attacksModifier;
 
     public ArrayList<Model> listOfModels = new ArrayList<>();
@@ -47,8 +44,7 @@ public class Unit implements AbilityHolder, ModifierHolder {
         tempUnit.armorSaveModifier = armorSaveModifier;
         tempUnit.invulnerableSaveModifier = invulnerableSaveModifier;
         tempUnit.woundsModifier = woundsModifier;
-        tempUnit.ballisticSkillModifier = ballisticSkillModifier;
-        tempUnit.weaponSkillModifier = weaponSkillModifier;
+        tempUnit.hitSkill = hitSkill;
         tempUnit.attacksModifier = attacksModifier;
 
 
@@ -66,8 +62,8 @@ public class Unit implements AbilityHolder, ModifierHolder {
 
         listOfAbilitys = new ArrayList<>(other.listOfAbilitys);
     }
-    public  Unit(String  unitName,int pointCost,int toughnessModifier, int strengthModifier, int armorSaveModifier,int invulnerableSaveModifier,int woundsModifier, int ballisticSkillModifier, int weaponSkillModifier,
-                 int attacksModifier, ArrayList<Model> listOfModels,ArrayList<Ability> listOfAbilitys  )
+    public  Unit(String unitName, int pointCost, int toughnessModifier, int strengthModifier, int armorSaveModifier, int invulnerableSaveModifier, int woundsModifier, int hitSkill,
+                 int attacksModifier, ArrayList<Model> listOfModels, ArrayList<Ability> listOfAbilitys)
     {
         this.unitName = unitName;
         this.pointCost = pointCost;
@@ -76,9 +72,8 @@ public class Unit implements AbilityHolder, ModifierHolder {
         this.armorSaveModifier = armorSaveModifier;
         this.invulnerableSaveModifier = invulnerableSaveModifier;
         this.woundsModifier = woundsModifier;
-        this.ballisticSkillModifier = ballisticSkillModifier;
-        this.weaponSkillModifier = weaponSkillModifier;
-        this.attacksModifier = weaponSkillModifier;
+        this.hitSkill = hitSkill;
+        this.attacksModifier = attacksModifier;
 
         this.listOfModels = listOfModels;
 
@@ -90,13 +85,9 @@ public class Unit implements AbilityHolder, ModifierHolder {
         int valueToReturn = 0;
         switch (whatToChange)
         {
-            case WeaponSkill:
-                weaponSkillModifier += amount;
-                valueToReturn = weaponSkillModifier;
-                break;
-            case BallisticSkill:
-                ballisticSkillModifier += amount;
-                valueToReturn = ballisticSkillModifier;
+            case HitSkill:
+                hitSkill += amount;
+                valueToReturn = hitSkill;
                 break;
             case Strength:
                 strengthModifier += amount;
@@ -131,11 +122,9 @@ public class Unit implements AbilityHolder, ModifierHolder {
         int valueToReturn = 0;
         switch (mod)
         {
-            case WeaponSkill:
-                valueToReturn = weaponSkillModifier;
-                break;
-            case BallisticSkill:
-                valueToReturn = ballisticSkillModifier;
+
+            case HitSkill:
+                valueToReturn = hitSkill;
                 break;
             case Strength:
                 valueToReturn = strengthModifier;
@@ -163,11 +152,8 @@ public class Unit implements AbilityHolder, ModifierHolder {
     public void SetModifierValue(CompareActivity.UnitAndModelSkill mod, int amount) {
         switch (mod)
         {
-            case WeaponSkill:
-                weaponSkillModifier = amount;
-                break;
-            case BallisticSkill:
-                ballisticSkillModifier = amount;
+            case HitSkill:
+                hitSkill = amount;
                 break;
             case Strength:
                 strengthModifier = amount;

@@ -36,8 +36,8 @@ import com.example.warhammer40kdicecalculator.Abilities.ReRollWoundRoll;
 import com.example.warhammer40kdicecalculator.Abilities.TransHuman4;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
-import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedAttackAmount;
-import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedWeapon;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.AttackAmount;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.Weapon;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
 import com.example.warhammer40kdicecalculator.Identifiers.Identifier;
 import     com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
@@ -294,151 +294,6 @@ public class  MainActivity extends AppCompatActivity {
 
     }
 
-    public void printTest(View v)
-    {
-        Log.d("aboo", "printTest: ");
-        TestLasaCsv readCsvTest = new TestLasaCsv(context);
-       // readCsvTest.testReadFile();
-        ArrayList<ArrayList<String>> dataSheetData = readCsvTest.ReadCsvFile("Datasheets.csv");
-        Log.d("Csv tester", "" + dataSheetData.get(5).get(1));
-
-        RollingLogic hej = new RollingLogic();
-        getAssets();
-        hej.TestOmFungerar();
-        DataSheet conscript = new DataSheet(5,3,90,1,1,0,3,5,-1);
-        DataSheet spaceMarine = new DataSheet(3,4,1,2,1,1,4,3,-1);
-    //    conscript.hammerOfEmperor = true;
-    //     hej.CalculateDamage(conscript,spaceMarine);
-
-        RangedWeapon lasgun = new RangedWeapon(3,0,new DamageAmount(1,0,0),new RangedAttackAmount(1,0,0));
-
-        Unit conscripts = new Unit();
-        lasgun.ap = 0;
-        Model guardsman = new Model();
-        guardsman.ballisticSkill = 5;
-        guardsman.listOfRangedWeapons.add(lasgun);
-
-        conscripts.listOfAbilitys.add(new HammerOfTheEmperor());
-
-        for(int i = 0; i < 100; i++)
-        {
-            conscripts.listOfModels.add(new Model(guardsman));
-        }
-
-
-        Unit spaceMarineIntercessorUnit = new Unit();
-        Model intercessor = new Model();
-        intercessor.wounds = 2;
-        intercessor.armorSave = 3;
-        intercessor.toughness = 4;
-
-        for(int i =0; i <10; i ++)
-        {
-            spaceMarineIntercessorUnit.listOfModels.add(new Model(intercessor));
-        }
-
-        Unit LemanRuss = new Unit();
-        Model lemanRussTurret = new Model();
-        LemanRuss.listOfModels.add(lemanRussTurret);
-
-        LemanRuss.listOfAbilitys.add(new HammerOfTheEmperor());
-
-        lemanRussTurret.ballisticSkill = 4;
-
-        RangedWeapon demolisherCannon = new RangedWeapon(10,-3, new DamageAmount(0,0,1),new RangedAttackAmount(0,0,1));
-
-        lemanRussTurret.listOfRangedWeapons.add(demolisherCannon);
-        lemanRussTurret.listOfRangedWeapons.add(demolisherCannon);
-        Unit manticore = new Unit();
-        Model manticoreHunterKillerMissile = new Model();
-        manticoreHunterKillerMissile.ballisticSkill = 4;
-        RangedWeapon hunterKillerMissile = new RangedWeapon(10,-2,new DamageAmount(3,0,0),new RangedAttackAmount(0,0,2));
-        manticoreHunterKillerMissile.listOfRangedWeapons.add(hunterKillerMissile);
-        manticore.listOfModels.add(manticoreHunterKillerMissile);
-
-        manticore.listOfAbilitys.add(new HammerOfTheEmperor());
-        manticoreHunterKillerMissile.listOfAbilites.add(new HammerOfTheEmperor());
-      //  hej.newCalculateDamage(conscripts,spaceMarineIntercessorUnit);
-        manticore.listOfAbilitys.add(new ReRollAmountOfHits());
-      //  manticoreHunterKillerMissile.listOfAbilites.add(new ReRollAmountOfHits());
-        lemanRussTurret.listOfAbilites.add(new HammerOfTheEmperor());
-        lemanRussTurret.listOfAbilites.add(new ReRollAmountOfHits());
-
-
-        ArrayList<Unit> listToCompare = new ArrayList<>();
-
-        listToCompare.add(manticore);
-   //     manticoreHunterKillerMissile.listOfAbilites.add(new HammerOfTheEmperor());
-       // hej.newCalculateDamage(listToCompare,spaceMarineIntercessorUnit,);
-
-    }
-
-    public void TestDiceRolling(View v)
-    {
-        ArrayList<Ability> lasgunRules = new ArrayList<Ability>();
-
-        RangedWeapon lasgun = new RangedWeapon("Lasgun",3,0,new DamageAmount(1,0,0),new RangedAttackAmount(1,0,0),lasgunRules);
-        ArrayList<RangedWeapon> weaponsGuard = new ArrayList<>();
-        weaponsGuard.add(lasgun);
-
-        lasgunRules.add(new HammerOfTheEmperor());
-
-        Model guardMan = new Model("Guardsman", 3, 3, 5, 0, 1, 4, 4, 1,
-        new ArrayList<>(),weaponsGuard , new ArrayList<>() );
-
-        ArrayList<Ability> abilityGuardsmenUnit = new ArrayList<>();
-     //   abilityGuardsmenUnit.add(new HammerOfTheEmperor());
-
-        Unit guardsmen5 = new Unit(  "Guardsmen 5",65,0, 0, 0,0,0, 0, 0,
-        0, new ArrayList<Model>(),abilityGuardsmenUnit  );
-        for(int i = 0; i < 5; i++)
-        {
-            guardsmen5.listOfModels.add(guardMan);
-        }
-        ArrayList<Unit> attackingUnits = new ArrayList<>();
-        attackingUnits.add(guardsmen5);
-        attackingUnits.add(guardsmen5);
-
-
-        ArrayList<Ability> armyAbilities = new ArrayList<>();
-        armyAbilities.add(new ReRollOnes());
-
-        Army armyAttacker = new Army("attacking army ", attackingUnits,armyAbilities);
-        armyAttacker.ballisticSkillModifier = 0;
-
-        ArrayList<Ability> bolterRules = new ArrayList<Ability>();
-
-        RangedWeapon bolter = new RangedWeapon("Bolter",4,0,new DamageAmount(1,0,0),new RangedAttackAmount(2,0,0),bolterRules);
-        ArrayList<RangedWeapon> weaponsMarines = new ArrayList<>();
-        weaponsMarines.add(bolter);
-
-        Model spaceMarine = new Model("Space marine", 4, 4, 3, 0, 2, 3, 3, 2,
-                new ArrayList<>(),weaponsMarines , new ArrayList<>() );
-
-        ArrayList<Ability> abilitiesSpaceMarine = new ArrayList<>();
-
-        Unit spaceMarine10 = new Unit(  "spaceMarine10",200,0, 0, 0,0,0, 0, 0,
-                0, new ArrayList<>(),abilitiesSpaceMarine  );
-        for(int i = 0; i < 5; i++)
-        {
-            spaceMarine10.listOfModels.add(spaceMarine);
-        }
-        ArrayList<Unit> defendingUnits = new ArrayList<>();
-        defendingUnits.add(spaceMarine10);
-        ArrayList<Ability> armyAbilitiesDefender = new ArrayList<>();
-        Army defendingArmy = new Army("defending army  ", defendingUnits,armyAbilitiesDefender);
-
-        com.example.warhammer40kdicecalculator.
-
-        RollingLogic hej = new RollingLogic();
-
-        hej.newCalculateDamage(attackingUnits,spaceMarine10,armyAttacker,defendingArmy, new Conditions());
-
-
-
-
-    }
-
 
     public void OpenSavedMatchups(View v)
     {
@@ -461,101 +316,10 @@ public class  MainActivity extends AppCompatActivity {
     }
 
 
-
-    public void CreateNewMatchup(View v)
-    {
-
-        ArrayList<Ability> listOfAbilities = new ArrayList<Ability>();
-        listOfAbilities.add(new ReRollOnes());
-
-        ArrayList<Model> listOfModels = new ArrayList<>();
-
-        ArrayList<RangedWeapon> bolters = new ArrayList<>();
-
-        RangedWeapon bolter = new RangedWeapon("Bolter",4,0,new DamageAmount(1,0,0), new RangedAttackAmount(2,0,0),listOfAbilities);
-
-        bolters.add(bolter);
-        bolters.add(bolter);
-
-        ArrayList<MeleeWeapons> meleeWeapons = new ArrayList<>();
-        meleeWeapons.add(new MeleeWeapons());
-        ArrayList<Ability> intercessorAbility = new ArrayList<>();
-        intercessorAbility.add(new ReRollOnes());
-        Model intercessor = new Model("Intercessor",4,4,4,0,2,3,3,2,intercessorAbility,bolters,meleeWeapons);
-        intercessor.listOfAbilites.add(new ReRollAmountOfHits());
-        listOfModels.add(intercessor);
-        listOfModels.add(intercessor);
-        listOfModels.add(intercessor);
-        listOfModels.add(intercessor);
-        listOfModels.add(intercessor);
-        listOfModels.add(intercessor);
-        listOfModels.add(intercessor);
-        listOfModels.add(intercessor);
-        listOfModels.add(intercessor);
-        listOfModels.add(intercessor);
-
-        Unit blackTemplar = new Unit("Ny Blacktemplar",100,0,0,0,0,0,0,0,0,listOfModels,listOfAbilities);
-
-
-        ArrayList<Ability> guardsmanAbilities = new ArrayList<>();
-        guardsmanAbilities.add(new HammerOfTheEmperor());
-        Model guardsman = new Model("Guardsman",3,3,5,0,1,4,4,1,guardsmanAbilities,bolters,meleeWeapons);
-
-        ArrayList<Model> guardsmen = new ArrayList<>();
-
-        guardsmen.add(guardsman);
-        guardsmen.add(guardsman);
-        guardsmen.add(guardsman);
-        guardsmen.add(guardsman);
-        guardsmen.add(guardsman);
-        guardsmen.add(guardsman);
-        guardsmen.add(guardsman);
-        guardsmen.add(guardsman);
-        guardsmen.add(guardsman);
-        guardsmen.add(guardsman);
-
-        ArrayList<Ability> abilitiesGuard = new ArrayList<>();
-
-        abilitiesGuard.add(new HammerOfTheEmperor());
-       // abilitiesGuard.add(new HammerOfTheEmperor());
-
-
-
-        Unit infantrySquad = new Unit("Cadian infantry squad",50,0,0,0,0,0,0,0,0,guardsmen,abilitiesGuard);
-
-
-        ArrayList<Unit> listOfFriendlyUnits = new ArrayList<>();
-
-        listOfFriendlyUnits.add(blackTemplar);
-        listOfFriendlyUnits.add(infantrySquad);
-        listOfFriendlyUnits.add(blackTemplar);
-
-        ArrayList<Unit> listOfEnemyUnits = new ArrayList<>();
-
-        listOfEnemyUnits.add(infantrySquad);
-        listOfEnemyUnits.add(blackTemplar);
-        listOfEnemyUnits.add(infantrySquad);
-
-        Army friendlyArmy = new Army("Min arme",0,0,0,0,0,0,0,0,listOfFriendlyUnits,listOfAbilities);
-        Army enemyArmy = new Army("Min arme",0,0,0,0,0,0,0,0,listOfEnemyUnits,listOfAbilities);
-
-        Matchup matchup = new Matchup("Matchu fran ny",friendlyArmy,enemyArmy);
-
-
-        FileHandler handler = new FileHandler(context);
-
-        handler.saveMatchup(matchup);
-        //(matchup);
-
-
-
-
-    }
-
     public class AbilitySearchPopup implements View.OnClickListener
     {
         private Identifier identifier;
-        public AbilitySearchPopup(RangedWeapon weapon)
+        public AbilitySearchPopup(Weapon weapon)
         {
             this.identifier = identifier;
         }
@@ -630,7 +394,7 @@ public class  MainActivity extends AppCompatActivity {
         private Army army;
         private Unit unit;
         private Model model;
-        private RangedWeapon weapon;
+        private Weapon weapon;
         private ViewGroup baseView;
         private Matchup matchup;
         private Context context;
@@ -654,9 +418,9 @@ public class  MainActivity extends AppCompatActivity {
             {
                 unit = (Unit) abilityHolder;
             }
-            if(abilityHolder instanceof RangedWeapon)
+            if(abilityHolder instanceof Weapon)
             {
-                weapon = (RangedWeapon) abilityHolder;
+                weapon = (Weapon) abilityHolder;
             }
         }
 

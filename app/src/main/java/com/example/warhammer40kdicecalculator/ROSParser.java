@@ -1,14 +1,12 @@
 package com.example.warhammer40kdicecalculator;
-import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
-import com.example.warhammer40kdicecalculator.Abilities.AbilityStub;
 import com.example.warhammer40kdicecalculator.Abilities.Dakka;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
-import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedAttackAmount;
-import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedWeapon;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.AttackAmount;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.Weapon;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
 
 import org.w3c.dom.*;
@@ -20,7 +18,6 @@ import javax.xml.xpath.XPathFactory;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ROSParser
 {
@@ -178,11 +175,11 @@ public class ROSParser
         }
         return(ReturnValue);
     }
-    void p_ParseWeaponType(RangedWeapon ResultWeapon,String TypeString)
+    void p_ParseWeaponType(Weapon ResultWeapon, String TypeString)
     {
         if(TypeString.equals("Melee"))
         {
-            ResultWeapon.IsMelee = true;
+            ResultWeapon.isMelee = true;
             ResultWeapon.amountOfAttacks.rawNumberOfAttacks = 1;
             return;
         }
@@ -213,12 +210,12 @@ public class ROSParser
                 ResultWeapon.weaponRules.add(Ability.getAbilityType(TypeString.substring(0, ParseOffset)));
             }
         }
-        ResultWeapon.amountOfAttacks =new RangedAttackAmount(p_DamageFromString(DamageString));
+        ResultWeapon.amountOfAttacks =new AttackAmount(p_DamageFromString(DamageString));
     }
-    RangedWeapon p_ParseWeapon(Node ProfileNode)
+    Weapon p_ParseWeapon(Node ProfileNode)
     {
         Node CharacteristicNode = p_FirsChildByType(ProfileNode,"characteristics");
-        RangedWeapon NewWeapon = new RangedWeapon();
+        Weapon NewWeapon = new Weapon();
         NewWeapon.name =ProfileNode.getAttributes().getNamedItem("name").getNodeValue();
 
         p_ParseWeaponType(NewWeapon,CharacteristicNode.getChildNodes().item(1).getTextContent());
@@ -273,8 +270,6 @@ public class ROSParser
         {
             Node Characteristics = p_FirsChildByType(ProfileNode,"characteristics");
             String FirstChildValue = Characteristics.getChildNodes().item(0).getTextContent();
-            ModelToModify.weaponSkill =  p_ParseUnitStat(Characteristics.getChildNodes().item(1).getTextContent());
-            ModelToModify.ballisticSkill = p_ParseUnitStat(Characteristics.getChildNodes().item(2).getTextContent());
             ModelToModify.strength = p_ParseUnitStat(Characteristics.getChildNodes().item(3).getTextContent());
             ModelToModify.toughness = p_ParseUnitStat(Characteristics.getChildNodes().item(4).getTextContent());
             ModelToModify.wounds = p_ParseUnitStat(Characteristics.getChildNodes().item(5).getTextContent());
@@ -372,7 +367,6 @@ public class ROSParser
                         {
                             //we are dealing with the alternative stats for a unit
                             Node FirstCharacterStats = p_FirsChildByType(p_FirsChildByType(ProfilesNode,"profile"),"characteristics");
-                            BaseModel.ballisticSkill = p_ParseUnitStat(FirstCharacterStats.getChildNodes().item(2).getTextContent());
                             BaseModel.attacks = p_ParseUnitStat(FirstCharacterStats.getChildNodes().item(3).getTextContent());
                             continue;
                         }
@@ -391,7 +385,7 @@ public class ROSParser
                             Ability NewAbility = Ability.getAbilityType(AbilityName);
                             continue;
                         }
-                        RangedWeapon NewWeapon = p_ParseWeapon(CurrentProfile);
+                        Weapon NewWeapon = p_ParseWeapon(CurrentProfile);
                         int WeaponAmount = Integer.parseInt(CurrentSelection.getAttributes().getNamedItem("number").getNodeValue())/ModelCount;
                         for(int k = 0; k < WeaponAmount;k++)
                         {

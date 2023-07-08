@@ -42,6 +42,56 @@
                     android:layout_height="match_parent">
 
                     <TextView
+                        android:id="@+id/textView23"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Hit Skill"
+                        android:textSize="18sp" />
+
+                    <EditText
+                        android:id="@+id/HitSkillPopup"
+                        android:layout_width="50dp"
+                        android:layout_height="48dp"
+                        android:digits="1234567890"
+                        android:ems="10"
+                        android:inputType="number"
+                        android:maxLength="2"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textSize="18sp" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/textView14"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Attacks Amount"
+                        android:textSize="18sp" />
+
+                    <EditText
+                        android:id="@+id/AttacksRawAmountWeaponPopup"
+                        android:layout_width="50dp"
+                        android:layout_height="48dp"
+                        android:digits="1234567890"
+                        android:ems="10"
+                        android:inputType="number"
+                        android:maxLength="2"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textSize="18sp" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
                         android:id="@+id/textView10"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -92,14 +142,14 @@
                     android:layout_height="match_parent">
 
                     <TextView
-                        android:id="@+id/textView14"
+                        android:id="@+id/textView277"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Attacks Amount"
+                        android:text="Damage"
                         android:textSize="18sp" />
 
                     <EditText
-                        android:id="@+id/AttacksRawAmountWeaponPopup"
+                        android:id="@+id/RawDamagePopup"
                         android:layout_width="50dp"
                         android:layout_height="48dp"
                         android:digits="1234567890"
@@ -167,31 +217,6 @@
                     android:layout_height="match_parent">
 
                     <TextView
-                        android:id="@+id/textView277"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Damage"
-                        android:textSize="18sp" />
-
-                    <EditText
-                        android:id="@+id/RawDamagePopup"
-                        android:layout_width="50dp"
-                        android:layout_height="48dp"
-                        android:digits="1234567890"
-                        android:ems="10"
-                        android:inputType="number"
-                        android:maxLength="2"
-                        android:text="0"
-                        android:textAlignment="center"
-                        android:textSize="18sp" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
                         android:id="@+id/textView20"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -214,7 +239,7 @@
 
                 <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="match_parent">
 
                     <TextView
                         android:id="@+id/textView21"
@@ -234,6 +259,24 @@
                         android:text="0"
                         android:textAlignment="center"
                         android:textSize="18sp" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/textView22"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Melee"
+                        android:textSize="18sp" />
+
+                    <CheckBox
+                        android:id="@+id/MeleePopupCheck"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
 
                 </TableRow>
 

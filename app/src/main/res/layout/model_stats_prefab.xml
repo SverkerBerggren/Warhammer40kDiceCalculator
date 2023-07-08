@@ -43,7 +43,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:tag="ConstraintLayoutModel"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/inividualModelTopButton">
 
@@ -64,22 +64,6 @@
                 android:layout_height="match_parent"
                 android:background="#B4B2B5"
                 android:textAlignment="center">
-
-                <TextView
-                    android:id="@+id/WeaponSkillRow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="WS"
-                    android:textAlignment="center"
-                    android:textSize="10sp" />
-
-                <TextView
-                    android:id="@+id/BallisticSkillRow"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="BS"
-                    android:textAlignment="center"
-                    android:textSize="10sp" />
 
                 <TextView
                     android:id="@+id/StrengthRow"
@@ -137,22 +121,6 @@
                 android:layout_height="match_parent"
                 android:background="#DFDADA"
                 android:tag="TableModelStatsIndicator">
-
-                <TextView
-                    android:id="@+id/WeaponSkillStatIndicator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textSize="10sp" />
-
-                <TextView
-                    android:id="@+id/BallisticSkillStatIndicator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textSize="10sp" />
 
                 <TextView
                     android:id="@+id/StrengthStatIndicator"
@@ -241,10 +209,26 @@
                     android:textSize="10sp" />
 
                 <TextView
+                    android:id="@+id/rangeType"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Range type"
+                    android:textAlignment="center"
+                    android:textSize="10sp" />
+
+                <TextView
                     android:id="@+id/AttacksWeapon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Attacks"
+                    android:textAlignment="center"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/HitSkill"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hit skill"
                     android:textAlignment="center"
                     android:textSize="10sp" />
 

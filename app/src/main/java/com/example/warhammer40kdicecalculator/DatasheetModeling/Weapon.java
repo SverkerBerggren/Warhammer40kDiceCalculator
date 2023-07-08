@@ -2,21 +2,21 @@ package com.example.warhammer40kdicecalculator.DatasheetModeling;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.DamageAmount;
-import com.example.warhammer40kdicecalculator.R;
 
 import java.util.ArrayList;
 
-public class RangedWeapon implements AbilityHolder, DeactivatableInterface {
+public class Weapon implements AbilityHolder, DeactivatableInterface {
     public String name;
     public DamageAmount damageAmount;
+    public int ballisticSkill;
     public int ap;
     public int strength;
-    public boolean IsMelee = false;
+    public boolean isMelee = false;
     public boolean active = true;
-    public RangedAttackAmount amountOfAttacks = new RangedAttackAmount();
+    public AttackAmount amountOfAttacks = new AttackAmount();
     public ArrayList<Ability> weaponRules = new ArrayList<>();
 
-    public RangedWeapon()
+    public Weapon()
     {
 
     }
@@ -32,23 +32,23 @@ public class RangedWeapon implements AbilityHolder, DeactivatableInterface {
         return weaponRules.remove(ability);
     }
 
-    public RangedWeapon(int strength, int ap, DamageAmount damageAmount, RangedAttackAmount amountOfAttacks)
+    public Weapon(int strength, int ap, DamageAmount damageAmount, AttackAmount amountOfAttacks)
     {
         this.damageAmount = damageAmount;
         this.strength = strength;
         this.ap = ap;
-        this.amountOfAttacks = new RangedAttackAmount(amountOfAttacks) ;
+        this.amountOfAttacks = new AttackAmount(amountOfAttacks) ;
     }
 
 
-    public RangedWeapon Copy( )
+    public Weapon Copy( )
     {
-        RangedWeapon weaponToReturn = new RangedWeapon();
+        Weapon weaponToReturn = new Weapon();
         weaponToReturn.name = name;
         weaponToReturn.damageAmount = damageAmount.Copy();
         weaponToReturn.ap = ap;
         weaponToReturn.strength = strength;
-        weaponToReturn.IsMelee = IsMelee;
+        weaponToReturn.isMelee = isMelee;
         weaponToReturn.active = active;
         weaponToReturn.amountOfAttacks = amountOfAttacks.Copy();
 
@@ -58,23 +58,23 @@ public class RangedWeapon implements AbilityHolder, DeactivatableInterface {
     }
 
 
-    public RangedWeapon(int strength, int ap, DamageAmount damageAmount, RangedAttackAmount amountOfAttacks, ArrayList<Ability> weaponRules)
+    public Weapon(int strength, int ap, DamageAmount damageAmount, AttackAmount amountOfAttacks, ArrayList<Ability> weaponRules)
     {
         this.damageAmount = damageAmount;
         this.strength = strength;
         this.ap = ap;
-        this.amountOfAttacks = new RangedAttackAmount(amountOfAttacks) ;
+        this.amountOfAttacks = new AttackAmount(amountOfAttacks) ;
         this.weaponRules = weaponRules;
     }
 
 
-    public RangedWeapon(String name, int strength, int ap, DamageAmount damageAmount, RangedAttackAmount amountOfAttacks, ArrayList<Ability> weaponRules)
+    public Weapon(String name, int strength, int ap, DamageAmount damageAmount, AttackAmount amountOfAttacks, ArrayList<Ability> weaponRules)
     {
         this.name = name;
         this.damageAmount = damageAmount;
         this.strength = strength;
         this.ap = ap;
-        this.amountOfAttacks = new RangedAttackAmount(amountOfAttacks) ;
+        this.amountOfAttacks = new AttackAmount(amountOfAttacks) ;
         this.weaponRules = weaponRules;
     }
 

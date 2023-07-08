@@ -24,7 +24,7 @@ import android.widget.TableRow;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
-import com.example.warhammer40kdicecalculator.DatasheetModeling.RangedWeapon;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.Weapon;
 import com.example.warhammer40kdicecalculator.Identifiers.ModelIdentifier;
 
 import java.util.ArrayList;
@@ -42,6 +42,8 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
     private EditText damageAmountD6View;
     private EditText strengthView;
     private EditText apView;
+    private EditText hitSkillView;
+    private CheckBox meleeView;
 
     private LinearLayout linearLayout;
 
@@ -77,7 +79,7 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
 
         matchup = fileHandler.getMatchup(matchupName);
 
-        ArrayList<RangedWeapon> weapons = new ArrayList<>();
+        ArrayList<Weapon> weapons = new ArrayList<>();
 
         weapons = matchup.GetModel(modelId).listOfRangedWeapons;
 
@@ -119,16 +121,16 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
 
     @Override
     public void AbilityAdded(Ability ability, AbilityHolder abilityHolder) {
-        PopulateAbilites((RangedWeapon) abilityHolder);
+        PopulateAbilites((Weapon) abilityHolder);
     }
 
     private class OnClickListenerWeapon implements View.OnClickListener {
-        RangedWeapon weapon;
+        Weapon weapon;
 
         Context context;
 
 
-        public OnClickListenerWeapon(RangedWeapon weapon,Context context) {
+        public OnClickListenerWeapon(Weapon weapon, Context context) {
             this.weapon = weapon;
             this.context = context;
         }
@@ -149,6 +151,8 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
                 damageAmountD6View =    ((EditText) findViewById(R.id.DamageAmountD6Popup));
                 strengthView =    ((EditText) findViewById(R.id.StrengthPopup));
                 apView =    ((EditText) findViewById(R.id.ApPopup));
+                hitSkillView = findViewById(R.id.HitSkillPopup);
+                meleeView = findViewById(R.id.MeleePopupCheck);
 
                 linearLayout = ((LinearLayout)findViewById(R.id.LinearLayoutAbilityWeapon) );
 
@@ -170,13 +174,15 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
             damageAmountD6View.setText(""+weapon.damageAmount.d6DamageAmount);
             strengthView.setText(""+weapon.strength);
             apView.setText(""+weapon.ap);
-//
+            hitSkillView.setText(""+weapon.ballisticSkill);
+            meleeView.setChecked(weapon.isMelee);
+
             PopulateAbilites(weapon);
         }
 
     }
 
-    private void PopulateAbilites( RangedWeapon weapon)
+    private void PopulateAbilites( Weapon weapon)
     {   linearLayout.removeAllViews();
         for(Ability ability : weapon.weaponRules)
         {
@@ -192,9 +198,9 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
     private class OnClickListenerSaveWeapon implements View.OnClickListener
     {
 
-        private RangedWeapon weapon;
+        private Weapon weapon;
 
-        public OnClickListenerSaveWeapon(RangedWeapon weapon)
+        public OnClickListenerSaveWeapon(Weapon weapon)
         {
             this.weapon = weapon;
         }
@@ -211,7 +217,8 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
             weapon.damageAmount.d6DamageAmount = Integer.parseInt(damageAmountD6View.getText().toString());
             weapon.strength = Integer.parseInt(strengthView.getText().toString());
             weapon.ap = Integer.parseInt(apView.getText().toString());
-
+            weapon.ballisticSkill = Integer.parseInt(hitSkillView.getText().toString());
+            weapon.isMelee = meleeView.isChecked();
 
             fileHandler.saveMatchup(matchup);
 
@@ -286,9 +293,9 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
     }
     private class AbilitySearchPopupWeapon implements View.OnClickListener
     {
-        private RangedWeapon weapon;
+        private Weapon weapon;
         private Context context;
-        public AbilitySearchPopupWeapon(RangedWeapon weapon, Context context)
+        public AbilitySearchPopupWeapon(Weapon weapon, Context context)
         {
             this.weapon = weapon;
             this.context = context;

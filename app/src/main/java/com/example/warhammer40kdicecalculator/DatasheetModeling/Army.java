@@ -2,7 +2,6 @@ package com.example.warhammer40kdicecalculator.DatasheetModeling;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.CompareActivity;
-import com.example.warhammer40kdicecalculator.Identifiers.ModelIdentifier;
 import com.example.warhammer40kdicecalculator.ModifierHolder;
 
 import java.util.ArrayList;
@@ -19,12 +18,11 @@ public class Army implements AbilityHolder, ModifierHolder {
     public int armorSaveModifier = 0;
     public int invulnerableSaveModifier = 0;
     public int woundsModifier = 0;
-    public int ballisticSkillModifier = 0;
-    public int weaponSkillModifier = 0;
+    public int hitSkill = 0;
     public int attacksModifier = 0;
 
-    public  Army( String  name,int toughnessModifier, int strengthModifier, int armorSaveModifier,int invulnerableSaveModifier,int woundsModifier, int ballisticSkillModifier, int weaponSkillModifier,
-                  int attacksModifier, ArrayList<Unit> units,ArrayList<Ability> abilities )
+    public  Army(String name, int toughnessModifier, int strengthModifier, int armorSaveModifier, int invulnerableSaveModifier, int woundsModifier, int hitSkill,
+                 int attacksModifier, ArrayList<Unit> units, ArrayList<Ability> abilities)
     {
         this.name = name;
 
@@ -33,8 +31,7 @@ public class Army implements AbilityHolder, ModifierHolder {
         this.armorSaveModifier = armorSaveModifier;
         this.invulnerableSaveModifier = invulnerableSaveModifier;
         this.woundsModifier = woundsModifier;
-        this.ballisticSkillModifier = ballisticSkillModifier;
-        this.weaponSkillModifier = weaponSkillModifier;
+        this.hitSkill = hitSkill;
         this.attacksModifier = attacksModifier;
 
         this.units = units;
@@ -65,8 +62,7 @@ public class Army implements AbilityHolder, ModifierHolder {
                 ", armorSaveModifier=" + armorSaveModifier +
                 ", invulnerableSaveModifier=" + invulnerableSaveModifier +
                 ", woundsModifier=" + woundsModifier +
-                ", ballisticSkillModifier=" + ballisticSkillModifier +
-                ", weaponSkillModifier=" + weaponSkillModifier +
+                ", ballisticSkillModifier=" + hitSkill +
                 ", attacksModifier=" + attacksModifier +
                 '}';
     }
@@ -76,13 +72,9 @@ public class Army implements AbilityHolder, ModifierHolder {
         int valueToReturn = 0;
         switch (whatToChange)
         {
-            case WeaponSkill:
-                weaponSkillModifier += amount;
-                valueToReturn = weaponSkillModifier;
-                break;
-            case BallisticSkill:
-                ballisticSkillModifier += amount;
-                valueToReturn = ballisticSkillModifier;
+            case HitSkill:
+                hitSkill += amount;
+                valueToReturn = hitSkill;
                 break;
             case Strength:
                 strengthModifier += amount;
@@ -117,11 +109,9 @@ public class Army implements AbilityHolder, ModifierHolder {
         int valueToReturn = 0;
         switch (mod)
         {
-            case WeaponSkill:
-                valueToReturn = weaponSkillModifier;
-                break;
-            case BallisticSkill:
-                valueToReturn = ballisticSkillModifier;
+
+            case HitSkill:
+                valueToReturn = hitSkill;
                 break;
             case Strength:
                 valueToReturn = strengthModifier;
@@ -149,11 +139,8 @@ public class Army implements AbilityHolder, ModifierHolder {
     public void SetModifierValue(CompareActivity.UnitAndModelSkill mod, int amount) {
         switch (mod)
         {
-            case WeaponSkill:
-                weaponSkillModifier = amount;
-                break;
-            case BallisticSkill:
-                ballisticSkillModifier = amount;
+            case HitSkill:
+                hitSkill = amount;
                 break;
             case Strength:
                 strengthModifier = amount;
