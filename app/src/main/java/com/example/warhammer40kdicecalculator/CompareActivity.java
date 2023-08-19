@@ -370,36 +370,68 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         CreateArmyAbilities(armyEnemyId,matchup.enemyArmy);
 
 
-        for(int i = 0; i < matchup.friendlyArmy.units.size();i++)
+        instaniateArmies(FRIENDLY);
+        instaniateArmies(ENEMY);
+
+    //    for(int i = 0; i < matchup.friendlyArmy.units.size();i++)
+    //    {
+    //        UnitIdentifier unitIdentifier = new UnitIdentifier("friendly",null,i,matchup.name);
+    //        verticalLayout = (ViewGroup) inflater.inflate(R.layout.unitviewprefab, ((ViewGroup)findViewById(R.id.VerticalLayoutFriendlyArmy)));
+    //        instaniateUnitButton(verticalLayout.getChildAt(verticalLayout.getChildCount()-1),matchup.friendlyArmy.units.get(i),unitIdentifier);
+    //        CreateUnitAbilites(matchup.friendlyArmy.units.get(i),findViewById(R.id.VerticalLayoutFriendlyArmy),inflater, unitIdentifier);
+//
+    //        TableRow tableRow = (TableRow)findViewById(R.id.TableRowUnitModifiers);
+    //        ImageButton button = (ImageButton)findViewById(R.id.EditUnitModifierButton);
+    //        UIIdentifier uiId = new UIIdentifier(UI_UNIT_MODIFIER_LAYOUT, unitIdentifier);
+    //        CreateModifiers(matchup.friendlyArmy.units.get(i), uiId, tableRow, button);
+//
+    //        CreateModel(verticalLayout.getChildAt(verticalLayout.getChildCount()-1),matchup.friendlyArmy.units.get(i),i,FRIENDLY,inflater);
+    //    }
+    //    for(int i = 0; i < matchup.enemyArmy.units.size();i++)
+    //    {
+    //        UnitIdentifier unitIdentifier = new UnitIdentifier("enemy",null,i,matchup.name);
+    //        verticalLayout = (ViewGroup) inflater.inflate(R.layout.unitviewprefab, ((ViewGroup)findViewById(R.id.VerticalLayoutEnemyArmy)));
+    //        instaniateUnitButton(verticalLayout.getChildAt(verticalLayout.getChildCount()-1),matchup.enemyArmy.units.get(i),unitIdentifier);
+    //        CreateUnitAbilites(matchup.enemyArmy.units.get(i),findViewById(R.id.VerticalLayoutEnemyArmy),inflater, unitIdentifier);
+//
+    //        TableRow tableRow = (TableRow)findViewById(R.id.TableRowUnitModifiers);
+    //        ImageButton button = (ImageButton)findViewById(R.id.EditUnitModifierButton);
+    //        UIIdentifier uiId = new UIIdentifier(UI_UNIT_MODIFIER_LAYOUT, unitIdentifier);
+    //        CreateModifiers(matchup.enemyArmy.units.get(i), uiId, tableRow, button);
+    //        CreateModel(verticalLayout.getChildAt(verticalLayout.getChildCount()-1),matchup.enemyArmy.units.get(i),i,ENEMY,inflater);
+//
+//
+    //    }
+    }
+
+    private void instaniateArmies(String allegiance)
+    {
+        ArrayList<Unit> units;
+        ViewGroup verticalLayout;
+
+        if(allegiance.equals(FRIENDLY))
         {
-            UnitIdentifier unitIdentifier = new UnitIdentifier("friendly",null,i,matchup.name);
+            units = matchup.friendlyArmy.units;
             verticalLayout = (ViewGroup) inflater.inflate(R.layout.unitviewprefab, ((ViewGroup)findViewById(R.id.VerticalLayoutFriendlyArmy)));
-            instaniateUnitButton(verticalLayout.getChildAt(verticalLayout.getChildCount()-1),matchup.friendlyArmy.units.get(i),unitIdentifier);
-            CreateUnitAbilites(matchup.friendlyArmy.units.get(i),findViewById(R.id.VerticalLayoutFriendlyArmy),inflater, unitIdentifier);
-
-            TableRow tableRow = (TableRow)findViewById(R.id.TableRowUnitModifiers);
-            ImageButton button = (ImageButton)findViewById(R.id.EditUnitModifierButton);
-            UIIdentifier uiId = new UIIdentifier(UI_UNIT_MODIFIER_LAYOUT, unitIdentifier);
-            CreateModifiers(matchup.friendlyArmy.units.get(i), uiId, tableRow, button);
-
-            CreateModel(verticalLayout.getChildAt(verticalLayout.getChildCount()-1),matchup.friendlyArmy.units.get(i),i,FRIENDLY,inflater);
         }
-        for(int i = 0; i < matchup.enemyArmy.units.size();i++)
+        else
         {
-            UnitIdentifier unitIdentifier = new UnitIdentifier("enemy",null,i,matchup.name);
+            units = matchup.enemyArmy.units;
             verticalLayout = (ViewGroup) inflater.inflate(R.layout.unitviewprefab, ((ViewGroup)findViewById(R.id.VerticalLayoutEnemyArmy)));
-            instaniateUnitButton(verticalLayout.getChildAt(verticalLayout.getChildCount()-1),matchup.enemyArmy.units.get(i),unitIdentifier);
-            CreateUnitAbilites(matchup.enemyArmy.units.get(i),findViewById(R.id.VerticalLayoutEnemyArmy),inflater, unitIdentifier);
+        }
+        for(int i = 0; i < units.size();i++)
+        {
+            Unit unit = units.get(i);
+            UnitIdentifier unitIdentifier = new UnitIdentifier(allegiance,null,i,matchup.name);
+            instaniateUnitButton(verticalLayout.getChildAt(verticalLayout.getChildCount()-1),unit,unitIdentifier);
+            CreateUnitAbilites(unit,(LinearLayout) verticalLayout,inflater, unitIdentifier);
 
             TableRow tableRow = (TableRow)findViewById(R.id.TableRowUnitModifiers);
             ImageButton button = (ImageButton)findViewById(R.id.EditUnitModifierButton);
             UIIdentifier uiId = new UIIdentifier(UI_UNIT_MODIFIER_LAYOUT, unitIdentifier);
-            CreateModifiers(matchup.enemyArmy.units.get(i), uiId, tableRow, button);
-            CreateModel(verticalLayout.getChildAt(verticalLayout.getChildCount()-1),matchup.enemyArmy.units.get(i),i,ENEMY,inflater);
-
-
+            CreateModifiers(unit, uiId, tableRow, button);
+            CreateModel(verticalLayout.getChildAt(verticalLayout.getChildCount()-1),unit,i,FRIENDLY,inflater);
         }
-
     }
 
     private void CreateArmyAbilities(ArmyIdentifier armyIdentifier, Army army)
@@ -624,86 +656,31 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
     public void CreateModel(View buttonToModify, Unit unit, int unitNumber,String friendlyArmy , LayoutInflater inflater)
     {
-        if(friendlyArmy.equals(FRIENDLY))
-        {   LinearLayout modelsLayout = (LinearLayout) buttonToModify.findViewById(R.id.ModelsSubLayout);
-            for(int i = 0; i < matchup.friendlyArmy.units.get(unitNumber).listOfModels.size();i++)
-            {
-                Model currentModel = matchup.friendlyArmy.units.get(unitNumber).listOfModels.get(i);
-                View inflatedView = inflater.inflate(R.layout.model_stats_prefab,modelsLayout);
-                ((Button)highestConstraint.findViewWithTag("inividualModelTopButton")).setText(currentModel.name);
-                ((Button)highestConstraint.findViewWithTag("inividualModelTopButton")).setTag("");
+        LinearLayout modelsLayout = (LinearLayout) buttonToModify.findViewById(R.id.ModelsSubLayout);
+        for(int i = 0; i < unit.listOfModels.size();i++)
+        {
+            Model currentModel = unit.listOfModels.get(i);
+            View inflatedView = inflater.inflate(R.layout.model_stats_prefab,modelsLayout);
+            ((Button)highestConstraint.findViewWithTag("inividualModelTopButton")).setText(currentModel.name);
+            ((Button)highestConstraint.findViewWithTag("inividualModelTopButton")).setTag("");
 
+            ModelIdentifier modelId = new ModelIdentifier(friendlyArmy, null, unitNumber,i,matchup.name );
+            ((ImageButton)inflatedView.findViewById(R.id.EditWeaponsButton)).setTag(R.string.MODEL_IDENTIFIER,modelId);
+            ((ImageButton)inflatedView.findViewById(R.id.EditWeaponsButton)).setTag(R.string.UI_IDENTIFIER,new UIIdentifier(UI_WEAPON_LAYOUT_MODEL,modelId));
+            ((ImageButton)inflatedView.findViewById(R.id.EditWeaponsButton)).setId(R.id.noId);
 
+            // Add Weapon Button
+            highestConstraint.findViewWithTag("AddWeaponModelButton").setOnClickListener(new OnClickAddWeapon(modelId));
+            highestConstraint.findViewWithTag("AddWeaponModelButton").setTag("");
+            ((CheckBox)highestConstraint.findViewById(R.id.DeactivateModelsButton)).setChecked(currentModel.active);
+            highestConstraint.findViewById(R.id.DeactivateModelsButton).setOnClickListener(new OnClickDeactivate(currentModel));
+            highestConstraint.findViewById(R.id.DeactivateModelsButton).setId(R.id.noId);
+            ConstraintLayout constraintLayout = ((ConstraintLayout)inflatedView.getParent()).findViewWithTag("ConstraintLayoutModel");
 
-                ModelIdentifier modelId = new ModelIdentifier(FRIENDLY, null, unitNumber,i,matchup.name );
-
-                ((ImageButton)inflatedView.findViewById(R.id.EditWeaponsButton)).setTag(R.string.MODEL_IDENTIFIER,modelId);
-                ((ImageButton)inflatedView.findViewById(R.id.EditWeaponsButton)).setTag(R.string.UI_IDENTIFIER,new UIIdentifier(UI_WEAPON_LAYOUT_MODEL,modelId));
-
-                ((ImageButton)inflatedView.findViewById(R.id.EditWeaponsButton)).setId(R.id.noId);
-
-                // Add Weapon Button
-                highestConstraint.findViewWithTag("AddWeaponModelButton").setOnClickListener(new OnClickAddWeapon(modelId));
-                highestConstraint.findViewWithTag("AddWeaponModelButton").setTag("");
-
-                ((CheckBox)highestConstraint.findViewById(R.id.DeactivateModelsButton)).setChecked(currentModel.active);
-                highestConstraint.findViewById(R.id.DeactivateModelsButton).setOnClickListener(new OnClickDeactivate(currentModel));
-                highestConstraint.findViewById(R.id.DeactivateModelsButton).setId(R.id.noId);
-
-                ConstraintLayout constraintLayout = ((ConstraintLayout)inflatedView.getParent()).findViewWithTag("ConstraintLayoutModel");
-
-                SetModelAbilites(currentModel, constraintLayout,  modelId);
-                constraintLayout.setTag("");
-
-                SetModelStats(inflatedView.findViewById(R.id.ModelStatsIndicator), currentModel, modelId);
-            }
-
+            SetModelAbilites(currentModel, constraintLayout,  modelId);
+            constraintLayout.setTag("");
+            SetModelStats(inflatedView.findViewById(R.id.ModelStatsIndicator), currentModel, modelId);
         }
-
-
-        if(friendlyArmy.equals(ENEMY))
-        {   LinearLayout modelsLayout = (LinearLayout) buttonToModify.findViewById(R.id.ModelsSubLayout);
-            for(int i = 0; i < matchup.enemyArmy.units.get(unitNumber).listOfModels.size();i++)
-            {
-                //Log.d("models mangd", "hur manga models " +matchup.enemyArmy.units.get(unitNumber).listOfModels.size() );
-
-
-                Model currentModel = matchup.enemyArmy.units.get(unitNumber).listOfModels.get(i);
-
-                View inflatedView = inflater.inflate(R.layout.model_stats_prefab,modelsLayout);
-
-                ((Button)highestConstraint.findViewWithTag("inividualModelTopButton")).setText(currentModel.name);
-
-
-                ((Button)highestConstraint.findViewWithTag("inividualModelTopButton")).setTag("");
-
-
-
-                ModelIdentifier modelId = new ModelIdentifier(ENEMY, null, unitNumber,i,matchup.name );
-
-                ((ImageButton)inflatedView.findViewById(R.id.EditWeaponsButton)).setTag(R.string.MODEL_IDENTIFIER,modelId);
-                ((ImageButton)inflatedView.findViewById(R.id.EditWeaponsButton)).setTag(R.string.UI_IDENTIFIER,new UIIdentifier(UI_WEAPON_LAYOUT_MODEL,modelId));
-                ((ImageButton)inflatedView.findViewById(R.id.EditWeaponsButton)).setId(R.id.noId);
-                // Add Weapon Button
-                highestConstraint.findViewWithTag("AddWeaponModelButton").setOnClickListener(new OnClickAddWeapon(modelId));
-                highestConstraint.findViewWithTag("AddWeaponModelButton").setTag("");
-
-
-                ((CheckBox)highestConstraint.findViewById(R.id.DeactivateModelsButton)).setChecked(currentModel.active);
-                highestConstraint.findViewById(R.id.DeactivateModelsButton).setOnClickListener(new OnClickDeactivate(currentModel));
-                highestConstraint.findViewById(R.id.DeactivateModelsButton).setId(R.id.noId);
-
-                ConstraintLayout constraintLayout = ((ConstraintLayout)inflatedView.getParent()).findViewWithTag("ConstraintLayoutModel");
-
-                SetModelAbilites(currentModel, constraintLayout,  modelId);
-                constraintLayout.setTag("");
-
-                SetModelStats(inflatedView.findViewById(R.id.ModelStatsIndicator), currentModel, modelId);
-            }
-
-        }
-
-       // for(int i = 0; i <  )
     }
 
     public class OnClickDeactivate implements  View.OnClickListener
