@@ -127,20 +127,7 @@ public class  MainActivity extends AppCompatActivity {
 
         InstantiateAbilities();
 
-    //    try {
-    //        InputStream Input = this.getAssets().open("TestParing.txt");
-    //        BattlescribeParser Parser = new BattlescribeParser();
-    //        ArrayList<BattlescribeUnit> Models = Parser.ParseUnits(Input);
-//
-    //        int Hej2 = 0;
-    //    }
-    //    catch (Exception e)
-    //    {
-    //        String Error = e.getMessage();
-    //        int hej = 2;
-    //    }
-
-
+        testNedladdning(getWindow().getCurrentFocus());
 
     //    EXAMPLEUPDATE();
 
@@ -149,17 +136,17 @@ public class  MainActivity extends AppCompatActivity {
     //    parsedDatasheetList =   csvParser.ReadCsvFile("Datasheets.csv");
     //    parsedWeaponList = csvParser.ReadCsvFile("Wargear_list.csv");
     //    parsedModelList = csvParser.ReadCsvFile("Datasheets_models.csv");
-   try
-   {
-       Scanner s = new Scanner(context.getAssets().open("TestRos.ros")).useDelimiter("\\A");
-       String result = s.hasNext() ? s.next() : "";
-       ROSParser Parser = new ROSParser();
-       Army TestArmy = Parser.ParseArmy(result);
-   }
-   catch(Exception e)
-   {
-//
-   }
+        try
+        {
+            Scanner s = new Scanner(context.getAssets().open("TestRos.ros")).useDelimiter("\\A");
+            String result = s.hasNext() ? s.next() : "";
+            ROSParser Parser = new ROSParser();
+            Army TestArmy = Parser.ParseArmy(result);
+        }
+        catch(Exception e)
+        {
+
+        }
     }
 
 
@@ -191,9 +178,9 @@ public class  MainActivity extends AppCompatActivity {
         UpdateArgumentStruct updateArgumentStruct = new UpdateArgumentStruct();
 
         updateArgumentStruct.FilesToDownload.add("Datasheets.csv");
-        updateArgumentStruct.FilesToDownload.add("Wargear_list.csv");
+        updateArgumentStruct.FilesToDownload.add("Datasheets_wargear.csv");
         updateArgumentStruct.FilesToDownload.add("Datasheets_models.csv");
-        updateArgumentStruct.URLPrefix = "https://wahapedia.ru/wh40k9ed/";
+        updateArgumentStruct.URLPrefix = "https://wahapedia.ru/wh40k10ed/";
         updateArgumentStruct.OutputPrefix = this.getDataDir().toString();
 
         Thread UploadDataThread = new Thread(new Callback_Runner<UpdateArgumentStruct,String,Integer>(this,this::p_UpdateCallback,wahapediaUpdate::UpdateFiles,updateArgumentStruct));

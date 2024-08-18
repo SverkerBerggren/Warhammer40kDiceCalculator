@@ -373,35 +373,6 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         instaniateArmies(FRIENDLY);
         instaniateArmies(ENEMY);
 
-    //    for(int i = 0; i < matchup.friendlyArmy.units.size();i++)
-    //    {
-    //        UnitIdentifier unitIdentifier = new UnitIdentifier("friendly",null,i,matchup.name);
-    //        verticalLayout = (ViewGroup) inflater.inflate(R.layout.unitviewprefab, ((ViewGroup)findViewById(R.id.VerticalLayoutFriendlyArmy)));
-    //        instaniateUnitButton(verticalLayout.getChildAt(verticalLayout.getChildCount()-1),matchup.friendlyArmy.units.get(i),unitIdentifier);
-    //        CreateUnitAbilites(matchup.friendlyArmy.units.get(i),findViewById(R.id.VerticalLayoutFriendlyArmy),inflater, unitIdentifier);
-//
-    //        TableRow tableRow = (TableRow)findViewById(R.id.TableRowUnitModifiers);
-    //        ImageButton button = (ImageButton)findViewById(R.id.EditUnitModifierButton);
-    //        UIIdentifier uiId = new UIIdentifier(UI_UNIT_MODIFIER_LAYOUT, unitIdentifier);
-    //        CreateModifiers(matchup.friendlyArmy.units.get(i), uiId, tableRow, button);
-//
-    //        CreateModel(verticalLayout.getChildAt(verticalLayout.getChildCount()-1),matchup.friendlyArmy.units.get(i),i,FRIENDLY,inflater);
-    //    }
-    //    for(int i = 0; i < matchup.enemyArmy.units.size();i++)
-    //    {
-    //        UnitIdentifier unitIdentifier = new UnitIdentifier("enemy",null,i,matchup.name);
-    //        verticalLayout = (ViewGroup) inflater.inflate(R.layout.unitviewprefab, ((ViewGroup)findViewById(R.id.VerticalLayoutEnemyArmy)));
-    //        instaniateUnitButton(verticalLayout.getChildAt(verticalLayout.getChildCount()-1),matchup.enemyArmy.units.get(i),unitIdentifier);
-    //        CreateUnitAbilites(matchup.enemyArmy.units.get(i),findViewById(R.id.VerticalLayoutEnemyArmy),inflater, unitIdentifier);
-//
-    //        TableRow tableRow = (TableRow)findViewById(R.id.TableRowUnitModifiers);
-    //        ImageButton button = (ImageButton)findViewById(R.id.EditUnitModifierButton);
-    //        UIIdentifier uiId = new UIIdentifier(UI_UNIT_MODIFIER_LAYOUT, unitIdentifier);
-    //        CreateModifiers(matchup.enemyArmy.units.get(i), uiId, tableRow, button);
-    //        CreateModel(verticalLayout.getChildAt(verticalLayout.getChildCount()-1),matchup.enemyArmy.units.get(i),i,ENEMY,inflater);
-//
-//
-    //    }
     }
 
     private void instaniateArmies(String allegiance)

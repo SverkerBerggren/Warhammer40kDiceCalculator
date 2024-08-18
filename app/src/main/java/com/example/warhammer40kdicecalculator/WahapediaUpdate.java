@@ -56,6 +56,7 @@ public class WahapediaUpdate
         }
         catch (Exception e)
         {
+            Log.d ("Hej hej", e.getMessage());
             ReturnValue = "Error updating files: "+e.getMessage();
         }
         return(ReturnValue);

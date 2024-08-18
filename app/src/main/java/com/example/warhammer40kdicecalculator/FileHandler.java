@@ -10,6 +10,7 @@ import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.example.warhammer40kdicecalculator.Parsing.Parsing;
 
 import java.io.File;
 import java.io.FileReader;
@@ -158,18 +159,16 @@ public  class FileHandler extends AppCompatActivity {
         try {
 
             InputStream inputStream = context.getContentResolver().openInputStream(uri);
-
-
-
             Scanner s = new Scanner(inputStream).useDelimiter("\\A");
             String result = s.hasNext() ? s.next() : "";
             ROSParser Parser = new ROSParser();
-            TestArmy = Parser.ParseArmy(result);
+            //TestArmy = Parser.ParseArmy(result);
+            Parsing parser = new Parsing();
+
+            TestArmy = parser.ParseGWListFormat(result);
 
 
             TestArmy.name = rozFile.getName();
-
-
 
         }
         catch (Exception e)
