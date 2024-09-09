@@ -1,5 +1,8 @@
 package com.example.warhammer40kdicecalculator.Parsing;
 
+import android.accessibilityservice.FingerprintGestureController;
+import android.util.Pair;
+
 import java.time.OffsetTime;
 import java.util.ArrayList;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
@@ -12,11 +15,12 @@ public class Parsing
     private final String CHARACTER = "CHARACTER";
     private final String DEDICATED_TRANSPORTS = "DEDICATED TRANSPORTS";
 
+
     public Army ParseGWListFormat(String armyListString)
     {
         int stringOffset = 0;
         int armyListStringLength = armyListString.length();
-        Army armyToSaveKindOfBeat = new Army();
+        Army ParsedArmy = new Army();
 
         stringOffset = RemoveWhiteSpaces(stringOffset,armyListString);
         while (stringOffset < armyListStringLength)
@@ -24,7 +28,9 @@ public class Parsing
             String newItem = GetNewLineSubString(stringOffset,armyListString);
             if(!IsDemarcation(newItem))
             {
-                stringOffset = ParseUnit(stringOffset,armyListString,armyToSaveKindOfBeat);
+                Pair<Integer,Unit> UnitToAdd = ParseUnit(stringOffset,armyListString,ParsedArmy);
+                ParsedArmy.units.add(UnitToAdd.second);
+                stringOffset = UnitToAdd.first;
             }
             else
             {
@@ -33,7 +39,7 @@ public class Parsing
             stringOffset = RemoveWhiteSpaces(stringOffset,armyListString);
         }
         SaveArmy("gogogagaa");
-        return  armyToSaveKindOfBeat;
+        return  ParsedArmy;
     }
 
 
@@ -71,9 +77,13 @@ public class Parsing
 
     private boolean IsWhiteSpace(char charToCompare)
     {
-        if( charToCompare == '\n' || charToCompare == '\t' || charToCompare == '\r')
+        switch (charToCompare)
         {
-            return  true;
+            case '\n':
+            case '\t':
+            case '\r':
+            case ' ':
+                return  true;
         }
         return  false;
     }
@@ -93,41 +103,81 @@ public class Parsing
 
     }
 
-    private int ParseUnit(int offset, String armyListString, Army armyToBuild )
+    private Pair<Integer,Unit> ParseUnit(int offset, String armyListString, Army armyToBuild )
     {
         int newOffset = offset;
         int armyLength = armyListString.length();
 
         String unitName = "";
+        Unit unitToAdd = new Unit();
 
         while (newOffset < armyLength)
         {
             if(!SkipCharacter(armyListString.charAt(newOffset)))
             {
-                if(armyListString.charAt(newOffset) != ')')
+                if(armyListString.charAt(newOffset) == '(')
                 {
-                    unitName += armyListString.charAt(newOffset);
+                    unitName.trim();
+                    Pair<Integer,Integer> pointValue = ParsePointValue(armyListString,newOffset+1);
+                    newOffset = pointValue.first;
+                    unitToAdd.pointCost = pointValue.second;
+                    unitToAdd.unitName = unitName;
+                    armyToBuild.units.add(unitToAdd);
+                    newOffset +=1;
+                    return  new Pair<Integer,Unit>(newOffset,unitToAdd);
                 }
                 else
                 {
-                    Unit unitToAdd = new Unit();
-                    unitToAdd.unitName = unitName;
-                    armyToBuild.units.add(new Unit());
-                    return newOffset;
+                    unitName += armyListString.charAt(newOffset);
                 }
             }
             newOffset +=1;
         }
-
-        return  newOffset;
+        return  new Pair<Integer,Unit>(newOffset,unitToAdd);
     }
+
+    private Pair<Integer,Integer> ParsePointValue(String ArmyList, int StringOffset)
+    {
+        int newOffset = StringOffset;
+        String pointValue = "";
+        while (newOffset <= ArmyList.length())
+        {
+            char CharToExamine = ArmyList.charAt(newOffset);
+            if(Character.isDigit(CharToExamine) || CharToExamine == ')')
+            {
+                if(CharToExamine == ')')
+                {
+                    int pointInteger = Integer.parseInt(pointValue);
+                    return  new Pair<Integer,Integer>(newOffset +1, pointInteger);
+                }
+                pointValue += ArmyList.charAt(newOffset);
+            }
+            newOffset +=1;
+        }
+
+        return new Pair<>(-1,-1);
+    }
+
+ //   private Pair<Integer,Unit> ParseUnitValues(Unit unit)
+ //   {
+ //       return Pair<Integer,Unit>(5,unit);
+ //   }
 
     private boolean SkipCharacter(char charToExamine)
     {
-        if(charToExamine == '•' || charToExamine =='1' || charToExamine =='2' || charToExamine =='3' || charToExamine =='4' || charToExamine =='5'
-                || charToExamine =='6'|| charToExamine =='7'|| charToExamine =='8'|| charToExamine =='9' || charToExamine =='(')
-        {
-            return  true;
+        switch (charToExamine) {
+            case '•':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+            case '0':
+                return true;
         }
         return false;
     }
