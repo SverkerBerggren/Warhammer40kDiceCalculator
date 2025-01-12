@@ -41,7 +41,6 @@ public class EditUnitActivity extends AppCompatActivity implements AbilityUIHold
 
 
     private Matchup matchup;
-    private FileHandler fileHandler;
     private Context context;
 
     private ConstraintLayout highestConstraint;
@@ -63,18 +62,8 @@ public class EditUnitActivity extends AppCompatActivity implements AbilityUIHold
 
         context = getBaseContext();
         Intent intent = getIntent();
-        fileHandler = new FileHandler(context);
         highestConstraint = findViewById(R.id.ConstraintLayoutEditUnit);
-
-
-
-
-
-
-
-
-
-        matchup = fileHandler.getMatchup(intent.getStringExtra("matchup"));
+        matchup = FileHandler.GetInstance().getMatchup(intent.getStringExtra("matchup"));
 
         unitIdentifier = new UnitIdentifier(intent.getStringExtra(""+R.string.UNIT_IDENTIFIER));
 
@@ -232,7 +221,7 @@ public class EditUnitActivity extends AppCompatActivity implements AbilityUIHold
 
             ModelIdentifier modelId =  new ModelIdentifier(data.getStringExtra(""+R.string.MODEL_IDENTIFIER));
 
-            matchup = fileHandler.getMatchup(matchup.name);
+            matchup = FileHandler.GetInstance().getMatchup(matchup.name);
 
             Model model = matchup.GetModel(modelId);
 

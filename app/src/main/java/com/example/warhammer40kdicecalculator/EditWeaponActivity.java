@@ -47,7 +47,6 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
 
     private LinearLayout linearLayout;
 
-    private  FileHandler fileHandler;
     private  Matchup matchup;
     private Context context;
 
@@ -74,10 +73,8 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
 
         uiElementName = intent.getStringExtra(""+R.string.UI_IDENTIFIER);
 
-        fileHandler = new FileHandler(context);
 
-
-        matchup = fileHandler.getMatchup(matchupName);
+        matchup = FileHandler.GetInstance().getMatchup(matchupName);
 
         ArrayList<Weapon> weapons = new ArrayList<>();
 
@@ -220,7 +217,7 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
             weapon.ballisticSkill = Integer.parseInt(hitSkillView.getText().toString());
             weapon.isMelee = meleeView.isChecked();
 
-            fileHandler.saveMatchup(matchup);
+            FileHandler.GetInstance().saveMatchup(matchup);
 
         }
     }

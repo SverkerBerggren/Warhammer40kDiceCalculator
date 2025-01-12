@@ -36,11 +36,11 @@ import com.example.warhammer40kdicecalculator.Abilities.ReRollWoundRoll;
 import com.example.warhammer40kdicecalculator.Abilities.TransHuman4;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
-import com.example.warhammer40kdicecalculator.DatasheetModeling.AttackAmount;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Weapon;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
 import com.example.warhammer40kdicecalculator.Identifiers.Identifier;
 import     com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -126,16 +126,11 @@ public class  MainActivity extends AppCompatActivity {
         context = getApplicationContext();
 
         InstantiateAbilities();
+        FileHandler.InitializeFileHandler(context);
 
-        testNedladdning(getWindow().getCurrentFocus());
-
-    //    EXAMPLEUPDATE();
+        DownloadAndCreateDatabases(getWindow().getCurrentFocus());
 
 
-    //    TestLasaCsv csvParser = new TestLasaCsv(this.context);
-    //    parsedDatasheetList =   csvParser.ReadCsvFile("Datasheets.csv");
-    //    parsedWeaponList = csvParser.ReadCsvFile("Wargear_list.csv");
-    //    parsedModelList = csvParser.ReadCsvFile("Datasheets_models.csv");
         try
         {
             Scanner s = new Scanner(context.getAssets().open("TestRos.ros")).useDelimiter("\\A");
@@ -172,26 +167,27 @@ public class  MainActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public  void testNedladdning(View v)
+    public  void DownloadAndCreateDatabases(View v)
     {
-        WahapediaUpdate wahapediaUpdate = new WahapediaUpdate();
         UpdateArgumentStruct updateArgumentStruct = new UpdateArgumentStruct();
 
         updateArgumentStruct.FilesToDownload.add("Datasheets.csv");
         updateArgumentStruct.FilesToDownload.add("Datasheets_wargear.csv");
         updateArgumentStruct.FilesToDownload.add("Datasheets_models.csv");
+        updateArgumentStruct.FilesToDownload.add("Datasheets_abilities.csv");
+        updateArgumentStruct.FilesToDownload.add("Datasheets_keywords.csv");
+        updateArgumentStruct.FilesToDownload.add("Factions.csv");
         updateArgumentStruct.URLPrefix = "https://wahapedia.ru/wh40k10ed/";
         updateArgumentStruct.OutputPrefix = this.getDataDir().toString();
+        updateArgumentStruct.context = context;
 
-        Thread UploadDataThread = new Thread(new Callback_Runner<UpdateArgumentStruct,String,Integer>(this,this::p_UpdateCallback,wahapediaUpdate::UpdateFiles,updateArgumentStruct));
+        Thread UploadDataThread = new Thread(new Callback_Runner<UpdateArgumentStruct,String,Integer>(this,this::p_UpdateCallback, FileHandler.GetInstance()::UpdateFiles,updateArgumentStruct));
         UploadDataThread.start();
-
-
     }
 
     public void testParseDownloadedCsv(View v)
     {
-        TestLasaCsv parser = new TestLasaCsv(v.getContext());
+        DatabaseManager parser = DatabaseManager.getInstance();
 
 
         ArrayList<ArrayList<String>> testLastDatasheets = new ArrayList<ArrayList<String>>();
@@ -207,17 +203,11 @@ public class  MainActivity extends AppCompatActivity {
     {
         ArrayList<Unit> armyToReturn = new ArrayList<>();
 
-
-
         for(int i =0; i < inputArmy.size(); i++)
         {
             Unit unitToAdd = new Unit();
             BattlescribeUnit battlescribeUnit = inputArmy.get(i);
             unitToAdd.unitName = battlescribeUnit.Name;
-
-
-
-
         }
 
         return null;
@@ -226,11 +216,7 @@ public class  MainActivity extends AppCompatActivity {
     public  void testBattleScribeParse(View v)
     {
         BattlescribeParser parser = new BattlescribeParser();
-
         ArrayList<BattlescribeUnit> unitsInList = new ArrayList<>();
-
-
-
 
         try
         {
@@ -318,19 +304,11 @@ public class  MainActivity extends AppCompatActivity {
 
     private void InflateSearch(ViewGroup baseView, Context context)
     {
-        //context = getBaseContext();
-
-
         Log.d("infalter grejer", "inflatar den??");
-
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
-
 
         if (baseView.findViewById(R.id.SearchLayout) == null)
         {
-
-
-
             inflater.inflate(R.layout.search_prefab, baseView);
         }
         else
@@ -414,9 +392,8 @@ public class  MainActivity extends AppCompatActivity {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
             String item = ((TextView)view).getText().toString();
-
-
             Ability ability = Ability.getAbilityType( abilityMap.get(item).name);
+
             if (weapon != null)
             {
                 if (!weapon.weaponRules.contains(ability))
@@ -424,8 +401,6 @@ public class  MainActivity extends AppCompatActivity {
                     weapon.weaponRules.add(ability);
                     abilityUIHolder.AbilityAdded(ability,weapon);
                 }
-
-
             }
             if (model != null)
             {
@@ -434,8 +409,6 @@ public class  MainActivity extends AppCompatActivity {
                     model.listOfAbilites.add(ability);
                     abilityUIHolder.AbilityAdded(ability,model);
                 }
-
-
             }
             if (unit != null)
             {
@@ -444,8 +417,6 @@ public class  MainActivity extends AppCompatActivity {
                     unit.listOfAbilitys.add(ability);
                     abilityUIHolder.AbilityAdded(ability,unit);
                 }
-
-
             }
             if (army != null)
             {
@@ -454,18 +425,11 @@ public class  MainActivity extends AppCompatActivity {
                     army.abilities.add(ability);
                     abilityUIHolder.AbilityAdded(ability,army);
                 }
-
-
             }
-
 
             View searchLayout = baseView.findViewById(R.id.SearchLayout);
             searchLayout.setVisibility(View.GONE);
-
-
-
-            FileHandler fileHandler = new FileHandler(context);
-            fileHandler.saveMatchup(matchup);
+            FileHandler.GetInstance().saveMatchup(matchup);
         }
     }
 

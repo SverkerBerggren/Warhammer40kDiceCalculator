@@ -67,10 +67,7 @@ public class StatisticActivity extends AppCompatActivity {
         int sizeOfAttack = intent.getIntExtra("AttackingUnitSize", -1);
         String matchupName = intent.getStringExtra("MatchupName");
 
-
-        FileHandler fileHandler = new FileHandler(getBaseContext());
-
-        Matchup matchup = fileHandler.getMatchup(matchupName);
+        Matchup matchup = FileHandler.GetInstance().getMatchup(matchupName);
 
         boolean myUnitsAttacking = intent.getBooleanExtra("FirendlyArmyAttacking", true);
 

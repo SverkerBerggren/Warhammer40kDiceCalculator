@@ -27,6 +27,7 @@ import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
 import com.example.warhammer40kdicecalculator.Identifiers.UIIdentifier;
 import com.example.warhammer40kdicecalculator.Identifiers.UnitIdentifier;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -62,7 +63,7 @@ public class UnitSelection extends AppCompatActivity {
         setContentView(R.layout.activity_unit_selection);
         context = getBaseContext();
 
-        FileHandler fileHandler = new FileHandler(context);
+        FileHandler fileHandler = FileHandler.GetInstance();
         //Log.d("testar intetion", "onCreate: " + getIntent().getStringExtra("SourceFile"));
         if (fileHandler.getMatchup( getIntent().getStringExtra("SourceFile")) != null)
         {

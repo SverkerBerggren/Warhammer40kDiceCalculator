@@ -158,8 +158,7 @@ public class SavedMatchupsActivity extends AppCompatActivity {
         ImageButton deleteButton = (ImageButton)linearLayout.findViewWithTag(tag);
         ConstraintLayout viewToRemove = (ConstraintLayout) deleteButton.getParent();
         linearLayout.removeView(viewToRemove);
-        FileHandler fileHandler = new FileHandler(context);
-        fileHandler.DeleteMatchup(tag);
+        FileHandler.GetInstance().DeleteMatchup(tag);
     }
 
     public void OpenCompareActivity(View v)

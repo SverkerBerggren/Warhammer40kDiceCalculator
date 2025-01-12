@@ -48,25 +48,23 @@ public class ParseActivity extends AppCompatActivity {
 
                         Uri uri = data.getData();
 
-                        fileHandler.CreateArmyFromFile(uri);
+                        FileHandler.GetInstance().CreateArmyFromFile(uri);
 
 
-                        CreateArmyButtons(fileHandler.GetSavedArmies());
+                        CreateArmyButtons(FileHandler.GetInstance().GetSavedArmies());
                     }
                 }
             }
     );
 
 
-    private FileHandler fileHandler;
+
     private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parse);
-
-        fileHandler = new FileHandler(getBaseContext());
 
         CheckAndRequestPermission();
 
@@ -86,7 +84,7 @@ public class ParseActivity extends AppCompatActivity {
 
 
 
-        CreateArmyButtons(fileHandler.GetSavedArmies());
+        CreateArmyButtons(FileHandler.GetInstance().GetSavedArmies());
 
     }
 

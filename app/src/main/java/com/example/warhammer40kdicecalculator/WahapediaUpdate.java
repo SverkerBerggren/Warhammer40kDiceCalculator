@@ -11,17 +11,8 @@ import java.net.URL;
 import java.sql.Array;
 import java.util.ArrayList;
 
-class UpdateArgumentStruct
-{
-    public String URLPrefix = "";
-    public String OutputPrefix = "";
-    public ArrayList<String> FilesToDownload = new ArrayList<String>();
-}
-
 public class WahapediaUpdate
 {
-
-
     public String UpdateFiles(UpdateArgumentStruct Arguments)
     {
       //  Log.d("Wahapedia grejen: ", "den uppdaterade bra");

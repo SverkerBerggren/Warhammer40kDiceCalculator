@@ -35,7 +35,6 @@ import java.util.Collections;
 public class Activity_Edit_Abilities extends AppCompatActivity implements AbilityUIHolder  {
     Context context;
     LayoutInflater inflater;
-    FileHandler fileHandler;
     private Matchup matchup;
 
     private Identifier identifier;
@@ -71,8 +70,7 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
         String typeOfIdentifier = intent.getStringExtra( ""+R.string.TYPE_OF_IDENTIFIER);
 
         ImageButton addAbilityButton = findViewById(R.id.EditAbilitiesAdd);
-        fileHandler = new FileHandler(context);
-        matchup = fileHandler.getMatchup(matchupName);
+        matchup = FileHandler.GetInstance().getMatchup(matchupName);
 
         uiElement =  intent.getStringExtra(""+R.string.UI_IDENTIFIER);
 
@@ -207,7 +205,7 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
 
             Log.d("tog den bort ability", "" + bool);
 
-            fileHandler.saveMatchup(matchup);
+            FileHandler.GetInstance().saveMatchup(matchup);
 
             TableLayout viewParent = (TableLayout)view.getParent().getParent();
 

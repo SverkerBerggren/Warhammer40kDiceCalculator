@@ -46,7 +46,6 @@ import java.util.HashMap;
 
 public class CompareActivity extends AppCompatActivity implements AbilityUIHolder{
 
-    private  FileHandler  fileHandler;
     public Matchup matchup;
 
     private int UNIT_ALLEGIANCE = R.string.UNIT_ALLEGIANCE;
@@ -155,8 +154,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         inflater =  getLayoutInflater();
         context = getBaseContext();
 
-        fileHandler = new FileHandler(context);
-        matchup = fileHandler.getMatchup( getIntent().getStringExtra("SourceFile"));
+        matchup = FileHandler.GetInstance().getMatchup( getIntent().getStringExtra("SourceFile"));
         activityResultLauncherAbility = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),new UpdateUiActivityCallbackAbilities());
 
         activityResultLauncherWeapon = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),new UpdateUIWeaponCallback());
@@ -171,7 +169,6 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
     public void Setup(Context context, Matchup matchup)
     {
         this.context =context ;
-        fileHandler = new FileHandler(context);
         this.matchup = matchup;
 
         activityResultLauncherAbility = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),new UpdateUiActivityCallbackAbilities());
@@ -278,7 +275,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
     private void ReloadMatchup()
     {
-        matchup = fileHandler.getMatchup(matchup.name);
+        matchup = FileHandler.GetInstance().getMatchup(matchup.name);
     }
 
     private void UpdateAbilityRow(ArrayList<String> abilitiesToAdd, ArrayList<String> abilitiesToRemove, UIIdentifier uiId)
@@ -666,7 +663,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         public void onClick(View view) {
             deactivatable.FlipActive();
 
-            fileHandler.saveMatchup(matchup);
+            FileHandler.GetInstance().saveMatchup(matchup);
         }
     }
 
@@ -789,7 +786,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
 
 
-                fileHandler.saveMatchup(matchup);
+                FileHandler.GetInstance().saveMatchup(matchup);
 
                 UIIdentifier uiIdentifier = new UIIdentifier(UI_WEAPON_LAYOUT_MODEL,modelId);
 
@@ -1225,7 +1222,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
             SetModifiers(uiId, modifierHolder);
 
-            fileHandler.saveMatchup(matchup);
+            FileHandler.GetInstance().saveMatchup(matchup);
             ClosePopup(view);
         }
     }

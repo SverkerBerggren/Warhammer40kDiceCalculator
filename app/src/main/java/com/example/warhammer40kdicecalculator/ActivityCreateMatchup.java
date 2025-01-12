@@ -22,21 +22,14 @@ import kotlinx.coroutines.CompletionHandlerException;
 public class ActivityCreateMatchup extends AppCompatActivity {
 
     private Context context ;
-
-
     private ArrayList<CheckBox> clickedCheckBoxes = new ArrayList<>();
-    FileHandler fileHandler = null;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_matchup );
-
-
         context = getBaseContext();
-
-        fileHandler = new FileHandler(context);
 
         findViewById(R.id.CreateMatchupButtonYo).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,7 +46,7 @@ public class ActivityCreateMatchup extends AppCompatActivity {
     public void CreateMatchupButtons()
     {
 
-        ArrayList<String> armies = fileHandler.GetSavedArmies();
+        ArrayList<String> armies = FileHandler.GetInstance().GetSavedArmies();
 
         LinearLayout linearLayout = findViewById(R.id.LinearLayoutArmies);
 
@@ -118,13 +111,13 @@ public class ActivityCreateMatchup extends AppCompatActivity {
         }
         TextInputEditText nameText = findViewById(R.id.InputFieldName);
 
-        Army friendlyArmy = fileHandler.getArmy(clickedCheckBoxes.get(0).getText().toString());
-        Army enemyArmy = fileHandler.getArmy(clickedCheckBoxes.get(1).getText().toString());
+        Army friendlyArmy = FileHandler.GetInstance().getArmy(clickedCheckBoxes.get(0).getText().toString());
+        Army enemyArmy = FileHandler.GetInstance().getArmy(clickedCheckBoxes.get(1).getText().toString());
 
         Matchup matchup = new Matchup(nameText.getText().toString(),friendlyArmy,enemyArmy);
 
 
-        fileHandler.saveMatchup(matchup);
+        FileHandler.GetInstance().saveMatchup(matchup);
 
         Toast.makeText(context, "Matchup created", Toast.LENGTH_SHORT).show();
     }

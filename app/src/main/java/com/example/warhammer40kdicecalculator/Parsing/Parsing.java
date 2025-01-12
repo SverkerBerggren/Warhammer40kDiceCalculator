@@ -103,6 +103,27 @@ public class Parsing
 
     }
 
+    private int ParseUnitEquipment(int offset, String armyListString, Unit unit)
+    {
+        int armyLength = armyListString.length();
+        String AmountToAddString = "";
+        while(offset < armyLength)
+        {
+            if(Character.isDigit(armyListString.charAt(offset)))
+            {
+                AmountToAddString += armyListString.charAt(offset);
+                offset +=1;
+                continue;
+            }
+            if(!Character.isDigit(armyListString.charAt(offset)) && AmountToAddString.length() != 0)
+            {
+
+            }
+        }
+
+        return offset;
+    }
+
     private Pair<Integer,Unit> ParseUnit(int offset, String armyListString, Army armyToBuild )
     {
         int newOffset = offset;
@@ -122,8 +143,8 @@ public class Parsing
                     newOffset = pointValue.first;
                     unitToAdd.pointCost = pointValue.second;
                     unitToAdd.unitName = unitName;
-                    armyToBuild.units.add(unitToAdd);
-                    newOffset +=1;
+                    newOffset = ParseUnitEquipment(offset,armyListString,unitToAdd);
+
                     return  new Pair<Integer,Unit>(newOffset,unitToAdd);
                 }
                 else
@@ -162,6 +183,8 @@ public class Parsing
  //   {
  //       return Pair<Integer,Unit>(5,unit);
  //   }
+
+
 
     private boolean SkipCharacter(char charToExamine)
     {

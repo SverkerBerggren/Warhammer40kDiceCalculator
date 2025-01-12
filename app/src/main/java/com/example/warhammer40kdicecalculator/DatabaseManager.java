@@ -2,7 +2,9 @@ package com.example.warhammer40kdicecalculator;
 
 import android.content.Context;
 
+import android.content.res.AssetManager;
 import android.util.Log;
+import android.util.LogPrinter;
 
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 
@@ -14,16 +16,37 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class TestLasaCsv {
+public class DatabaseManager {
 
-    private Context context;
-    public HashMap<String, Integer> listOfAllUnitId = new HashMap<String, Integer>();
+    private final android.content.res.AssetManager assetManager;
+    private final HashMap<String,String> UnitNames = new HashMap<>();
+    private final HashMap<String, Integer> listOfAllUnitId = new HashMap<String, Integer>();
 
-    private HashMap<String,String> UnitNames = new HashMap<>();
+    public static volatile DatabaseManager instance;
 
-    public TestLasaCsv(Context context)
+    private Object lock = new Object();
+
+    public static void InitializeDatabaseManager(Context context)
     {
-        this.context = context;
+        if(instance != null)
+        {
+            Log.d("Database manager"," Database manager is already initialized");
+            return;
+        }
+        instance = new DatabaseManager(context);
+    }
+
+    public static DatabaseManager getInstance()
+    {
+        return instance;
+    }
+
+    private DatabaseManager(Context context)
+    {   synchronized (lock)
+        {
+            assetManager = context.getAssets();
+            ArrayList<ArrayList<String>> DatasheetWeapons = ReadCsvFile("Datasheets_wargear.csv");
+        }
     }
 
     public ArrayList<ArrayList<String>> ReadCsvFile(String fileName )
@@ -31,8 +54,7 @@ public class TestLasaCsv {
         ArrayList<ArrayList<String>> arrayListToReturn = new ArrayList<>();
         try
         {
-
-            InputStreamReader is = new InputStreamReader(context.getAssets().open(fileName));
+            InputStreamReader is = new InputStreamReader(assetManager.open(fileName));
 
             BufferedReader reader = new BufferedReader(is);
             String readString = "";
@@ -56,13 +78,4 @@ public class TestLasaCsv {
         }
         return arrayListToReturn;
     }
-
-    public List<Model> createModelsFromBattleScribe(String fileName )
-    {
-
-
-
-        return  null;
-    }
-
 }
