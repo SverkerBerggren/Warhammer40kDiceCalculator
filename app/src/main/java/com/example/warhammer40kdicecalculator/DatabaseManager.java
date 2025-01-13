@@ -10,6 +10,7 @@ import android.util.LogPrinter;
 import androidx.annotation.RequiresApi;
 
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.Weapon;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -25,7 +26,7 @@ public class DatabaseManager {
     private final android.content.res.AssetManager assetManager;
     private final String dataDirectory;
     private final HashMap<String,String> UnitNames = new HashMap<>();
-    private final HashMap<String, Integer> listOfAllUnitId = new HashMap<String, Integer>();
+    private final HashMap<String, Weapon> WargearWeapons = new HashMap<>();
 
     public static volatile DatabaseManager instance;
 
@@ -61,33 +62,62 @@ public class DatabaseManager {
         }
     }
 
-    public ArrayList<ArrayList<String>> ReadCsvFile(String fileName )
+    private void CreateWeaponDatabase()
     {
-        ArrayList<ArrayList<String>> arrayListToReturn = new ArrayList<>();
-        try
+        ArrayList<ArrayList<String>> DatasheetWeapons = FileHandler.instance.GetWahapediaDataCSV("Datasheets_wargear.csv");
+
+        for( ArrayList<String> WeaponEntry : DatasheetWeapons)
         {
-            InputStreamReader is = new InputStreamReader(assetManager.open(dataDirectory + fileName));
+            Weapon weaponToConstruct = new Weapon();
+            weaponToConstruct.name = WeaponEntry.get(4);
+            weaponToConstruct.isMelee =   WeaponEntry.get(7).equals("Melee");
 
-            BufferedReader reader = new BufferedReader(is);
-            String readString = "";
-            String[] tempStringArray;
+        }
+    }
 
-            while((readString = reader.readLine()) != null)
+    private <DiceAmount> ParseDiceAmount(String string)
+    {
+        DiceAmount hej;
+        String[] components = string.split(" ");
+        for(String component : components)
+        {
+            if(component.equals("+"))
             {
-                tempStringArray = readString.split("\\|");
-                ArrayList<String> tempArrayList = new ArrayList<String>();
-                for(int i = 0; i < tempStringArray.length; i++)
-                {
-                    tempArrayList.add(tempStringArray[i]);
-                }
-
-                arrayListToReturn.add(tempArrayList);
+                continue;
             }
+            try {
+                int numberOfAttacks =
+            }
+            catch (Exception exception){}
+
+
         }
-        catch (IOException e)
+    }
+
+    public ArrayList<ArrayList<String>> ReadCsvFile(String fileName )
+    {   synchronized (lock)
         {
-            e.printStackTrace();
+            ArrayList<ArrayList<String>> arrayListToReturn = new ArrayList<>();
+            try {
+                InputStreamReader is = new InputStreamReader(assetManager.open(dataDirectory + fileName));
+
+                BufferedReader reader = new BufferedReader(is);
+                String readString = "";
+                String[] tempStringArray;
+
+                while ((readString = reader.readLine()) != null) {
+                    tempStringArray = readString.split("\\|");
+                    ArrayList<String> tempArrayList = new ArrayList<String>();
+                    for (int i = 0; i < tempStringArray.length; i++) {
+                        tempArrayList.add(tempStringArray[i]);
+                    }
+
+                    arrayListToReturn.add(tempArrayList);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return arrayListToReturn;
         }
-        return arrayListToReturn;
     }
 }

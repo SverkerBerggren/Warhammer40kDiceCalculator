@@ -17,8 +17,6 @@ public class DamageAmount {
         this.rawDamageAmount = rawDamageAmount;
         this.d3DamageAmount = d3DamageAmount;
         this.d6DamageAmount = d6DamageAmount;
-
-
     }
 
     public DamageAmount(DamageAmount other)

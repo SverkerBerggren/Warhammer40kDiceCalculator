@@ -7,13 +7,13 @@ import java.util.ArrayList;
 
 public class Weapon implements AbilityHolder, DeactivatableInterface {
     public String name;
+    public AttackAmount amountOfAttacks = new AttackAmount();
     public DamageAmount damageAmount;
     public int ballisticSkill;
     public int ap;
     public int strength;
     public boolean isMelee = false;
     public boolean active = true;
-    public AttackAmount amountOfAttacks = new AttackAmount();
     public ArrayList<Ability> weaponRules = new ArrayList<>();
 
     public Weapon()

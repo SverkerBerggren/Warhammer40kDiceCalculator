@@ -19,7 +19,6 @@ public class AttackAmount {
 
     public AttackAmount(DamageAmount Damage)
     {
-
         rawNumberOfAttacks = Damage.rawDamageAmount;
         numberOfD3 = Damage.d3DamageAmount;
         numberOfD6 = Damage.d6DamageAmount;
