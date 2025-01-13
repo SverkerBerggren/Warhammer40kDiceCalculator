@@ -153,20 +153,6 @@ public class  MainActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    void EXAMPLEUPDATE()
-    {
-        WahapediaUpdate Updater = new WahapediaUpdate();
-        UpdateArgumentStruct Arguments = new UpdateArgumentStruct();
-        Arguments.URLPrefix = "https://wahapedia.ru/wh40k9ed/factions/aeldari/";
-        Arguments.OutputPrefix = this.getDataDir().toString();
-        Arguments.FilesToDownload.add("Asurmen");
-        Arguments.FilesToDownload.add("Baharroth");
-
-        Thread UploadDataThread = new Thread(new Callback_Runner<UpdateArgumentStruct,String,Integer>(this,this::p_UpdateCallback,Updater::UpdateFiles,Arguments));
-        UploadDataThread.start();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public  void DownloadAndCreateDatabases(View v)
     {
         UpdateArgumentStruct updateArgumentStruct = new UpdateArgumentStruct();
@@ -177,11 +163,11 @@ public class  MainActivity extends AppCompatActivity {
         updateArgumentStruct.FilesToDownload.add("Datasheets_abilities.csv");
         updateArgumentStruct.FilesToDownload.add("Datasheets_keywords.csv");
         updateArgumentStruct.FilesToDownload.add("Factions.csv");
-        updateArgumentStruct.URLPrefix = "https://wahapedia.ru/wh40k10ed/";
+        updateArgumentStruct.LastUpdateURL = "Last_update.csv";
         updateArgumentStruct.OutputPrefix = this.getDataDir().toString();
         updateArgumentStruct.context = context;
 
-        Thread UploadDataThread = new Thread(new Callback_Runner<UpdateArgumentStruct,String,Integer>(this,this::p_UpdateCallback, FileHandler.GetInstance()::UpdateFiles,updateArgumentStruct));
+        Thread UploadDataThread = new Thread(new Callback_Runner<UpdateArgumentStruct,String,Integer>(this,this::p_UpdateCallback, FileHandler.GetInstance()::UpdateWahapediaData,updateArgumentStruct));
         UploadDataThread.start();
     }
 

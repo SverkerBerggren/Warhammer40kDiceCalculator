@@ -3,12 +3,16 @@ package com.example.warhammer40kdicecalculator;
 import android.content.Context;
 
 import android.content.res.AssetManager;
+import android.os.Build;
 import android.util.Log;
 import android.util.LogPrinter;
+
+import androidx.annotation.RequiresApi;
 
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -19,13 +23,15 @@ import java.util.List;
 public class DatabaseManager {
 
     private final android.content.res.AssetManager assetManager;
+    private final String dataDirectory;
     private final HashMap<String,String> UnitNames = new HashMap<>();
     private final HashMap<String, Integer> listOfAllUnitId = new HashMap<String, Integer>();
 
     public static volatile DatabaseManager instance;
 
-    private Object lock = new Object();
+    private final Object lock = new Object();
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public static void InitializeDatabaseManager(Context context)
     {
         if(instance != null)
@@ -41,11 +47,17 @@ public class DatabaseManager {
         return instance;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private DatabaseManager(Context context)
     {   synchronized (lock)
         {
             assetManager = context.getAssets();
-            ArrayList<ArrayList<String>> DatasheetWeapons = ReadCsvFile("Datasheets_wargear.csv");
+            dataDirectory = context.getDataDir().toString() + "/";
+            ArrayList<ArrayList<String>> DatasheetWeapons = FileHandler.instance.GetWahapediaDataCSV("Datasheets_wargear.csv");
+            if(DatasheetWeapons.size() > 0)
+            {
+                Log.d("wow","Den parsade sag vad");
+            }
         }
     }
 
@@ -54,7 +66,7 @@ public class DatabaseManager {
         ArrayList<ArrayList<String>> arrayListToReturn = new ArrayList<>();
         try
         {
-            InputStreamReader is = new InputStreamReader(assetManager.open(fileName));
+            InputStreamReader is = new InputStreamReader(assetManager.open(dataDirectory + fileName));
 
             BufferedReader reader = new BufferedReader(is);
             String readString = "";
