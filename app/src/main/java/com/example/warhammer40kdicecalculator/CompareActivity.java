@@ -32,7 +32,7 @@ import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.DeactivatableInterface;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
-import com.example.warhammer40kdicecalculator.DatasheetModeling.AttackAmount;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.DiceAmount;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Weapon;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
 import com.example.warhammer40kdicecalculator.Identifiers.ArmyIdentifier;
@@ -774,8 +774,8 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
                 if (weaponAddAP.getText().toString().isEmpty()) aP = 0;
                 else aP = Integer.parseInt(weaponAddAP.getText().toString());
 
-                DamageAmount dA = new DamageAmount(damage,damageD3,damageD6);
-                AttackAmount rAA = new AttackAmount(amount,amountD3,amountD6);
+                DiceAmount dA = new DiceAmount(damage,damageD3,damageD6);
+                DiceAmount rAA = new DiceAmount(amount,amountD3,amountD6);
 
                 Weapon weapon = new Weapon(strength, aP, dA, rAA );
                 weapon.name = name;
@@ -975,7 +975,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
     private String SetWeaponAttacks(Weapon rangedWeapon)
     {
         String stringToReturn = "";
-        AttackAmount amount = rangedWeapon.amountOfAttacks;
+        DiceAmount amount = rangedWeapon.amountOfAttacks;
 
 
         if(amount.numberOfD6 != 0)
@@ -987,9 +987,9 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
             stringToReturn+=  amount.numberOfD3 +"D3 ";
         }
 
-        if(amount.rawNumberOfAttacks != 0)
+        if(amount.baseAmount != 0)
         {
-            stringToReturn+= "" + amount.rawNumberOfAttacks;
+            stringToReturn+= "" + amount.baseAmount;
         }
 
 
@@ -998,21 +998,21 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
     private String SetWeaponDamage(Weapon rangedWeapon)
     {
         String stringToReturn = "";
-        DamageAmount amount = rangedWeapon.damageAmount;
+        DiceAmount amount = rangedWeapon.damageAmount;
 
 
-        if(amount.d6DamageAmount != 0)
+        if(amount.numberOfD6 != 0)
         {
-            stringToReturn+=  amount.d6DamageAmount +"D6 ";
+            stringToReturn+=  amount.numberOfD6 +"D6 ";
         }
-        if(amount.d3DamageAmount != 0)
+        if(amount.numberOfD3 != 0)
         {
-            stringToReturn+=  amount.d3DamageAmount +"D3 ";
+            stringToReturn+=  amount.numberOfD3 +"D3 ";
         }
 
-        if(amount.rawDamageAmount != 0)
+        if(amount.baseAmount != 0)
         {
-            stringToReturn+= "" + amount.rawDamageAmount;
+            stringToReturn+= "" + amount.baseAmount;
         }
 
 

@@ -136,6 +136,7 @@ public  class FileHandler  {
 
         if(localLastUpdate.equals(onlineLastUpdate) && Integer.parseInt(previousArgumentLengthString) == Arguments.FilesToDownload.size() )
         {
+            DatabaseManager.InitializeDatabaseManager(Arguments.context);
             return "Data is up to date";
         }
         else
@@ -343,6 +344,13 @@ public  class FileHandler  {
             while((readString = reader.readLine()) != null)
             {
                 tempStringArray = readString.split("\\|");
+                int andraHej = tempStringArray.length;
+                boolean boolen = andraHej != 13;
+                int hej = 5;
+                if( boolen)
+                {
+                    hej++;
+                }
                 ArrayList<String> tempArrayList = new ArrayList<>();
                 Collections.addAll(tempArrayList, tempStringArray);
                 arrayListToReturn.add(tempArrayList);

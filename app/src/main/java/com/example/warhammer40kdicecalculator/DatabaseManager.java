@@ -9,6 +9,7 @@ import android.util.LogPrinter;
 
 import androidx.annotation.RequiresApi;
 
+import com.example.warhammer40kdicecalculator.DatasheetModeling.DiceAmount;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Weapon;
 
@@ -54,11 +55,8 @@ public class DatabaseManager {
         {
             assetManager = context.getAssets();
             dataDirectory = context.getDataDir().toString() + "/";
-            ArrayList<ArrayList<String>> DatasheetWeapons = FileHandler.instance.GetWahapediaDataCSV("Datasheets_wargear.csv");
-            if(DatasheetWeapons.size() > 0)
-            {
-                Log.d("wow","Den parsade sag vad");
-            }
+            CreateWeaponDatabase();
+
         }
     }
 
@@ -66,32 +64,72 @@ public class DatabaseManager {
     {
         ArrayList<ArrayList<String>> DatasheetWeapons = FileHandler.instance.GetWahapediaDataCSV("Datasheets_wargear.csv");
 
-        for( ArrayList<String> WeaponEntry : DatasheetWeapons)
+        int amountNotLength13 = 0;
+        ArrayList<Integer> whatValue = new ArrayList<>();
+        ArrayList<String> nameOfWeapons = new ArrayList<>();
+        for(ArrayList<String> entry : DatasheetWeapons)
+        {
+            if(entry.size() != 13)
+            {
+                amountNotLength13++;
+                whatValue.add(entry.size());
+                if(entry.size() > 4)
+                {
+                    nameOfWeapons.add(entry.get(4));
+                }
+            }
+        }
+
+        for( ArrayList<String> weaponEntry : DatasheetWeapons)
         {
             Weapon weaponToConstruct = new Weapon();
-            weaponToConstruct.name = WeaponEntry.get(4);
-            weaponToConstruct.isMelee =   WeaponEntry.get(7).equals("Melee");
-
+            weaponToConstruct.name = weaponEntry.get(4);
+            weaponToConstruct.isMelee =  weaponEntry.get(7).equals("Melee");
+            weaponToConstruct.amountOfAttacks = ParseDiceAmount(weaponEntry.get(8));
+            try {
+                weaponToConstruct.ballisticSkill = Integer.parseInt(weaponEntry.get(9));
+                weaponToConstruct.strength = Integer.parseInt(weaponEntry.get(10));
+                weaponToConstruct.ap = Integer.parseInt(weaponEntry.get(11));
+                weaponToConstruct.damageAmount = ParseDiceAmount(weaponEntry.get(12));
+            }
+            catch (Exception e)
+            {
+                Log.d("Weapon parsing","weapon entry did not match expected format");
+            }
+            WargearWeapons.put(weaponToConstruct.name,weaponToConstruct);
         }
     }
 
-    private <DiceAmount> ParseDiceAmount(String string)
+    private DiceAmount ParseDiceAmount(String string)
     {
-        DiceAmount hej;
-        String[] components = string.split(" ");
+        DiceAmount returnValue = new DiceAmount();
+        String[] components = string.split("\\+");
         for(String component : components)
         {
-            if(component.equals("+"))
-            {
-                continue;
-            }
             try {
-                int numberOfAttacks =
+                returnValue.baseAmount = Integer.parseInt(component);
+                continue;
             }
             catch (Exception exception){}
 
+            try {
+                int diceAmount =  component.charAt(0) -'0';
+                if(component.charAt(2) == '6')
+                {
+                    returnValue.numberOfD6 = diceAmount;
+                }
+                else
+                {
+                    returnValue.numberOfD3 = diceAmount;
+                }
+            }
+            catch (Exception e)
+            {
+                Log.d("Dice parsing","dice value did not match expected format");
+            }
 
         }
+        return returnValue;
     }
 
     public ArrayList<ArrayList<String>> ReadCsvFile(String fileName )

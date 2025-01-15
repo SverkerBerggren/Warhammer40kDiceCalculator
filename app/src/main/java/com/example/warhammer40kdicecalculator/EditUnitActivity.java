@@ -27,7 +27,7 @@ import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
-import com.example.warhammer40kdicecalculator.DatasheetModeling.AttackAmount;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.DiceAmount;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Weapon;
 import com.example.warhammer40kdicecalculator.Identifiers.ArmyIdentifier;
 import com.example.warhammer40kdicecalculator.Identifiers.Identifier;
@@ -435,7 +435,7 @@ public class EditUnitActivity extends AppCompatActivity implements AbilityUIHold
     private String SetWeaponAttacks(Weapon rangedWeapon)
     {
         String stringToReturn = "";
-        AttackAmount amount = rangedWeapon.amountOfAttacks;
+        DiceAmount amount = rangedWeapon.amountOfAttacks;
 
 
         if(amount.numberOfD6 != 0)
@@ -447,9 +447,9 @@ public class EditUnitActivity extends AppCompatActivity implements AbilityUIHold
             stringToReturn+=  amount.numberOfD3 +"D3 ";
         }
 
-        if(amount.rawNumberOfAttacks != 0)
+        if(amount.baseAmount != 0)
         {
-            stringToReturn+= "" + amount.rawNumberOfAttacks;
+            stringToReturn+= "" + amount.baseAmount;
         }
 
 
@@ -458,21 +458,21 @@ public class EditUnitActivity extends AppCompatActivity implements AbilityUIHold
     private String SetWeaponDamage(Weapon rangedWeapon)
     {
         String stringToReturn = "";
-        DamageAmount amount = rangedWeapon.damageAmount;
+        DiceAmount amount = rangedWeapon.damageAmount;
 
 
-        if(amount.d6DamageAmount != 0)
+        if(amount.numberOfD6 != 0)
         {
-            stringToReturn+=  amount.d6DamageAmount +"D6 ";
+            stringToReturn+=  amount.numberOfD6 +"D6 ";
         }
-        if(amount.d3DamageAmount != 0)
+        if(amount.numberOfD3 != 0)
         {
-            stringToReturn+=  amount.d3DamageAmount +"D3 ";
+            stringToReturn+=  amount.numberOfD3 +"D3 ";
         }
 
-        if(amount.rawDamageAmount != 0)
+        if(amount.baseAmount != 0)
         {
-            stringToReturn+= "" + amount.rawDamageAmount;
+            stringToReturn+= "" + amount.baseAmount;
         }
 
 

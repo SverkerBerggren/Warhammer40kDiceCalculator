@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 public class Weapon implements AbilityHolder, DeactivatableInterface {
     public String name;
-    public AttackAmount amountOfAttacks = new AttackAmount();
-    public DamageAmount damageAmount;
+    public DiceAmount amountOfAttacks;
+    public DiceAmount damageAmount;
     public int ballisticSkill;
     public int ap;
     public int strength;
@@ -32,12 +32,12 @@ public class Weapon implements AbilityHolder, DeactivatableInterface {
         return weaponRules.remove(ability);
     }
 
-    public Weapon(int strength, int ap, DamageAmount damageAmount, AttackAmount amountOfAttacks)
+    public Weapon(int strength, int ap, DiceAmount damageAmount, DiceAmount amountOfAttacks)
     {
         this.damageAmount = damageAmount;
         this.strength = strength;
         this.ap = ap;
-        this.amountOfAttacks = new AttackAmount(amountOfAttacks) ;
+        this.amountOfAttacks = new DiceAmount(amountOfAttacks) ;
     }
 
 
@@ -58,23 +58,23 @@ public class Weapon implements AbilityHolder, DeactivatableInterface {
     }
 
 
-    public Weapon(int strength, int ap, DamageAmount damageAmount, AttackAmount amountOfAttacks, ArrayList<Ability> weaponRules)
+    public Weapon(int strength, int ap, DiceAmount damageAmount, DiceAmount amountOfAttacks, ArrayList<Ability> weaponRules)
     {
         this.damageAmount = damageAmount;
         this.strength = strength;
         this.ap = ap;
-        this.amountOfAttacks = new AttackAmount(amountOfAttacks) ;
+        this.amountOfAttacks = new DiceAmount(amountOfAttacks) ;
         this.weaponRules = weaponRules;
     }
 
 
-    public Weapon(String name, int strength, int ap, DamageAmount damageAmount, AttackAmount amountOfAttacks, ArrayList<Ability> weaponRules)
+    public Weapon(String name, int strength, int ap, DiceAmount damageAmount, DiceAmount amountOfAttacks, ArrayList<Ability> weaponRules)
     {
         this.name = name;
         this.damageAmount = damageAmount;
         this.strength = strength;
         this.ap = ap;
-        this.amountOfAttacks = new AttackAmount(amountOfAttacks) ;
+        this.amountOfAttacks = new DiceAmount(amountOfAttacks) ;
         this.weaponRules = weaponRules;
     }
 

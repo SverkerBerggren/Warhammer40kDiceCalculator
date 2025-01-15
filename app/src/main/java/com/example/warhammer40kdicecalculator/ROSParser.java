@@ -5,7 +5,7 @@ import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.Abilities.Dakka;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
-import com.example.warhammer40kdicecalculator.DatasheetModeling.AttackAmount;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.DiceAmount;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Weapon;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
 
@@ -125,9 +125,9 @@ public class ROSParser
         ReturnValue = Ability.getAbilityType(RuleSelection.getAttributes().getNamedItem("name").getNodeValue());
         return(ReturnValue);
     }
-    DamageAmount p_DamageFromString(String StringToConvert)
+    DiceAmount p_DamageFromString(String StringToConvert)
     {
-        DamageAmount ReturnValue = new DamageAmount();
+        DiceAmount ReturnValue = new DiceAmount();
         int ParseOffset = 0;
         int CurrentInteger = -1;
         while(ParseOffset < StringToConvert.length())
@@ -139,11 +139,11 @@ public class ROSParser
                 {
                     if(StringToConvert.charAt(ParseOffset) == '6')
                     {
-                        ReturnValue.d6DamageAmount = CurrentInteger == -1 ? 1 : CurrentInteger;
+                        ReturnValue.numberOfD6 = CurrentInteger == -1 ? 1 : CurrentInteger;
                     }
                     else if(StringToConvert.charAt(ParseOffset) == '3')
                     {
-                        ReturnValue.d3DamageAmount = CurrentInteger == -1 ? 1 : CurrentInteger;
+                        ReturnValue.numberOfD3 = CurrentInteger == -1 ? 1 : CurrentInteger;
                     }
                     ParseOffset += 1;
                     CurrentInteger = -1;
@@ -153,7 +153,7 @@ public class ROSParser
             {
                 if(CurrentInteger != -1)
                 {
-                    ReturnValue.rawDamageAmount = CurrentInteger;
+                    ReturnValue.baseAmount = CurrentInteger;
                 }
                 ParseOffset += 1;
             }
@@ -171,7 +171,7 @@ public class ROSParser
         {
 
 
-            ReturnValue.rawDamageAmount = CurrentInteger;
+            ReturnValue.baseAmount = CurrentInteger;
         }
         return(ReturnValue);
     }
@@ -180,7 +180,7 @@ public class ROSParser
         if(TypeString.equals("Melee"))
         {
             ResultWeapon.isMelee = true;
-            ResultWeapon.amountOfAttacks.rawNumberOfAttacks = 1;
+            ResultWeapon.amountOfAttacks.baseAmount = 1;
             return;
         }
         int ParseOffset = 0;
@@ -210,7 +210,7 @@ public class ROSParser
                 ResultWeapon.weaponRules.add(Ability.getAbilityType(TypeString.substring(0, ParseOffset)));
             }
         }
-        ResultWeapon.amountOfAttacks =new AttackAmount(p_DamageFromString(DamageString));
+        ResultWeapon.amountOfAttacks = new DiceAmount(p_DamageFromString(DamageString));
     }
     Weapon p_ParseWeapon(Node ProfileNode)
     {

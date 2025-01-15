@@ -163,12 +163,12 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
 
 
 
-            rawNumberOfAttacksView.setText(""+weapon.amountOfAttacks.rawNumberOfAttacks);
+            rawNumberOfAttacksView.setText(""+weapon.amountOfAttacks.baseAmount);
             attacksAmountD3View.setText(""+weapon.amountOfAttacks.numberOfD3);
             attacksAmountD6View.setText(""+weapon.amountOfAttacks.numberOfD6);
-            rawDamageAmountView.setText(""+weapon.damageAmount.rawDamageAmount);
-            damageAmountD3View.setText(""+weapon.damageAmount.d3DamageAmount);
-            damageAmountD6View.setText(""+weapon.damageAmount.d6DamageAmount);
+            rawDamageAmountView.setText(""+weapon.damageAmount.baseAmount);
+            damageAmountD3View.setText(""+weapon.damageAmount.numberOfD3);
+            damageAmountD6View.setText(""+weapon.damageAmount.numberOfD6);
             strengthView.setText(""+weapon.strength);
             apView.setText(""+weapon.ap);
             hitSkillView.setText(""+weapon.ballisticSkill);
@@ -206,12 +206,12 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
         @Override
         public void onClick(View view) {
 
-            weapon.amountOfAttacks.rawNumberOfAttacks= Integer.parseInt( rawNumberOfAttacksView.getText().toString());
+            weapon.amountOfAttacks.baseAmount = Integer.parseInt( rawNumberOfAttacksView.getText().toString());
             weapon.amountOfAttacks.numberOfD3 =  Integer.parseInt( attacksAmountD3View.getText().toString());
             weapon.amountOfAttacks.numberOfD6 =  Integer.parseInt( attacksAmountD6View.getText().toString());
-            weapon.damageAmount.rawDamageAmount = Integer.parseInt(rawDamageAmountView.getText().toString());
-            weapon.damageAmount.d3DamageAmount = Integer.parseInt(damageAmountD3View.getText().toString());
-            weapon.damageAmount.d6DamageAmount = Integer.parseInt(damageAmountD6View.getText().toString());
+            weapon.damageAmount.baseAmount = Integer.parseInt(rawDamageAmountView.getText().toString());
+            weapon.damageAmount.numberOfD3 = Integer.parseInt(damageAmountD3View.getText().toString());
+            weapon.damageAmount.numberOfD6 = Integer.parseInt(damageAmountD6View.getText().toString());
             weapon.strength = Integer.parseInt(strengthView.getText().toString());
             weapon.ap = Integer.parseInt(apView.getText().toString());
             weapon.ballisticSkill = Integer.parseInt(hitSkillView.getText().toString());

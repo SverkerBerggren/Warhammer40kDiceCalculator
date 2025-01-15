@@ -87,7 +87,7 @@ public class RollingLogic {
 
                         if(currentWeapon.isMelee)
                         {
-                            currentWeapon.amountOfAttacks.rawNumberOfAttacks = currentAttackingModel.attacks;
+                            currentWeapon.amountOfAttacks.baseAmount = currentAttackingModel.attacks;
 
                             if(currentWeapon.strength == -2)
                             {
@@ -101,7 +101,7 @@ public class RollingLogic {
 
                         int requiredHitRoll = currentWeapon.ballisticSkill;
 
-                        int damage = currentWeapon.damageAmount.rawDamageAmount;
+                        int damage = currentWeapon.damageAmount.baseAmount;
                         int ap = currentWeapon.ap;
                         int strength = currentWeapon.strength;
 
@@ -116,7 +116,7 @@ public class RollingLogic {
                             {
                                 if( ability.name.contains("Rapid Fire"))
                                 {
-                                    currentWeapon.amountOfAttacks.rawNumberOfAttacks*=2;
+                                    currentWeapon.amountOfAttacks.baseAmount *=2;
                                 }
                             }
                         }
@@ -126,7 +126,7 @@ public class RollingLogic {
                             {
                                 if( ability.name.contains("Dakka"))
                                 {
-                                    currentWeapon.amountOfAttacks.rawNumberOfAttacks = ((Dakka)ability).dakkaAmount;
+                                    currentWeapon.amountOfAttacks.baseAmount = ((Dakka)ability).dakkaAmount;
                                 }
                             }
                         }
@@ -257,7 +257,7 @@ public class RollingLogic {
     private int AmountOfAttacks(MetricsOfAttacking metrics, Unit currentAttackingUnit, Weapon currentWeapon, Unit defendingUnit, Model currentAttackingModel) {
         int amountOfAttacks = 0;
 
-        amountOfAttacks += currentWeapon.amountOfAttacks.rawNumberOfAttacks;
+        amountOfAttacks += currentWeapon.amountOfAttacks.baseAmount;
         List<DiceResult> amountOffAttacksRollD3 = new ArrayList<>();
         for (int p = 0; p < currentWeapon.amountOfAttacks.numberOfD3; p++) {
             DiceResult diceResult = new DiceResult(ThreadLocalRandom.current().nextInt(1, 3 + 1));
@@ -357,8 +357,8 @@ public class RollingLogic {
 
         if (saveRoll.result < requiredSaveRoll) {
             //amountOfWoundsTotal += currentWeapon.damageAmount.rawDamageAmount;
-            damageToBeTaken = weapon.damageAmount.rawDamageAmount;
-            for (int o = 0; o < weapon.damageAmount.d3DamageAmount; o++) {
+            damageToBeTaken = weapon.damageAmount.baseAmount;
+            for (int o = 0; o < weapon.damageAmount.numberOfD3; o++) {
                 //  Log.d(("Testar loopar: "),"Fungerar vapen loopen loopen");
                 DiceResult diceResult = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 + 1));
 
@@ -373,7 +373,7 @@ public class RollingLogic {
                     damageToBeTaken += 3;
                 }
             }
-            for (int o = 0; o < weapon.damageAmount.d6DamageAmount; o++) {
+            for (int o = 0; o < weapon.damageAmount.numberOfD6; o++) {
                 DiceResult diceResult = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 + 1));
 
                 damageToBeTaken += diceResult.result;
