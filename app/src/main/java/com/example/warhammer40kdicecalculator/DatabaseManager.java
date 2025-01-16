@@ -91,7 +91,10 @@ public class DatabaseManager {
             weaponToConstruct.isMelee =  weaponEntry.get(7).equals("Melee");
             weaponToConstruct.amountOfAttacks = ParseDiceAmount(weaponEntry.get(8));
             try {
-                weaponToConstruct.ballisticSkill = Integer.parseInt(weaponEntry.get(9));
+                if (!weaponEntry.get(9).equals("N/A"))
+                {
+                    weaponToConstruct.ballisticSkill = Integer.parseInt(weaponEntry.get(9));
+                }
                 weaponToConstruct.strength = Integer.parseInt(weaponEntry.get(10));
                 weaponToConstruct.ap = Integer.parseInt(weaponEntry.get(11));
                 weaponToConstruct.damageAmount = ParseDiceAmount(weaponEntry.get(12));
@@ -110,28 +113,66 @@ public class DatabaseManager {
         String[] components = string.split("\\+");
         for(String component : components)
         {
-            try {
-                returnValue.baseAmount = Integer.parseInt(component);
-                continue;
-            }
-            catch (Exception exception){}
+            // Doubtful if there is a case in the game where there are more than 9 D3/D6 but it covers that case
+            StringBuilder dicePrefix = new StringBuilder();
+            boolean isDiceValue = false;
+            char diceSuffix = '0';
 
-            try {
-                int diceAmount =  component.charAt(0) -'0';
-                if(component.charAt(2) == '6')
+            for(int i = 0; i < component.length(); i++ )
+            {
+                if(component.charAt(i) == 'D')
                 {
-                    returnValue.numberOfD6 = diceAmount;
+                    isDiceValue = true;
+                    continue;
+                }
+
+                if(Character.isDigit(component.charAt(i)) )
+                {
+                    if(!isDiceValue)
+                    {
+                        dicePrefix.append(component.charAt(i));
+                    }
+                    else
+                    {
+                        if(component.charAt(i) == '3' || component.charAt(i) == '6')
+                        {
+                            diceSuffix = component.charAt(i);
+                        }
+                        else
+                        {
+                            Log.d("Dice parsing", "Invalid dice suffix, only D3 and D6 exists");
+                        }
+                    }
+                    continue;
+                }
+                Log.d("Dice parsing", "Unexpected character found in dice component");
+            }
+            try {
+                if(!isDiceValue)
+                {
+                    returnValue.baseAmount = Integer.parseInt(component);
                 }
                 else
                 {
-                    returnValue.numberOfD3 = diceAmount;
+                    int diceAmount = 1;
+                    if(dicePrefix.length() != 0)
+                    {
+                        diceAmount = Integer.parseInt(dicePrefix.toString());
+                    }
+                    if(diceSuffix == '3')
+                    {
+                        returnValue.numberOfD3 = diceAmount;
+                    }
+                    else
+                    {
+                        returnValue.numberOfD6 = diceAmount;
+                    }
                 }
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                Log.d("Dice parsing","dice value did not match expected format");
+                Log.d("Dice parsing", "Failed to convert dice representation");
             }
-
         }
         return returnValue;
     }

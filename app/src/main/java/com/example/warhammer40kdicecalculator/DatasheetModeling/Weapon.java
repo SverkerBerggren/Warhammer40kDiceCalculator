@@ -9,6 +9,7 @@ public class Weapon implements AbilityHolder, DeactivatableInterface {
     public String name;
     public DiceAmount amountOfAttacks;
     public DiceAmount damageAmount;
+    // Does not take to account N/A yet
     public int ballisticSkill;
     public int ap;
     public int strength;
