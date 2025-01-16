@@ -82,6 +82,10 @@ public class DatabaseManager {
 
         for( ArrayList<String> weaponEntry : DatasheetWeapons)
         {
+            if(weaponEntry.size() != 13)
+            {
+                continue;
+            }
             Weapon weaponToConstruct = new Weapon();
             weaponToConstruct.name = weaponEntry.get(4);
             weaponToConstruct.isMelee =  weaponEntry.get(7).equals("Melee");
