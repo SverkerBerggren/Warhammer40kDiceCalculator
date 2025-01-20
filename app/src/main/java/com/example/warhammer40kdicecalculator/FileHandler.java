@@ -344,13 +344,12 @@ public  class FileHandler  {
             while((readString = reader.readLine()) != null)
             {
                 tempStringArray = readString.split("\\|");
-                int andraHej = tempStringArray.length;
-                boolean boolen = andraHej != 13;
-                int hej = 5;
-                if( boolen)
+
+                for(int i = 0; i < tempStringArray.length; i++)
                 {
-                    hej++;
+                    tempStringArray[i] = tempStringArray[i].trim();
                 }
+
                 ArrayList<String> tempArrayList = new ArrayList<>();
                 Collections.addAll(tempArrayList, tempStringArray);
                 arrayListToReturn.add(tempArrayList);

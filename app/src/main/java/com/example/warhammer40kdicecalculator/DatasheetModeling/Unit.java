@@ -8,11 +8,10 @@ import java.util.ArrayList;
 
 public class Unit implements AbilityHolder, ModifierHolder {
 
+    public boolean singleModelUnit = false;
+    public String wahapediaDataId;
     public String unitName = "";
-
     public int pointCost;
-
-
     public int toughnessModifier;
     public int strengthModifier;
     public int armorSaveModifier;
@@ -38,7 +37,6 @@ public class Unit implements AbilityHolder, ModifierHolder {
 
         tempUnit.listOfAbilitys.addAll( listOfAbilitys);
 
-
         tempUnit.toughnessModifier = toughnessModifier;
         tempUnit.strengthModifier = strengthModifier;
         tempUnit.armorSaveModifier = armorSaveModifier;
@@ -46,8 +44,6 @@ public class Unit implements AbilityHolder, ModifierHolder {
         tempUnit.woundsModifier = woundsModifier;
         tempUnit.hitSkill = hitSkill;
         tempUnit.attacksModifier = attacksModifier;
-
-
 
         return  tempUnit;
     }

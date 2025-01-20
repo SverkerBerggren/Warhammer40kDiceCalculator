@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class Weapon implements AbilityHolder, DeactivatableInterface {
     public String name;
     public DiceAmount amountOfAttacks;
+    public String WahapediaDataId;
     public DiceAmount damageAmount;
     // Does not take to account N/A yet
     public int ballisticSkill;

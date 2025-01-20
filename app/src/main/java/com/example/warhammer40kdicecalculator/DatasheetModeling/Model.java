@@ -8,11 +8,14 @@ import com.example.warhammer40kdicecalculator.ModifierHolder;
 import java.util.ArrayList;
 
 public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterface {
-    //public int ap;
+
+
+    public String wahapediaDataId;
     public String name;
     public int toughness = -1;;
     public int strength = -1;
     public int armorSave = -1;
+    //Todo: Fix invulnerable save condition
     public int invulnerableSave = 7;
     public int wounds = -1;
     public int attacks=  -1;

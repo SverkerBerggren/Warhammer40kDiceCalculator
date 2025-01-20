@@ -129,19 +129,6 @@ public class  MainActivity extends AppCompatActivity {
         FileHandler.InitializeFileHandler(context);
 
         DownloadAndCreateDatabases(getWindow().getCurrentFocus());
-
-
-        try
-        {
-            Scanner s = new Scanner(context.getAssets().open("TestRos.ros")).useDelimiter("\\A");
-            String result = s.hasNext() ? s.next() : "";
-            ROSParser Parser = new ROSParser();
-            Army TestArmy = Parser.ParseArmy(result);
-        }
-        catch(Exception e)
-        {
-
-        }
     }
 
 
