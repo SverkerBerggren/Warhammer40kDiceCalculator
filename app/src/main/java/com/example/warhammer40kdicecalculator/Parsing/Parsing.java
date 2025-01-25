@@ -2,16 +2,22 @@ package com.example.warhammer40kdicecalculator.Parsing;
 
 import android.util.Log;
 import android.util.Pair;
-import android.view.Display;
-import android.view.KeyEvent;
 
 import com.example.warhammer40kdicecalculator.DatabaseManager;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
-import com.example.warhammer40kdicecalculator.DatasheetModeling.Weapon;
 
 import java.util.HashMap;
+
+
+enum ItemType
+{
+    MODEL,
+    UNIT,
+    WEAPON,
+    UNIDENTIFIED
+}
 
 public class Parsing
 {
@@ -21,6 +27,8 @@ public class Parsing
     private final String DEDICATED_TRANSPORTS = "DEDICATED TRANSPORTS";
 
     private final Object DatabaseLock = new Object();
+    private HashMap<DatabaseManager.IdNameKey, Model> modelDatasheetDatabase;
+    private HashMap<String, Unit> datasheetDatabase;
 
     public Army ParseGWListFormat(String armyListString)
     {
@@ -33,6 +41,8 @@ public class Parsing
                 }
             }
         }
+        modelDatasheetDatabase = DatabaseManager.getInstance().GetModelsDatasheetDatabase();
+        datasheetDatabase = DatabaseManager.getInstance().GetDatasheetsDatabase();
 
         int stringOffset = 0;
         int armyListStringLength = armyListString.length();
@@ -104,7 +114,7 @@ public class Parsing
         return  false;
     }
 
-    private Pair<Integer,String> ParseUnitLineBreak(int offset, String armyList)
+    private Pair<Integer,String> ParseUntilLineBreak(int offset, String armyList)
     {
         StringBuilder parsedString = new StringBuilder();
         while(offset < armyList.length())
@@ -134,10 +144,24 @@ public class Parsing
 
     }
 
+    private Pair<ItemType,Object> GetItem()
+    {
+
+        return null;
+    }
+
     private int ParseModelEquipment(int offset, String armyList, Unit unit, Model modelType, int modelCount)
     {
         int amount = 0;
         int armyLength = armyList.length();
+        int modelsRangeWeaponIndex = 0;
+        int modelsMeleeWeaponIndex = 0;
+
+        for(int i = 0; i < modelCount; i++)
+        {
+            unit.listOfModels.add(modelType.Copy());
+        }
+
         while (offset < armyLength)
         {
             RemoveWhiteSpaces(offset,armyList);
@@ -146,19 +170,13 @@ public class Parsing
                 Pair<Integer,Integer> offsetAndAmount = ParseItemAmount(armyList,offset);
                 offset = offsetAndAmount.first;
                 amount = offsetAndAmount.second;
+                Pair<Integer,String> offsetAndItem = ParseUntilLineBreak(offset,armyList);
+                offset = offsetAndItem.first;
+
             }
             offset++;
         }
         return offset;
-    }
-
-    private void AddWeaponToModel(DatabaseManager.IdNameKey key, Model model )
-    {
-        Weapon weapon = DatabaseManager.instance.GetDatasheetWargearDatabase().get(key);
-        if(weapon.isMelee)
-        {
-          //  model.listOfMeleeWeapons.add(weapon);
-        }
     }
 
     private int ParseUnitItem(int offset, String armyList, Unit unit)
@@ -173,15 +191,13 @@ public class Parsing
                 Pair<Integer,Integer> offsetAndAmount  = ParseItemAmount(armyList,offset +1);
                 offset = offsetAndAmount.first;
                 amount = offsetAndAmount.second;
-                Pair<Integer,String> parsedStringAndOffset = ParseUnitLineBreak(offset +1,armyList);
+                Pair<Integer,String> parsedStringAndOffset = ParseUntilLineBreak(offset +1,armyList);
                 offset = parsedStringAndOffset.first;
 
                 String itemName = parsedStringAndOffset.second;
                 boolean isModel = false;
 
                 DatabaseManager.IdNameKey idNameKey = new DatabaseManager.IdNameKey(unit.wahapediaDataId,itemName);
-                HashMap<DatabaseManager.IdNameKey, Model> modelDatasheetDatabase = DatabaseManager.getInstance().GetModelsDatasheetDatabase();
-
                 isModel = modelDatasheetDatabase.containsKey( new DatabaseManager.IdNameKey(unit.wahapediaDataId,itemName));
 
                 // If the first item is a weapon it is assumed that the unit is a single model unit
@@ -189,6 +205,7 @@ public class Parsing
                 {
                     unit.singleModelUnit = true;
                     unit.listOfModels.add( modelDatasheetDatabase.get( idNameKey) );
+
                     continue;
                 }
                 if(isModel)
@@ -225,10 +242,10 @@ public class Parsing
                     unitToAdd.unitName = unitName.toString().trim();
                     offset = pointValue.first;
 
-                    unitToAdd.wahapediaDataId = DatabaseManager.getInstance().GetDatasheetsDatabase().get(unitToAdd.unitName).wahapediaDataId;
+                    unitToAdd.wahapediaDataId = datasheetDatabase.get(unitToAdd.unitName).wahapediaDataId;
                     offset = ParseUnitItem(offset,armyListString,unitToAdd);
 
-                    return  new Pair<Integer,Unit>(offset,unitToAdd);
+                    return  new Pair<>(offset,unitToAdd);
                 }
                 else
                 {

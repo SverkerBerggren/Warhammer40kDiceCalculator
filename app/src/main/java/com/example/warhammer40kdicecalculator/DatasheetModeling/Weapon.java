@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class Weapon implements AbilityHolder, DeactivatableInterface {
     public String name;
     public DiceAmount amountOfAttacks;
-    public String WahapediaDataId;
+    public String wahapediaDataId;
     public DiceAmount damageAmount;
     // Does not take to account N/A yet
     public int ballisticSkill;
@@ -53,6 +53,7 @@ public class Weapon implements AbilityHolder, DeactivatableInterface {
         weaponToReturn.isMelee = isMelee;
         weaponToReturn.active = active;
         weaponToReturn.amountOfAttacks = amountOfAttacks.Copy();
+        weaponToReturn.wahapediaDataId = wahapediaDataId;
 
         weaponToReturn.weaponRules = new ArrayList<>(weaponRules);
 

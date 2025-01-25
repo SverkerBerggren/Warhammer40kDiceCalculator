@@ -2,13 +2,11 @@ package com.example.warhammer40kdicecalculator.DatasheetModeling;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.CompareActivity;
-import com.example.warhammer40kdicecalculator.MeleeWeapons;
 import com.example.warhammer40kdicecalculator.ModifierHolder;
 
 import java.util.ArrayList;
 
 public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterface {
-
 
     public String wahapediaDataId;
     public String name;
@@ -26,8 +24,6 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
 
     public ArrayList<Weapon> listOfRangedWeapons = new ArrayList<>();
 
-    public ArrayList<MeleeWeapons> listOfMeleeWeapons = new ArrayList<>();
-
     public void CopyStats(Model OtherModel)
     {
         OtherModel.toughness = toughness;
@@ -36,7 +32,6 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
         OtherModel.invulnerableSave = invulnerableSave;
         OtherModel.wounds = wounds;
         OtherModel.attacks = attacks;
-
     }
 
     @Override
@@ -51,6 +46,7 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
 
     public Model(Model other)
     {
+        wahapediaDataId = other.wahapediaDataId;
         toughness = other.toughness;
         strength = other.strength;
         armorSave = other.armorSave;
@@ -61,11 +57,7 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
         active = other.active;
 
         listOfAbilites = new ArrayList<>(other.listOfAbilites);
-
         listOfRangedWeapons = new ArrayList<>(other.listOfRangedWeapons);
-
-        listOfMeleeWeapons = new ArrayList<>(other.listOfMeleeWeapons);
-
      }
 
     public Model Copy()
@@ -77,7 +69,7 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
         modelToReturn.invulnerableSave = invulnerableSave;
         modelToReturn.wounds = wounds;
         modelToReturn.attacks=  attacks;
-
+        modelToReturn.wahapediaDataId = wahapediaDataId;
         modelToReturn.active = active;
 
         modelToReturn.listOfAbilites = new ArrayList<>(listOfAbilites);
@@ -90,9 +82,6 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
         }
 
         modelToReturn.listOfRangedWeapons = newList;
-
-        modelToReturn.listOfMeleeWeapons = new ArrayList<>();
-
         return modelToReturn;
 
     }
@@ -103,7 +92,7 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
     }
 
     public Model(String name, int toughness, int strength, int armorSave, int invulnerableSave, int wounds, int attacks,
-                 ArrayList<Ability> listOfAbilites, ArrayList<Weapon> listOfRangedWeapons, ArrayList<MeleeWeapons> listOfMeleeWeapons)
+                 ArrayList<Ability> listOfAbilites, ArrayList<Weapon> listOfRangedWeapons)
     {
         this.name = name;
         this.toughness = toughness;
@@ -116,7 +105,6 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
         this.listOfAbilites = listOfAbilites;
 
         this.listOfRangedWeapons = listOfRangedWeapons;
-        this.listOfMeleeWeapons = listOfMeleeWeapons;
     }
 
     @Override

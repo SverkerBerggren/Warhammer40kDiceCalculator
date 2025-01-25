@@ -36,7 +36,7 @@ public class Unit implements AbilityHolder, ModifierHolder {
         }
 
         tempUnit.listOfAbilitys.addAll( listOfAbilitys);
-
+        tempUnit.wahapediaDataId = wahapediaDataId;
         tempUnit.toughnessModifier = toughnessModifier;
         tempUnit.strengthModifier = strengthModifier;
         tempUnit.armorSaveModifier = armorSaveModifier;
