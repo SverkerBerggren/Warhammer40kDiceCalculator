@@ -1,4 +1,4 @@
-package com.example.warhammer40kdicecalculator;
+package com.example.warhammer40kdicecalculator.Activities;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +20,9 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+
+import com.example.warhammer40kdicecalculator.FileHandling.FileHandler;
+import com.example.warhammer40kdicecalculator.R;
 
 import java.io.File;
 import java.io.FileOutputStream;

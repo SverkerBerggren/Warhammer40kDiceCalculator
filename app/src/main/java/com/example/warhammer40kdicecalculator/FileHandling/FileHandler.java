@@ -1,11 +1,8 @@
-package com.example.warhammer40kdicecalculator;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
+package com.example.warhammer40kdicecalculator.FileHandling;
 
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.AssetManager;
-import android.icu.number.ScientificNotation;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
@@ -13,7 +10,11 @@ import android.util.Log;
 import androidx.annotation.RequiresApi;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
+import com.example.warhammer40kdicecalculator.AbilityElementAdapter;
+import com.example.warhammer40kdicecalculator.DatabaseManager;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
+import com.example.warhammer40kdicecalculator.Matchup;
+import com.example.warhammer40kdicecalculator.ROSParser;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.example.warhammer40kdicecalculator.Parsing.Parsing;
@@ -21,27 +22,16 @@ import com.example.warhammer40kdicecalculator.Parsing.Parsing;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
-
-class UpdateArgumentStruct
-{
-    public Context context;
-    public String OutputPrefix = "";
-    public String LastUpdateURL = "";
-    public ArrayList<String> FilesToDownload = new ArrayList<>();
-}
 
 public  class FileHandler  {
 
@@ -343,6 +333,8 @@ public  class FileHandler  {
 
             while((readString = reader.readLine()) != null)
             {
+                // This is required to make sure that inconsistent capitalization does not break the parsing
+                readString = readString.toLowerCase();
                 tempStringArray = readString.split("\\|");
 
                 for(int i = 0; i < tempStringArray.length; i++)

@@ -14,13 +14,10 @@ import java.lang.reflect.Type;
 
 public class AbilityElementAdapter implements JsonSerializer<Ability>, JsonDeserializer<Ability> {
 
-
     @Override
     public JsonElement serialize(Ability src, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject result = new JsonObject();
         result.add("name", new JsonPrimitive(src.name));
-       // result.add("properties", context.serialize(src, src.getClass()));
-
         return result;
     }
 
@@ -31,12 +28,6 @@ public class AbilityElementAdapter implements JsonSerializer<Ability>, JsonDeser
         String type = jsonObject.get("name").getAsString();
         JsonElement element = jsonObject.get("name");
 
-        Ability abilityToReturn = Ability.getAbilityType(type);
-
-
-        return abilityToReturn;
-
+        return Ability.getAbilityType(type);
     }
-
-
 }

@@ -1,4 +1,4 @@
-package com.example.warhammer40kdicecalculator;
+package com.example.warhammer40kdicecalculator.Activities;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -18,6 +18,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+
+import com.example.warhammer40kdicecalculator.FileHandling.FileHandler;
+import com.example.warhammer40kdicecalculator.R;
 
 import java.util.ArrayList;
 

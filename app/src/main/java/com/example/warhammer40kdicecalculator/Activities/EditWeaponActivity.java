@@ -1,4 +1,4 @@
-package com.example.warhammer40kdicecalculator;
+package com.example.warhammer40kdicecalculator.Activities;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,14 +23,18 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
+import com.example.warhammer40kdicecalculator.AbilityUIHolder;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Weapon;
+import com.example.warhammer40kdicecalculator.FileHandling.FileHandler;
 import com.example.warhammer40kdicecalculator.Identifiers.ModelIdentifier;
+import com.example.warhammer40kdicecalculator.Matchup;
+import com.example.warhammer40kdicecalculator.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHolder{
+public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHolder {
     private LayoutInflater inflater;
     private ImageButton abilityPopupButton;
     private boolean inflatedPopup= false;
@@ -47,7 +51,7 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
 
     private LinearLayout linearLayout;
 
-    private  Matchup matchup;
+    private Matchup matchup;
     private Context context;
 
     private EditWeaponActivity abilityHolder = this;
@@ -78,7 +82,7 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
 
         ArrayList<Weapon> weapons = new ArrayList<>();
 
-        weapons = matchup.GetModel(modelId).listOfRangedWeapons;
+        weapons = matchup.GetModel(modelId).weapons;
 
         TableLayout tableLayout = (TableLayout) findViewById(R.id.WeaponEditTableLayout);
 

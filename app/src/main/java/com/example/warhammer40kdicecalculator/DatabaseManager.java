@@ -11,6 +11,7 @@ import com.example.warhammer40kdicecalculator.DatasheetModeling.DiceAmount;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Weapon;
+import com.example.warhammer40kdicecalculator.FileHandling.FileHandler;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,18 +23,15 @@ public class DatabaseManager {
 
     private final android.content.res.AssetManager assetManager;
     private final String dataDirectory;
-    // Weapon names have a one to many relationship
     private final HashMap<IdNameKey, Weapon> DatasheetWargear = new HashMap<>();
-    // Datasheet names are unique
-    private final HashMap<String, Unit> Datasheets = new HashMap<>();
-    //  Id have a one to many relationship
+    private final HashMap<IdNameKey, Unit> Datasheets = new HashMap<>();
     private final HashMap<IdNameKey, Model> modelsDatasheet = new HashMap<>();
     public static volatile DatabaseManager instance;
 
     private final Object lock = new Object();
 
     public HashMap<IdNameKey, Weapon> GetDatasheetWargearDatabase() {return  DatasheetWargear;}
-    public HashMap<String, Unit> GetDatasheetsDatabase() {return  Datasheets;}
+    public HashMap<IdNameKey, Unit> GetDatasheetsDatabase() {return  Datasheets;}
     public HashMap<IdNameKey, Model> GetModelsDatasheetDatabase() {return  modelsDatasheet;}
 
     public static class IdNameKey
@@ -41,10 +39,21 @@ public class DatabaseManager {
         private String name;
         private String wahapediaId;
 
-        public IdNameKey(String name, String wahapediaId)
+        public IdNameKey(String wahapediaId, String name)
         {
             this.name = name;
             this.wahapediaId = wahapediaId;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            //Bajtad af don't @ me
+            final int prime = 31;
+            int result = 1;
+            result = prime * result * + name.hashCode();
+            result = prime * result * + wahapediaId.hashCode();
+            return  result;
         }
 
         @Override
@@ -104,6 +113,13 @@ public class DatabaseManager {
             Model model = new Model();
 
             model.wahapediaDataId = modelEntry.get(0);
+
+            // Temporar maste testa pallar tji
+            if(modelEntry.get(2).equals("cadian shock troops") || modelEntry.get(2).equals("shock trooper sergeant"))
+            {
+                modelEntry.set(2,"shock trooper");
+            }
+
             model.name = modelEntry.get(2);
             try {
                 model.toughness = Integer.parseInt( modelEntry.get(4));
@@ -138,7 +154,7 @@ public class DatabaseManager {
             unitDatasheet.wahapediaDataId = datasheetEntry.get(0);
             unitDatasheet.unitName = datasheetEntry.get(1);
 
-            Datasheets.put(unitDatasheet.unitName,unitDatasheet);
+            Datasheets.put(new IdNameKey(unitDatasheet.wahapediaDataId,unitDatasheet.unitName),unitDatasheet);
         }
     }
 
@@ -164,17 +180,22 @@ public class DatabaseManager {
 
         for( ArrayList<String> weaponEntry : DatasheetWeapons)
         {
+            if( weaponEntry.size()>=5 && weaponEntry.get(4).equalsIgnoreCase("Konstantin’s Hooves"))
+            {
+                amountNotLength13 ++;
+                Log.d("Temporary", "aosidj");
+            }
             if(weaponEntry.size() != 13)
             {
                 continue;
             }
             Weapon weaponToConstruct = new Weapon();
-            weaponToConstruct.WahapediaDataId = weaponEntry.get(0);
+            weaponToConstruct.wahapediaDataId = weaponEntry.get(0);
             weaponToConstruct.name = weaponEntry.get(4);
-            weaponToConstruct.isMelee =  weaponEntry.get(7).equals("Melee");
+            weaponToConstruct.isMelee =  weaponEntry.get(7).equals("melee");
             weaponToConstruct.amountOfAttacks = ParseDiceAmount(weaponEntry.get(8));
             try {
-                if (!weaponEntry.get(9).equals("N/A"))
+                if (!weaponEntry.get(9).equals("n/a"))
                 {
                     weaponToConstruct.ballisticSkill = Integer.parseInt(weaponEntry.get(9));
                 }
@@ -186,7 +207,7 @@ public class DatabaseManager {
             {
                 Log.d("Weapon parsing",e.getMessage());
             }
-            DatasheetWargear.put(new IdNameKey(weaponEntry.get(0),weaponToConstruct.name),weaponToConstruct);
+            DatasheetWargear.put(new IdNameKey(weaponToConstruct.wahapediaDataId,weaponToConstruct.name),weaponToConstruct);
         }
     }
 
@@ -204,7 +225,7 @@ public class DatabaseManager {
 
             for(int i = 0; i < component.length(); i++ )
             {
-                if(component.charAt(i) == 'D')
+                if(component.charAt(i) == 'd')
                 {
                     isDiceValue = true;
                     continue;

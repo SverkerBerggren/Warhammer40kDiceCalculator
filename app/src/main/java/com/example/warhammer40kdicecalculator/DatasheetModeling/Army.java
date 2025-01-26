@@ -1,7 +1,7 @@
 package com.example.warhammer40kdicecalculator.DatasheetModeling;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
-import com.example.warhammer40kdicecalculator.CompareActivity;
+import com.example.warhammer40kdicecalculator.Activities.CompareActivity;
 import com.example.warhammer40kdicecalculator.ModifierHolder;
 
 import java.util.ArrayList;

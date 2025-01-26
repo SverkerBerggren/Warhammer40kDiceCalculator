@@ -278,7 +278,7 @@ public class ROSParser
         }
         else if(ProfileNode.getAttributes().getNamedItem("typeName").getNodeValue().equals("Weapon"))
         {
-            ModelToModify.listOfRangedWeapons.add(p_ParseWeapon(ProfileNode));
+            ModelToModify.weapons.add(p_ParseWeapon(ProfileNode));
         }
     }
     ArrayList<Model> ParseModel(Node ModelNode)
@@ -389,7 +389,7 @@ public class ROSParser
                         int WeaponAmount = Integer.parseInt(CurrentSelection.getAttributes().getNamedItem("number").getNodeValue())/ModelCount;
                         for(int k = 0; k < WeaponAmount;k++)
                         {
-                            BaseModel.listOfRangedWeapons.add(NewWeapon);
+                            BaseModel.weapons.add(NewWeapon);
                         }
                     }
                 }
@@ -475,7 +475,7 @@ public class ROSParser
                     {
                         if(ChildProfiles.getChildNodes().item(j).getNodeName().equals("profile"))
                         {
-                            TemporaryModel.listOfRangedWeapons.add(p_ParseWeapon(ChildProfiles.getChildNodes().item(j)));
+                            TemporaryModel.weapons.add(p_ParseWeapon(ChildProfiles.getChildNodes().item(j)));
                         }
                     }
                 }
@@ -494,7 +494,7 @@ public class ROSParser
         {
             for(int i = 0; i < ReturnValue.listOfModels.size();i++)
             {
-                ReturnValue.listOfModels.get(i).listOfRangedWeapons.addAll(TemporaryModel.listOfRangedWeapons);
+                ReturnValue.listOfModels.get(i).weapons.addAll(TemporaryModel.weapons);
             }
         }
         return(ReturnValue);

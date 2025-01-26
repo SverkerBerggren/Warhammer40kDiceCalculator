@@ -1,38 +1,38 @@
-package com.example.warhammer40kdicecalculator;
+package com.example.warhammer40kdicecalculator.Activities;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
+import com.example.warhammer40kdicecalculator.AbilityUIHolder;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
+import com.example.warhammer40kdicecalculator.FileHandling.FileHandler;
 import com.example.warhammer40kdicecalculator.Identifiers.ArmyIdentifier;
 import com.example.warhammer40kdicecalculator.Identifiers.Identifier;
 import com.example.warhammer40kdicecalculator.Identifiers.ModelIdentifier;
-import com.example.warhammer40kdicecalculator.Identifiers.UIIdentifier;
 import com.example.warhammer40kdicecalculator.Identifiers.UnitIdentifier;
+import com.example.warhammer40kdicecalculator.Matchup;
+import com.example.warhammer40kdicecalculator.R;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
-public class Activity_Edit_Abilities extends AppCompatActivity implements AbilityUIHolder  {
+public class Activity_Edit_Abilities extends AppCompatActivity implements AbilityUIHolder {
     Context context;
     LayoutInflater inflater;
     private Matchup matchup;

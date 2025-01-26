@@ -8,6 +8,4 @@ public interface AbilityUIHolder {
 
     void AbilityAdded(Ability ability, AbilityHolder abilityHolder);
 
-
-
 }

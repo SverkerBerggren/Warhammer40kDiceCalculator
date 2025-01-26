@@ -5,7 +5,7 @@
     android:id="@+id/ConstraintLayoutEditAbilities"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity_Edit_Abilities">
+    tools:context=".Activities.Activity_Edit_Abilities">
 
     <ScrollView
         android:id="@+id/ScrollViewEditAbilites"

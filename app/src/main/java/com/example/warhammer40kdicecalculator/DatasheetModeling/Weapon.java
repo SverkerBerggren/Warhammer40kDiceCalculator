@@ -5,7 +5,7 @@ import com.example.warhammer40kdicecalculator.DamageAmount;
 
 import java.util.ArrayList;
 
-public class Weapon implements AbilityHolder, DeactivatableInterface {
+public class Weapon implements AbilityHolder, DeactivatableInterface, WahapediaIdHolder{
     public String name;
     public DiceAmount amountOfAttacks;
     public String wahapediaDataId;
@@ -21,6 +21,11 @@ public class Weapon implements AbilityHolder, DeactivatableInterface {
     public Weapon()
     {
 
+    }
+
+    @Override
+    public String GetWahapediaId() {
+        return wahapediaDataId;
     }
 
     @Override

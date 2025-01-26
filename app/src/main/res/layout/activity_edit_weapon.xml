@@ -5,7 +5,7 @@
     android:id="@+id/WeaponConstraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".EditWeaponActivity">
+    tools:context=".Activities.EditWeaponActivity">
 
     <ScrollView
         android:id="@+id/WeaponScrollView"

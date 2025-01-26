@@ -1,12 +1,12 @@
 package com.example.warhammer40kdicecalculator.DatasheetModeling;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
-import com.example.warhammer40kdicecalculator.CompareActivity;
+import com.example.warhammer40kdicecalculator.Activities.CompareActivity;
 import com.example.warhammer40kdicecalculator.ModifierHolder;
 
 import java.util.ArrayList;
 
-public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterface {
+public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterface, WahapediaIdHolder{
 
     public String wahapediaDataId;
     public String name;
@@ -22,7 +22,12 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
 
     public ArrayList<Ability> listOfAbilites = new ArrayList<>();
 
-    public ArrayList<Weapon> listOfRangedWeapons = new ArrayList<>();
+    public ArrayList<Weapon> weapons = new ArrayList<>();
+
+    @Override
+    public String GetWahapediaId() {
+        return wahapediaDataId;
+    }
 
     public void CopyStats(Model OtherModel)
     {
@@ -57,7 +62,7 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
         active = other.active;
 
         listOfAbilites = new ArrayList<>(other.listOfAbilites);
-        listOfRangedWeapons = new ArrayList<>(other.listOfRangedWeapons);
+        weapons = new ArrayList<>(other.weapons);
      }
 
     public Model Copy()
@@ -76,12 +81,12 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
 
         ArrayList<Weapon> newList = new ArrayList<>();
 
-        for(Weapon weapon : listOfRangedWeapons)
+        for(Weapon weapon : weapons)
         {
             newList.add(weapon.Copy());
         }
 
-        modelToReturn.listOfRangedWeapons = newList;
+        modelToReturn.weapons = newList;
         return modelToReturn;
 
     }
@@ -92,7 +97,7 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
     }
 
     public Model(String name, int toughness, int strength, int armorSave, int invulnerableSave, int wounds, int attacks,
-                 ArrayList<Ability> listOfAbilites, ArrayList<Weapon> listOfRangedWeapons)
+                 ArrayList<Ability> listOfAbilites, ArrayList<Weapon> Weapons)
     {
         this.name = name;
         this.toughness = toughness;
@@ -104,7 +109,7 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
 
         this.listOfAbilites = listOfAbilites;
 
-        this.listOfRangedWeapons = listOfRangedWeapons;
+        this.weapons = Weapons;
     }
 
     @Override

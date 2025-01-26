@@ -1,6 +1,6 @@
 package com.example.warhammer40kdicecalculator;
 
-import android.widget.EditText;
+import com.example.warhammer40kdicecalculator.Activities.CompareActivity;
 
 public interface ModifierHolder {
     public abstract int ChangeModifiers(CompareActivity.UnitAndModelSkill whatToChange, int amount);

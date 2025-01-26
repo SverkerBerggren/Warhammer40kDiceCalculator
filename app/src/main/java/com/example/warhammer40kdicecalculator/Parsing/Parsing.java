@@ -2,11 +2,14 @@ package com.example.warhammer40kdicecalculator.Parsing;
 
 import android.util.Log;
 import android.util.Pair;
+import android.view.Display;
 
 import com.example.warhammer40kdicecalculator.DatabaseManager;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.WahapediaIdHolder;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.Weapon;
 
 import java.util.HashMap;
 
@@ -22,13 +25,22 @@ enum ItemType
 public class Parsing
 {
 
-    private final String BATTLELINE = "BATTLELINE";
-    private final String CHARACTER = "CHARACTER";
-    private final String DEDICATED_TRANSPORTS = "DEDICATED TRANSPORTS";
+    private final String BATTLELINE = "battleline";
+    private final String CHARACTER = "character";
+    private final String DEDICATED_TRANSPORTS = "dedicated transports";
 
     private final Object DatabaseLock = new Object();
     private HashMap<DatabaseManager.IdNameKey, Model> modelDatasheetDatabase;
-    private HashMap<String, Unit> datasheetDatabase;
+    private HashMap<DatabaseManager.IdNameKey, Weapon> wargearDatabase;
+    private HashMap<DatabaseManager.IdNameKey, Unit> datasheetDatabase;
+    // Kanske lite ghetto
+    private Army armyToBuild;
+
+    //
+    private String ConvertArmyListToWahapediaStandard(String armyList)
+    {
+        return armyList.replace('\'','’').toLowerCase();
+    }
 
     public Army ParseGWListFormat(String armyListString)
     {
@@ -43,10 +55,12 @@ public class Parsing
         }
         modelDatasheetDatabase = DatabaseManager.getInstance().GetModelsDatasheetDatabase();
         datasheetDatabase = DatabaseManager.getInstance().GetDatasheetsDatabase();
+        wargearDatabase = DatabaseManager.getInstance().GetDatasheetWargearDatabase();
 
+        armyListString = ConvertArmyListToWahapediaStandard(armyListString);
         int stringOffset = 0;
         int armyListStringLength = armyListString.length();
-        Army ParsedArmy = new Army();
+        armyToBuild = new Army();
 
         stringOffset = RemoveWhiteSpaces(stringOffset,armyListString);
         while (stringOffset < armyListStringLength)
@@ -54,9 +68,7 @@ public class Parsing
             String newItem = GetNewLineSubString(stringOffset,armyListString);
             if(!IsDemarcation(newItem))
             {
-                Pair<Integer,Unit> UnitToAdd = ParseUnit(stringOffset,armyListString,ParsedArmy);
-                ParsedArmy.units.add(UnitToAdd.second);
-                stringOffset = UnitToAdd.first;
+                stringOffset = ParseUnit(stringOffset,armyListString,armyToBuild);
             }
             else
             {
@@ -65,7 +77,7 @@ public class Parsing
             stringOffset = RemoveWhiteSpaces(stringOffset,armyListString);
         }
         SaveArmy("gogogagaa");
-        return  ParsedArmy;
+        return  armyToBuild;
     }
 
 
@@ -75,7 +87,7 @@ public class Parsing
 
         while (endOffset < armyListString.length())
         {
-            if(armyListString.charAt(endOffset)== '\n')
+            if(armyListString.charAt(endOffset)== '\n' || armyListString.charAt(endOffset) == '\r' )
             {
                 return  armyListString.substring(stringOffset,endOffset);
             }
@@ -144,18 +156,37 @@ public class Parsing
 
     }
 
-    private Pair<ItemType,Object> GetItem()
+    // GetItem can be called with wahapediaIdHolder as null. That means that it will only search the databases where no id is needed
+    private Pair<ItemType,Object> GetItem(String itemName, WahapediaIdHolder wahapediaIdHolder)
     {
+        if(wahapediaIdHolder != null)
+        {
+            DatabaseManager.IdNameKey nameKey = new DatabaseManager.IdNameKey(wahapediaIdHolder.GetWahapediaId(),itemName);
+            if(modelDatasheetDatabase.containsKey(nameKey))
+            {
+                return new Pair<>(ItemType.MODEL,modelDatasheetDatabase.get(nameKey));
+            }
+            if(  wargearDatabase.containsKey(nameKey))
+            {
+                return new Pair<>(ItemType.WEAPON,wargearDatabase.get(nameKey));
+            }
+            if(datasheetDatabase.containsKey(new DatabaseManager.IdNameKey(wahapediaIdHolder.GetWahapediaId(),itemName.split("\\(")[0].trim()) ))
+            {
+                return new Pair<>(ItemType.UNIT,itemName);
+            }
+        }
 
-        return null;
+        return new Pair<>(ItemType.UNIDENTIFIED,null);
     }
 
     private int ParseModelEquipment(int offset, String armyList, Unit unit, Model modelType, int modelCount)
     {
         int amount = 0;
         int armyLength = armyList.length();
-        int modelsRangeWeaponIndex = 0;
-        int modelsMeleeWeaponIndex = 0;
+
+        // Lite cap langsamt af men lite snyggare
+        Integer modelsRangeWeaponIndex = 0;
+        Integer modelsMeleeWeaponIndex = 0;
 
         for(int i = 0; i < modelCount; i++)
         {
@@ -172,7 +203,33 @@ public class Parsing
                 amount = offsetAndAmount.second;
                 Pair<Integer,String> offsetAndItem = ParseUntilLineBreak(offset,armyList);
                 offset = offsetAndItem.first;
-
+                Pair<ItemType,Object> parsedItem = GetItem(offsetAndItem.second,unit);
+                if(parsedItem.first.equals(ItemType.WEAPON))
+                {
+                    Weapon weaponToGive = (Weapon)parsedItem.second;
+                    // Se ovan
+                    Integer modelIndexStart = (weaponToGive.isMelee) ? ( modelsMeleeWeaponIndex):(  modelsRangeWeaponIndex);
+                    for(int i = 0; i < amount; i++ )
+                    {
+                        unit.listOfModels.get(modelIndexStart).weapons.add(weaponToGive.Copy());
+                        if(modelIndexStart >= modelCount -1)
+                        {
+                            modelIndexStart = 0;
+                        }
+                        else
+                        {
+                            modelIndexStart +=1;
+                        }
+                    }
+                }
+                if(parsedItem.first.equals(ItemType.MODEL))
+                {
+                    return ParseModelEquipment(offset +1, armyList,unit, (Model)parsedItem.second,amount);
+                }
+                if(parsedItem.first.equals(ItemType.UNIT))
+                {
+                    return ParseUnit(offset - offsetAndItem.second.length(),armyList, armyToBuild);
+                }
             }
             offset++;
         }
@@ -181,36 +238,44 @@ public class Parsing
 
     private int ParseUnitItem(int offset, String armyList, Unit unit)
     {
-        int armyLength = armyList.length();
+         int armyLength = armyList.length();
         int amount = 0;
         while(offset < armyLength)
         {
             offset = RemoveWhiteSpaces(offset,armyList);
             if(IsItemAmountSignifier(armyList.charAt(offset)))
             {
-                Pair<Integer,Integer> offsetAndAmount  = ParseItemAmount(armyList,offset +1);
+                Pair<Integer,Integer> offsetAndAmount  = ParseItemAmount(armyList,offset );
                 offset = offsetAndAmount.first;
                 amount = offsetAndAmount.second;
-                Pair<Integer,String> parsedStringAndOffset = ParseUntilLineBreak(offset +1,armyList);
-                offset = parsedStringAndOffset.first;
+                Pair<Integer,String> offsetAndParsedString = ParseUntilLineBreak(offset,armyList);
+                offset = offsetAndParsedString.first;
 
-                String itemName = parsedStringAndOffset.second;
-                boolean isModel = false;
-
-                DatabaseManager.IdNameKey idNameKey = new DatabaseManager.IdNameKey(unit.wahapediaDataId,itemName);
-                isModel = modelDatasheetDatabase.containsKey( new DatabaseManager.IdNameKey(unit.wahapediaDataId,itemName));
-
-                // If the first item is a weapon it is assumed that the unit is a single model unit
-                if( !isModel && unit.listOfModels.isEmpty())
+                Pair<ItemType, Object> parsedItem = GetItem(offsetAndParsedString.second,unit);
+                if(parsedItem.first.equals(ItemType.UNIDENTIFIED))
                 {
-                    unit.singleModelUnit = true;
-                    unit.listOfModels.add( modelDatasheetDatabase.get( idNameKey) );
-
+                    Log.d("Unit item parsing","Unidentified item found");
                     continue;
                 }
-                if(isModel)
+                // If the first item is a weapon it is assumed that the unit is a single model unit
+                if( parsedItem.first.equals(ItemType.WEAPON) && unit.listOfModels.isEmpty())
                 {
-                    offset = ParseModelEquipment(offset +1,armyList,unit,modelDatasheetDatabase.get(idNameKey),amount);
+                    unit.singleModelUnit = true;
+                    // Assumes that a single model units models names corresponds with the unit name
+                    unit.listOfModels.add( modelDatasheetDatabase.get( new DatabaseManager.IdNameKey( unit.GetWahapediaId() , unit.unitName) ));
+                    continue;
+                }
+                if(unit.singleModelUnit && parsedItem.first.equals(ItemType.WEAPON))
+                {
+                    unit.listOfModels.get(0).weapons.add((Weapon) parsedItem.second);
+                }
+                if(parsedItem.first.equals(ItemType.UNIT))
+                {
+                    return ParseUnit(offset - offsetAndParsedString.second.length(),armyList,armyToBuild);
+                }
+                if(parsedItem.first.equals(ItemType.MODEL))
+                {
+                    offset = ParseModelEquipment(offset +1,armyList,unit,(Model) parsedItem.second,amount);
                     continue;
                 }
             }
@@ -220,7 +285,7 @@ public class Parsing
         return offset;
     }
 
-    private Pair<Integer,Unit> ParseUnit(int offset, String armyListString, Army armyToBuild )
+    private int ParseUnit(int offset, String armyListString, Army armyToBuild )
     {
         int armyLength = armyListString.length();
 
@@ -242,10 +307,12 @@ public class Parsing
                     unitToAdd.unitName = unitName.toString().trim();
                     offset = pointValue.first;
 
+
+                    // TODO: Se till att den parsear arme tillhorighet och grejer korrekt
                     unitToAdd.wahapediaDataId = datasheetDatabase.get(unitToAdd.unitName).wahapediaDataId;
                     offset = ParseUnitItem(offset,armyListString,unitToAdd);
-
-                    return  new Pair<>(offset,unitToAdd);
+                    armyToBuild.units.add(unitToAdd);
+                    return  offset;
                 }
                 else
                 {
@@ -254,25 +321,37 @@ public class Parsing
             }
             offset +=1;
         }
-        return  new Pair<Integer,Unit>(offset,unitToAdd);
+        return  offset;
     }
 
     private Pair<Integer,Integer> ParseItemAmount(String armyList, int stringOffset)
     {
         StringBuilder itemAmountString = new StringBuilder();
+
+        // Yikes
+        int spaceOccurrences = 0;
         while (stringOffset < armyList.length())
         {
             if(armyList.charAt(stringOffset) == ' ')
             {
-                try
+                spaceOccurrences += 1;
+                // These are lowkey equivalent
+                if(spaceOccurrences == 2 || itemAmountString.length() != 0)
                 {
-                    Integer amount = Integer.parseInt(itemAmountString.toString());
-                    return new Pair<>(stringOffset +1 ,amount);
+                    try
+                    {
+                        Integer amount = Integer.parseInt(itemAmountString.toString());
+                        return new Pair<>(stringOffset +1 ,amount);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.d("Item amount",e.getMessage());
+                    }
                 }
-                catch (Exception e)
-                {
-                    Log.d("Item amount",e.getMessage());
-                }
+            }
+            if(Character.isDigit(armyList.charAt(stringOffset)))
+            {
+                itemAmountString.append(armyList.charAt(stringOffset));
             }
             stringOffset +=1;
         }

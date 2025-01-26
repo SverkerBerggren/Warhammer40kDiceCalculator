@@ -1,4 +1,4 @@
-package com.example.warhammer40kdicecalculator;
+package com.example.warhammer40kdicecalculator.Activities;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -23,11 +23,14 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.example.warhammer40kdicecalculator.Conditions;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
+import com.example.warhammer40kdicecalculator.FileHandling.FileHandler;
 import com.example.warhammer40kdicecalculator.Identifiers.UIIdentifier;
 import com.example.warhammer40kdicecalculator.Identifiers.UnitIdentifier;
+import com.example.warhammer40kdicecalculator.Matchup;
+import com.example.warhammer40kdicecalculator.R;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 

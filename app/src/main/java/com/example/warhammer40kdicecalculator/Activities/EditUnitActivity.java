@@ -1,4 +1,4 @@
-package com.example.warhammer40kdicecalculator;
+package com.example.warhammer40kdicecalculator.Activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -24,20 +24,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
+import com.example.warhammer40kdicecalculator.AbilityUIHolder;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.DiceAmount;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Weapon;
+import com.example.warhammer40kdicecalculator.FileHandling.FileHandler;
 import com.example.warhammer40kdicecalculator.Identifiers.ArmyIdentifier;
 import com.example.warhammer40kdicecalculator.Identifiers.Identifier;
 import com.example.warhammer40kdicecalculator.Identifiers.ModelIdentifier;
 import com.example.warhammer40kdicecalculator.Identifiers.UIIdentifier;
 import com.example.warhammer40kdicecalculator.Identifiers.UnitIdentifier;
+import com.example.warhammer40kdicecalculator.Matchup;
+import com.example.warhammer40kdicecalculator.R;
 
 import java.util.ArrayList;
 
-public class EditUnitActivity extends AppCompatActivity implements AbilityUIHolder{
+public class EditUnitActivity extends AppCompatActivity implements AbilityUIHolder {
 
 
     private Matchup matchup;
@@ -231,9 +235,9 @@ public class EditUnitActivity extends AppCompatActivity implements AbilityUIHold
 
             tableLayout.removeViews(1,tableLayout.getChildCount() -1 );
 
-            for(int i = 0; i < model.listOfRangedWeapons.size();i++)
+            for(int i = 0; i < model.weapons.size(); i++)
             {
-                AddWeapon(tableLayout,model.listOfRangedWeapons.get(i));
+                AddWeapon(tableLayout,model.weapons.get(i));
             }
 
 

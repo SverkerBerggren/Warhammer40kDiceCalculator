@@ -1,4 +1,4 @@
-package com.example.warhammer40kdicecalculator;
+package com.example.warhammer40kdicecalculator.Activities;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,18 +34,22 @@ import com.example.warhammer40kdicecalculator.Abilities.ReRollOnes;
 import com.example.warhammer40kdicecalculator.Abilities.ReRollOnesWound;
 import com.example.warhammer40kdicecalculator.Abilities.ReRollWoundRoll;
 import com.example.warhammer40kdicecalculator.Abilities.TransHuman4;
+import com.example.warhammer40kdicecalculator.AbilityUIHolder;
+import com.example.warhammer40kdicecalculator.DatabaseManager;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Weapon;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
+import com.example.warhammer40kdicecalculator.FileHandling.FileHandler;
 import com.example.warhammer40kdicecalculator.Identifiers.Identifier;
 import     com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
+import com.example.warhammer40kdicecalculator.Matchup;
+import com.example.warhammer40kdicecalculator.R;
+import com.example.warhammer40kdicecalculator.Weapon_Popup;
+import com.example.warhammer40kdicecalculator.FileHandling.UpdateArgumentStruct;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Scanner;
 import java.util.function.Function;
 
 class Runnable_Function<FunctionArgument,FunctionReturnValue> implements Runnable
@@ -172,75 +176,6 @@ public class  MainActivity extends AppCompatActivity {
 
     }
 
-    public ArrayList<Unit> armyFromBattleScribe(ArrayList<BattlescribeUnit> inputArmy)
-    {
-        ArrayList<Unit> armyToReturn = new ArrayList<>();
-
-        for(int i =0; i < inputArmy.size(); i++)
-        {
-            Unit unitToAdd = new Unit();
-            BattlescribeUnit battlescribeUnit = inputArmy.get(i);
-            unitToAdd.unitName = battlescribeUnit.Name;
-        }
-
-        return null;
-    }
-
-    public  void testBattleScribeParse(View v)
-    {
-        BattlescribeParser parser = new BattlescribeParser();
-        ArrayList<BattlescribeUnit> unitsInList = new ArrayList<>();
-
-        try
-        {
-            //  ArrayList<ArrayList<String>> arrayListToReturn = new ArrayList<>();
-
-            InputStreamReader input = new InputStreamReader(context.getAssets().open("TestParing.txt"));
-
-           // InputStream inputStream = new InputStream();
-            try {
-
-                unitsInList = parser.ParseUnits(context.getAssets().open("TestParing.txt"));
-
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-
-            Log.d("parsa battle", "lyckades " +unitsInList.size());
-
-            for(int i = 0; i < unitsInList.size(); i++)
-            {
-                Log.d("Unit list ", " " + unitsInList.get(i).Name);
-            }
-
-            Log.d("har uniten vapen " , " " + unitsInList.get(2).Attributes.size());
-            for(int i = 0; i < unitsInList.get(7).Attributes.size(); i++)
-            {
-                Log.d("Vilka vapen har unitse", "Vapen  " + unitsInList.get(7).Attributes);
-            }
-            Log.d("Vilka vapen har unitse", "Vapen " + unitsInList.get(2).Name);
-            for(int i = 0; i < unitsInList.get(2).Models.size(); i++)
-            {
-                for(int z = 0; z < unitsInList.get(2).Models.get(i).Weapons.size(); z++)
-                {
-                    Log.d("Vilka vapen har unitse", "Vilken model: " +unitsInList.get(2).Models.get(i).ModelName + " " + unitsInList.get(2).Models.get(i).Weapons.get(z));
-                }
-               // Log.d("Vilka vapen har unitse", "Vapen  " + unitsInList.get(7).Models);
-            }
-
-
-
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-
-    }
-
-
     public void OpenSavedMatchups(View v)
     {
         Intent intent = new Intent(this, SavedMatchupsActivity.class);
@@ -249,7 +184,7 @@ public class  MainActivity extends AppCompatActivity {
     }
     public void OpenPopup(View v)
     {
-        Intent intenten = new Intent(this,activity_popup.class);
+        Intent intenten = new Intent(this, activity_popup.class);
 
         startActivity(intenten);
     }

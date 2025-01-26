@@ -76,9 +76,9 @@ public class RollingLogic {
                         continue;
                     }
                     AddAllModifiersAttacker(attackingArmy,attacker,currentAttackingModel);
-                    for (int f = 0; f < currentAttackingModel.listOfRangedWeapons.size(); f++)
+                    for (int f = 0; f < currentAttackingModel.weapons.size(); f++)
                     {
-                        Weapon currentWeapon = currentAttackingModel.listOfRangedWeapons.get(f);
+                        Weapon currentWeapon = currentAttackingModel.weapons.get(f);
 
                         if(ShouldSkipWeapon(currentWeapon,condtitions))
                         {

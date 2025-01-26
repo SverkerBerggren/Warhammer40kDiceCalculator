@@ -1,4 +1,4 @@
-package com.example.warhammer40kdicecalculator;
+package com.example.warhammer40kdicecalculator.Activities;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,7 +10,9 @@ import android.view.ContextThemeWrapper;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.widget.RadioGroup;
+
+import com.example.warhammer40kdicecalculator.Conditions;
+import com.example.warhammer40kdicecalculator.R;
 
 public class ConditionsActivity extends AppCompatActivity {
 

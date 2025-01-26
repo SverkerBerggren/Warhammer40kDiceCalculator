@@ -13,8 +13,6 @@ import com.example.warhammer40kdicecalculator.Identifiers.UIIdentifier;
 
 public class ContractUpdateCompareUI extends ActivityResultContract<Identifier, UIIdentifier> {
 
-
-
     @Override
     public Intent createIntent(@NonNull Context context, @NonNull Identifier ringtoneType) {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);

@@ -1,23 +1,22 @@
-package com.example.warhammer40kdicecalculator;
+package com.example.warhammer40kdicecalculator.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
+import com.example.warhammer40kdicecalculator.FileHandling.FileHandler;
+import com.example.warhammer40kdicecalculator.Matchup;
+import com.example.warhammer40kdicecalculator.R;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
-
-import kotlinx.coroutines.CompletionHandlerException;
 
 public class ActivityCreateMatchup extends AppCompatActivity {
 

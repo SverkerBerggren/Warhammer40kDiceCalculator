@@ -5,7 +5,7 @@
     android:id="@+id/ConstraintLayoutCompare"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CompareActivity">
+    tools:context=".Activities.CompareActivity">
 
     <ScrollView
         android:id="@+id/scrollView2"

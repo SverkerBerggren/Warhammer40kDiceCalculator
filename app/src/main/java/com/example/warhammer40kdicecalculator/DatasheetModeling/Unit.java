@@ -1,12 +1,12 @@
 package com.example.warhammer40kdicecalculator.DatasheetModeling;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
-import com.example.warhammer40kdicecalculator.CompareActivity;
+import com.example.warhammer40kdicecalculator.Activities.CompareActivity;
 import com.example.warhammer40kdicecalculator.ModifierHolder;
 
 import java.util.ArrayList;
 
-public class Unit implements AbilityHolder, ModifierHolder {
+public class Unit implements AbilityHolder, ModifierHolder, WahapediaIdHolder {
 
     public boolean singleModelUnit = false;
     public String wahapediaDataId;
@@ -23,6 +23,11 @@ public class Unit implements AbilityHolder, ModifierHolder {
     public ArrayList<Model> listOfModels = new ArrayList<>();
 
     public ArrayList<Ability> listOfAbilitys = new ArrayList<>( );
+
+    @Override
+    public String GetWahapediaId() {
+        return wahapediaDataId;
+    }
 
     public Unit Copy()
     {
