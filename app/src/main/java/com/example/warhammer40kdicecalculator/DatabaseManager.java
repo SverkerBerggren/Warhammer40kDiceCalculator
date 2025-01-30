@@ -11,6 +11,7 @@ import com.example.warhammer40kdicecalculator.DatasheetModeling.DiceAmount;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Weapon;
+import com.example.warhammer40kdicecalculator.Enums.Faction;
 import com.example.warhammer40kdicecalculator.FileHandling.FileHandler;
 
 import java.io.BufferedReader;
@@ -24,14 +25,14 @@ public class DatabaseManager {
     private final android.content.res.AssetManager assetManager;
     private final String dataDirectory;
     private final HashMap<IdNameKey, Weapon> DatasheetWargear = new HashMap<>();
-    private final HashMap<IdNameKey, Unit> Datasheets = new HashMap<>();
+    private final HashMap<NameFactionKey, Unit> Datasheets = new HashMap<>();
     private final HashMap<IdNameKey, Model> modelsDatasheet = new HashMap<>();
     public static volatile DatabaseManager instance;
 
-    private final Object lock = new Object();
+    public static final Object lock = new Object();
 
     public HashMap<IdNameKey, Weapon> GetDatasheetWargearDatabase() {return  DatasheetWargear;}
-    public HashMap<IdNameKey, Unit> GetDatasheetsDatabase() {return  Datasheets;}
+    public HashMap<NameFactionKey, Unit> GetDatasheetsDatabase() {return  Datasheets;}
     public HashMap<IdNameKey, Model> GetModelsDatasheetDatabase() {return  modelsDatasheet;}
 
     public static class IdNameKey
@@ -72,6 +73,55 @@ public class DatabaseManager {
         }
     }
 
+    public static class NameFactionKey
+    {
+        private final String name;
+        private final Faction faction;
+
+        public NameFactionKey( String name, Faction faction)
+        {
+            this.name = name;
+            this.faction = faction;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            //Bajtad af don't @ me
+            final int prime = 31;
+            int result = 1;
+            result = prime * result * + name.hashCode();
+            result = prime * result * + faction.hashCode();
+            return  result;
+        }
+
+        @Override
+        public boolean equals(Object other)
+        {
+            if(this == other)
+            {
+                return true;
+            }
+            if (!(other instanceof NameFactionKey))
+            {
+                return false;
+            }
+            NameFactionKey otherKey = (NameFactionKey)other;
+            return name.equals(otherKey.name) && faction.equals(otherKey.faction) ;
+        }
+    }
+
+    private Faction ParseFaction(String factionString)
+    {
+        // TODO: add all factions
+        switch (factionString)
+        {
+            case "am":
+                return Faction.AstraMilitarum;
+        }
+        return Faction.Unidentified;
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     public static void InitializeDatabaseManager(Context context)
     {
@@ -97,6 +147,7 @@ public class DatabaseManager {
             CreateWeaponDatabase();
             CreateDatasheetDatabase();
             CreateModelsDatasheet();
+            lock.notifyAll();
         }
     }
     private  void CreateModelsDatasheet()
@@ -111,16 +162,9 @@ public class DatabaseManager {
                 continue;
             }
             Model model = new Model();
-
             model.wahapediaDataId = modelEntry.get(0);
-
-            // Temporar maste testa pallar tji
-            if(modelEntry.get(2).equals("cadian shock troops") || modelEntry.get(2).equals("shock trooper sergeant"))
-            {
-                modelEntry.set(2,"shock trooper");
-            }
-
             model.name = modelEntry.get(2);
+
             try {
                 model.toughness = Integer.parseInt( modelEntry.get(4));
                 model.armorSave = Integer.parseInt( modelEntry.get(5).split("\\+")[0]);
@@ -154,7 +198,7 @@ public class DatabaseManager {
             unitDatasheet.wahapediaDataId = datasheetEntry.get(0);
             unitDatasheet.unitName = datasheetEntry.get(1);
 
-            Datasheets.put(new IdNameKey(unitDatasheet.wahapediaDataId,unitDatasheet.unitName),unitDatasheet);
+            Datasheets.put(new NameFactionKey(unitDatasheet.unitName, ParseFaction(datasheetEntry.get(2))),unitDatasheet);
         }
     }
 
@@ -162,29 +206,8 @@ public class DatabaseManager {
     {
         ArrayList<ArrayList<String>> DatasheetWeapons = FileHandler.instance.GetWahapediaDataCSV("Datasheets_wargear.csv");
 
-        int amountNotLength13 = 0;
-        ArrayList<Integer> whatValue = new ArrayList<>();
-        ArrayList<String> nameOfWeapons = new ArrayList<>();
-        for(ArrayList<String> entry : DatasheetWeapons)
-        {
-            if(entry.size() != 13)
-            {
-                amountNotLength13++;
-                whatValue.add(entry.size());
-                if(entry.size() > 4)
-                {
-                    nameOfWeapons.add(entry.get(4));
-                }
-            }
-        }
-
         for( ArrayList<String> weaponEntry : DatasheetWeapons)
         {
-            if( weaponEntry.size()>=5 && weaponEntry.get(4).equalsIgnoreCase("Konstantin’s Hooves"))
-            {
-                amountNotLength13 ++;
-                Log.d("Temporary", "aosidj");
-            }
             if(weaponEntry.size() != 13)
             {
                 continue;

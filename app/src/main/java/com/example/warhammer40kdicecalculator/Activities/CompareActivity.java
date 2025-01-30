@@ -355,8 +355,6 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
     private void createArmies(Matchup matchup, LayoutInflater inflater)
     {
-        ViewGroup verticalLayout = null;
-
         ArmyIdentifier armyFriendlyId = new ArmyIdentifier(FRIENDLY, matchup.name);
         UIIdentifier uiIdArmyFriendly = new UIIdentifier(UI_ARMY_MODIFIER_LAYOUT, armyFriendlyId);
         TableRow friendlyTableRow = (TableRow)findViewById(R.id.TableRowFriendlyArmy);

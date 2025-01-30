@@ -5,9 +5,11 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
+import androidx.documentfile.provider.DocumentFile;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.AbilityElementAdapter;
@@ -280,29 +282,29 @@ public  class FileHandler  {
         }
     }
 
-    public void CreateArmyFromFile(Uri uri)
+    public void CreateArmyFromFile(Context context, Uri uri)
     {
         File rozFile = new File(uri.getPath());
         Army TestArmy = new Army();
         String fileName = "";
         try {
+            // Is probably a better way to get the name that support  <29 versions
+            DocumentFile documentFile = DocumentFile.fromSingleUri(context,uri);
 
             InputStream inputStream = contentResolver.openInputStream(uri);
             Scanner s = new Scanner(inputStream).useDelimiter("\\A");
             String result = s.hasNext() ? s.next() : "";
-            ROSParser Parser = new ROSParser();
-            //TestArmy = Parser.ParseArmy(result);
             Parsing parser = new Parsing();
 
             TestArmy = parser.ParseGWListFormat(result);
+            TestArmy.name = documentFile.getName();
 
-            TestArmy.name = rozFile.getName();
-
+            inputStream.close();
+            s.close();
         }
         catch (Exception e)
         {
-
-            Exception hej = e;
+            Log.d("GW parsing",e.getMessage());
         }
 
         try {
@@ -310,10 +312,12 @@ public  class FileHandler  {
             String jsonString = gson.toJson(TestArmy);
 
             File armySave = new File(armyDirectory, TestArmy.name);
+
             FileWriter writer = new FileWriter(armySave);
             writer.write(jsonString);
             writer.flush();
             writer.close();
+
         } catch (Exception e){
             e.printStackTrace();
             Log.d("json skrivning", "det sket sig armerna");

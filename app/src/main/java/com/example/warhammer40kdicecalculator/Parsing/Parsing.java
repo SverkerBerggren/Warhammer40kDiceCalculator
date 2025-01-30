@@ -2,7 +2,6 @@ package com.example.warhammer40kdicecalculator.Parsing;
 
 import android.util.Log;
 import android.util.Pair;
-import android.view.Display;
 
 import com.example.warhammer40kdicecalculator.DatabaseManager;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
@@ -10,6 +9,7 @@ import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.WahapediaIdHolder;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Weapon;
+import com.example.warhammer40kdicecalculator.Enums.Faction;
 
 import java.util.HashMap;
 
@@ -29,12 +29,13 @@ public class Parsing
     private final String CHARACTER = "character";
     private final String DEDICATED_TRANSPORTS = "dedicated transports";
 
-    private final Object DatabaseLock = new Object();
+    // private final Object DatabaseLock = new Object();
     private HashMap<DatabaseManager.IdNameKey, Model> modelDatasheetDatabase;
     private HashMap<DatabaseManager.IdNameKey, Weapon> wargearDatabase;
-    private HashMap<DatabaseManager.IdNameKey, Unit> datasheetDatabase;
+    private HashMap<DatabaseManager.NameFactionKey, Unit> datasheetDatabase;
     // Kanske lite ghetto
     private Army armyToBuild;
+    private Faction armyFaction;
 
     //
     private String ConvertArmyListToWahapediaStandard(String armyList)
@@ -42,12 +43,21 @@ public class Parsing
         return armyList.replace('\'','’').toLowerCase();
     }
 
+    private Faction ParseArmyFaction(String armyList)
+    {
+        if(armyList.contains("astra militarum"))
+        {
+            return Faction.AstraMilitarum;
+        }
+        return Faction.Unidentified;
+    }
+
     public Army ParseGWListFormat(String armyListString)
     {
         // Waits for the database to be initialized
-        synchronized (DatabaseLock) {
+        synchronized (DatabaseManager.lock) {
             while (DatabaseManager.getInstance() == null) {
-                try { DatabaseLock.wait(); }
+                try { DatabaseManager.lock.wait(); }
                 catch (Exception e) {
                     Log.d("Lock knas arme parsing",e.getMessage());
                 }
@@ -58,6 +68,8 @@ public class Parsing
         wargearDatabase = DatabaseManager.getInstance().GetDatasheetWargearDatabase();
 
         armyListString = ConvertArmyListToWahapediaStandard(armyListString);
+        armyFaction = ParseArmyFaction(armyListString);
+
         int stringOffset = 0;
         int armyListStringLength = armyListString.length();
         armyToBuild = new Army();
@@ -138,7 +150,8 @@ public class Parsing
             parsedString.append(armyList.charAt(offset));
             offset += 1;
         }
-        return new Pair<>(offset,"");
+
+        return new Pair<>(offset,parsedString.toString());
     }
 
     private boolean IsDemarcation(String subString)
@@ -157,7 +170,8 @@ public class Parsing
     }
 
     // GetItem can be called with wahapediaIdHolder as null. That means that it will only search the databases where no id is needed
-    private Pair<ItemType,Object> GetItem(String itemName, WahapediaIdHolder wahapediaIdHolder)
+    // Unit is a bit of a wack parameter
+    private Pair<ItemType,Object> GetItem(String itemName, WahapediaIdHolder wahapediaIdHolder, Unit unit)
     {
         if(wahapediaIdHolder != null)
         {
@@ -170,11 +184,24 @@ public class Parsing
             {
                 return new Pair<>(ItemType.WEAPON,wargearDatabase.get(nameKey));
             }
-            if(datasheetDatabase.containsKey(new DatabaseManager.IdNameKey(wahapediaIdHolder.GetWahapediaId(),itemName.split("\\(")[0].trim()) ))
+            DatabaseManager.NameFactionKey idNameFaction =  new DatabaseManager.NameFactionKey(itemName.split("\\(")[0].trim(),armyFaction);
+            //ghetto af
+            if(datasheetDatabase.containsKey( idNameFaction))
             {
-                return new Pair<>(ItemType.UNIT,itemName);
+                return new Pair<>(ItemType.UNIT,datasheetDatabase.get(idNameFaction));
             }
+            // Certain models do not exist in the datasheets_model.csv so this sussy case is needed
+            DatabaseManager.IdNameKey modelKey = new DatabaseManager.IdNameKey(wahapediaIdHolder.GetWahapediaId(),unit.unitName);
+            if(modelDatasheetDatabase.containsKey(modelKey))
+            {
+                // Set their name to the parsed string which makes it more clear
+                Model retModel = modelDatasheetDatabase.get(modelKey).Copy();
+                retModel.name = itemName;
+                return  new Pair<>(ItemType.MODEL,retModel);
+            }
+            // TODO: Abilities and stats such as warlord vox caster etc maybe
         }
+
 
         return new Pair<>(ItemType.UNIDENTIFIED,null);
     }
@@ -203,7 +230,7 @@ public class Parsing
                 amount = offsetAndAmount.second;
                 Pair<Integer,String> offsetAndItem = ParseUntilLineBreak(offset,armyList);
                 offset = offsetAndItem.first;
-                Pair<ItemType,Object> parsedItem = GetItem(offsetAndItem.second,unit);
+                Pair<ItemType,Object> parsedItem = GetItem(offsetAndItem.second,unit,unit);
                 if(parsedItem.first.equals(ItemType.WEAPON))
                 {
                     Weapon weaponToGive = (Weapon)parsedItem.second;
@@ -251,7 +278,7 @@ public class Parsing
                 Pair<Integer,String> offsetAndParsedString = ParseUntilLineBreak(offset,armyList);
                 offset = offsetAndParsedString.first;
 
-                Pair<ItemType, Object> parsedItem = GetItem(offsetAndParsedString.second,unit);
+                Pair<ItemType, Object> parsedItem = GetItem(offsetAndParsedString.second,unit,unit);
                 if(parsedItem.first.equals(ItemType.UNIDENTIFIED))
                 {
                     Log.d("Unit item parsing","Unidentified item found");
@@ -307,9 +334,8 @@ public class Parsing
                     unitToAdd.unitName = unitName.toString().trim();
                     offset = pointValue.first;
 
-
-                    // TODO: Se till att den parsear arme tillhorighet och grejer korrekt
-                    unitToAdd.wahapediaDataId = datasheetDatabase.get(unitToAdd.unitName).wahapediaDataId;
+                    DatabaseManager.NameFactionKey key =  new DatabaseManager.NameFactionKey(unitToAdd.unitName,armyFaction);
+                    unitToAdd.wahapediaDataId = datasheetDatabase.get(key).wahapediaDataId;
                     offset = ParseUnitItem(offset,armyListString,unitToAdd);
                     armyToBuild.units.add(unitToAdd);
                     return  offset;
@@ -340,8 +366,16 @@ public class Parsing
                 {
                     try
                     {
-                        Integer amount = Integer.parseInt(itemAmountString.toString());
-                        return new Pair<>(stringOffset +1 ,amount);
+                        if(itemAmountString.length() != 0)
+                        {
+                            Integer amount = Integer.parseInt(itemAmountString.toString());
+                            return new Pair<>(stringOffset +1 ,amount);
+                        }
+                        else
+                        {
+                            // Works for stuff without amount?
+                            return  new Pair<>(stringOffset+1,0);
+                        }
                     }
                     catch (Exception e)
                     {

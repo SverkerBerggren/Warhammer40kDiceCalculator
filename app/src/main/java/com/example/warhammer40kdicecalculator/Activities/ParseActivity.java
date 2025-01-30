@@ -48,10 +48,9 @@ public class ParseActivity extends AppCompatActivity {
                     if(result.getResultCode() == Activity.RESULT_OK)
                     {
                         Intent data = result.getData();
-
                         Uri uri = data.getData();
 
-                        FileHandler.GetInstance().CreateArmyFromFile(uri);
+                        FileHandler.GetInstance().CreateArmyFromFile(getBaseContext(), uri);
 
 
                         CreateArmyButtons(FileHandler.GetInstance().GetSavedArmies());
@@ -59,10 +58,6 @@ public class ParseActivity extends AppCompatActivity {
                 }
             }
     );
-
-
-
-    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,7 +130,6 @@ public class ParseActivity extends AppCompatActivity {
 
 
         activityChooseFileLauncher.launch(intentTest);
-
     }
 
     private void CreateArmyButtons(ArrayList<String> listOfNames)
