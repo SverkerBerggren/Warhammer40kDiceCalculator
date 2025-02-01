@@ -92,7 +92,7 @@ public class EditUnitActivity extends AppCompatActivity implements AbilityUIHold
         compareActivity.SetEditUnitActivity(this);
 
         ViewGroup verticalLayout = (ViewGroup) inflater.inflate(R.layout.unitviewprefab, ((ViewGroup)findViewById(R.id.LinearLayoutEditUnit)));
-        compareActivity.instaniateUnitButton(verticalLayout.getChildAt(verticalLayout.getChildCount()-1),army.units.get(unitIdentifier.index),unitIdentifier);
+        compareActivity.instantiateUnitButton(verticalLayout.getChildAt(verticalLayout.getChildCount()-1),army.units.get(unitIdentifier.index),unitIdentifier);
         compareActivity.CreateUnitAbilites(army.units.get(unitIdentifier.index),(LinearLayout) verticalLayout,inflater, unitIdentifier);
         TableRow tableRow = (TableRow)findViewById(R.id.TableRowUnitModifiers);
         ImageButton button = (ImageButton)findViewById(R.id.EditUnitModifierButton);

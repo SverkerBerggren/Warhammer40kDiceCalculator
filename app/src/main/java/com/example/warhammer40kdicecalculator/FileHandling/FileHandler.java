@@ -103,7 +103,7 @@ public  class FileHandler  {
                     {
                         break;
                     }
-                    returnValue.append(new String(Buffer, StandardCharsets.UTF_8));
+                    returnValue.append(new String(Buffer,0,ReadBytes, StandardCharsets.UTF_8));
                 }
                 con.disconnect();
                 HTTPInput.close();
@@ -331,6 +331,11 @@ public  class FileHandler  {
         {
             File fileToFind = new File(wahapediaDataDirectory + "/" + fileName);
 
+            Scanner s = new Scanner(fileToFind).useDelimiter("\\A");
+            String result = s.hasNext() ? s.next() : "";
+            String fixed = result.replaceAll("[^\\x20-\\x7e]", "");
+            s.close();
+
             BufferedReader reader = new BufferedReader(new FileReader(fileToFind));
             String readString;
             String[] tempStringArray;
@@ -339,6 +344,10 @@ public  class FileHandler  {
             {
                 // This is required to make sure that inconsistent capitalization does not break the parsing
                 readString = readString.toLowerCase();
+                if(readString.contains("tempestus scions"))
+                {
+                    Log.d("tempestus angle","oij");
+                }
                 tempStringArray = readString.split("\\|");
 
                 for(int i = 0; i < tempStringArray.length; i++)

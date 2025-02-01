@@ -29,7 +29,6 @@ import android.widget.TextView;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.AbilityUIHolder;
-import com.example.warhammer40kdicecalculator.DataSheet;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.DeactivatableInterface;
@@ -48,7 +47,6 @@ import com.example.warhammer40kdicecalculator.ModifierHolder;
 import com.example.warhammer40kdicecalculator.R;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class CompareActivity extends AppCompatActivity implements AbilityUIHolder {
 
@@ -58,31 +56,12 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
     private int UNIT_MODIFIER = R.string.UNIT_MODIFIER;
     private int UNIT_NUMBER = R.string.UNIT_NUMBER;
 
-    private String DECREASE_WEAPONSKILL = "decreaseWeaponSkill";
-    private String DECREASE_BALLISTICSKILL = "decreaseBallisticSkill";
-    private String DECREASE_STRENGTH = "decreaseStrength";
-    private String DECREASE_TOUGHNESS = "decreaseToughness";
-    private String DECREASE_ARMORSAVE = "decreaseArmorSave";
-    private String DECREASE_INVUL = "decreaseInvul";
-    private String DECREASE_ATTACKS = "decreaseAttacks";
-
-
-
-    private String INCREASE_WEAPONSKILL = "increaseWeaponSkill";
-    private String INCREASE_BALLISTICSKILL = "increaseBallisticSkill";
-    private String INCREASE_STRENGTH = "increaseStrength";
-    private String INCREASE_TOUGHNESS = "increaseToughness";
-    private String INCREASE_ARMORSAVE = "increaseArmorSave";
-    private String INCREASE_INVUL = "increaseInvul";
-    private String INCREASE_ATTACKS = "increaseAttacks";
-
-
     private String DONT_DROP_DOWN = "dontDropDown";
 
     private String FRIENDLY = "friendly";
     private String ENEMY = "enemy";
 
-
+    // TODO: bababooey should be enum
     public final String ABILITY_LAYOUT_UNIT = "AbilityLayoutUnit";
     public final String UI_WEAPON_LAYOUT_MODEL = "WeaponLayoutModel";
     public final String UI_UNIT_MODIFIER_LAYOUT = "UnitModifierLayout";
@@ -91,10 +70,6 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
     public final String UI_ABILITY_LAYOUT_MODEL = "AbilityLayoutModel";
     public final String UI_ARMY_ABILITY_LAYOUT = "ArmyAbilityLayout";
     public final String UI_WEAPON_LAYOUT = "UiWeaponLayout";
-
-
-
-    private ArrayList<TableLayout> previousLayouts = new ArrayList<>();
 
     private LayoutInflater inflater;
 
@@ -169,7 +144,8 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
         highestConstraint = findViewById(R.id.ConstraintLayoutCompare);
 
-        createArmies(matchup,inflater);
+        createArmy(matchup.friendlyArmy,FRIENDLY);
+        createArmy(matchup.enemyArmy,ENEMY);
     }
 
     public void Setup(Context context, Matchup matchup)
@@ -349,109 +325,85 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         return listToReturn;
     }
 
-
-    private HashMap<String, DataSheet> datasheetMap = new HashMap<>();
-
-
-    private void createArmies(Matchup matchup, LayoutInflater inflater)
+    private enum WidgetType
     {
-        ArmyIdentifier armyFriendlyId = new ArmyIdentifier(FRIENDLY, matchup.name);
-        UIIdentifier uiIdArmyFriendly = new UIIdentifier(UI_ARMY_MODIFIER_LAYOUT, armyFriendlyId);
-        TableRow friendlyTableRow = (TableRow)findViewById(R.id.TableRowFriendlyArmy);
-        ImageButton friendlyEditButton = (ImageButton)findViewById(R.id.EditFriendlyArmyButton);
-        CreateModifiers(matchup.friendlyArmy, uiIdArmyFriendly, friendlyTableRow, friendlyEditButton);
-
-        ArmyIdentifier armyEnemyId = new ArmyIdentifier(ENEMY, matchup.name);
-        UIIdentifier uiIdArmyEnemy = new UIIdentifier(UI_ARMY_MODIFIER_LAYOUT, armyEnemyId);
-        TableRow enemyTableRow = (TableRow)findViewById(R.id.TableRowEnemyArmy);
-        ImageButton enemyEditButton = (ImageButton)findViewById(R.id.EditEnemyArmyButton);
-        CreateModifiers(matchup.enemyArmy, uiIdArmyEnemy,enemyTableRow,enemyEditButton);
-
-        CreateArmyAbilities(armyFriendlyId, matchup.friendlyArmy);
-        CreateArmyAbilities(armyEnemyId,matchup.enemyArmy);
-
-
-        instaniateArmies(FRIENDLY);
-        instaniateArmies(ENEMY);
-
+        TableRow,
+        ArmyEditButton,
+        ArmyVerticalLayout,
+        ArmyAbilitiesTableLayout,
+        EditArmyAbilities
     }
 
-    private void instaniateArmies(String allegiance)
+    private void createArmy(Army army, String allegiance)
     {
-        ArrayList<Unit> units;
-        ViewGroup verticalLayout;
+        ArmyIdentifier armyId = new ArmyIdentifier(allegiance, matchup.name);
+        UIIdentifier uiIdArmy = new UIIdentifier(UI_ARMY_MODIFIER_LAYOUT, armyId);
+        TableRow tableRow = (TableRow)GetUiElement(allegiance,WidgetType.TableRow);
+        ImageButton editButton = (ImageButton)GetUiElement(allegiance,WidgetType.ArmyEditButton);
+        CreateModifiers(army, uiIdArmy, tableRow, editButton);
+        CreateArmyAbilities(armyId,army);
 
-        if(allegiance.equals(FRIENDLY))
+        instantiateArmies(allegiance);
+    }
+
+    private Object GetUiElement( String allegiance, WidgetType type)
+    {
+        switch (type)
         {
-            units = matchup.friendlyArmy.units;
-            verticalLayout = (ViewGroup) inflater.inflate(R.layout.unitviewprefab, ((ViewGroup)findViewById(R.id.VerticalLayoutFriendlyArmy)));
+            case TableRow:
+                return (allegiance.equals(FRIENDLY)) ? (findViewById(R.id.TableRowFriendlyArmy)):(findViewById(R.id.TableRowEnemyArmy));
+            case ArmyEditButton:
+                return (allegiance.equals(FRIENDLY)) ? (findViewById(R.id.EditFriendlyArmyButton)):(findViewById(R.id.EditEnemyArmyButton));
+            case ArmyVerticalLayout:
+                return (allegiance.equals(FRIENDLY)) ? (findViewById(R.id.VerticalLayoutFriendlyArmy)):(findViewById(R.id.VerticalLayoutEnemyArmy));
+            case ArmyAbilitiesTableLayout:
+                return (allegiance.equals(FRIENDLY)) ? (findViewById(R.id.AbilityLayoutFriendlyArmy)):(findViewById(R.id.AbilityLayoutEnemyArmy));
+            case EditArmyAbilities:
+                return (allegiance.equals(FRIENDLY)) ? (findViewById(R.id.EditFriendlyArmyAbilities)):(findViewById(R.id.EditEnemyArmyAbilities));
         }
-        else
-        {
-            units = matchup.enemyArmy.units;
-            verticalLayout = (ViewGroup) inflater.inflate(R.layout.unitviewprefab, ((ViewGroup)findViewById(R.id.VerticalLayoutEnemyArmy)));
-        }
+
+        Log.d("Compare activity","Requested invalid ui element");
+        return  null;
+    }
+
+    private ArrayList<Unit> GetMatchupUnitsFromAllegiance(String allegiance)
+    {
+        return (allegiance.equals(FRIENDLY) ? (matchup.friendlyArmy.units):(matchup.enemyArmy.units));
+    }
+
+
+    // TODO: verticalLayout.getChildAt(verticalLayout.getChildCount()-1) pattern wack af
+    private void instantiateArmies(String allegiance)
+    {
+        ArrayList<Unit> units = GetMatchupUnitsFromAllegiance(allegiance);
         for(int i = 0; i < units.size();i++)
         {
+            ViewGroup verticalLayout = (ViewGroup) inflater.inflate(R.layout.unitviewprefab,(ViewGroup)GetUiElement(allegiance,WidgetType.ArmyVerticalLayout));
             Unit unit = units.get(i);
             UnitIdentifier unitIdentifier = new UnitIdentifier(allegiance,null,i,matchup.name);
-            instaniateUnitButton(verticalLayout.getChildAt(verticalLayout.getChildCount()-1),unit,unitIdentifier);
+            instantiateUnitButton(verticalLayout.getChildAt(verticalLayout.getChildCount()-1),unit,unitIdentifier);
             CreateUnitAbilites(unit,(LinearLayout) verticalLayout,inflater, unitIdentifier);
 
             TableRow tableRow = (TableRow)findViewById(R.id.TableRowUnitModifiers);
             ImageButton button = (ImageButton)findViewById(R.id.EditUnitModifierButton);
             UIIdentifier uiId = new UIIdentifier(UI_UNIT_MODIFIER_LAYOUT, unitIdentifier);
             CreateModifiers(unit, uiId, tableRow, button);
-            CreateModel(verticalLayout.getChildAt(verticalLayout.getChildCount()-1),unit,i,FRIENDLY,inflater);
+            CreateModel(verticalLayout.getChildAt(verticalLayout.getChildCount()-1),unit,i,allegiance,inflater);
         }
     }
 
     private void CreateArmyAbilities(ArmyIdentifier armyIdentifier, Army army)
     {
-        if(armyIdentifier.allegiance.equals("friendly"))
+        TableLayout tableLayout = (TableLayout) GetUiElement(armyIdentifier.allegiance,WidgetType.ArmyAbilitiesTableLayout);
+        for(int i = 0; i < army.abilities.size(); i++)
         {
-
-            TableLayout tableLayout = findViewById(R.id.AbilityLayoutFriendlyArmy);
-            for(int i = 0; i < army.abilities.size(); i++)
-            {
-                tableLayout.addView(CreateTableRow(army.abilities.get(i).name));
-            }
-
-            ImageButton editButton = findViewById(R.id.EditFriendlyArmyAbilities);
-
-
-            UIIdentifier uiId = new UIIdentifier(UI_ARMY_ABILITY_LAYOUT, armyIdentifier);
-            editButton.setOnClickListener(new OnClickListenerEditAbilites(army,uiId));
-
-
-            editButton.setTag(R.string.ARMY_IDENTIFIER,armyIdentifier);
-
-
-            tableLayout.setTag(uiId);
-          //  editButton.setTag(uiId);
-
+            tableLayout.addView(CreateTableRow(army.abilities.get(i).name));
         }
-        else
-        {
-            TableLayout tableLayout = findViewById(R.id.AbilityLayoutEnemyArmy);
-            for(int i = 0; i < army.abilities.size(); i++)
-            {
-                tableLayout.addView(CreateTableRow(army.abilities.get(i).name));
-            }
-
-            ImageButton editButton = findViewById(R.id.EditEnemyArmyAbilities);
-
-
-            UIIdentifier uiId = new UIIdentifier(UI_ARMY_ABILITY_LAYOUT, armyIdentifier);
-            editButton.setOnClickListener(new OnClickListenerEditAbilites(army,uiId));
-
-            editButton.setTag(R.string.ARMY_IDENTIFIER,armyIdentifier);
-
-            tableLayout.setTag(uiId);
-
-
-            //editButton.setTag(uiId);
-        }
+        ImageButton editButton = (ImageButton) GetUiElement(armyIdentifier.allegiance,WidgetType.EditArmyAbilities);
+        UIIdentifier uiId = new UIIdentifier(UI_ARMY_ABILITY_LAYOUT, armyIdentifier);
+        editButton.setOnClickListener(new OnClickListenerEditAbilites(army,uiId));
+        editButton.setTag(R.string.ARMY_IDENTIFIER,armyIdentifier);
+        tableLayout.setTag(uiId);
     }
 
     public void CreateModifiers(ModifierHolder modifierHolder, UIIdentifier uiId, TableRow tableRow, ImageButton button)
@@ -480,12 +432,9 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
     {
         TableLayout unitAbilitLayout = linearLayout.findViewWithTag("AbilityLayoutUnit");
 
-
         UIIdentifier uiId = new UIIdentifier(ABILITY_LAYOUT_UNIT, unitIdentifier);
-
         unitAbilitLayout.setTag(uiId);
 
-        //unitAbilitLayout.setTag
 
         for(int i = 0; i < unit.listOfAbilitys.size(); i++)
         {
@@ -626,7 +575,8 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
 
 
-    public void CreateModel(View buttonToModify, Unit unit, int unitNumber,String friendlyArmy , LayoutInflater inflater)
+    // TODO: Tag systemet suger fet lowkey
+    public void CreateModel(View buttonToModify, Unit unit, int unitNumber,String Allegiance , LayoutInflater inflater)
     {
         LinearLayout modelsLayout = (LinearLayout) buttonToModify.findViewById(R.id.ModelsSubLayout);
         for(int i = 0; i < unit.listOfModels.size();i++)
@@ -636,7 +586,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
             ((Button)highestConstraint.findViewWithTag("inividualModelTopButton")).setText(currentModel.name);
             ((Button)highestConstraint.findViewWithTag("inividualModelTopButton")).setTag("");
 
-            ModelIdentifier modelId = new ModelIdentifier(friendlyArmy, null, unitNumber,i,matchup.name );
+            ModelIdentifier modelId = new ModelIdentifier(Allegiance, null, unitNumber,i,matchup.name );
             ((ImageButton)inflatedView.findViewById(R.id.EditWeaponsButton)).setTag(R.string.MODEL_IDENTIFIER,modelId);
             ((ImageButton)inflatedView.findViewById(R.id.EditWeaponsButton)).setTag(R.string.UI_IDENTIFIER,new UIIdentifier(UI_WEAPON_LAYOUT_MODEL,modelId));
             ((ImageButton)inflatedView.findViewById(R.id.EditWeaponsButton)).setId(R.id.noId);
@@ -1025,7 +975,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
 
 
-    public void instaniateUnitButton(View buttonToModify, Unit unit, UnitIdentifier unitId)
+    public void instantiateUnitButton(View buttonToModify, Unit unit, UnitIdentifier unitId)
     {
         Button topButton = (Button)buttonToModify.findViewById(R.id.UnitTopButton);
         topButton.setText(unit.unitName);
@@ -1049,8 +999,6 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         String buttonTag = (String) buttonClicked.getTag(UNIT_MODIFIER);
 
     }
-
-
 
     public void DropDownClick(View v)
     {

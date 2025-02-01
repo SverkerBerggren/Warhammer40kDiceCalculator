@@ -76,7 +76,7 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
         modelToReturn.attacks=  attacks;
         modelToReturn.wahapediaDataId = wahapediaDataId;
         modelToReturn.active = active;
-
+        modelToReturn.name = name;
         modelToReturn.listOfAbilites = new ArrayList<>(listOfAbilites);
 
         ArrayList<Weapon> newList = new ArrayList<>();

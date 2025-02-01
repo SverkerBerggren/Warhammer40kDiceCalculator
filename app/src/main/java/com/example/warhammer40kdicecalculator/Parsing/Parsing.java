@@ -210,10 +210,10 @@ public class Parsing
     {
         int amount = 0;
         int armyLength = armyList.length();
-
+        int startIndex = (unit.listOfModels.isEmpty()) ? (0):(unit.listOfModels.size()-1 + modelCount);
         // Lite cap langsamt af men lite snyggare
-        Integer modelsRangeWeaponIndex = 0;
-        Integer modelsMeleeWeaponIndex = 0;
+        Integer modelsRangeWeaponIndex = startIndex;
+        Integer modelsMeleeWeaponIndex = startIndex;
 
         for(int i = 0; i < modelCount; i++)
         {
