@@ -220,7 +220,8 @@ public class DatabaseManager {
             try {
                 if (!weaponEntry.get(9).equals("n/a"))
                 {
-                    weaponToConstruct.ballisticSkill = Integer.parseInt(weaponEntry.get(9));
+                    // TODO: Is only needed because wahapedia data is wrong. A smarter solution would be good
+                    weaponToConstruct.ballisticSkill = Integer.parseInt(weaponEntry.get(9).split("\\+")[0]);
                 }
                 weaponToConstruct.strength = Integer.parseInt(weaponEntry.get(10));
                 weaponToConstruct.ap = Integer.parseInt(weaponEntry.get(11));

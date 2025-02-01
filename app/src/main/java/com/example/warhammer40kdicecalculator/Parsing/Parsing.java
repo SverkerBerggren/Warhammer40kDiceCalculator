@@ -28,8 +28,6 @@ public class Parsing
     private final String BATTLELINE = "battleline";
     private final String CHARACTER = "character";
     private final String DEDICATED_TRANSPORTS = "dedicated transports";
-
-    // private final Object DatabaseLock = new Object();
     private HashMap<DatabaseManager.IdNameKey, Model> modelDatasheetDatabase;
     private HashMap<DatabaseManager.IdNameKey, Weapon> wargearDatabase;
     private HashMap<DatabaseManager.NameFactionKey, Unit> datasheetDatabase;
@@ -178,7 +176,8 @@ public class Parsing
             DatabaseManager.IdNameKey nameKey = new DatabaseManager.IdNameKey(wahapediaIdHolder.GetWahapediaId(),itemName);
             if(modelDatasheetDatabase.containsKey(nameKey))
             {
-                return new Pair<>(ItemType.MODEL,modelDatasheetDatabase.get(nameKey));
+                // TODO: Should it always copy?
+                return new Pair<>(ItemType.MODEL,modelDatasheetDatabase.get(nameKey).Copy());
             }
             if(  wargearDatabase.containsKey(nameKey))
             {
@@ -210,7 +209,7 @@ public class Parsing
     {
         int amount = 0;
         int armyLength = armyList.length();
-        int startIndex = (unit.listOfModels.isEmpty()) ? (0):(unit.listOfModels.size()-1 + modelCount);
+        int startIndex = (unit.listOfModels.isEmpty()) ? (0):(unit.listOfModels.size());
         // Lite cap langsamt af men lite snyggare
         Integer modelsRangeWeaponIndex = startIndex;
         Integer modelsMeleeWeaponIndex = startIndex;
@@ -239,7 +238,7 @@ public class Parsing
                     for(int i = 0; i < amount; i++ )
                     {
                         unit.listOfModels.get(modelIndexStart).weapons.add(weaponToGive.Copy());
-                        if(modelIndexStart >= modelCount -1)
+                        if(modelIndexStart >= unit.listOfModels.size() -1)
                         {
                             modelIndexStart = 0;
                         }
@@ -289,7 +288,9 @@ public class Parsing
                 {
                     unit.singleModelUnit = true;
                     // Assumes that a single model units models names corresponds with the unit name
-                    unit.listOfModels.add( modelDatasheetDatabase.get( new DatabaseManager.IdNameKey( unit.GetWahapediaId() , unit.unitName) ));
+                    unit.listOfModels.add( modelDatasheetDatabase.get( new DatabaseManager.IdNameKey( unit.GetWahapediaId() , unit.unitName)).Copy());
+                    unit.listOfModels.get(0).weapons.add((Weapon) parsedItem.second);
+                    offset+=1;
                     continue;
                 }
                 if(unit.singleModelUnit && parsedItem.first.equals(ItemType.WEAPON))
