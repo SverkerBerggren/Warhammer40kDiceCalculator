@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Trace;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.TableLayout;
@@ -82,7 +83,7 @@ public class StatisticActivity extends AppCompatActivity {
 
         statisticActivity = this;
 
-        String attackingString = "";
+        StringBuilder attackingUnits = new StringBuilder();
         String defendingString = "";
         for (int i = 0; i < sizeOfAttack; i++)
         {
@@ -92,11 +93,11 @@ public class StatisticActivity extends AppCompatActivity {
                 listOfAttackingUnits.add(matchup.friendlyArmy.units.get(key));
                 if (i == sizeOfAttack -1)
                 {
-                    attackingString += matchup.friendlyArmy.units.get(key).unitName;
+                    attackingUnits.append( matchup.friendlyArmy.units.get(key).unitName);
                 }
                 else
                 {
-                    attackingString += matchup.friendlyArmy.units.get(key).unitName + ", ";
+                    attackingUnits.append(matchup.friendlyArmy.units.get(key).unitName).append(", ");
                 }
             }
             else
@@ -104,11 +105,11 @@ public class StatisticActivity extends AppCompatActivity {
                 listOfAttackingUnits.add(matchup.enemyArmy.units.get(key));
                 if (i == sizeOfAttack -1)
                 {
-                    attackingString += matchup.enemyArmy.units.get(key).unitName;
+                    attackingUnits.append( matchup.enemyArmy.units.get(key).unitName);
                 }
                 else
                 {
-                    attackingString += matchup.enemyArmy.units.get(key).unitName + " ,";
+                    attackingUnits.append(matchup.enemyArmy.units.get(key).unitName).append(" ,");
                 }
             }
 
@@ -128,16 +129,10 @@ public class StatisticActivity extends AppCompatActivity {
 
         TextView attackingText = (TextView)findViewById(R.id.AttackingUnitsText);
         TextView defendingText = (TextView)findViewById(R.id.DefendingUnitText);
-        attackingText.setText(attackingString);
+        attackingText.setText(attackingUnits.toString());
         defendingText.setText(defendingString);
 
-        GraphView graphView1 = findViewById(R.id.Graph1);
-        GraphView graphView2 = findViewById(R.id.Graph2);
-
-
-
         RollingLogic rollLogic = new RollingLogic();
-
         Army attackingArmy;
         Army defendingArmy;
 
@@ -158,21 +153,23 @@ public class StatisticActivity extends AppCompatActivity {
             conditions = new Conditions();
         }
 
+        Trace.beginSection("rull logiken: "  + listOfAttackingUnits.size());
         rollResult = rollLogic.newCalculateDamage(listOfAttackingUnits, defendingUnit, attackingArmy,defendingArmy,conditions);
+        Trace.endSection();
 
         ConvertResult(rollResult);
 
+        Trace.beginSection("skapa statistik widgetsen");
+        GraphView graphView1 = findViewById(R.id.Graph1);
+        GraphView graphView2 = findViewById(R.id.Graph2);
         CreateStastisticalMetrics(rollResult);
 
         graphView1.setTitle("Amount of wounds dealt");
         InstaniateGraph(graphView1,woundsDealtDistribution, true);
         graphView2.setTitle("Amount of Enemies killed");
         InstaniateGraph(graphView2, modelsSlainDistribution, false);
-
-        // series.setDrawDataPoints(true);
-        // series.setDataPointsRadius(10);
-        // series.setDrawBackground(true);
-        // series.setBackgroundColor(Color.argb(80,179, 230, 255));
+        Trace.endSection();
+        reportFullyDrawn();
     }
 
     private void CreateStastisticalMetrics(RollResult rollResult)
@@ -185,9 +182,6 @@ public class StatisticActivity extends AppCompatActivity {
         tableLayout.addView(CreateTableRow("Average Models Slain:", ""+rollResult.averageAmountOfModelsSlain));
         tableLayout.addView(CreateTableRow("Median Models Slain:", ""+MedianModelsSlain(rollResult)));
         tableLayout.addView(CreateTableRow("Variance Wounds:", ""+VarianceModelsSlain(rollResult)));
-
-
-
     }
 
     public View CreateTableRow(String textStatisticalMetric, String statisticalValue)
@@ -231,7 +225,6 @@ public class StatisticActivity extends AppCompatActivity {
     private double VarianceModelsSlain(RollResult rollResult)
     {
         double variance = 0;
-
         ArrayList<Integer> amountOfWounds = rollResult.modelsSlain;
 
         for(Integer integer : amountOfWounds)
@@ -244,25 +237,15 @@ public class StatisticActivity extends AppCompatActivity {
 
     private int MedianWounds(RollResult rollResult)
     {
-
-
         ArrayList<Integer> arrayListWounds = rollResult.woundsDealt;
-
         Collections.sort(arrayListWounds);
-
-
 
         return arrayListWounds.get(arrayListWounds.size()/2);
     }
     private int MedianModelsSlain(RollResult rollResult)
     {
-
-
         ArrayList<Integer> arrayListWounds = rollResult.modelsSlain;
-
         Collections.sort(arrayListWounds);
-
-
 
         return arrayListWounds.get(arrayListWounds.size()/2);
     }
@@ -310,8 +293,6 @@ public class StatisticActivity extends AppCompatActivity {
 
         //    graphView.getViewport().setXAxisBoundsManual(false);
     //    graphView.getViewport().setMaxX(dataPoints[dataPoints.length -1].getX());
-
-
 
         barSeries.setSpacing(10);
 
@@ -413,22 +394,14 @@ public class StatisticActivity extends AppCompatActivity {
     private DataPoint[] CreateDataPoints(TreeMap<Integer,Integer> distribution)
     {
         DataPoint[] returnValue = new DataPoint[distribution.size()];
-
-
         int loopNumber = 0;
-
-
 
         for(int x : distribution.keySet())
         {
-
             float y = (float)(distribution.get(x)/ 100.0);
-
             returnValue[loopNumber] = new DataPoint(x,y);
             loopNumber++;
         }
-
-
 
         return returnValue;
     }
