@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import android.os.Handler;
+import android.os.Trace;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,11 +36,13 @@ import com.example.warhammer40kdicecalculator.Abilities.ReRollOnesWound;
 import com.example.warhammer40kdicecalculator.Abilities.ReRollWoundRoll;
 import com.example.warhammer40kdicecalculator.Abilities.TransHuman4;
 import com.example.warhammer40kdicecalculator.AbilityUIHolder;
+import com.example.warhammer40kdicecalculator.BitFunctionality.BigBitField;
 import com.example.warhammer40kdicecalculator.DatabaseManager;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Weapon;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
+import com.example.warhammer40kdicecalculator.Enums.Faction;
 import com.example.warhammer40kdicecalculator.FileHandling.FileHandler;
 import com.example.warhammer40kdicecalculator.Identifiers.Identifier;
 import     com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
@@ -49,7 +52,10 @@ import com.example.warhammer40kdicecalculator.Weapon_Popup;
 import com.example.warhammer40kdicecalculator.FileHandling.UpdateArgumentStruct;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.function.Function;
 
 class Runnable_Function<FunctionArgument,FunctionReturnValue> implements Runnable
@@ -160,20 +166,6 @@ public class  MainActivity extends AppCompatActivity {
 
         Thread UploadDataThread = new Thread(new Callback_Runner<UpdateArgumentStruct,String,Integer>(this,this::p_UpdateCallback, FileHandler.GetInstance()::UpdateWahapediaData,updateArgumentStruct));
         UploadDataThread.start();
-    }
-
-    public void testParseDownloadedCsv(View v)
-    {
-        DatabaseManager parser = DatabaseManager.getInstance();
-
-
-        ArrayList<ArrayList<String>> testLastDatasheets = new ArrayList<ArrayList<String>>();
-
-
-        testLastDatasheets = parser.ReadCsvFile("Datasheets.csv");
-
-        Log.d("lasa datasheets", "langden " + testLastDatasheets.size());
-
     }
 
     public void OpenSavedMatchups(View v)
