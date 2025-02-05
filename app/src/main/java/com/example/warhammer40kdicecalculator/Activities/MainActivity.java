@@ -1,5 +1,7 @@
 package com.example.warhammer40kdicecalculator.Activities;
 
+import static android.widget.Toast.*;
+
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -41,43 +43,6 @@ import com.example.warhammer40kdicecalculator.FileHandling.UpdateArgumentStruct;
 import java.util.ArrayList;
 import java.util.function.Function;
 
-class Runnable_Function<FunctionArgument,FunctionReturnValue> implements Runnable
-{
-    Function<FunctionArgument,FunctionReturnValue> m_FunctionToRun = null;
-    FunctionArgument m_ArgumentToUse = null;
-    Runnable_Function(Function<FunctionArgument,FunctionReturnValue> FunctionToRun,FunctionArgument ArgumentToUse)
-    {
-        m_ArgumentToUse = ArgumentToUse;
-        m_FunctionToRun = FunctionToRun;
-    }
-    //@RequiresApi(api = Build.VERSION_CODES.N)
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    public void run()
-    {
-        m_FunctionToRun.apply(m_ArgumentToUse);
-    }
-}
-class Callback_Runner <RunArgumentType,RunResultType,CallbackResultType> implements Runnable
-{
-    Context m_AssociatedContext = null;
-    private Function<RunResultType,CallbackResultType> m_FunctionCallback = null;
-    private Function<RunArgumentType,RunResultType> m_CodeToRun = null;
-    private RunArgumentType m_RunArgument = null;
-    Callback_Runner(Context AssociatedContext, Function<RunResultType,CallbackResultType> Callback, Function<RunArgumentType,RunResultType> CodeToRun, RunArgumentType RunArgument)
-    {
-        m_AssociatedContext = AssociatedContext;
-        m_FunctionCallback = Callback;
-        m_CodeToRun = CodeToRun;
-        m_RunArgument = RunArgument;
-    }
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    public void run()
-    {
-        RunResultType RunReturnValue = m_CodeToRun.apply(m_RunArgument);
-        new Handler(m_AssociatedContext.getMainLooper()).post(new Runnable_Function<RunResultType,CallbackResultType>(m_FunctionCallback,RunReturnValue));
-    }
-}
-
 public class  MainActivity extends AppCompatActivity {
 
     private Context context;
@@ -90,32 +55,8 @@ public class  MainActivity extends AppCompatActivity {
 
         FileHandler.InitializeFileHandler(context);
 
-     //   DatabaseManager.InitializeDatabaseManager(context);
-        DownloadAndCreateDatabases();
-    }
+        DatabaseManager.InitializeDatabaseManager(context);
 
-    Integer p_UpdateCallback(String Result)
-    {
-        Toast.makeText(this,"Update result: "+Result,Toast.LENGTH_SHORT).show();
-        return(0);
-    }
-
-    public  void DownloadAndCreateDatabases()
-    {
-        UpdateArgumentStruct updateArgumentStruct = new UpdateArgumentStruct();
-
-        updateArgumentStruct.FilesToDownload.add("Datasheets.csv");
-        updateArgumentStruct.FilesToDownload.add("Datasheets_wargear.csv");
-        updateArgumentStruct.FilesToDownload.add("Datasheets_models.csv");
-        updateArgumentStruct.FilesToDownload.add("Datasheets_abilities.csv");
-        updateArgumentStruct.FilesToDownload.add("Datasheets_keywords.csv");
-        updateArgumentStruct.FilesToDownload.add("Factions.csv");
-        updateArgumentStruct.LastUpdateURL = "Last_update.csv";
-        updateArgumentStruct.OutputPrefix = this.getDataDir().toString();
-        updateArgumentStruct.context = context;
-
-        Thread UploadDataThread = new Thread(new Callback_Runner<UpdateArgumentStruct,String,Integer>(this,this::p_UpdateCallback, FileHandler.GetInstance()::UpdateWahapediaData,updateArgumentStruct));
-        UploadDataThread.start();
     }
 
     public void OpenSavedMatchups(View v)
@@ -172,10 +113,6 @@ public class  MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-
-        //View searchGroup = findViewById(R.id.SearchGroup);
-        //searchGroup.setVisibility(View.VISIBLE);
     }
 
     private class OnClickAbilityItem implements AdapterView.OnItemClickListener

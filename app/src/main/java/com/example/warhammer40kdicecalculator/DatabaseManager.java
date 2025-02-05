@@ -1,9 +1,14 @@
 package com.example.warhammer40kdicecalculator;
 
+import static android.widget.Toast.LENGTH_SHORT;
+import static android.widget.Toast.makeText;
+
 import android.content.Context;
 
 import android.os.Build;
+import android.os.Handler;
 import android.util.Log;
+import android.util.Pair;
 
 import androidx.annotation.RequiresApi;
 
@@ -19,12 +24,14 @@ import com.example.warhammer40kdicecalculator.DatasheetModeling.Weapon;
 import com.example.warhammer40kdicecalculator.Enums.AbilityEnum;
 import com.example.warhammer40kdicecalculator.Enums.Faction;
 import com.example.warhammer40kdicecalculator.FileHandling.FileHandler;
+import com.example.warhammer40kdicecalculator.FileHandling.UpdateArgumentStruct;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.Function;
 
 public class DatabaseManager {
 
@@ -37,7 +44,7 @@ public class DatabaseManager {
     private final HashMap<String,Ability> stringAbilityDatabase = new HashMap<>();
     public static volatile DatabaseManager instance;
 
-    public static final Object lock = new Object();
+    public static final Object onlineDatabaseLock = new Object();
 
     public HashMap<IdNameKey, Weapon> GetDatasheetWargearDatabase() {return  DatasheetWargear;}
     public HashMap<NameFactionKey, Unit> GetDatasheetsDatabase() {return  Datasheets;}
@@ -139,6 +146,39 @@ public class DatabaseManager {
             return;
         }
         instance = new DatabaseManager(context);
+        instance.InitializeLocalDatabases();
+        instance.DownloadWahapediaData(context);
+    }
+
+    private void InitializeLocalDatabases()
+    {
+        CreateAbilityDatabase();
+    }
+
+
+    private void InitializeInternetDatabases()
+    {
+        CreateWeaponDatabase();
+        CreateDatasheetDatabase();
+        CreateModelsDatasheet();
+    }
+
+    private  void DownloadWahapediaData(Context context)
+    {
+        UpdateArgumentStruct updateArgumentStruct = new UpdateArgumentStruct();
+
+        updateArgumentStruct.FilesToDownload.add("Datasheets.csv");
+        updateArgumentStruct.FilesToDownload.add("Datasheets_wargear.csv");
+        updateArgumentStruct.FilesToDownload.add("Datasheets_models.csv");
+        updateArgumentStruct.FilesToDownload.add("Datasheets_abilities.csv");
+        updateArgumentStruct.FilesToDownload.add("Datasheets_keywords.csv");
+        updateArgumentStruct.FilesToDownload.add("Factions.csv");
+        updateArgumentStruct.LastUpdateURL = "Last_update.csv";
+        updateArgumentStruct.OutputPrefix = context.getDataDir().toString();
+        updateArgumentStruct.context = context;
+
+        Thread DownloadThread = new Thread(new Callback_Runner<UpdateArgumentStruct,Pair<String,Context>,Integer>(context,this::p_UpdateCallback, FileHandler.GetInstance()::UpdateWahapediaData,updateArgumentStruct));
+        DownloadThread.start();
     }
 
     public static DatabaseManager getInstance()
@@ -148,16 +188,9 @@ public class DatabaseManager {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private DatabaseManager(Context context)
-    {   synchronized (lock)
-        {
-            assetManager = context.getAssets();
-            dataDirectory = context.getDataDir().toString() + "/";
-            CreateAbilityDatabase();
-            CreateWeaponDatabase();
-            CreateDatasheetDatabase();
-            CreateModelsDatasheet();
-            lock.notifyAll();
-        }
+    {
+        assetManager = context.getAssets();
+        dataDirectory = context.getDataDir().toString() + "/";
     }
 
     private void CreateAbilityDatabase()
@@ -358,7 +391,7 @@ public class DatabaseManager {
     }
 
     public ArrayList<ArrayList<String>> ReadCsvFile(String fileName )
-    {   synchronized (lock)
+    {   synchronized (onlineDatabaseLock)
         {
             ArrayList<ArrayList<String>> arrayListToReturn = new ArrayList<>();
             try {
@@ -381,6 +414,51 @@ public class DatabaseManager {
                 e.printStackTrace();
             }
             return arrayListToReturn;
+        }
+    }
+
+    // TODO: Do not know why these are constructed the way they are, completelty bajted
+    private static class Runnable_Function<FunctionArgument,FunctionReturnValue> implements Runnable
+    {
+        Function<FunctionArgument,FunctionReturnValue> m_FunctionToRun = null;
+        FunctionArgument m_ArgumentToUse = null;
+        Runnable_Function(Function<FunctionArgument,FunctionReturnValue> FunctionToRun,FunctionArgument ArgumentToUse)
+        {
+            m_ArgumentToUse = ArgumentToUse;
+            m_FunctionToRun = FunctionToRun;
+        }
+        public void run()
+        {
+            m_FunctionToRun.apply(m_ArgumentToUse);
+        }
+    }
+
+    private Integer p_UpdateCallback(Pair<String,Context> ResultPair)
+    {
+        makeText(ResultPair.second,"Update result: "+ResultPair.first, LENGTH_SHORT).show();
+        return(0);
+    }
+    private class Callback_Runner <RunArgumentType,RunResultType,CallbackResultType> implements Runnable
+    {
+        Context m_AssociatedContext = null;
+        private Function<RunResultType,CallbackResultType> m_FunctionCallback = null;
+        private Function<RunArgumentType,RunResultType> m_CodeToRun = null;
+        private RunArgumentType m_RunArgument = null;
+        Callback_Runner(Context AssociatedContext, Function<RunResultType,CallbackResultType> Callback, Function<RunArgumentType,RunResultType> CodeToRun, RunArgumentType RunArgument)
+        {
+            m_AssociatedContext = AssociatedContext;
+            m_FunctionCallback = Callback;
+            m_CodeToRun = CodeToRun;
+            m_RunArgument = RunArgument;
+        }
+        public void run()
+        {
+            synchronized (onlineDatabaseLock)
+            {
+                RunResultType RunReturnValue = m_CodeToRun.apply(m_RunArgument);
+                onlineDatabaseLock.notifyAll();
+                new Handler(m_AssociatedContext.getMainLooper()).post(new Runnable_Function<RunResultType,CallbackResultType>(m_FunctionCallback,RunReturnValue));
+            }
         }
     }
 }

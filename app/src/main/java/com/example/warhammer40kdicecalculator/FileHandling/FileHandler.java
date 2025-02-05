@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
+import android.util.Pair;
 
 import androidx.annotation.RequiresApi;
 import androidx.documentfile.provider.DocumentFile;
@@ -116,8 +117,7 @@ public  class FileHandler  {
         return returnValue.toString();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    public String UpdateWahapediaData(UpdateArgumentStruct Arguments)
+    public Pair<String,Context> UpdateWahapediaData(UpdateArgumentStruct Arguments)
     {
         //  Log.d("Wahapedia grejen: ", "den uppdaterade bra");
         String ReturnValue = "Success!";
@@ -128,8 +128,7 @@ public  class FileHandler  {
 
         if(localLastUpdate.equals(onlineLastUpdate) && Integer.parseInt(previousArgumentLengthString) == Arguments.FilesToDownload.size() )
         {
-            DatabaseManager.InitializeDatabaseManager(Arguments.context);
-            return "Data is up to date";
+            return new Pair<>("Data is up to date", Arguments.context);
         }
         else
         {
@@ -169,8 +168,7 @@ public  class FileHandler  {
             Log.d ("Hej hej", e.getMessage());
             ReturnValue = "Error updating files: "+e.getMessage();
         }
-        DatabaseManager.InitializeDatabaseManager(Arguments.context);
-        return(ReturnValue);
+        return new Pair<String,Context>(ReturnValue,Arguments.context);
     }
 
     public Matchup getMatchup(String matchupName)

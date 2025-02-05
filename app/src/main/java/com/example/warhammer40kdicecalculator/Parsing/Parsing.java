@@ -53,9 +53,9 @@ public class Parsing
     public Army ParseGWListFormat(String armyListString)
     {
         // Waits for the database to be initialized
-        synchronized (DatabaseManager.lock) {
+        synchronized (DatabaseManager.onlineDatabaseLock) {
             while (DatabaseManager.getInstance() == null) {
-                try { DatabaseManager.lock.wait(); }
+                try { DatabaseManager.onlineDatabaseLock.wait(); }
                 catch (Exception e) {
                     Log.d("Lock knas arme parsing",e.getMessage());
                 }
