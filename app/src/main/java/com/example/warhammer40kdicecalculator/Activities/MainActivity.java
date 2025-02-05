@@ -10,6 +10,7 @@ import android.os.Bundle;
 
 import android.os.Handler;
 import android.os.Trace;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,40 +23,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
-import com.example.warhammer40kdicecalculator.Abilities.FeelNoPain5;
-import com.example.warhammer40kdicecalculator.Abilities.FeelNoPain6;
-import com.example.warhammer40kdicecalculator.Abilities.HammerOfTheEmperor;
-import com.example.warhammer40kdicecalculator.Abilities.IncreaseAp1;
-import com.example.warhammer40kdicecalculator.Abilities.MinusOneDamage;
-import com.example.warhammer40kdicecalculator.Abilities.MinusOneToHit;
-import com.example.warhammer40kdicecalculator.Abilities.MinusOneToWound;
-import com.example.warhammer40kdicecalculator.Abilities.ReRollAmountOfHits;
-import com.example.warhammer40kdicecalculator.Abilities.ReRollHits;
-import com.example.warhammer40kdicecalculator.Abilities.ReRollOnes;
-import com.example.warhammer40kdicecalculator.Abilities.ReRollOnesWound;
-import com.example.warhammer40kdicecalculator.Abilities.ReRollWoundRoll;
-import com.example.warhammer40kdicecalculator.Abilities.TransHuman4;
 import com.example.warhammer40kdicecalculator.AbilityUIHolder;
-import com.example.warhammer40kdicecalculator.BitFunctionality.BigBitField;
 import com.example.warhammer40kdicecalculator.DatabaseManager;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Weapon;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
-import com.example.warhammer40kdicecalculator.Enums.Faction;
+import com.example.warhammer40kdicecalculator.Enums.AbilityEnum;
 import com.example.warhammer40kdicecalculator.FileHandling.FileHandler;
 import com.example.warhammer40kdicecalculator.Identifiers.Identifier;
-import     com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import com.example.warhammer40kdicecalculator.Matchup;
 import com.example.warhammer40kdicecalculator.R;
 import com.example.warhammer40kdicecalculator.Weapon_Popup;
 import com.example.warhammer40kdicecalculator.FileHandling.UpdateArgumentStruct;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Set;
 import java.util.function.Function;
 
 class Runnable_Function<FunctionArgument,FunctionReturnValue> implements Runnable
@@ -97,51 +80,19 @@ class Callback_Runner <RunArgumentType,RunResultType,CallbackResultType> impleme
 
 public class  MainActivity extends AppCompatActivity {
 
-
-
-    public static HashMap<String, Ability> abilityMap = new HashMap<>();
-
     private Context context;
-    private ArrayList<Unit> firstPlayerArmy;
-    private ArrayList<ArrayList<String>> parsedDatasheetList = new ArrayList<>();
-    private ArrayList<ArrayList<String>> parsedWeaponList = new ArrayList<>();
-    private ArrayList<ArrayList<String>> parsedModelList = new ArrayList<>();
-    private void InstantiateAbilities()
-    {
-        abilityMap.put("ReRollAmountOfHits", new ReRollAmountOfHits());
-        abilityMap.put("HammerOfTheEmperor", new HammerOfTheEmperor());
-        abilityMap.put("ReRollOnes", new ReRollOnes());
-        abilityMap.put("ReRollHits",new ReRollHits());
-        abilityMap.put("FeelNoPain6",new FeelNoPain6());
-        abilityMap.put("IncreaseAp1", new IncreaseAp1());
-        abilityMap.put("MinusOneToHit", new MinusOneToHit());
-        abilityMap.put("ReRollOnesWound", new ReRollOnesWound());
-        abilityMap.put("ReRollWounds", new ReRollWoundRoll());
-        abilityMap.put("MinusOneToWound", new MinusOneToWound());
-        abilityMap.put("MinusOneDamage", new MinusOneDamage());
-        abilityMap.put("FeelNoPain5", new FeelNoPain5());
-        abilityMap.put("TransHuman4", new TransHuman4());
-    }
 
-    public  MainActivity()
-    {
-        InstantiateAbilities();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         context = getApplicationContext();
 
-        InstantiateAbilities();
         FileHandler.InitializeFileHandler(context);
 
-        DownloadAndCreateDatabases(getWindow().getCurrentFocus());
+     //   DatabaseManager.InitializeDatabaseManager(context);
+        DownloadAndCreateDatabases();
     }
-
-
 
     Integer p_UpdateCallback(String Result)
     {
@@ -149,8 +100,7 @@ public class  MainActivity extends AppCompatActivity {
         return(0);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    public  void DownloadAndCreateDatabases(View v)
+    public  void DownloadAndCreateDatabases()
     {
         UpdateArgumentStruct updateArgumentStruct = new UpdateArgumentStruct();
 
@@ -173,33 +123,6 @@ public class  MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, SavedMatchupsActivity.class);
 
         startActivity(intent);
-    }
-    public void OpenPopup(View v)
-    {
-        Intent intenten = new Intent(this, activity_popup.class);
-
-        startActivity(intenten);
-    }
-
-    public void OpenWeaponPopup(View v)
-    {
-        Intent intenten = new Intent(this, Weapon_Popup.class);
-
-        startActivity(intenten);
-    }
-
-
-    public class AbilitySearchPopup implements View.OnClickListener
-    {
-        private Identifier identifier;
-        public AbilitySearchPopup(Weapon weapon)
-        {
-            this.identifier = identifier;
-        }
-        @Override
-        public void onClick(View view) {
-
-        }
     }
 
     private void InflateSearch(ViewGroup baseView, Context context)
@@ -226,9 +149,10 @@ public class  MainActivity extends AppCompatActivity {
         ListView listView = baseView.findViewById(R.id.listView);
         ArrayList<String> searchList = new ArrayList<>();
 
-        for (String abilityName : abilityMap.keySet())
+        for(AbilityEnum abilityEnum : AbilityEnum.values())
         {
-            searchList.add(abilityName);
+            Ability ability = DatabaseManager.getInstance().GetAbility(abilityEnum);
+            searchList.add(ability.name);
         }
 
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1,searchList);
@@ -292,7 +216,7 @@ public class  MainActivity extends AppCompatActivity {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
             String item = ((TextView)view).getText().toString();
-            Ability ability = Ability.getAbilityType( abilityMap.get(item).name);
+            Ability ability = DatabaseManager.getInstance().GetAbility(item);
 
             if (weapon != null)
             {

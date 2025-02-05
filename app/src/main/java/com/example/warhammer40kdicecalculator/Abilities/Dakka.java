@@ -18,48 +18,4 @@ public class Dakka extends Ability {
         super("Dakka" +Amount);
         dakkaAmount = Amount;
     }
-    public  void hitRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking)
-    {
-
-
-    }
-    public   void woundRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking)
-    {
-
-    }
-
-    public   void saveRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking)
-    {
-
-    }
-
-    @Override
-    public void hitRollAbilityAttacking(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult) {
-
-    }
-
-    @Override
-    public void HitRollAbilityDefender(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult) {
-
-    }
-
-    @Override
-    public void woundRollAbilityAttacker(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult) {
-
-    }
-
-    @Override
-    public void woundRollAbilityDefender(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult) {
-
-    }
-
-    @Override
-    public int saveRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int damageToBeTaken) {
-        return 0;
-    }
-
-    public   void rollNumberOfShots(List<DiceResult> diceResult, MetricsOfAttacking metricsOfAttacking)
-    {
-
-    }
 }

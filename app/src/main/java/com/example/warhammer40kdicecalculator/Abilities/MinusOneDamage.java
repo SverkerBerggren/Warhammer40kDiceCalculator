@@ -14,26 +14,6 @@ public class MinusOneDamage extends Ability{
     }
 
     @Override
-    public void hitRollAbilityAttacking(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult) {
-
-    }
-
-    @Override
-    public void HitRollAbilityDefender(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult) {
-
-    }
-
-    @Override
-    public void woundRollAbilityAttacker(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult) {
-
-    }
-
-    @Override
-    public void woundRollAbilityDefender(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult) {
-
-    }
-
-    @Override
     public int saveRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int damageToBeTaken) {
 
         if(damageToBeTaken > 1)
@@ -44,11 +24,5 @@ public class MinusOneDamage extends Ability{
         {
             return 0;
         }
-
-    }
-
-    @Override
-    public void rollNumberOfShots(List<DiceResult> diceResult, MetricsOfAttacking metricsOfAttacking) {
-
     }
 }

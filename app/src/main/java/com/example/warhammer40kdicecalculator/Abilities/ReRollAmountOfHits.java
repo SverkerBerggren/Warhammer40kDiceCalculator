@@ -14,52 +14,8 @@ public class ReRollAmountOfHits extends Ability {
         super("ReRollAmountOfHits");
     }
 
-    public  void hitRollAbilityAttacking(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult)
-    {
-
-    }
-
-    @Override
-    public void HitRollAbilityDefender(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult) {
-
-    }
-
-    public   void woundRollAbilityAttacker(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult)
-    {
-
-    }
-
-    @Override
-    public void woundRollAbilityDefender(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult) {
-
-    }
-
-    public int saveRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int damageToBeTaken)
-    {
-        return 0;
-    }
-
     public   void rollNumberOfShots( List<DiceResult>  diceResultList, MetricsOfAttacking metricsOfAttacking)
     {
-    //    if(diceResult.isD3Roll)
-    //    {
-    //        if(diceResult.result <3)
-    //        {
-    //            DiceResult reRoll = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 +1 ));
-//
-    //            diceResult.result = reRoll.result;
-    //        }
-    //    }
-    //    if(diceResult.isD6Roll)
-    //    {
-    //        if(diceResult.result <4)
-    //        {
-    //            DiceResult reRoll = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 +1 ));
-//
-    //            diceResult.result = reRoll.result;
-    //        }
-    //    }
-
         int currentAmountOfAttacks = 0;
 
         for(int i = 0; i < diceResultList.size(); i++)
@@ -97,6 +53,4 @@ public class ReRollAmountOfHits extends Ability {
         }
 
     }
-
-
 }

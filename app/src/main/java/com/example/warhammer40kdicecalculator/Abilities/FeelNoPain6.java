@@ -16,26 +16,6 @@ public class FeelNoPain6 extends Ability {
     }
 
     @Override
-    public void hitRollAbilityAttacking(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult) {
-
-    }
-
-    @Override
-    public void HitRollAbilityDefender(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult) {
-
-    }
-
-    @Override
-    public void woundRollAbilityAttacker(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult) {
-
-    }
-
-    @Override
-    public void woundRollAbilityDefender(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult) {
-
-    }
-
-    @Override
     public int saveRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int damageToBeTaken) {
        int damageToReduce = 0;
        for(int i = 0; i < damageToBeTaken; i++)
@@ -48,10 +28,5 @@ public class FeelNoPain6 extends Ability {
            }
        }
        return damageToReduce;
-    }
-
-    @Override
-    public void rollNumberOfShots(List<DiceResult> diceResult, MetricsOfAttacking metricsOfAttacking) {
-
     }
 }

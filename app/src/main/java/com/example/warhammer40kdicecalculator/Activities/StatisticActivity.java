@@ -35,6 +35,7 @@ import com.jjoe64.graphview.series.Series;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.TreeMap;
@@ -213,41 +214,41 @@ public class StatisticActivity extends AppCompatActivity {
     {
         double variance = 0;
 
-        ArrayList<Integer> amountOfWounds = rollResult.woundsDealt;
+        int[] amountOfWounds = rollResult.woundsDealt;
 
         for(Integer integer : amountOfWounds)
         {
             variance += (integer - rollResult.averageAmountOfWounds ) *(integer - rollResult.averageAmountOfWounds );
         }
 
-        return Math.sqrt(variance/ rollResult.woundsDealt.size());
+        return Math.sqrt(variance/ rollResult.woundsDealt.length);
     }
     private double VarianceModelsSlain(RollResult rollResult)
     {
         double variance = 0;
-        ArrayList<Integer> amountOfWounds = rollResult.modelsSlain;
+        int[] amountOfWounds = rollResult.modelsSlain;
 
         for(Integer integer : amountOfWounds)
         {
             variance += (integer - rollResult.averageAmountOfModelsSlain ) *(integer - rollResult.averageAmountOfModelsSlain );
         }
 
-        return Math.sqrt(variance/ rollResult.modelsSlain.size());
+        return Math.sqrt(variance/ rollResult.modelsSlain.length);
     }
 
     private int MedianWounds(RollResult rollResult)
     {
-        ArrayList<Integer> arrayListWounds = rollResult.woundsDealt;
-        Collections.sort(arrayListWounds);
+        int[] arrayListWounds = rollResult.woundsDealt;
+        Arrays.sort(arrayListWounds);
 
-        return arrayListWounds.get(arrayListWounds.size()/2);
+        return arrayListWounds[(arrayListWounds.length/2)];
     }
     private int MedianModelsSlain(RollResult rollResult)
     {
-        ArrayList<Integer> arrayListWounds = rollResult.modelsSlain;
-        Collections.sort(arrayListWounds);
+        int[] arrayListWounds = rollResult.modelsSlain;
+        Arrays.sort(arrayListWounds);
 
-        return arrayListWounds.get(arrayListWounds.size()/2);
+        return arrayListWounds[arrayListWounds.length/2];
     }
 
     private void InstaniateGraph(GraphView graphView, TreeMap<Integer,Integer> distribution, boolean isGraph1)
@@ -408,9 +409,9 @@ public class StatisticActivity extends AppCompatActivity {
 
     private void ConvertResult(RollResult rollResult)
     {
-        for(int i = 0; i < rollResult.woundsDealt.size();i++)
+        for(int i = 0; i < rollResult.woundsDealt.length;i++)
         {
-            int value = rollResult.woundsDealt.get(i);
+            int value = rollResult.woundsDealt[i];
 
             if(!woundsDealtDistribution.containsKey(value))
             {
@@ -422,9 +423,9 @@ public class StatisticActivity extends AppCompatActivity {
             }
         }
 
-        for(int i = 0; i < rollResult.modelsSlain.size();i++)
+        for(int i = 0; i < rollResult.modelsSlain.length;i++)
         {
-            int value = rollResult.modelsSlain.get(i);
+            int value = rollResult.modelsSlain[i];
 
             if(!modelsSlainDistribution.containsKey(value))
             {

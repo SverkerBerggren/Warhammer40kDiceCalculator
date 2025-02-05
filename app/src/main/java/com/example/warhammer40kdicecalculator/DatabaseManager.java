@@ -7,10 +7,16 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
+import com.example.warhammer40kdicecalculator.Abilities.Ability;
+import com.example.warhammer40kdicecalculator.Abilities.MinusOneDamage;
+import com.example.warhammer40kdicecalculator.Abilities.MinusOneToWound;
+import com.example.warhammer40kdicecalculator.Abilities.ReRollHits;
+import com.example.warhammer40kdicecalculator.Abilities.ReRollOnes;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.DiceAmount;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Weapon;
+import com.example.warhammer40kdicecalculator.Enums.AbilityEnum;
 import com.example.warhammer40kdicecalculator.Enums.Faction;
 import com.example.warhammer40kdicecalculator.FileHandling.FileHandler;
 
@@ -27,6 +33,8 @@ public class DatabaseManager {
     private final HashMap<IdNameKey, Weapon> DatasheetWargear = new HashMap<>();
     private final HashMap<NameFactionKey, Unit> Datasheets = new HashMap<>();
     private final HashMap<IdNameKey, Model> modelsDatasheet = new HashMap<>();
+    private final ArrayList<Ability> enumAbilityDatabase = new ArrayList<>();
+    private final HashMap<String,Ability> stringAbilityDatabase = new HashMap<>();
     public static volatile DatabaseManager instance;
 
     public static final Object lock = new Object();
@@ -34,7 +42,6 @@ public class DatabaseManager {
     public HashMap<IdNameKey, Weapon> GetDatasheetWargearDatabase() {return  DatasheetWargear;}
     public HashMap<NameFactionKey, Unit> GetDatasheetsDatabase() {return  Datasheets;}
     public HashMap<IdNameKey, Model> GetModelsDatasheetDatabase() {return  modelsDatasheet;}
-
     public static class IdNameKey
     {
         private String name;
@@ -122,6 +129,7 @@ public class DatabaseManager {
         return Faction.Unidentified;
     }
 
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     public static void InitializeDatabaseManager(Context context)
     {
@@ -144,12 +152,55 @@ public class DatabaseManager {
         {
             assetManager = context.getAssets();
             dataDirectory = context.getDataDir().toString() + "/";
+            CreateAbilityDatabase();
             CreateWeaponDatabase();
             CreateDatasheetDatabase();
             CreateModelsDatasheet();
             lock.notifyAll();
         }
     }
+
+    private void CreateAbilityDatabase()
+    {
+        for(AbilityEnum abilityEnum : AbilityEnum.values())
+        {
+            Ability ability = null;
+            switch (abilityEnum)
+            {
+                case MinusOneDamage:
+                    ability = new MinusOneDamage();
+                    break;
+                case MinusOneToWound:
+                    ability = new MinusOneToWound();
+                    break;
+                case ReRollHits:
+                    ability = new ReRollHits();
+                    break;
+                case ReRollOnes:
+                    ability = new ReRollOnes();
+                    break;
+                default:
+                    Log.d("Ability database","Enum without corresponding ability found");
+            }
+            if(ability != null)
+            {
+                enumAbilityDatabase.add(ability);
+                stringAbilityDatabase.put(ability.name,ability);
+            }
+        }
+    }
+
+    public Ability GetAbility(AbilityEnum abilityEnum)
+    {
+        return enumAbilityDatabase.get(abilityEnum.ordinal());
+    }
+
+    // Name of the ability
+    public Ability GetAbility(String name)
+    {
+        return stringAbilityDatabase.get(name);
+    }
+
     private  void CreateModelsDatasheet()
     {
         ArrayList<ArrayList<String>> modelsData = FileHandler.instance.GetWahapediaDataCSV("Datasheets_models.csv");

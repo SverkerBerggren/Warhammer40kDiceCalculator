@@ -29,26 +29,6 @@ public class ReRollOnes extends Ability{
 
     }
 
-    @Override
-    public void HitRollAbilityDefender(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult) {
-
-    }
-
-    public   void woundRollAbilityAttacker(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult)
-    {
-
-    }
-
-    @Override
-    public void woundRollAbilityDefender(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult) {
-
-    }
-
-    public int saveRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int damageToBeTaken)
-    {
-        return 0;
-    }
-
     public   void rollNumberOfShots(List<DiceResult> diceResultList, MetricsOfAttacking metricsOfAttacking)
     {
         int currentAmountOfAttacks = 0;
