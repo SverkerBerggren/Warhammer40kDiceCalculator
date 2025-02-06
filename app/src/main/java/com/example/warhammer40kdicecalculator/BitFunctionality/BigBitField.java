@@ -1,18 +1,19 @@
 package com.example.warhammer40kdicecalculator.BitFunctionality;
 
 import android.util.Log;
-import android.widget.GridLayout;
 
-import androidx.recyclerview.widget.SortedList;
+import androidx.annotation.NonNull;
 
-import com.example.warhammer40kdicecalculator.Conditions;
-import com.example.warhammer40kdicecalculator.Enums.Faction;
+import java.util.Iterator;
 
-public  class BigBitField<SpecifiedEnum extends  Enum<SpecifiedEnum> & BitEnum<SpecifiedEnum>> {
+public  class BigBitField<SpecifiedEnum extends  Enum<SpecifiedEnum> & BitEnum<SpecifiedEnum>> implements Iterable<SpecifiedEnum> {
     // Hard coded because I want to avoid dynamic allocations
     private long FirstBitField = 0;
+    // Does not yet support more than 64 values
     private long SecondBitField = 0;
-    private final int MAXSIZE = 128;
+    private final int MAXSIZE = 64;
+    private int count = 0;
+    private SpecifiedEnum[] enumValues;
 
     public BigBitField(SpecifiedEnum bitEnum)
     {
@@ -20,6 +21,7 @@ public  class BigBitField<SpecifiedEnum extends  Enum<SpecifiedEnum> & BitEnum<S
         {
            Log.d("Enum bitfield", "To many variables in the enum, Max size needs to be increased");
         }
+        enumValues = bitEnum.GetValues();
     }
 
     public boolean IsSet(SpecifiedEnum enumValue)
@@ -42,25 +44,60 @@ public  class BigBitField<SpecifiedEnum extends  Enum<SpecifiedEnum> & BitEnum<S
         {
             if(enumValue.ordinal() <= 64)
             {
+                long alreadySet = FirstBitField & index;
+                if(alreadySet == 0)
+                {
+                    count++;
+                }
                 FirstBitField =  (FirstBitField | index);
-            }
-            else
-            {
-                SecondBitField =  (SecondBitField | index);
             }
         }
         else
         {
             if(enumValue.ordinal() <= 64)
             {
+                long alreadySet = FirstBitField & index;
+                if(alreadySet != 0)
+                {
+                    count--;
+                }
                 FirstBitField =  (FirstBitField & (~index));
             }
-            else
-            {
-                SecondBitField =  (SecondBitField & (~index));
-            }
         }
-
     }
 
+    @NonNull
+    @Override
+    public Iterator<SpecifiedEnum> iterator() {
+         Iterator<SpecifiedEnum> iterator = new Iterator<SpecifiedEnum>()
+         {
+            private int currentCount = 0;
+            private int nextBitIndex = 0;
+            @Override
+            public boolean hasNext() {
+                return currentCount < count;
+            }
+
+            @Override
+            public SpecifiedEnum next() {
+                if(!hasNext())
+                {
+                    throw new RuntimeException("Stub!");
+                }
+                int index = nextBitIndex;
+                for(;index < MAXSIZE;index++)
+                {
+                    long IsSet = FirstBitField & ((long) 1 <<index);
+                    if(IsSet != 0)
+                    {
+                        currentCount++;
+                        nextBitIndex = index +1;
+                        return enumValues[index];
+                    }
+                }
+                return null;
+            }
+        };
+        return  iterator;
+    }
 }

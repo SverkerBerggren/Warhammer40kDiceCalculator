@@ -4,8 +4,6 @@ import com.example.warhammer40kdicecalculator.Abilities.Ability;
 
 public interface AbilityHolder {
 
-    public abstract Ability GetAbility(int index);
-    public abstract boolean RemoveAbility(Ability ability);
-
-
+    Ability GetAbility(int index);
+    boolean RemoveAbility(Ability ability);
 }

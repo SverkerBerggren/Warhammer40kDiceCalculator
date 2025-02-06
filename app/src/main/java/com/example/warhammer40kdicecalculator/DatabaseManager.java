@@ -436,6 +436,7 @@ public class DatabaseManager {
     private Integer p_UpdateCallback(Pair<String,Context> ResultPair)
     {
         makeText(ResultPair.second,"Update result: "+ResultPair.first, LENGTH_SHORT).show();
+        InitializeInternetDatabases();
         return(0);
     }
     private class Callback_Runner <RunArgumentType,RunResultType,CallbackResultType> implements Runnable

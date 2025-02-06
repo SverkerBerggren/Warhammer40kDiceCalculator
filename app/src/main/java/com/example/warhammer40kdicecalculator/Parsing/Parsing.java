@@ -374,7 +374,6 @@ public class Parsing
                         }
                         else
                         {
-                            // Works for stuff without amount?
                             return  new Pair<>(stringOffset+1,0);
                         }
                     }

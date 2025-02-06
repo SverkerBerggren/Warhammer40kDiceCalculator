@@ -26,12 +26,14 @@ import android.widget.Toast;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.AbilityUIHolder;
+import com.example.warhammer40kdicecalculator.BitFunctionality.BigBitField;
 import com.example.warhammer40kdicecalculator.DatabaseManager;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Weapon;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
 import com.example.warhammer40kdicecalculator.Enums.AbilityEnum;
+import com.example.warhammer40kdicecalculator.Enums.Faction;
 import com.example.warhammer40kdicecalculator.FileHandling.FileHandler;
 import com.example.warhammer40kdicecalculator.Identifiers.Identifier;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
@@ -54,9 +56,7 @@ public class  MainActivity extends AppCompatActivity {
         context = getApplicationContext();
 
         FileHandler.InitializeFileHandler(context);
-
         DatabaseManager.InitializeDatabaseManager(context);
-
     }
 
     public void OpenSavedMatchups(View v)
