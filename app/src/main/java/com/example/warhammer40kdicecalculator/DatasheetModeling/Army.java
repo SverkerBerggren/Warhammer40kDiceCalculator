@@ -4,11 +4,12 @@ import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.Activities.CompareActivity;
 import com.example.warhammer40kdicecalculator.BitFunctionality.AbilityBitField;
 import com.example.warhammer40kdicecalculator.Enums.AbilityEnum;
+import com.example.warhammer40kdicecalculator.Enums.IdentifierType;
 import com.example.warhammer40kdicecalculator.ModifierHolder;
 
 import java.util.ArrayList;
 
-public class Army implements AbilityHolder, ModifierHolder {
+public class Army extends GamePiece implements ModifierHolder {
     public String name = "";
 
     public ArrayList<Unit> units = new ArrayList<>();
@@ -176,5 +177,10 @@ public class Army implements AbilityHolder, ModifierHolder {
     @Override
     public boolean IsActive(AbilityEnum abilityEnum) {
         return false;
+    }
+
+    @Override
+    public IdentifierType GetIdentifierType() {
+        return IdentifierType.ARMY;
     }
 }

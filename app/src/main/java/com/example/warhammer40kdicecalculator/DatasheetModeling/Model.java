@@ -1,14 +1,14 @@
 package com.example.warhammer40kdicecalculator.DatasheetModeling;
 
-import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.Activities.CompareActivity;
 import com.example.warhammer40kdicecalculator.BitFunctionality.AbilityBitField;
 import com.example.warhammer40kdicecalculator.Enums.AbilityEnum;
+import com.example.warhammer40kdicecalculator.Enums.IdentifierType;
 import com.example.warhammer40kdicecalculator.ModifierHolder;
 
 import java.util.ArrayList;
 
-public class Model  implements AbilityHolder, ModifierHolder, DeactivatableInterface, WahapediaIdHolder{
+public class Model extends GamePiece implements ModifierHolder, DeactivatableInterface, WahapediaIdHolder{
 
     public String wahapediaDataId;
     public String name;
@@ -39,6 +39,11 @@ public class Model  implements AbilityHolder, ModifierHolder, DeactivatableInter
     @Override
     public boolean IsActive(AbilityEnum abilityEnum) {
         return abilityFlags.IsActive(abilityEnum);
+    }
+
+    @Override
+    public IdentifierType GetIdentifierType() {
+        return IdentifierType.MODEL;
     }
 
     public Model(Model other)

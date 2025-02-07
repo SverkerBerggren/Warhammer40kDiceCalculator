@@ -1,18 +1,11 @@
 package com.example.warhammer40kdicecalculator.Activities;
 
-import static android.widget.Toast.*;
-
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 
-import android.os.Handler;
-import android.os.Trace;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,30 +15,17 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
-import com.example.warhammer40kdicecalculator.Abilities.ReRollOnes;
 import com.example.warhammer40kdicecalculator.AbilityUIHolder;
-import com.example.warhammer40kdicecalculator.BitFunctionality.BigBitField;
 import com.example.warhammer40kdicecalculator.DatabaseManager;
-import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
-import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
-import com.example.warhammer40kdicecalculator.DatasheetModeling.Weapon;
-import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.GamePiece;
 import com.example.warhammer40kdicecalculator.Enums.AbilityEnum;
-import com.example.warhammer40kdicecalculator.Enums.Faction;
 import com.example.warhammer40kdicecalculator.FileHandling.FileHandler;
-import com.example.warhammer40kdicecalculator.Identifiers.Identifier;
-import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import com.example.warhammer40kdicecalculator.Matchup;
 import com.example.warhammer40kdicecalculator.R;
-import com.example.warhammer40kdicecalculator.Weapon_Popup;
-import com.example.warhammer40kdicecalculator.FileHandling.UpdateArgumentStruct;
 
 import java.util.ArrayList;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Function;
 
 public class  MainActivity extends AppCompatActivity {
 
@@ -86,7 +66,7 @@ public class  MainActivity extends AppCompatActivity {
 
 
     // Why is it here? I am not sure
-    public void SearchAbility(AbilityHolder abilityHolder, Matchup matchup, ViewGroup baseView, Context context, AbilityUIHolder abilityUIHolder)
+    public void SearchAbility(GamePiece gamePiece, Matchup matchup, ViewGroup baseView, Context context, AbilityUIHolder abilityUIHolder)
     {
         InflateSearch(baseView,context);
         SearchView searchView = baseView.findViewById(R.id.searchView);
@@ -102,7 +82,7 @@ public class  MainActivity extends AppCompatActivity {
 
         listView.setAdapter(arrayAdapter);
 
-        listView.setOnItemClickListener(new OnClickAbilityItem(abilityHolder,baseView,matchup, abilityUIHolder));
+        listView.setOnItemClickListener(new OnClickAbilityItem(gamePiece,baseView,matchup, abilityUIHolder));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -119,17 +99,17 @@ public class  MainActivity extends AppCompatActivity {
 
     private class OnClickAbilityItem implements AdapterView.OnItemClickListener
     {
-        private final AbilityHolder abilityHolder;
+        private final GamePiece gamePiece;
         private final ViewGroup baseView;
         private final Matchup matchup;
         private AbilityUIHolder abilityUIHolder;
 
-        public OnClickAbilityItem(AbilityHolder abilityHolder, ViewGroup baseView, Matchup matchup, AbilityUIHolder abilityUIHolder)
+        public OnClickAbilityItem(GamePiece gamePiece, ViewGroup baseView, Matchup matchup, AbilityUIHolder abilityUIHolder)
         {
             this.baseView = baseView;
             this.matchup = matchup;
             this.abilityUIHolder = abilityUIHolder;
-            this.abilityHolder = abilityHolder;
+            this.gamePiece = gamePiece;
         }
 
         @Override
@@ -138,8 +118,8 @@ public class  MainActivity extends AppCompatActivity {
             Ability ability = DatabaseManager.getInstance().GetAbility(item);
             AbilityEnum abilityEnum = (AbilityEnum) adapterView.getAdapter().getItem(i);
 
-            abilityHolder.GetAbilityBitField().Set(abilityEnum,true);
-            abilityUIHolder.AbilityAdded(abilityEnum,abilityHolder);
+            gamePiece.GetAbilityBitField().Set(abilityEnum,true);
+            abilityUIHolder.AbilityAdded(abilityEnum, gamePiece);
 
             View searchLayout = baseView.findViewById(R.id.SearchLayout);
             searchLayout.setVisibility(View.GONE);

@@ -6,14 +6,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
-import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
@@ -21,10 +17,7 @@ import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.AbilityUIHolder;
 import com.example.warhammer40kdicecalculator.BitFunctionality.AbilityBitField;
 import com.example.warhammer40kdicecalculator.DatabaseManager;
-import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
-import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
-import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
-import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.GamePiece;
 import com.example.warhammer40kdicecalculator.Enums.AbilityEnum;
 import com.example.warhammer40kdicecalculator.FileHandling.FileHandler;
 import com.example.warhammer40kdicecalculator.Identifiers.ArmyIdentifier;
@@ -54,26 +47,24 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
         Intent intent = getIntent();
         context = getBaseContext();
 
-        String matchupName = intent.getStringExtra("matchupName");
-
         ImageButton addAbilityButton = findViewById(R.id.EditAbilitiesAdd);
-        matchup = FileHandler.GetInstance().getMatchup(matchupName);
         uiElement =  intent.getStringExtra(""+R.string.UI_IDENTIFIER);
         tableLayoutAbilities = findViewById(R.id.TableLayoutEditAbilities);
 
         identifier = IdentifierUtils.GetIdentifierFromExtra(intent);
-        AbilityHolder abilityHolder = matchup.GetAbilityHolder(identifier);
+        matchup = FileHandler.GetInstance().getMatchup(identifier.GetMatchupName());
+        GamePiece gamePiece = matchup.GetGamePiece(identifier);
 
-        for(AbilityEnum ability : abilityHolder.GetAbilityBitField())
+        for(AbilityEnum ability : gamePiece.GetAbilityBitField())
         {
-            CreateButton(ability,abilityHolder);
+            CreateButton(ability, gamePiece);
         }
         MainActivity mainActivity = new MainActivity();
         Activity_Edit_Abilities editAbilityActivity = this;
         addAbilityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mainActivity.SearchAbility(abilityHolder,matchup,findViewById(R.id.ConstraintLayoutEditAbilities),context,editAbilityActivity);
+                mainActivity.SearchAbility(gamePiece,matchup,findViewById(R.id.ConstraintLayoutEditAbilities),context,editAbilityActivity);
             }
         });
 
@@ -86,7 +77,7 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
         getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
-    private void CreateButton(AbilityEnum abilityEnum, AbilityHolder abilityHolder)
+    private void CreateButton(AbilityEnum abilityEnum, GamePiece gamePiece)
     {
         Ability ability = DatabaseManager.getInstance().GetAbility(abilityEnum);
 
@@ -95,15 +86,15 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
         checkBox.setTextSize(20);
         ImageButton imageButton = new ImageButton(context);
 
-        checkBox.setChecked(abilityHolder.IsActive(abilityEnum));
+        checkBox.setChecked(gamePiece.IsActive(abilityEnum));
         checkBox.setText(ability.name);
         checkBox.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         CompareActivity compareActivity = new CompareActivity();
         compareActivity.Setup(context,matchup);
-        checkBox.setOnClickListener(compareActivity. new OnClickDeactivateAbility(abilityHolder.GetAbilityBitField(), abilityEnum));
+        checkBox.setOnClickListener(compareActivity. new OnClickDeactivateAbility(gamePiece.GetAbilityBitField(), abilityEnum));
         imageButton.setImageResource(com.google.android.material.R.drawable.abc_ic_menu_cut_mtrl_alpha);
 
-        imageButton.setOnClickListener(new OnClickRemoveAbility(abilityHolder,abilityEnum));
+        imageButton.setOnClickListener(new OnClickRemoveAbility(gamePiece,abilityEnum));
 
         tableRow.addView(checkBox);
         tableRow.addView(imageButton);
@@ -114,18 +105,18 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
     private class OnClickRemoveAbility implements View.OnClickListener
     {
         private AbilityEnum abilityEnum;
-        private AbilityHolder abilityHolder;
+        private GamePiece gamePiece;
 
-        public OnClickRemoveAbility(AbilityHolder abilityHolder,AbilityEnum ability)
+        public OnClickRemoveAbility(GamePiece gamePiece, AbilityEnum ability)
         {
-            this.abilityHolder = abilityHolder;
+            this.gamePiece = gamePiece;
             this.abilityEnum = ability;
         }
 
         @Override
         public void onClick(View view) {
 
-            abilityHolder.GetAbilityBitField().Set(abilityEnum,false);
+            gamePiece.GetAbilityBitField().Set(abilityEnum,false);
 
             FileHandler.GetInstance().saveMatchup(matchup);
 
@@ -138,11 +129,11 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
         }
     }
     @Override
-    public void AbilityAdded(AbilityEnum ability, AbilityHolder abilityHolder) {
+    public void AbilityAdded(AbilityEnum ability, GamePiece gamePiece) {
 
         abilitiesAdded.Set(ability,true);
         abilitiesRemoved.Set(ability,false);
-        CreateButton(ability,abilityHolder);
+        CreateButton(ability, gamePiece);
     }
 
     @Override

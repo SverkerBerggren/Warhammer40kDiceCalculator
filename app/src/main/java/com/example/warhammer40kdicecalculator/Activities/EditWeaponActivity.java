@@ -25,7 +25,7 @@ import android.widget.TableRow;
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.AbilityUIHolder;
 import com.example.warhammer40kdicecalculator.DatabaseManager;
-import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.GamePiece;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Weapon;
 import com.example.warhammer40kdicecalculator.Enums.AbilityEnum;
 import com.example.warhammer40kdicecalculator.FileHandling.FileHandler;
@@ -121,8 +121,8 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
     }
 
     @Override
-    public void AbilityAdded(AbilityEnum ability, AbilityHolder abilityHolder) {
-        PopulateAbilites((Weapon) abilityHolder);
+    public void AbilityAdded(AbilityEnum ability, GamePiece gamePiece) {
+        PopulateAbilites((Weapon) gamePiece);
     }
 
     private class OnClickListenerWeapon implements View.OnClickListener {

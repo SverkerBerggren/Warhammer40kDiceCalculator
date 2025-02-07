@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.example.warhammer40kdicecalculator.Conditions;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
+import com.example.warhammer40kdicecalculator.Enums.IdentifierType;
 import com.example.warhammer40kdicecalculator.FileHandling.FileHandler;
 import com.example.warhammer40kdicecalculator.Identifiers.UIIdentifier;
 import com.example.warhammer40kdicecalculator.Identifiers.UnitIdentifier;
@@ -67,7 +68,6 @@ public class UnitSelection extends AppCompatActivity {
         context = getBaseContext();
 
         FileHandler fileHandler = FileHandler.GetInstance();
-        //Log.d("testar intetion", "onCreate: " + getIntent().getStringExtra("SourceFile"));
         if (fileHandler.getMatchup( getIntent().getStringExtra("SourceFile")) != null)
         {
             matchup = fileHandler.getMatchup( getIntent().getStringExtra("SourceFile"));
@@ -276,10 +276,6 @@ public class UnitSelection extends AppCompatActivity {
             }
             else
             {
-            //    Button bttn = new Button(context);
-            //    bttn.setTag(name);
-            //    bttn.setText(name);
-
                 View bttn = CreateTableRow(name,index,allegiance);
                 if (attacking)
                 {
@@ -292,9 +288,6 @@ public class UnitSelection extends AppCompatActivity {
                     chosenDefendingUnits.addView(bttn);
                     defendingUnitIndex = index;
                 }
-
-
-            //    bttn.setOnClickListener(new OnClickListenerEditUnit( new UnitIdentifier(allegiance,null,index,matchup.name)));
             }
         }
     }
@@ -344,20 +337,6 @@ public class UnitSelection extends AppCompatActivity {
 
         tableRowUnit.setGravity(Gravity.FILL);
 
-
-   //    TableLayout tableLayout = new TableLayout(context);
-
-   //    tableLayout.setTag(name);
-
-   //    tableLayout.addView(tableRowUnit);
-   //    tableLayout.addView(tableRowAbility);
-
-
-
-     //   tableLayout.setShrinkAllColumns(true);
-
-
-
         return tableRowUnit;
     }
 
@@ -375,25 +354,12 @@ public class UnitSelection extends AppCompatActivity {
 
         @Override
         public void onClick(View view) {
-
-
-
             Intent intent = new Intent(context, Activity_Edit_Abilities.class);
-            // Identifier
-
-            //UnitIdentifier identifier = (UnitIdentifier)view.getTag(R.string.UNIT_IDENTIFIER);
-            intent.putExtra("" + R.string.UNIT_IDENTIFIER, unitIdentifier.toString());
-            intent.putExtra(""+R.string.TYPE_OF_IDENTIFIER, "unit");
-
-
+            intent.putExtra(IdentifierType.IDENTIFIER.name(), unitIdentifier.GetIdentifierEnum().name());
+            intent.putExtra("" +unitIdentifier.GetIdentifierEnum().GetResourceId(), unitIdentifier.toString());
             UIIdentifier uiId = new UIIdentifier("stub??",unitIdentifier);
 
             intent.putExtra(""+R.string.UI_IDENTIFIER, uiId.elementName);
-
-            intent.putExtra("matchupName", matchup.name);
-
-
-
             activityResultLauncherAbility.launch(intent);
         }
     }

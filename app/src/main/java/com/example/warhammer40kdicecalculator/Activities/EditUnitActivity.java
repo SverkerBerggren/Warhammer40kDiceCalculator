@@ -23,14 +23,14 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.AbilityUIHolder;
-import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.GamePiece;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.DiceAmount;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Weapon;
 import com.example.warhammer40kdicecalculator.Enums.AbilityEnum;
+import com.example.warhammer40kdicecalculator.Enums.IdentifierType;
 import com.example.warhammer40kdicecalculator.FileHandling.FileHandler;
 import com.example.warhammer40kdicecalculator.Identifiers.ArmyIdentifier;
 import com.example.warhammer40kdicecalculator.Identifiers.Identifier;
@@ -160,7 +160,7 @@ public class EditUnitActivity extends AppCompatActivity implements AbilityUIHold
     }
 
     @Override
-    public void AbilityAdded(AbilityEnum abilityEnum, AbilityHolder abilityHolder) {
+    public void AbilityAdded(AbilityEnum abilityEnum, GamePiece gamePiece) {
 
     }
 
@@ -287,37 +287,11 @@ public class EditUnitActivity extends AppCompatActivity implements AbilityUIHold
 
     }
 
-    public void StartEditAbilites(View view, UIIdentifier uiId)
-    {
-        Intent intent = new Intent(context, Activity_Edit_Abilities.class);
-        // Identifier
-        if(uiId.id instanceof ModelIdentifier)
-        {
-            ModelIdentifier identifier = (ModelIdentifier)view.getTag(R.string.MODEL_IDENTIFIER);
-            intent.putExtra("" + R.string.MODEL_IDENTIFIER, identifier.toString());
-            intent.putExtra(""+R.string.TYPE_OF_IDENTIFIER, "model");
-        }
-        else
-        {
-            UnitIdentifier identifier = (UnitIdentifier)view.getTag(R.string.UNIT_IDENTIFIER);
-            intent.putExtra("" + R.string.UNIT_IDENTIFIER, identifier.toString());
-            intent.putExtra(""+R.string.TYPE_OF_IDENTIFIER, "unit");
-        }
-
-        intent.putExtra(""+R.string.UI_IDENTIFIER, uiId.elementName);
-
-        intent.putExtra("matchupName", matchup.name);
-
-
-
-        activityResultLauncherAbility.launch(intent);
-    }
-
     public void EditWeaponActivityStart(View v)
     {
         Intent intent = new Intent(this,EditWeaponActivity.class);
 
-        ModelIdentifier modelId = (ModelIdentifier) v.getTag(R.string.MODEL_IDENTIFIER);
+        ModelIdentifier modelId = (ModelIdentifier) v.getTag(IdentifierType.MODEL.ordinal());
 
         UIIdentifier uiId = (UIIdentifier) v.getTag(R.string.UI_IDENTIFIER);
 

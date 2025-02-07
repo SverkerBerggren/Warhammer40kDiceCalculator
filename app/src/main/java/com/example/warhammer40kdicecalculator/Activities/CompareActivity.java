@@ -31,7 +31,7 @@ import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.AbilityUIHolder;
 import com.example.warhammer40kdicecalculator.BitFunctionality.AbilityBitField;
 import com.example.warhammer40kdicecalculator.DatabaseManager;
-import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.GamePiece;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.DeactivatableInterface;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
@@ -159,9 +159,9 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
     }
 
     @Override
-    public void AbilityAdded(AbilityEnum abilityEnum, AbilityHolder abilityHolder) {
+    public void AbilityAdded(AbilityEnum abilityEnum, GamePiece gamePiece) {
 
-        if(abilityHolder instanceof Model)
+        if(gamePiece instanceof Model)
         {
            // ModelIdentifier mode
         }
@@ -373,7 +373,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         ImageButton editButton = (ImageButton) GetUiElement(armyIdentifier.allegiance,WidgetType.EditArmyAbilities);
         UIIdentifier uiId = new UIIdentifier(UI_ARMY_ABILITY_LAYOUT, armyIdentifier);
         editButton.setOnClickListener(new OnClickListenerEditAbilites(army,uiId));
-        editButton.setTag(R.string.ARMY_IDENTIFIER,armyIdentifier);
+        editButton.setTag(IdentifierType.ARMY.GetResourceId(),armyIdentifier);
         tableLayout.setTag(uiId);
     }
 
@@ -426,7 +426,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
         ImageButton editAbilities = highestConstraint.findViewById(R.id.EditUnitAbilities);
 
-        editAbilities.setTag(R.string.UNIT_IDENTIFIER,unitIdentifier);
+        editAbilities.setTag(IdentifierType.UNIT.GetResourceId(),unitIdentifier);
 
         editAbilities.setOnClickListener(new OnClickListenerEditAbilites(unit, uiId));
 
@@ -437,30 +437,30 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
     private class OnClickListenerEditAbilites implements View.OnClickListener
     {
-        private AbilityHolder abilityHolder;
+        private GamePiece gamePiece;
         private UIIdentifier uiId;
 
 
-        public OnClickListenerEditAbilites(AbilityHolder abilityHolder,UIIdentifier uiId)
+        public OnClickListenerEditAbilites(GamePiece gamePiece, UIIdentifier uiId)
         {
-             this.abilityHolder = abilityHolder;
+             this.gamePiece = gamePiece;
              this.uiId = uiId;
         }
 
         @Override
         public void onClick(View view) {
-            StartEditAbilites(view,abilityHolder,uiId);
+            StartEditAbilites(view, gamePiece,uiId);
         }
     }
-    public void StartEditAbilites(View view, AbilityHolder abilityHolder, UIIdentifier uiId )
+    public void StartEditAbilites(View view, GamePiece gamePiece, UIIdentifier uiId )
     {
         Intent intent = new Intent(context, Activity_Edit_Abilities.class);
 
-        //TODO: ASAP maste fixa att R.string.UNIT_IDENTIFIER ar en enum eller gettas
-        UnitIdentifier identifier = (UnitIdentifier)view.getTag(R.string.UNIT_IDENTIFIER);
-        intent.putExtra(IdentifierType.IDENTIFIER.name(), IdentifierType.UNIT.name());
-        intent.putExtra(""+R.string.UNIT_IDENTIFIER,identifier.toString());
-        intent.putExtra("matchupName",identifier.matchupName);
+        //TODO: ASAP maste fixa att R.string.UNIT_IDENTIFIER ar en enum eller gettas. Enum eller kosntant?
+        Identifier identifier = (Identifier) view.getTag(gamePiece.GetIdentifierType().GetResourceId());
+        intent.putExtra(IdentifierType.IDENTIFIER.name(), gamePiece.GetIdentifierType().name());
+        intent.putExtra(""+gamePiece.GetIdentifierType().GetResourceId(),identifier.toString());
+        intent.putExtra("matchupName",identifier.GetMatchupName());
         intent.putExtra(""+R.string.UI_IDENTIFIER, uiId.elementName);
 
         activityResultLauncherAbility.launch(intent);
@@ -478,7 +478,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
             ((Button)highestConstraint.findViewWithTag("inividualModelTopButton")).setTag("");
 
             ModelIdentifier modelId = new ModelIdentifier(Allegiance, null, unitNumber,i,matchup.name );
-            ((ImageButton)inflatedView.findViewById(R.id.EditWeaponsButton)).setTag(R.string.MODEL_IDENTIFIER,modelId);
+            ((ImageButton)inflatedView.findViewById(R.id.EditWeaponsButton)).setTag(IdentifierType.MODEL.GetResourceId(),modelId);
             ((ImageButton)inflatedView.findViewById(R.id.EditWeaponsButton)).setTag(R.string.UI_IDENTIFIER,new UIIdentifier(UI_WEAPON_LAYOUT_MODEL,modelId));
             ((ImageButton)inflatedView.findViewById(R.id.EditWeaponsButton)).setId(R.id.noId);
 
@@ -669,7 +669,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
     {
         Intent intent = new Intent(this,EditWeaponActivity.class);
 
-        ModelIdentifier modelId = (ModelIdentifier) v.getTag(R.string.MODEL_IDENTIFIER);
+        ModelIdentifier modelId = (ModelIdentifier) v.getTag(IdentifierType.MODEL.GetResourceId());
 
         UIIdentifier uiId = (UIIdentifier) v.getTag(R.string.UI_IDENTIFIER);
 
@@ -709,49 +709,15 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
           }
           TableRow tableRowButton = new TableRow(context);
           tableRowButton.setBackgroundColor(Color.parseColor("#DFDADA"));
-
-
-
           UIIdentifier uiId = new UIIdentifier(UI_ABILITY_LAYOUT_MODEL,modelId);
-
           ImageButton addButton = highestConstraint.findViewById(R.id.EditModelAbilities);
 
-
-          addButton.setOnClickListener(new OnClickListenerAddAbility(model,this,  uiId));
-
-          addButton.setTag(R.string.MODEL_IDENTIFIER, modelId);
-
-
-
-
+          addButton.setOnClickListener(new OnClickListenerEditAbilites(model,  uiId));
+          addButton.setTag(IdentifierType.MODEL.GetResourceId(), modelId);
           abilityTable.addView(tableRowButton);
-
           addButton.setId(R.id.noId);
-
           abilityTable.setTag(uiId);
-
-
     }
-
-   private class OnClickListenerAddAbility implements View.OnClickListener
-   {
-       private  Model abilityHolder;
-       private  CompareActivity compareActivity;
-       private UIIdentifier uiId;
-
-       public OnClickListenerAddAbility(Model abilityHolder, CompareActivity compareActivity, UIIdentifier uiId)
-       {
-           this.abilityHolder = abilityHolder;
-           this.compareActivity = compareActivity;
-           this.uiId = uiId;
-       }
-       @Override
-       public void onClick(View view) {
-
-           StartEditAbilites(view, abilityHolder, uiId);
-
-       }
-   }
 
     private void SetModelStats(TableRow tableRow, Model model, ModelIdentifier modelId)
     {
@@ -888,25 +854,6 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
     {
         Button topButton = (Button)buttonToModify.findViewById(R.id.UnitTopButton);
         topButton.setText(unit.unitName);
-    }
-
-    public void ChangeUnitModifer(View buttonClicked)
-    {
-     //   Log.d("hej", "kallas metoden");
-
-        Unit unitToModify = null;
-        ViewGroup parent = (ViewGroup) buttonClicked.getParent();
-        if(((String)buttonClicked.getTag(UNIT_ALLEGIANCE)).equals("friendly"))
-        {
-            unitToModify = matchup.friendlyArmy.units.get(((int)buttonClicked.getTag(UNIT_NUMBER)) );
-        }
-        else
-        {
-            unitToModify =  matchup.enemyArmy.units.get(((int)buttonClicked.getTag(UNIT_NUMBER)) );
-        }
-
-        String buttonTag = (String) buttonClicked.getTag(UNIT_MODIFIER);
-
     }
 
     public void DropDownClick(View v)

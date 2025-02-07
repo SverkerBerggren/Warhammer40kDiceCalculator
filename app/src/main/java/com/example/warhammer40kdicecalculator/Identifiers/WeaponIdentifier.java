@@ -18,4 +18,9 @@ public class WeaponIdentifier extends Identifier{
     public boolean equals(Object o) {
         return false;
     }
+
+    @Override
+    public String GetMatchupName() {
+        return "";
+    }
 }

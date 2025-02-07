@@ -6,8 +6,6 @@ import com.example.warhammer40kdicecalculator.R;
 import java.util.Objects;
 
 public class ArmyIdentifier extends Identifier{
-    public static int ARMY_IDENTIFIER = R.string.ARMY_IDENTIFIER;
-
     public String allegiance;
     public String matchupName;
 
@@ -70,6 +68,11 @@ public class ArmyIdentifier extends Identifier{
         if (o == null || getClass() != o.getClass()) return false;
         ArmyIdentifier that = (ArmyIdentifier) o;
         return Objects.equals(allegiance, that.allegiance) && Objects.equals(matchupName, that.matchupName);
+    }
+
+    @Override
+    public String GetMatchupName() {
+        return matchupName;
     }
 
     @Override

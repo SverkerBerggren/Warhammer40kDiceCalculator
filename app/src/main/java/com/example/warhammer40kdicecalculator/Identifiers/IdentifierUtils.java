@@ -12,8 +12,6 @@ public class IdentifierUtils {
     public static Identifier GetIdentifierFromExtra(Intent intent)
     {
         // TODO: upgrade api?
-        String namnet = IdentifierType.IDENTIFIER.name();
-        String valueLmao = intent.getStringExtra(IdentifierType.IDENTIFIER.name());
         IdentifierType identifierType = IdentifierType.valueOf(intent.getStringExtra(IdentifierType.IDENTIFIER.name()));
         Identifier identifier;
         switch (identifierType)

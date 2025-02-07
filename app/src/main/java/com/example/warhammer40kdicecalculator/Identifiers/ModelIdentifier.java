@@ -1,14 +1,12 @@
 package com.example.warhammer40kdicecalculator.Identifiers;
 
 import com.example.warhammer40kdicecalculator.Enums.IdentifierType;
+import com.example.warhammer40kdicecalculator.Matchup;
 import com.example.warhammer40kdicecalculator.R;
 
 import java.util.Objects;
 
 public class ModelIdentifier extends Identifier{
-
-
-    public static int MODEL_IDENTIFIER = R.string.MODEL_IDENTIFIER;
 
     public String allegiance;
     public String tag;
@@ -23,8 +21,6 @@ public class ModelIdentifier extends Identifier{
         this.indexUnit = indexUnit;
         this.indexModel = indexModel;
         this.matchupName = matchupName;
-
-
     }
 
     @Override
@@ -92,6 +88,11 @@ public class ModelIdentifier extends Identifier{
         if (o == null || getClass() != o.getClass()) return false;
         ModelIdentifier that = (ModelIdentifier) o;
         return indexUnit == that.indexUnit && indexModel == that.indexModel && Objects.equals(allegiance, that.allegiance) && Objects.equals(tag, that.tag) && Objects.equals(matchupName, that.matchupName);
+    }
+
+    @Override
+    public String GetMatchupName() {
+        return matchupName;
     }
 
     @Override

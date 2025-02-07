@@ -1,13 +1,10 @@
 package com.example.warhammer40kdicecalculator.DatasheetModeling;
 
-import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.BitFunctionality.AbilityBitField;
-import com.example.warhammer40kdicecalculator.DamageAmount;
 import com.example.warhammer40kdicecalculator.Enums.AbilityEnum;
+import com.example.warhammer40kdicecalculator.Enums.IdentifierType;
 
-import java.util.ArrayList;
-
-public class Weapon implements AbilityHolder, DeactivatableInterface, WahapediaIdHolder{
+public class Weapon extends GamePiece implements DeactivatableInterface, WahapediaIdHolder{
     public String name;
     public DiceAmount amountOfAttacks;
     public String wahapediaDataId;
@@ -38,6 +35,11 @@ public class Weapon implements AbilityHolder, DeactivatableInterface, WahapediaI
     @Override
     public boolean IsActive(AbilityEnum abilityEnum) {
         return weaponRules.IsActive(abilityEnum);
+    }
+
+    @Override
+    public IdentifierType GetIdentifierType() {
+        return IdentifierType.WEAPON;
     }
 
     public Weapon(int strength, int ap, DiceAmount damageAmount, DiceAmount amountOfAttacks)

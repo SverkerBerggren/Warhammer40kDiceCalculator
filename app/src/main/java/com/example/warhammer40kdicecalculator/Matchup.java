@@ -2,7 +2,7 @@ package com.example.warhammer40kdicecalculator;
 
 import android.util.Log;
 
-import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
+import com.example.warhammer40kdicecalculator.DatasheetModeling.GamePiece;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
@@ -44,7 +44,7 @@ public class Matchup {
     }
 
     // Kanske gor den mer generisk sen
-    public AbilityHolder GetAbilityHolder(Identifier identifier)
+    public GamePiece GetGamePiece(Identifier identifier)
     {
         switch (identifier.GetIdentifierEnum())
         {
