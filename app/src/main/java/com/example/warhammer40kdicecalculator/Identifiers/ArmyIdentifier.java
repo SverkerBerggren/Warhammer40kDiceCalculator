@@ -1,5 +1,6 @@
 package com.example.warhammer40kdicecalculator.Identifiers;
 
+import com.example.warhammer40kdicecalculator.Enums.IdentifierType;
 import com.example.warhammer40kdicecalculator.R;
 
 import java.util.Objects;
@@ -22,6 +23,11 @@ public class ArmyIdentifier extends Identifier{
                 "allegiance=" + allegiance +
                 ", matchupName= " + matchupName +
                 '}';
+    }
+
+    @Override
+    public IdentifierType GetIdentifierEnum() {
+        return IdentifierType.ARMY;
     }
 
 

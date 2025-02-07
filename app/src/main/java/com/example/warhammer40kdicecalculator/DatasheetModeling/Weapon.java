@@ -1,7 +1,9 @@
 package com.example.warhammer40kdicecalculator.DatasheetModeling;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
+import com.example.warhammer40kdicecalculator.BitFunctionality.AbilityBitField;
 import com.example.warhammer40kdicecalculator.DamageAmount;
+import com.example.warhammer40kdicecalculator.Enums.AbilityEnum;
 
 import java.util.ArrayList;
 
@@ -16,7 +18,7 @@ public class Weapon implements AbilityHolder, DeactivatableInterface, WahapediaI
     public int strength;
     public boolean isMelee = false;
     public boolean active = true;
-    public ArrayList<Ability> weaponRules = new ArrayList<>();
+    private AbilityBitField weaponRules = new AbilityBitField(AbilityEnum.MinusOneDamage);
 
     public Weapon()
     {
@@ -29,14 +31,13 @@ public class Weapon implements AbilityHolder, DeactivatableInterface, WahapediaI
     }
 
     @Override
-    public Ability GetAbility(int index) {
-
-        return weaponRules.get(index);
+    public AbilityBitField GetAbilityBitField() {
+        return weaponRules;
     }
 
     @Override
-    public boolean RemoveAbility(Ability ability) {
-        return weaponRules.remove(ability);
+    public boolean IsActive(AbilityEnum abilityEnum) {
+        return weaponRules.IsActive(abilityEnum);
     }
 
     public Weapon(int strength, int ap, DiceAmount damageAmount, DiceAmount amountOfAttacks)
@@ -60,30 +61,30 @@ public class Weapon implements AbilityHolder, DeactivatableInterface, WahapediaI
         weaponToReturn.amountOfAttacks = amountOfAttacks.Copy();
         weaponToReturn.wahapediaDataId = wahapediaDataId;
 
-        weaponToReturn.weaponRules = new ArrayList<>(weaponRules);
+        weaponToReturn.weaponRules = weaponRules.Copy();
 
         return weaponToReturn;
     }
 
 
-    public Weapon(int strength, int ap, DiceAmount damageAmount, DiceAmount amountOfAttacks, ArrayList<Ability> weaponRules)
+    public Weapon(int strength, int ap, DiceAmount damageAmount, DiceAmount amountOfAttacks, AbilityBitField weaponRules)
     {
         this.damageAmount = damageAmount;
         this.strength = strength;
         this.ap = ap;
         this.amountOfAttacks = new DiceAmount(amountOfAttacks) ;
-        this.weaponRules = weaponRules;
+        this.weaponRules = weaponRules.Copy();
     }
 
 
-    public Weapon(String name, int strength, int ap, DiceAmount damageAmount, DiceAmount amountOfAttacks, ArrayList<Ability> weaponRules)
+    public Weapon(String name, int strength, int ap, DiceAmount damageAmount, DiceAmount amountOfAttacks, AbilityBitField weaponRules)
     {
         this.name = name;
         this.damageAmount = damageAmount;
         this.strength = strength;
         this.ap = ap;
         this.amountOfAttacks = new DiceAmount(amountOfAttacks) ;
-        this.weaponRules = weaponRules;
+        this.weaponRules = weaponRules.Copy();
     }
 
     @Override

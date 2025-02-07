@@ -30,6 +30,7 @@ import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.DiceAmount;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Weapon;
+import com.example.warhammer40kdicecalculator.Enums.AbilityEnum;
 import com.example.warhammer40kdicecalculator.FileHandling.FileHandler;
 import com.example.warhammer40kdicecalculator.Identifiers.ArmyIdentifier;
 import com.example.warhammer40kdicecalculator.Identifiers.Identifier;
@@ -88,8 +89,6 @@ public class EditUnitActivity extends AppCompatActivity implements AbilityUIHold
         compareActivity.highestConstraint = highestConstraint;
         compareActivity.Setup(context,matchup);
         compareActivity.SetInflater(inflater);
-        compareActivity.SetShouldStartActivityFromEditUnitContext(true);
-        compareActivity.SetEditUnitActivity(this);
 
         ViewGroup verticalLayout = (ViewGroup) inflater.inflate(R.layout.unitviewprefab, ((ViewGroup)findViewById(R.id.LinearLayoutEditUnit)));
         compareActivity.instantiateUnitButton(verticalLayout.getChildAt(verticalLayout.getChildCount()-1),army.units.get(unitIdentifier.index),unitIdentifier);
@@ -161,7 +160,7 @@ public class EditUnitActivity extends AppCompatActivity implements AbilityUIHold
     }
 
     @Override
-    public void AbilityAdded(Ability ability, AbilityHolder abilityHolder) {
+    public void AbilityAdded(AbilityEnum abilityEnum, AbilityHolder abilityHolder) {
 
     }
 
@@ -344,7 +343,7 @@ public class EditUnitActivity extends AppCompatActivity implements AbilityUIHold
         nameText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
         TextView abilityText = new TextView(context);
-        abilityText.setText(""+weapon.weaponRules.size());
+        abilityText.setText(""+weapon.GetAbilityBitField().Count());
         abilityText.setTextSize(10);
         abilityText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 

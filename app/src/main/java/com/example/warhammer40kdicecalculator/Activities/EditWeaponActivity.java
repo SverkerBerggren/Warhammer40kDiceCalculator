@@ -24,8 +24,10 @@ import android.widget.TableRow;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.AbilityUIHolder;
+import com.example.warhammer40kdicecalculator.DatabaseManager;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Weapon;
+import com.example.warhammer40kdicecalculator.Enums.AbilityEnum;
 import com.example.warhammer40kdicecalculator.FileHandling.FileHandler;
 import com.example.warhammer40kdicecalculator.Identifiers.ModelIdentifier;
 import com.example.warhammer40kdicecalculator.Matchup;
@@ -68,8 +70,6 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
         Intent intent = getIntent();
         context = getBaseContext();
         inflater = getLayoutInflater();
-
-
 
         String matchupName = intent.getStringExtra("matchupName");
 
@@ -121,7 +121,7 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
     }
 
     @Override
-    public void AbilityAdded(Ability ability, AbilityHolder abilityHolder) {
+    public void AbilityAdded(AbilityEnum ability, AbilityHolder abilityHolder) {
         PopulateAbilites((Weapon) abilityHolder);
     }
 
@@ -185,9 +185,9 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
 
     private void PopulateAbilites( Weapon weapon)
     {   linearLayout.removeAllViews();
-        for(Ability ability : weapon.weaponRules)
+        for(AbilityEnum abilityEnum : weapon.GetAbilityBitField())
         {
-
+            Ability ability = DatabaseManager.getInstance().GetAbility(abilityEnum);
             CheckBox abilityCheckBox = new CheckBox(new ContextThemeWrapper(context, androidx.appcompat.R.style.Base_Widget_AppCompat_CompoundButton_CheckBox));
             abilityCheckBox.setTextSize(20);
             abilityCheckBox.setText(ability.name);

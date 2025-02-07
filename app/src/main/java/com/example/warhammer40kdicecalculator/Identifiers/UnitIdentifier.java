@@ -1,5 +1,7 @@
 package com.example.warhammer40kdicecalculator.Identifiers;
 
+import com.example.warhammer40kdicecalculator.Enums.Faction;
+import com.example.warhammer40kdicecalculator.Enums.IdentifierType;
 import com.example.warhammer40kdicecalculator.Matchup;
 import com.example.warhammer40kdicecalculator.R;
 
@@ -24,9 +26,9 @@ public class UnitIdentifier extends Identifier{
         this.tag = tag;
         this.index = index;
         this.matchupName = matchupName;
-
-
    }
+
+   // Chat gpt ass skit
     public UnitIdentifier(String identifierString) {
         String regex = "UnitIdentifier\\{allegiance='(.+)', tag='(.+)', index=(\\d+), matchupName='(.+)'\\}";
         Pattern pattern = Pattern.compile(regex);
@@ -59,6 +61,11 @@ public class UnitIdentifier extends Identifier{
                 ", index=" + index +
                 ", matchupName='" + matchupName + '\'' +
                 '}';
+    }
+
+    @Override
+    public IdentifierType GetIdentifierEnum() {
+        return IdentifierType.UNIT;
     }
 
     @Override

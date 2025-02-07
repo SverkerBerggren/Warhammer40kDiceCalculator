@@ -1,5 +1,6 @@
 package com.example.warhammer40kdicecalculator.Identifiers;
 
+import com.example.warhammer40kdicecalculator.Enums.IdentifierType;
 import com.example.warhammer40kdicecalculator.R;
 
 import java.util.Objects;
@@ -36,6 +37,13 @@ public class ModelIdentifier extends Identifier{
                 ", matchupName=" + matchupName  +
                 '}';
     }
+
+    @Override
+    public IdentifierType GetIdentifierEnum() {
+        return IdentifierType.MODEL;
+    }
+
+    // Chat gpt yikes
     public ModelIdentifier(String identifierString) {
         if (identifierString != null) {
             // Remove the "ModelIdentifier{" prefix and "}" suffix from the string

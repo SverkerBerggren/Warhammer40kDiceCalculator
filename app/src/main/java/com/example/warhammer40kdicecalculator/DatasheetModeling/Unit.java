@@ -2,6 +2,7 @@ package com.example.warhammer40kdicecalculator.DatasheetModeling;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.Activities.CompareActivity;
+import com.example.warhammer40kdicecalculator.BitFunctionality.AbilityBitField;
 import com.example.warhammer40kdicecalculator.BitFunctionality.BigBitField;
 import com.example.warhammer40kdicecalculator.Enums.AbilityEnum;
 import com.example.warhammer40kdicecalculator.ModifierHolder;
@@ -24,8 +25,7 @@ public class Unit implements AbilityHolder, ModifierHolder, WahapediaIdHolder {
 
     public ArrayList<Model> listOfModels = new ArrayList<>();
 
-    public ArrayList<Ability> listOfAbilitys = new ArrayList<>( );
-    // public BigBitField<AbilityEnum> listOfAbilitys = new BigBitField<AbilityEnum>(AbilityEnum.MinusOneDamage);
+    private AbilityBitField listOfAbilitys = new AbilityBitField(AbilityEnum.MinusOneDamage);
 
     @Override
     public String GetWahapediaId() {
@@ -43,7 +43,7 @@ public class Unit implements AbilityHolder, ModifierHolder, WahapediaIdHolder {
             tempUnit.listOfModels.add(listOfModels.get(i).Copy());
         }
 
-        tempUnit.listOfAbilitys.addAll( listOfAbilitys);
+        tempUnit.listOfAbilitys = listOfAbilitys.Copy();
         tempUnit.wahapediaDataId = wahapediaDataId;
         tempUnit.toughnessModifier = toughnessModifier;
         tempUnit.strengthModifier = strengthModifier;
@@ -60,14 +60,8 @@ public class Unit implements AbilityHolder, ModifierHolder, WahapediaIdHolder {
 
     }
 
-    public  Unit(Unit other)
-    {
-        listOfModels = new ArrayList<>(other.listOfModels);
-
-        listOfAbilitys = new ArrayList<>(other.listOfAbilitys);
-    }
     public  Unit(String unitName, int pointCost, int toughnessModifier, int strengthModifier, int armorSaveModifier, int invulnerableSaveModifier, int woundsModifier, int hitSkill,
-                 int attacksModifier, ArrayList<Model> listOfModels, ArrayList<Ability> listOfAbilitys)
+                 int attacksModifier, ArrayList<Model> listOfModels, AbilityBitField listOfAbilitys)
     {
         this.unitName = unitName;
         this.pointCost = pointCost;
@@ -181,12 +175,12 @@ public class Unit implements AbilityHolder, ModifierHolder, WahapediaIdHolder {
     }
 
     @Override
-    public Ability GetAbility(int index) {
-        return listOfAbilitys.get(index);
+    public AbilityBitField GetAbilityBitField() {
+        return listOfAbilitys;
     }
 
     @Override
-    public boolean RemoveAbility(Ability ability) {
-        return listOfAbilitys.remove(ability);
+    public boolean IsActive(AbilityEnum abilityEnum) {
+        return listOfAbilitys.IsActive(abilityEnum);
     }
 }

@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -18,13 +19,17 @@ import android.widget.TableRow;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.AbilityUIHolder;
+import com.example.warhammer40kdicecalculator.BitFunctionality.AbilityBitField;
+import com.example.warhammer40kdicecalculator.DatabaseManager;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
+import com.example.warhammer40kdicecalculator.Enums.AbilityEnum;
 import com.example.warhammer40kdicecalculator.FileHandling.FileHandler;
 import com.example.warhammer40kdicecalculator.Identifiers.ArmyIdentifier;
 import com.example.warhammer40kdicecalculator.Identifiers.Identifier;
+import com.example.warhammer40kdicecalculator.Identifiers.IdentifierUtils;
 import com.example.warhammer40kdicecalculator.Identifiers.ModelIdentifier;
 import com.example.warhammer40kdicecalculator.Identifiers.UnitIdentifier;
 import com.example.warhammer40kdicecalculator.Matchup;
@@ -33,22 +38,13 @@ import com.example.warhammer40kdicecalculator.R;
 import java.util.ArrayList;
 
 public class Activity_Edit_Abilities extends AppCompatActivity implements AbilityUIHolder {
-    Context context;
-    LayoutInflater inflater;
+    private Context context;
     private Matchup matchup;
-
     private Identifier identifier;
-
     private String uiElement;
-
-    TableLayout tableLayoutAbilities;
-
-
-    private ArrayList<String> abilitiesAdded = new ArrayList<>();
-
-    private ArrayList<String> abilitiesRemoved = new ArrayList<>();
-
-
+    private TableLayout tableLayoutAbilities;
+    private final AbilityBitField abilitiesAdded = new AbilityBitField(AbilityEnum.ReRollOnes);
+    private final AbilityBitField abilitiesRemoved = new AbilityBitField(AbilityEnum.ReRollOnes);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,98 +53,29 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
 
         Intent intent = getIntent();
         context = getBaseContext();
-        inflater = getLayoutInflater();
 
-        String unitAlliegance = intent.getStringExtra("" + R.string.UNIT_ALLEGIANCE);
-
-        int indexUnit = intent.getIntExtra(""+R.string.UNIT_NUMBER, -1);
-        int indexModel = intent.getIntExtra("indexModel", -1);
         String matchupName = intent.getStringExtra("matchupName");
-
-
-
-        String typeOfIdentifier = intent.getStringExtra( ""+R.string.TYPE_OF_IDENTIFIER);
 
         ImageButton addAbilityButton = findViewById(R.id.EditAbilitiesAdd);
         matchup = FileHandler.GetInstance().getMatchup(matchupName);
-
         uiElement =  intent.getStringExtra(""+R.string.UI_IDENTIFIER);
-
-
-
         tableLayoutAbilities = findViewById(R.id.TableLayoutEditAbilities);
 
+        identifier = IdentifierUtils.GetIdentifierFromExtra(intent);
+        AbilityHolder abilityHolder = matchup.GetAbilityHolder(identifier);
 
-        ScrollView scrollView = findViewById(R.id.ScrollViewEditAbilites);
-
-
-
-
-        Army army = null;
-
-
-        if(typeOfIdentifier.equals("model"))
+        for(AbilityEnum ability : abilityHolder.GetAbilityBitField())
         {
-            identifier = new ModelIdentifier(intent.getStringExtra( ""+R.string.MODEL_IDENTIFIER));
-
-            Model model = matchup.GetModel((ModelIdentifier) identifier);
-
-            for(Ability ability : model.listOfAbilites)
-            {
-                CreateButton(ability,model);
+            CreateButton(ability,abilityHolder);
+        }
+        MainActivity mainActivity = new MainActivity();
+        Activity_Edit_Abilities editAbilityActivity = this;
+        addAbilityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mainActivity.SearchAbility(abilityHolder,matchup,findViewById(R.id.ConstraintLayoutEditAbilities),context,editAbilityActivity);
             }
-
-            MainActivity mainActivity = new MainActivity();
-            Activity_Edit_Abilities abilityHolder = this;
-            addAbilityButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mainActivity.SearchAbility(model,matchup,findViewById(R.id.ConstraintLayoutEditAbilities),context,abilityHolder);
-                }
-            });
-        }
-        else if(typeOfIdentifier.equals("unit"))
-        {
-            identifier = new UnitIdentifier(intent.getStringExtra( ""+R.string.UNIT_IDENTIFIER));
-            Unit unit = matchup.GetUnit((UnitIdentifier) identifier);
-            for(Ability ability : unit.listOfAbilitys)
-            {
-                CreateButton(ability,unit);
-            }
-
-            MainActivity mainActivity = new MainActivity();
-            Activity_Edit_Abilities abilityHolder = this;
-            addAbilityButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mainActivity.SearchAbility(unit,matchup,findViewById(R.id.ConstraintLayoutEditAbilities),context,abilityHolder);
-                }
-            });
-        }
-        else if(typeOfIdentifier.equals("army"))
-        {
-            identifier = new ArmyIdentifier(intent.getStringExtra(""+R.string.ARMY_IDENTIFIER));
-            Army armyToUse = matchup.GetArmy((ArmyIdentifier) identifier);
-
-            for(Ability ability : armyToUse.abilities)
-            {
-                CreateButton(ability,armyToUse);
-            }
-
-            MainActivity mainActivity = new MainActivity();
-            Activity_Edit_Abilities abilityHolder = this;
-            addAbilityButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mainActivity.SearchAbility(armyToUse,matchup,findViewById(R.id.ConstraintLayoutEditAbilities),context,abilityHolder);
-                }
-            });
-        }
-        else if (typeOfIdentifier.equals("weapon"))
-        {
-
-        }
-
+        });
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
@@ -157,25 +84,26 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
             }
         };
         getOnBackPressedDispatcher().addCallback(this, callback);
-
     }
 
-    private void CreateButton(Ability ability, AbilityHolder abilityHolder)
+    private void CreateButton(AbilityEnum abilityEnum, AbilityHolder abilityHolder)
     {
+        Ability ability = DatabaseManager.getInstance().GetAbility(abilityEnum);
+
         TableRow tableRow = new TableRow(context);
         CheckBox checkBox = new CheckBox(new ContextThemeWrapper(this, androidx.appcompat.R.style.Base_Widget_AppCompat_CompoundButton_CheckBox));
         checkBox.setTextSize(20);
         ImageButton imageButton = new ImageButton(context);
 
-        checkBox.setChecked(ability.active);
+        checkBox.setChecked(abilityHolder.IsActive(abilityEnum));
         checkBox.setText(ability.name);
         checkBox.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         CompareActivity compareActivity = new CompareActivity();
         compareActivity.Setup(context,matchup);
-        checkBox.setOnClickListener(compareActivity. new OnClickDeactivate(ability));
+        checkBox.setOnClickListener(compareActivity. new OnClickDeactivateAbility(abilityHolder.GetAbilityBitField(), abilityEnum));
         imageButton.setImageResource(com.google.android.material.R.drawable.abc_ic_menu_cut_mtrl_alpha);
 
-        imageButton.setOnClickListener(new OnClickRemoveAbility(abilityHolder,ability));
+        imageButton.setOnClickListener(new OnClickRemoveAbility(abilityHolder,abilityEnum));
 
         tableRow.addView(checkBox);
         tableRow.addView(imageButton);
@@ -185,25 +113,19 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
 
     private class OnClickRemoveAbility implements View.OnClickListener
     {
-        Ability ability;
+        private AbilityEnum abilityEnum;
+        private AbilityHolder abilityHolder;
 
-        AbilityHolder abilityHolder;
-
-        public OnClickRemoveAbility(AbilityHolder abilityHolder,Ability ability)
+        public OnClickRemoveAbility(AbilityHolder abilityHolder,AbilityEnum ability)
         {
             this.abilityHolder = abilityHolder;
-            this.ability = ability;
-
-
-
+            this.abilityEnum = ability;
         }
 
         @Override
         public void onClick(View view) {
 
-            boolean bool = abilityHolder.RemoveAbility(ability);
-
-            Log.d("tog den bort ability", "" + bool);
+            abilityHolder.GetAbilityBitField().Set(abilityEnum,false);
 
             FileHandler.GetInstance().saveMatchup(matchup);
 
@@ -211,38 +133,16 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
 
             viewParent.removeView((TableRow)view.getParent());
 
-            if(abilitiesAdded.contains(ability.name))
-            {
-                abilitiesAdded.remove(ability.name);
-            }
-            else
-            {
-                abilitiesRemoved.add(ability.name);
-            }
-
+            abilitiesAdded.Set(abilityEnum,false);
+            abilitiesRemoved.Set(abilityEnum,true);
         }
     }
     @Override
-    public void AbilityAdded(Ability ability, AbilityHolder abilityHolder) {
+    public void AbilityAdded(AbilityEnum ability, AbilityHolder abilityHolder) {
 
-
-
-
-
-        if(abilitiesRemoved.contains(ability.name))
-        {
-            abilitiesRemoved.remove(ability.name);
-        }
-        else
-        {
-            abilitiesAdded.add(ability.name);
-        }
-
-
-
+        abilitiesAdded.Set(ability,true);
+        abilitiesRemoved.Set(ability,false);
         CreateButton(ability,abilityHolder);
-
-
     }
 
     @Override
@@ -250,19 +150,24 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
         super.onBackPressed();
 
         Intent data = new Intent();
-        data.putExtra("abilitiesRemoved", abilitiesRemoved.size());
-        for(int i = 0; i < abilitiesRemoved.size(); i++)
+
+        ArrayList<String> removedArray = new ArrayList<>();
+        for(AbilityEnum abilityEnum : abilitiesRemoved)
         {
-            data.putExtra("abilitiesRemoved" +i, abilitiesRemoved.get(i));
+            removedArray.add(DatabaseManager.getInstance().GetAbility(abilityEnum).name);
         }
-        data.putExtra("abilitiesAdded", abilitiesAdded.size());
-        for(int i = 0; i < abilitiesAdded.size(); i++)
+        data.putStringArrayListExtra("abilitiesRemoved" , removedArray);
+
+        ArrayList<String> addedArray = new ArrayList<>();
+        for(AbilityEnum abilityEnum :  abilitiesAdded)
         {
-            data.putExtra("abilitiesAdded" +i, abilitiesAdded.get(i));
+            addedArray.add(DatabaseManager.getInstance().GetAbility(abilityEnum).name);
         }
+        data.putStringArrayListExtra("abilitiesAdded" , addedArray);
 
         data.putExtra(""+R.string.UI_IDENTIFIER, uiElement);
 
+        // TODO: Ta bort skiten
         data.putExtra(""+ R.string.IDENTIFIER, identifier.toString());
         if(identifier instanceof UnitIdentifier)
         {
@@ -285,7 +190,4 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
         setResult(RESULT_OK,data);
         finish();;
     }
-
-
-
 }

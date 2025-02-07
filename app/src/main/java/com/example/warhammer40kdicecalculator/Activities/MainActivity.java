@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
+import com.example.warhammer40kdicecalculator.Abilities.ReRollOnes;
 import com.example.warhammer40kdicecalculator.AbilityUIHolder;
 import com.example.warhammer40kdicecalculator.BitFunctionality.BigBitField;
 import com.example.warhammer40kdicecalculator.DatabaseManager;
@@ -43,6 +44,7 @@ import com.example.warhammer40kdicecalculator.Weapon_Popup;
 import com.example.warhammer40kdicecalculator.FileHandling.UpdateArgumentStruct;
 
 import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 
 public class  MainActivity extends AppCompatActivity {
@@ -83,24 +85,24 @@ public class  MainActivity extends AppCompatActivity {
     }
 
 
+    // Why is it here? I am not sure
     public void SearchAbility(AbilityHolder abilityHolder, Matchup matchup, ViewGroup baseView, Context context, AbilityUIHolder abilityUIHolder)
     {
         InflateSearch(baseView,context);
         SearchView searchView = baseView.findViewById(R.id.searchView);
         ListView listView = baseView.findViewById(R.id.listView);
-        ArrayList<String> searchList = new ArrayList<>();
+        ArrayList<AbilityEnum> searchList = new ArrayList<>();
 
         for(AbilityEnum abilityEnum : AbilityEnum.values())
         {
-            Ability ability = DatabaseManager.getInstance().GetAbility(abilityEnum);
-            searchList.add(ability.name);
+            searchList.add(abilityEnum);
         }
 
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1,searchList);
+        ArrayAdapter<AbilityEnum> arrayAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1,searchList);
 
         listView.setAdapter(arrayAdapter);
 
-        listView.setOnItemClickListener(new OnClickAbilityItem(abilityHolder,baseView,matchup,context, abilityUIHolder));
+        listView.setOnItemClickListener(new OnClickAbilityItem(abilityHolder,baseView,matchup, abilityUIHolder));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -117,76 +119,27 @@ public class  MainActivity extends AppCompatActivity {
 
     private class OnClickAbilityItem implements AdapterView.OnItemClickListener
     {
-        private Army army;
-        private Unit unit;
-        private Model model;
-        private Weapon weapon;
-        private ViewGroup baseView;
-        private Matchup matchup;
-        private Context context;
+        private final AbilityHolder abilityHolder;
+        private final ViewGroup baseView;
+        private final Matchup matchup;
         private AbilityUIHolder abilityUIHolder;
 
-        public OnClickAbilityItem(AbilityHolder abilityHolder, ViewGroup baseView, Matchup matchup, Context context, AbilityUIHolder abilityUIHolder)
+        public OnClickAbilityItem(AbilityHolder abilityHolder, ViewGroup baseView, Matchup matchup, AbilityUIHolder abilityUIHolder)
         {
             this.baseView = baseView;
             this.matchup = matchup;
-            this.context = context;
             this.abilityUIHolder = abilityUIHolder;
-            if(abilityHolder instanceof Army)
-            {
-                army = (Army) abilityHolder;
-            }
-            if(abilityHolder instanceof Model)
-            {
-                model = (Model) abilityHolder;
-            }
-            if(abilityHolder instanceof Unit)
-            {
-                unit = (Unit) abilityHolder;
-            }
-            if(abilityHolder instanceof Weapon)
-            {
-                weapon = (Weapon) abilityHolder;
-            }
+            this.abilityHolder = abilityHolder;
         }
 
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
             String item = ((TextView)view).getText().toString();
             Ability ability = DatabaseManager.getInstance().GetAbility(item);
+            AbilityEnum abilityEnum = (AbilityEnum) adapterView.getAdapter().getItem(i);
 
-            if (weapon != null)
-            {
-                if (!weapon.weaponRules.contains(ability))
-                {
-                    weapon.weaponRules.add(ability);
-                    abilityUIHolder.AbilityAdded(ability,weapon);
-                }
-            }
-            if (model != null)
-            {
-                if (!model.listOfAbilites.contains(ability))
-                {
-                    model.listOfAbilites.add(ability);
-                    abilityUIHolder.AbilityAdded(ability,model);
-                }
-            }
-            if (unit != null)
-            {
-                if (!unit.listOfAbilitys.contains(ability))
-                {
-                    unit.listOfAbilitys.add(ability);
-                    abilityUIHolder.AbilityAdded(ability,unit);
-                }
-            }
-            if (army != null)
-            {
-                if (!army.abilities.contains(ability))
-                {
-                    army.abilities.add(ability);
-                    abilityUIHolder.AbilityAdded(ability,army);
-                }
-            }
+            abilityHolder.GetAbilityBitField().Set(abilityEnum,true);
+            abilityUIHolder.AbilityAdded(abilityEnum,abilityHolder);
 
             View searchLayout = baseView.findViewById(R.id.SearchLayout);
             searchLayout.setVisibility(View.GONE);

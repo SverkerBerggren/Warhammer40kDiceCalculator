@@ -29,6 +29,8 @@ import android.widget.TextView;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.AbilityUIHolder;
+import com.example.warhammer40kdicecalculator.BitFunctionality.AbilityBitField;
+import com.example.warhammer40kdicecalculator.DatabaseManager;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.DeactivatableInterface;
@@ -36,6 +38,8 @@ import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.DiceAmount;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Weapon;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
+import com.example.warhammer40kdicecalculator.Enums.AbilityEnum;
+import com.example.warhammer40kdicecalculator.Enums.IdentifierType;
 import com.example.warhammer40kdicecalculator.FileHandling.FileHandler;
 import com.example.warhammer40kdicecalculator.Identifiers.ArmyIdentifier;
 import com.example.warhammer40kdicecalculator.Identifiers.Identifier;
@@ -106,25 +110,10 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
     public ConstraintLayout highestConstraint;
 
-    ActivityResultLauncher<Intent> activityResultLauncherAbility;
-    ActivityResultLauncher<Intent> activityResultLauncherWeapon;
-
-
+    private ActivityResultLauncher<Intent> activityResultLauncherAbility;
+    private ActivityResultLauncher<Intent> activityResultLauncherWeapon;
 
     private Context context;
-    private boolean shouldStartActivityFromEditUnitContext = false;
-    private EditUnitActivity editUnitActivity;
-
-
-    public void SetShouldStartActivityFromEditUnitContext(boolean bool)
-    {
-        shouldStartActivityFromEditUnitContext = bool;
-    }
-
-    public void SetEditUnitActivity(EditUnitActivity appCompat)
-    {
-        editUnitActivity = appCompat;
-    }
 
 
     @Override
@@ -170,7 +159,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
     }
 
     @Override
-    public void AbilityAdded(Ability ability, AbilityHolder abilityHolder) {
+    public void AbilityAdded(AbilityEnum abilityEnum, AbilityHolder abilityHolder) {
 
         if(abilityHolder instanceof Model)
         {
@@ -208,11 +197,8 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
                abilityHolderIdentifier = new ArmyIdentifier(data.getStringExtra(""+R.string.ARMY_IDENTIFIER));
             }
 
-
-
-
-            ArrayList<String> abilitiesToRemove = StringArrayFromIntent(data,"abilitiesRemoved");
-            ArrayList<String> abilitiesToAdd = StringArrayFromIntent(data, "abilitiesAdded");
+            ArrayList<String> abilitiesToRemove = data.getStringArrayListExtra("abilitiesRemoved");
+            ArrayList<String> abilitiesToAdd = data.getStringArrayListExtra("abilitiesAdded");
 
             UIIdentifier uiId = new UIIdentifier(data.getStringExtra(""+ R.string.UI_IDENTIFIER),abilityHolderIdentifier);
 
@@ -308,21 +294,6 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         tableRow.addView(abilityTextView);
 
         return tableRow;
-    }
-
-    private ArrayList<String> StringArrayFromIntent(Intent intent, String key)
-    {
-        ArrayList<String> listToReturn = new ArrayList<>();
-
-        int size = intent.getIntExtra(key,-1);
-
-
-        for(int i = 0; i < size; i++)
-        {
-            listToReturn.add(intent.getStringExtra(key + i));
-        }
-
-        return listToReturn;
     }
 
     private enum WidgetType
@@ -436,15 +407,16 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         unitAbilitLayout.setTag(uiId);
 
 
-        for(int i = 0; i < unit.listOfAbilitys.size(); i++)
+        for(AbilityEnum abilityEnum : unit.GetAbilityBitField())
         {
+            Ability ability = DatabaseManager.getInstance().GetAbility(abilityEnum);
             TableRow tableRow = new TableRow(context);
             tableRow.setBackgroundColor(Color.parseColor("#DFDADA"));
             tableRow.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
 
             TextView abilityTextView = new TextView(context);
-            abilityTextView.setText(unit.listOfAbilitys.get(i).name);
+            abilityTextView.setText(ability.name);
             abilityTextView.setTextSize(10);
             abilityTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
@@ -465,115 +437,34 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
     private class OnClickListenerEditAbilites implements View.OnClickListener
     {
-        private Unit unit;
-        private Model model;
-        private Army army;
+        private AbilityHolder abilityHolder;
         private UIIdentifier uiId;
 
 
-        public OnClickListenerEditAbilites(Army army,UIIdentifier uiId)
+        public OnClickListenerEditAbilites(AbilityHolder abilityHolder,UIIdentifier uiId)
         {
-             this.army = army;
+             this.abilityHolder = abilityHolder;
              this.uiId = uiId;
         }
-        public OnClickListenerEditAbilites(Model model)
-        {
-            this.model = model;
-        }
-        public OnClickListenerEditAbilites(Unit unit, UIIdentifier uiId)
-        {
-            this.unit = unit;
-            this.uiId = uiId;
-        }
-
 
         @Override
         public void onClick(View view) {
-
-            if(unit != null)
-            {
-                StartEditAbilites(view, unit,uiId);
-            }
-
-            if(army != null)
-            {
-                StartEditAbilites(view,army,uiId);
-            }
+            StartEditAbilites(view,abilityHolder,uiId);
         }
     }
-    public void StartEditAbilites(View view, Unit unit, UIIdentifier uiId )
+    public void StartEditAbilites(View view, AbilityHolder abilityHolder, UIIdentifier uiId )
     {
         Intent intent = new Intent(context, Activity_Edit_Abilities.class);
 
-
-       // Identifier
+        //TODO: ASAP maste fixa att R.string.UNIT_IDENTIFIER ar en enum eller gettas
         UnitIdentifier identifier = (UnitIdentifier)view.getTag(R.string.UNIT_IDENTIFIER);
-
-        intent.putExtra(""+R.string.TYPE_OF_IDENTIFIER,"unit");
-
+        intent.putExtra(IdentifierType.IDENTIFIER.name(), IdentifierType.UNIT.name());
         intent.putExtra(""+R.string.UNIT_IDENTIFIER,identifier.toString());
-
         intent.putExtra("matchupName",identifier.matchupName);
         intent.putExtra(""+R.string.UI_IDENTIFIER, uiId.elementName);
 
-        if(shouldStartActivityFromEditUnitContext)
-        {
-
-
-            editUnitActivity.StartEditAbilites(view, uiId);
-        }
-        else
-        {
-            activityResultLauncherAbility.launch(intent);
-        }
-    }
-    public void StartEditAbilites(View view, Model model, UIIdentifier uiId )
-    {
-        Intent intent = new Intent(context, Activity_Edit_Abilities.class);
-        // Identifier
-        ModelIdentifier identifier = (ModelIdentifier)view.getTag(R.string.MODEL_IDENTIFIER);
-
-        intent.putExtra(""+R.string.UI_IDENTIFIER, uiId.elementName);
-
-        intent.putExtra(""+R.string.TYPE_OF_IDENTIFIER, "model");
-        intent.putExtra("" + R.string.MODEL_IDENTIFIER, identifier.toString());
-        intent.putExtra("matchupName", matchup.name);
-
-        if(shouldStartActivityFromEditUnitContext)
-        {
-
-
-            editUnitActivity.StartEditAbilites(view, uiId);
-        }
-        else
-        {
-            activityResultLauncherAbility.launch(intent);
-        }
-
-    }
-
-
-    public void StartEditAbilites(View view, Army army, UIIdentifier uiId )
-    {
-        Intent intent = new Intent(this, Activity_Edit_Abilities.class);
-        // Identifier
-        ArmyIdentifier identifier = (ArmyIdentifier)view.getTag(R.string.ARMY_IDENTIFIER);
-
-        intent.putExtra(""+R.string.UI_IDENTIFIER, uiId.elementName);
-
-        intent.putExtra(""+R.string.TYPE_OF_IDENTIFIER, "army");
-        intent.putExtra("" + R.string.ARMY_IDENTIFIER, identifier.toString());
-        intent.putExtra("matchupName", matchup.name);
-
-
-
-
-
         activityResultLauncherAbility.launch(intent);
-
     }
-
-
 
     // TODO: Tag systemet suger fet lowkey
     public void CreateModel(View buttonToModify, Unit unit, int unitNumber,String Allegiance , LayoutInflater inflater)
@@ -602,6 +493,25 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
             SetModelAbilites(currentModel, constraintLayout,  modelId);
             constraintLayout.setTag("");
             SetModelStats(inflatedView.findViewById(R.id.ModelStatsIndicator), currentModel, modelId);
+        }
+    }
+
+    // TODO: wack borde finnas ett battre satt men pallar tji
+    public class OnClickDeactivateAbility implements  View.OnClickListener
+    {
+        private AbilityBitField bitField;
+        private AbilityEnum abilityEnum;
+
+        public OnClickDeactivateAbility(AbilityBitField abilityBitField, AbilityEnum abilityEnum)
+        {
+            this.bitField = abilityBitField;
+            this.abilityEnum = abilityEnum;
+        }
+        @Override
+        public void onClick(View view) {
+            bitField.SetActive(abilityEnum,!bitField.IsSet(abilityEnum));
+
+            FileHandler.GetInstance().saveMatchup(matchup);
         }
     }
 
@@ -780,18 +690,17 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
     {
           TableLayout abilityTable =  highestConstraint.findViewWithTag("AbilityLayoutModels");
 
-
-
-
           abilityTable.setBackgroundColor(Color.parseColor("#DFDADA"));
-          for(int i = 0; i < model.listOfAbilites.size(); i++)
-          {   TableRow tableRow = new TableRow(context);
+          for(AbilityEnum abilityEnum : model.GetAbilityBitField())
+          {
+              Ability ability = DatabaseManager.getInstance().GetAbility(abilityEnum);
+              TableRow tableRow = new TableRow(context);
               tableRow.setBackgroundColor(Color.parseColor("#DFDADA"));
               tableRow.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
 
               TextView abilityTextView = new TextView(context);
-              abilityTextView.setText(model.listOfAbilites.get(i).name);
+              abilityTextView.setText(ability.name);
               abilityTextView.setTextSize(10);
               abilityTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
@@ -884,7 +793,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         nameText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
         TextView abilityText = new TextView(context);
-        abilityText.setText(""+weapon.weaponRules.size());
+        abilityText.setText(""+weapon.GetAbilityBitField().Count());
         abilityText.setTextSize(10);
         abilityText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 

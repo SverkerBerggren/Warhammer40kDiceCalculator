@@ -3,17 +3,36 @@ package com.example.warhammer40kdicecalculator.BitFunctionality;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.NonUiContext;
 
 import java.util.Iterator;
 
 public  class BigBitField<SpecifiedEnum extends  Enum<SpecifiedEnum> & BitEnum<SpecifiedEnum>> implements Iterable<SpecifiedEnum> {
     // Hard coded because I want to avoid dynamic allocations
-    private long FirstBitField = 0;
+    protected long FirstBitField = 0;
     // Does not yet support more than 64 values
     private long SecondBitField = 0;
     private final int MAXSIZE = 64;
-    private int count = 0;
-    private SpecifiedEnum[] enumValues;
+    protected int count = 0;
+    private final SpecifiedEnum[] enumValues;
+
+    // TODO: Ultra ghetto bababooey
+    private final SpecifiedEnum firstEnum;
+
+    public int Count()
+    {
+        return count;
+    }
+
+    public BigBitField<SpecifiedEnum> Copy()
+    {
+        BigBitField<SpecifiedEnum> newBitField = new BigBitField<>(firstEnum);
+        newBitField.FirstBitField = FirstBitField;
+        newBitField.SecondBitField = SecondBitField;
+        newBitField.count = count;
+
+        return newBitField;
+    }
 
     public BigBitField(SpecifiedEnum bitEnum)
     {
@@ -21,6 +40,7 @@ public  class BigBitField<SpecifiedEnum extends  Enum<SpecifiedEnum> & BitEnum<S
         {
            Log.d("Enum bitfield", "To many variables in the enum, Max size needs to be increased");
         }
+        firstEnum = bitEnum;
         enumValues = bitEnum.GetValues();
     }
 

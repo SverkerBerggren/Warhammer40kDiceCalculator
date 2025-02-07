@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class Ability implements DeactivatableInterface {
 
-    public String name = "";
+    public String name;
     public boolean active = true;
 
 
@@ -122,10 +122,6 @@ public abstract class Ability implements DeactivatableInterface {
         return abilitiesToReturn;
     }
 
-    public  static void addModelAbility(Model ModelToParse,String AbilityName,String AbilityDescription)
-    {
-        ModelToParse.listOfAbilites.add(getAbilityType(AbilityName));
-    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

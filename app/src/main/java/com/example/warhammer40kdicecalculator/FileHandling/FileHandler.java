@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.net.Uri;
 import android.os.Build;
-import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.util.Pair;
 
@@ -14,10 +13,8 @@ import androidx.documentfile.provider.DocumentFile;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.AbilityElementAdapter;
-import com.example.warhammer40kdicecalculator.DatabaseManager;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import com.example.warhammer40kdicecalculator.Matchup;
-import com.example.warhammer40kdicecalculator.ROSParser;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.example.warhammer40kdicecalculator.Parsing.Parsing;

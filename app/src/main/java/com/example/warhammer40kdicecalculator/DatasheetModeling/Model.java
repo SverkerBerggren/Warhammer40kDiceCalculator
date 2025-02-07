@@ -2,11 +2,13 @@ package com.example.warhammer40kdicecalculator.DatasheetModeling;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.Activities.CompareActivity;
+import com.example.warhammer40kdicecalculator.BitFunctionality.AbilityBitField;
+import com.example.warhammer40kdicecalculator.Enums.AbilityEnum;
 import com.example.warhammer40kdicecalculator.ModifierHolder;
 
 import java.util.ArrayList;
 
-public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterface, WahapediaIdHolder{
+public class Model  implements AbilityHolder, ModifierHolder, DeactivatableInterface, WahapediaIdHolder{
 
     public String wahapediaDataId;
     public String name;
@@ -20,7 +22,7 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
 
     public boolean active = true;
 
-    public ArrayList<Ability> listOfAbilites = new ArrayList<>();
+    private AbilityBitField abilityFlags = new AbilityBitField(AbilityEnum.MinusOneDamage);
 
     public ArrayList<Weapon> weapons = new ArrayList<>();
 
@@ -29,24 +31,14 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
         return wahapediaDataId;
     }
 
-    public void CopyStats(Model OtherModel)
-    {
-        OtherModel.toughness = toughness;
-        OtherModel.strength = strength;
-        OtherModel.armorSave = armorSave;
-        OtherModel.invulnerableSave = invulnerableSave;
-        OtherModel.wounds = wounds;
-        OtherModel.attacks = attacks;
+    @Override
+    public AbilityBitField GetAbilityBitField() {
+        return abilityFlags;
     }
 
     @Override
-    public Ability GetAbility(int index) {
-        return listOfAbilites.get(index);
-    }
-
-    @Override
-    public boolean RemoveAbility(Ability ability) {
-        return listOfAbilites.remove(ability);
+    public boolean IsActive(AbilityEnum abilityEnum) {
+        return abilityFlags.IsActive(abilityEnum);
     }
 
     public Model(Model other)
@@ -61,7 +53,7 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
         name = other.name;
         active = other.active;
 
-        listOfAbilites = new ArrayList<>(other.listOfAbilites);
+        abilityFlags = other.abilityFlags.Copy();
         weapons = new ArrayList<>(other.weapons);
      }
 
@@ -77,7 +69,7 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
         modelToReturn.wahapediaDataId = wahapediaDataId;
         modelToReturn.active = active;
         modelToReturn.name = name;
-        modelToReturn.listOfAbilites = new ArrayList<>(listOfAbilites);
+        modelToReturn.abilityFlags = abilityFlags.Copy();
 
         ArrayList<Weapon> newList = new ArrayList<>();
 
@@ -97,7 +89,7 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
     }
 
     public Model(String name, int toughness, int strength, int armorSave, int invulnerableSave, int wounds, int attacks,
-                 ArrayList<Ability> listOfAbilites, ArrayList<Weapon> Weapons)
+                 AbilityBitField abilityFlags, ArrayList<Weapon> Weapons)
     {
         this.name = name;
         this.toughness = toughness;
@@ -107,7 +99,7 @@ public class Model implements AbilityHolder, ModifierHolder, DeactivatableInterf
         this.wounds = wounds;
         this.attacks = attacks;
 
-        this.listOfAbilites = listOfAbilites;
+        this.abilityFlags = abilityFlags;
 
         this.weapons = Weapons;
     }

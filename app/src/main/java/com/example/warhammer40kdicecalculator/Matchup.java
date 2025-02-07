@@ -1,9 +1,13 @@
 package com.example.warhammer40kdicecalculator;
 
+import android.util.Log;
+
+import com.example.warhammer40kdicecalculator.DatasheetModeling.AbilityHolder;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Army;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Model;
 import com.example.warhammer40kdicecalculator.DatasheetModeling.Unit;
 import com.example.warhammer40kdicecalculator.Identifiers.ArmyIdentifier;
+import com.example.warhammer40kdicecalculator.Identifiers.Identifier;
 import com.example.warhammer40kdicecalculator.Identifiers.ModelIdentifier;
 import com.example.warhammer40kdicecalculator.Identifiers.UnitIdentifier;
 
@@ -37,6 +41,23 @@ public class Matchup {
             modelToReturn =enemyArmy.units.get(modelId.indexUnit).listOfModels.get(modelId.indexModel);
         }
         return modelToReturn;
+    }
+
+    // Kanske gor den mer generisk sen
+    public AbilityHolder GetAbilityHolder(Identifier identifier)
+    {
+        switch (identifier.GetIdentifierEnum())
+        {
+            case UNIT:
+                return GetUnit((UnitIdentifier) identifier);
+            case ARMY:
+                return GetArmy((ArmyIdentifier) identifier);
+            case MODEL:
+                return GetModel((ModelIdentifier) identifier);
+            default:
+                Log.d("Ability holder retrival","Unsupported enum found");
+                return null;
+         }
     }
 
     public Unit GetUnit(UnitIdentifier unitId)

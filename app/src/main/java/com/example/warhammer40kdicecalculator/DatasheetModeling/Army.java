@@ -2,6 +2,8 @@ package com.example.warhammer40kdicecalculator.DatasheetModeling;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
 import com.example.warhammer40kdicecalculator.Activities.CompareActivity;
+import com.example.warhammer40kdicecalculator.BitFunctionality.AbilityBitField;
+import com.example.warhammer40kdicecalculator.Enums.AbilityEnum;
 import com.example.warhammer40kdicecalculator.ModifierHolder;
 
 import java.util.ArrayList;
@@ -167,7 +169,12 @@ public class Army implements AbilityHolder, ModifierHolder {
     }
 
     @Override
-    public boolean RemoveAbility(Ability ability) {
-        return abilities.remove(ability);
+    public AbilityBitField GetAbilityBitField() {
+        return null;
+    }
+
+    @Override
+    public boolean IsActive(AbilityEnum abilityEnum) {
+        return false;
     }
 }
