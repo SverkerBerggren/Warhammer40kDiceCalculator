@@ -25,21 +25,7 @@ import java.util.ArrayList;
 
 public class ParseActivity extends AppCompatActivity {
 
-    private ActivityResultLauncher<String> requestPermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-                if (isGranted) {
-                    // Permission is granted. Continue the action or workflow in your
-                    // app.
-                } else {
-                    // Explain to the user that the feature is unavailable because the
-                    // feature requires a permission that the user has denied. At the
-                    // same time, respect the user's decision. Don't link to system
-                    // settings in an effort to convince the user to change their
-                    // decision.
-                }
-            });
-
-    private ActivityResultLauncher<Intent> activityChooseFileLauncher = registerForActivityResult(
+    private final ActivityResultLauncher<Intent> activityChooseFileLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
@@ -63,8 +49,6 @@ public class ParseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parse);
 
-        CheckAndRequestPermission();
-
         findViewById(R.id.ParseArmyButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -79,54 +63,13 @@ public class ParseActivity extends AppCompatActivity {
             }
         });
 
-
-
         CreateArmyButtons(FileHandler.GetInstance().GetSavedArmies());
-
     }
-
-    private void CheckAndRequestPermission()
-    {
-        if (ContextCompat.checkSelfPermission(
-                getBaseContext(), Manifest.permission.READ_EXTERNAL_STORAGE) ==
-                PackageManager.PERMISSION_GRANTED) {
-            // You can use the API that requires the permission.
-
-        } else if (shouldShowRequestPermissionRationale())
-        {
-        // In an educational UI, explain to the user why your app requires this
-        // permission for a specific feature to behave as expected, and what
-        // features are disabled if it's declined. In this UI, include a
-        // "cancel" or "no thanks" button that lets the user continue
-        // using your app without granting the permission.
-            showInContextUI();
-        }else
-        {
-            // You can directly ask for the permission.
-            // The registered ActivityResultCallback gets the result of this request.
-            requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
-        }
-    }
-
-    private boolean shouldShowRequestPermissionRationale()
-    {
-        return  false;
-    }
-
-    private void showInContextUI()
-    {
-        Log.d("permission", "fick ej permission");
-    }
-
     private void ReadFiles()
     {
-
         Intent intentTest = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-
         intentTest.setType("*/*");
-
         intentTest = Intent.createChooser(intentTest,"choose a file");
-
 
         activityChooseFileLauncher.launch(intentTest);
     }
@@ -134,15 +77,12 @@ public class ParseActivity extends AppCompatActivity {
     private void CreateArmyButtons(ArrayList<String> listOfNames)
     {
         LinearLayout linearLayout = findViewById(R.id.SavedArmiesList);
-
-
         linearLayout.removeAllViews();
 
         for(String string : listOfNames)
         {
             Button armyButton = new Button(getBaseContext());
             armyButton.setText(string);
-
 
             linearLayout.addView(armyButton);
         }
