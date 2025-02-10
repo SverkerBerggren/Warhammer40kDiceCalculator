@@ -4,7 +4,7 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.example.warhammer40kdicecalculator",
+  "applicationId": "com.app.DamageCalculator40k",
   "variantName": "release",
   "elements": [
     {

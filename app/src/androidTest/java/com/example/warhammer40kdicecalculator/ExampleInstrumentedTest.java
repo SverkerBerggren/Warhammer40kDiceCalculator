@@ -1,4 +1,4 @@
-package com.example.warhammer40kdicecalculator;
+package com.app.DamageCalculator40k;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.example.warhammer40kdicecalculator", appContext.getPackageName());
+        assertEquals("com.app.DamageCalculator40k", appContext.getPackageName());
     }
 }

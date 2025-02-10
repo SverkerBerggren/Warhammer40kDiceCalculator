@@ -1,4 +1,4 @@
-package com.example.warhammer40kdicecalculator;
+package com.app.DamageCalculator40k;
 
 import org.junit.Test;
 

@@ -4,11 +4,11 @@ plugins {
 
 android {
 
-    namespace "com.example.warhammer40kdicecalculator"
+    namespace "com.app.DamageCalculator40k"
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.example.warhammer40kdicecalculator"
+        applicationId "com.app.DamageCalculator40k"
         minSdk 29
         targetSdk 34
         versionCode 1
