@@ -7,6 +7,8 @@ import com.example.warhammer40kdicecalculator.Parsing.Parsing;
 // TODO: add all factions
 public enum Faction implements BitEnum<Faction> {
     AstraMilitarum,
+    ChaosDemons,
+    SpaceMarines,
 
     Unidentified;
 

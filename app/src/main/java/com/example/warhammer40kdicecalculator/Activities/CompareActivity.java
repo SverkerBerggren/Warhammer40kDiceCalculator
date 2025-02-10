@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import android.os.Trace;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -55,10 +56,6 @@ import java.util.ArrayList;
 public class CompareActivity extends AppCompatActivity implements AbilityUIHolder {
 
     public Matchup matchup;
-
-    private int UNIT_ALLEGIANCE = R.string.UNIT_ALLEGIANCE;
-    private int UNIT_MODIFIER = R.string.UNIT_MODIFIER;
-    private int UNIT_NUMBER = R.string.UNIT_NUMBER;
 
     private String DONT_DROP_DOWN = "dontDropDown";
 
@@ -132,9 +129,11 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
 
         highestConstraint = findViewById(R.id.ConstraintLayoutCompare);
-
+        Trace.beginSection("Arme skapande");
         createArmy(matchup.friendlyArmy,FRIENDLY);
         createArmy(matchup.enemyArmy,ENEMY);
+        Trace.endSection();
+
     }
 
     public void Setup(Context context, Matchup matchup)
@@ -319,17 +318,23 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
     private Object GetUiElement( String allegiance, WidgetType type)
     {
+        Trace.beginSection("Leta efter vy");
         switch (type)
         {
             case TableRow:
+                Trace.endSection();
                 return (allegiance.equals(FRIENDLY)) ? (findViewById(R.id.TableRowFriendlyArmy)):(findViewById(R.id.TableRowEnemyArmy));
             case ArmyEditButton:
+                Trace.endSection();
                 return (allegiance.equals(FRIENDLY)) ? (findViewById(R.id.EditFriendlyArmyButton)):(findViewById(R.id.EditEnemyArmyButton));
             case ArmyVerticalLayout:
+                Trace.endSection();
                 return (allegiance.equals(FRIENDLY)) ? (findViewById(R.id.VerticalLayoutFriendlyArmy)):(findViewById(R.id.VerticalLayoutEnemyArmy));
             case ArmyAbilitiesTableLayout:
+                Trace.endSection();
                 return (allegiance.equals(FRIENDLY)) ? (findViewById(R.id.AbilityLayoutFriendlyArmy)):(findViewById(R.id.AbilityLayoutEnemyArmy));
             case EditArmyAbilities:
+                Trace.endSection();
                 return (allegiance.equals(FRIENDLY)) ? (findViewById(R.id.EditFriendlyArmyAbilities)):(findViewById(R.id.EditEnemyArmyAbilities));
         }
 
@@ -349,7 +354,9 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         ArrayList<Unit> units = GetMatchupUnitsFromAllegiance(allegiance);
         for(int i = 0; i < units.size();i++)
         {
+            Trace.beginSection("Unit inflating");
             ViewGroup verticalLayout = (ViewGroup) inflater.inflate(R.layout.unitviewprefab,(ViewGroup)GetUiElement(allegiance,WidgetType.ArmyVerticalLayout));
+            Trace.endSection();
             Unit unit = units.get(i);
             UnitIdentifier unitIdentifier = new UnitIdentifier(allegiance,null,i,matchup.name);
             instantiateUnitButton(verticalLayout.getChildAt(verticalLayout.getChildCount()-1),unit,unitIdentifier);
@@ -473,26 +480,35 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         for(int i = 0; i < unit.listOfModels.size();i++)
         {
             Model currentModel = unit.listOfModels.get(i);
+            Trace.beginSection("Inflatea modeller");
             View inflatedView = inflater.inflate(R.layout.model_stats_prefab,modelsLayout);
-            ((Button)highestConstraint.findViewWithTag("inividualModelTopButton")).setText(currentModel.name);
-            ((Button)highestConstraint.findViewWithTag("inividualModelTopButton")).setTag("");
+            Trace.endSection();
+
+            Button modelTopButton = highestConstraint.findViewWithTag("inividualModelTopButton");
+            modelTopButton.setText(currentModel.name);
+            modelTopButton.setTag("");
 
             ModelIdentifier modelId = new ModelIdentifier(Allegiance, null, unitNumber,i,matchup.name );
-            ((ImageButton)inflatedView.findViewById(R.id.EditWeaponsButton)).setTag(IdentifierType.MODEL.GetResourceId(),modelId);
-            ((ImageButton)inflatedView.findViewById(R.id.EditWeaponsButton)).setTag(R.string.UI_IDENTIFIER,new UIIdentifier(UI_WEAPON_LAYOUT_MODEL,modelId));
-            ((ImageButton)inflatedView.findViewById(R.id.EditWeaponsButton)).setId(R.id.noId);
 
-            // Add Weapon Button
-            highestConstraint.findViewWithTag("AddWeaponModelButton").setOnClickListener(new OnClickAddWeapon(modelId));
-            highestConstraint.findViewWithTag("AddWeaponModelButton").setTag("");
-            ((CheckBox)highestConstraint.findViewById(R.id.DeactivateModelsButton)).setChecked(currentModel.active);
-            highestConstraint.findViewById(R.id.DeactivateModelsButton).setOnClickListener(new OnClickDeactivate(currentModel));
-            highestConstraint.findViewById(R.id.DeactivateModelsButton).setId(R.id.noId);
+            ImageButton editWeaponButton = inflatedView.findViewById(R.id.EditWeaponsButton);
+            editWeaponButton.setTag(IdentifierType.MODEL.GetResourceId(),modelId);
+            editWeaponButton.setTag(R.string.UI_IDENTIFIER,new UIIdentifier(UI_WEAPON_LAYOUT_MODEL,modelId));
+            editWeaponButton.setId(R.id.noId);
+
+            ImageButton addWeaponButton = highestConstraint.findViewWithTag("AddWeaponModelButton");
+            addWeaponButton.setOnClickListener(new OnClickAddWeapon(modelId));
+            addWeaponButton.setTag("");
+
+            CheckBox deactivateModelCheckBox = highestConstraint.findViewById(R.id.DeactivateModelsButton);
+            deactivateModelCheckBox.setChecked(currentModel.active);
+            deactivateModelCheckBox.setOnClickListener(new OnClickDeactivate(currentModel));
+            deactivateModelCheckBox.setId(R.id.noId);
             ConstraintLayout constraintLayout = ((ConstraintLayout)inflatedView.getParent()).findViewWithTag("ConstraintLayoutModel");
 
             SetModelAbilites(currentModel, constraintLayout,  modelId);
             constraintLayout.setTag("");
             SetModelStats(inflatedView.findViewById(R.id.ModelStatsIndicator), currentModel, modelId);
+            modelTopButton.callOnClick();
         }
     }
 
@@ -858,11 +874,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
     public void DropDownClick(View v)
     {
-        ViewGroup constraintLayout = (ViewGroup) v.getParent();
-
-
-
-        ViewGroup viewGroup = (ViewGroup) constraintLayout;
+        ViewGroup viewGroup =  (ViewGroup) v.getParent();
 
         for(int i = 0; i < viewGroup.getChildCount(); i++)
         {

@@ -28,6 +28,6 @@ public class AbilityElementAdapter implements JsonSerializer<Ability>, JsonDeser
         String type = jsonObject.get("name").getAsString();
         JsonElement element = jsonObject.get("name");
 
-        return Ability.getAbilityType(type);
+        return DatabaseManager.getInstance().GetAbility(type);
     }
 }

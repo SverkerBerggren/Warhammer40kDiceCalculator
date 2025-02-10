@@ -13,6 +13,7 @@ import android.util.Pair;
 import androidx.annotation.RequiresApi;
 
 import com.example.warhammer40kdicecalculator.Abilities.Ability;
+import com.example.warhammer40kdicecalculator.Abilities.AbilityStub;
 import com.example.warhammer40kdicecalculator.Abilities.MinusOneDamage;
 import com.example.warhammer40kdicecalculator.Abilities.MinusOneToWound;
 import com.example.warhammer40kdicecalculator.Abilities.ReRollHits;
@@ -38,13 +39,21 @@ public class DatabaseManager {
     private final android.content.res.AssetManager assetManager;
     private final String dataDirectory;
     private final HashMap<IdNameKey, Weapon> DatasheetWargear = new HashMap<>();
+    private final HashMap<IdNameKey, ArrayList<Weapon>> MultiModeWeaponDatabase = new HashMap<>();
     private final HashMap<NameFactionKey, Unit> Datasheets = new HashMap<>();
     private final HashMap<IdNameKey, Model> modelsDatasheet = new HashMap<>();
-    private final ArrayList<Ability> enumAbilityDatabase = new ArrayList<>();
+    private final ArrayList<Ability> abilityEnumDatabase = new ArrayList<>();
     private final HashMap<String,Ability> stringAbilityDatabase = new HashMap<>();
+
+    //TODO: bor lowkey tas bort lite sus men skit samma
+    private final HashMap<String,AbilityEnum> stringAbilityEnumDatabase = new HashMap<>();
+
+    // Assumes that all ability names have the same description
+    private final HashMap<String,AbilityEnum> wahapediaUniqueNamedAbilityDatabase = new HashMap<>();
     public static volatile DatabaseManager instance;
 
     public static final Object onlineDatabaseLock = new Object();
+    private final Object localAbilitiesLock = new Object();
 
     public HashMap<IdNameKey, Weapon> GetDatasheetWargearDatabase() {return  DatasheetWargear;}
     public HashMap<NameFactionKey, Unit> GetDatasheetsDatabase() {return  Datasheets;}
@@ -132,8 +141,13 @@ public class DatabaseManager {
         {
             case "am":
                 return Faction.AstraMilitarum;
+            case "cd":
+                return Faction.ChaosDemons;
+            case "sm":
+                return Faction.SpaceMarines;
+            default:
+                return Faction.Unidentified;
         }
-        return Faction.Unidentified;
     }
 
 
@@ -152,15 +166,35 @@ public class DatabaseManager {
 
     private void InitializeLocalDatabases()
     {
-        CreateAbilityDatabase();
+        CreateImplementedAbilities();
     }
 
+    //Because of inconsistent char used to separated weapon modes some weapons are interpreted as modal when they are not
+    private void CleanUpWeaponDatabase()
+    {
+        ArrayList<IdNameKey> weaponsToRemove = new ArrayList<>();
+        for(IdNameKey idNameKey : MultiModeWeaponDatabase.keySet())
+        {
+            ArrayList<Weapon> weaponList = MultiModeWeaponDatabase.get(idNameKey);
+            if(weaponList.size() < 2)
+            {
+                weaponsToRemove.add(idNameKey);
+                DatasheetWargear.put(new IdNameKey(weaponList.get(0).wahapediaDataId,weaponList.get(0).name),weaponList.get(0));
+            }
+        }
+        for(IdNameKey weaponToRemove : weaponsToRemove)
+        {
+            MultiModeWeaponDatabase.remove(weaponToRemove);
+        }
+    }
 
     private void InitializeInternetDatabases()
     {
         CreateWeaponDatabase();
+        CleanUpWeaponDatabase();
         CreateDatasheetDatabase();
         CreateModelsDatasheet();
+        CreateWahapediaAbilityDatabase();
     }
 
     private  void DownloadWahapediaData(Context context)
@@ -172,6 +206,7 @@ public class DatabaseManager {
         updateArgumentStruct.FilesToDownload.add("Datasheets_models.csv");
         updateArgumentStruct.FilesToDownload.add("Datasheets_abilities.csv");
         updateArgumentStruct.FilesToDownload.add("Datasheets_keywords.csv");
+        updateArgumentStruct.FilesToDownload.add("Datasheets_abilities.csv");
         updateArgumentStruct.FilesToDownload.add("Factions.csv");
         updateArgumentStruct.LastUpdateURL = "Last_update.csv";
         updateArgumentStruct.OutputPrefix = context.getDataDir().toString();
@@ -186,46 +221,87 @@ public class DatabaseManager {
         return instance;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+        @RequiresApi(api = Build.VERSION_CODES.N)
     private DatabaseManager(Context context)
     {
         assetManager = context.getAssets();
         dataDirectory = context.getDataDir().toString() + "/";
     }
 
-    private void CreateAbilityDatabase()
+    private void CreateWahapediaAbilityDatabase()
     {
-        for(AbilityEnum abilityEnum : AbilityEnum.values())
+        synchronized (localAbilitiesLock)
         {
-            Ability ability = null;
-            switch (abilityEnum)
+            ArrayList<ArrayList<String>> abilityData = FileHandler.instance.GetWahapediaDataCSV("Datasheets_abilities.csv");
+            for(ArrayList<String> abilityEntry : abilityData)
             {
-                case MinusOneDamage:
-                    ability = new MinusOneDamage();
-                    break;
-                case MinusOneToWound:
-                    ability = new MinusOneToWound();
-                    break;
-                case ReRollHits:
-                    ability = new ReRollHits();
-                    break;
-                case ReRollOnes:
-                    ability = new ReRollOnes();
-                    break;
-                default:
-                    Log.d("Ability database","Enum without corresponding ability found");
-            }
-            if(ability != null)
-            {
-                enumAbilityDatabase.add(ability);
-                stringAbilityDatabase.put(ability.name,ability);
+                // abilities are not seperated in the csv files in a consistent manner
+                if(abilityEntry.size() < 7)
+                {
+                    Log.d("Wahapedia ability database", "Invalid ability entry length");
+                    continue;
+                }
+                if(abilityEntry.get(4).isEmpty())
+                {
+                    continue;
+                }
+
+                AbilityEnum ability;
+                ability = stringAbilityEnumDatabase.get(abilityEntry.get(4));
+                if (ability == null)
+                {
+                    ability = AbilityEnum.Unimplemented;
+                }
+
+                wahapediaUniqueNamedAbilityDatabase.put(abilityEntry.get(4),ability);
             }
         }
     }
 
+    private void CreateImplementedAbilities()
+    {
+        synchronized (localAbilitiesLock)
+        {
+            for(AbilityEnum abilityEnum : AbilityEnum.values())
+            {
+                Ability ability = null;
+                switch (abilityEnum)
+                {
+                    case MinusOneDamage:
+                        ability = new MinusOneDamage();
+                        break;
+                    case MinusOneToWound:
+                        ability = new MinusOneToWound();
+                        break;
+                    case ReRollHits:
+                        ability = new ReRollHits();
+                        break;
+                    case ReRollOnes:
+                        ability = new ReRollOnes();
+                        break;
+                    case Unimplemented:
+                        ability = new AbilityStub();
+                    default:
+                        Log.d("Ability database","Enum without corresponding ability found");
+                }
+                if(ability != null)
+                {
+                    abilityEnumDatabase.add(ability);
+                    stringAbilityDatabase.put(ability.name,ability);
+                    stringAbilityEnumDatabase.put(ability.name,abilityEnum);
+                }
+            }
+        }
+    }
+
+    public AbilityEnum GetAbilityEnumFromWahapediaName(String name)
+    {
+        return wahapediaUniqueNamedAbilityDatabase.get(name);
+    }
+
     public Ability GetAbility(AbilityEnum abilityEnum)
     {
-        return enumAbilityDatabase.get(abilityEnum.ordinal());
+        return abilityEnumDatabase.get(abilityEnum.ordinal());
     }
 
     // Name of the ability
@@ -278,12 +354,22 @@ public class DatabaseManager {
                 Log.d("Datasheet database", "Invalid datasheet entry length");
                 continue;
             }
+            if(datasheetEntry.get(1).equals("azrael"))
+            {
+                Log.d("azreal","hitta han");
+            }
             Unit unitDatasheet = new Unit();
             unitDatasheet.wahapediaDataId = datasheetEntry.get(0);
             unitDatasheet.unitName = datasheetEntry.get(1);
+            Faction faction = ParseFaction(datasheetEntry.get(2));
 
-            Datasheets.put(new NameFactionKey(unitDatasheet.unitName, ParseFaction(datasheetEntry.get(2))),unitDatasheet);
+            Datasheets.put(new NameFactionKey(unitDatasheet.unitName, faction),unitDatasheet);
         }
+    }
+
+    public ArrayList<Weapon> GetMultiModeWeapons(IdNameKey idNameKey)
+    {
+        return MultiModeWeaponDatabase.get(idNameKey);
     }
 
     private void CreateWeaponDatabase()
@@ -315,7 +401,23 @@ public class DatabaseManager {
             {
                 Log.d("Weapon parsing",e.getMessage());
             }
-            DatasheetWargear.put(new IdNameKey(weaponToConstruct.wahapediaDataId,weaponToConstruct.name),weaponToConstruct);
+
+            // Disaster, not consistent
+            boolean containsFirstChar = weaponToConstruct.name.contains("–");
+            boolean containsSecondChar = weaponToConstruct.name.contains("-");
+            if(containsFirstChar || containsSecondChar)
+            {
+                String stringToSplitBy = (containsFirstChar) ? ("–"):("-");
+                String queryName = weaponEntry.get(4).split(stringToSplitBy)[0].trim();
+                IdNameKey idNameKey = new IdNameKey(weaponToConstruct.wahapediaDataId,queryName);
+
+                ArrayList<Weapon> weaponVariants = MultiModeWeaponDatabase.computeIfAbsent(idNameKey, key -> new ArrayList<>());
+                weaponVariants.add(weaponToConstruct);
+            }
+            else
+            {
+                DatasheetWargear.put(new IdNameKey(weaponToConstruct.wahapediaDataId,weaponToConstruct.name),weaponToConstruct);
+            }
         }
     }
 

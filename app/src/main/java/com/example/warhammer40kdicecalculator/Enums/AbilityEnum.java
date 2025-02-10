@@ -7,7 +7,8 @@ public enum AbilityEnum implements BitEnum<AbilityEnum> {
     MinusOneDamage,
     MinusOneToWound,
     ReRollHits,
-    ReRollOnes;
+    ReRollOnes,
+    Unimplemented;
 
     private final static AbilityEnum[] enums = values();
     @Override

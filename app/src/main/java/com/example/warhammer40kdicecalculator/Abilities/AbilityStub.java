@@ -7,18 +7,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class AbilityStub extends Ability{
-    public AbilityStub(String name)
+    public AbilityStub()
     {
-        super("");
-
-        if(name.contains(": no behaviour"))
-        {
-
-            this.name = name;
-        }
-        else
-        {
-            this.name = name + ": no behaviour";
-        }
+        super("stub");
     }
 }
