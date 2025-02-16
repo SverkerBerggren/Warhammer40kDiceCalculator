@@ -158,7 +158,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
     }
 
     @Override
-    public void AbilityAdded(AbilityEnum abilityEnum, GamePiece gamePiece) {
+    public void AbilityAdded(Ability abilityEnum, GamePiece gamePiece) {
 
         if(gamePiece instanceof Model)
         {
@@ -373,9 +373,9 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
     private void CreateArmyAbilities(ArmyIdentifier armyIdentifier, Army army)
     {
         TableLayout tableLayout = (TableLayout) GetUiElement(armyIdentifier.allegiance,WidgetType.ArmyAbilitiesTableLayout);
-        for(int i = 0; i < army.abilities.size(); i++)
+        for(int i = 0; i < army.GetAbilities().size(); i++)
         {
-            tableLayout.addView(CreateTableRow(army.abilities.get(i).name));
+            tableLayout.addView(CreateTableRow(army.GetAbilities().get(i).name));
         }
         ImageButton editButton = (ImageButton) GetUiElement(armyIdentifier.allegiance,WidgetType.EditArmyAbilities);
         UIIdentifier uiId = new UIIdentifier(UI_ARMY_ABILITY_LAYOUT, armyIdentifier);
@@ -414,9 +414,8 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         unitAbilitLayout.setTag(uiId);
 
 
-        for(AbilityEnum abilityEnum : unit.GetAbilityBitField())
+        for(Ability ability : unit.GetAbilities())
         {
-            Ability ability = DatabaseManager.getInstance().GetAbility(abilityEnum);
             TableRow tableRow = new TableRow(context);
             tableRow.setBackgroundColor(Color.parseColor("#DFDADA"));
             tableRow.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -512,20 +511,17 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         }
     }
 
-    // TODO: wack borde finnas ett battre satt men pallar tji
     public class OnClickDeactivateAbility implements  View.OnClickListener
     {
-        private AbilityBitField bitField;
-        private AbilityEnum abilityEnum;
+        private final Ability ability;
 
-        public OnClickDeactivateAbility(AbilityBitField abilityBitField, AbilityEnum abilityEnum)
+        public OnClickDeactivateAbility(Ability ability)
         {
-            this.bitField = abilityBitField;
-            this.abilityEnum = abilityEnum;
+            this.ability = ability;
         }
         @Override
         public void onClick(View view) {
-            bitField.SetActive(abilityEnum,!bitField.IsSet(abilityEnum));
+            ability.active = !ability.active;
 
             FileHandler.GetInstance().saveMatchup(matchup);
         }
@@ -707,9 +703,8 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
           TableLayout abilityTable =  highestConstraint.findViewWithTag("AbilityLayoutModels");
 
           abilityTable.setBackgroundColor(Color.parseColor("#DFDADA"));
-          for(AbilityEnum abilityEnum : model.GetAbilityBitField())
+          for(Ability ability : model.GetAbilities())
           {
-              Ability ability = DatabaseManager.getInstance().GetAbility(abilityEnum);
               TableRow tableRow = new TableRow(context);
               tableRow.setBackgroundColor(Color.parseColor("#DFDADA"));
               tableRow.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -741,11 +736,6 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         UIIdentifier uiId = new UIIdentifier(UI_MODEL_MODIFIER_LAYOUT, modelId);
         ImageButton button = (ImageButton)highestConstraint.findViewById(R.id.EditModelStatsButton);
         CreateModifiers(model,uiId, tableRow, button);
-
-
-
-
-
         ConstraintLayout constraintLayout = (ConstraintLayout)tableRow.getParent().getParent();
 
         TableLayout weaponLayout = constraintLayout.findViewWithTag("WeaponLayout");
@@ -756,13 +746,6 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         {
             AddWeapon(weaponLayout,model.weapons.get(i));
         }
-
-
-
-
-
-
-
     }
 
     private void AddWeapon(TableLayout tableLayout, Weapon weapon)
@@ -775,7 +758,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         nameText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
         TextView abilityText = new TextView(context);
-        abilityText.setText(""+weapon.GetAbilityBitField().Count());
+        abilityText.setText(""+weapon.GetAbilities().size());
         abilityText.setTextSize(10);
         abilityText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 

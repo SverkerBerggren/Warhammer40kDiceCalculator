@@ -1,19 +1,19 @@
 package com.app.DamageCalculator40k.Abilities;
 
+import androidx.annotation.NonNull;
+
 import com.app.DamageCalculator40k.DatasheetModeling.DeactivatableInterface;
-import com.app.DamageCalculator40k.DatasheetModeling.Model;
-import com.app.DamageCalculator40k.DiceResult;
-import com.app.DamageCalculator40k.MetricsOfAttacking;
+import com.app.DamageCalculator40k.DamageCalculation.DiceResult;
+import com.app.DamageCalculator40k.DamageCalculation.MetricsOfAttacking;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class Ability implements DeactivatableInterface {
+public class Ability implements DeactivatableInterface {
 
     public String name;
     public boolean active = true;
-
 
     public void hitRollAbilityAttacking(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult){};
 
@@ -32,6 +32,12 @@ public abstract class Ability implements DeactivatableInterface {
         this.name = name;
     }
 
+    @NonNull
+    @Override
+    public String toString()
+    {
+        return name;
+    }
 
     @Override
     public boolean equals(Object o) {

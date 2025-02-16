@@ -1,4 +1,4 @@
-package com.app.DamageCalculator40k;
+package com.app.DamageCalculator40k.DamageCalculation;
 
 public class MetricsOfAttacking {
 

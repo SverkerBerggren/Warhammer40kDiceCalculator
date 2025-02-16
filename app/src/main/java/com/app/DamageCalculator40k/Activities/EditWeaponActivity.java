@@ -121,7 +121,7 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
     }
 
     @Override
-    public void AbilityAdded(AbilityEnum ability, GamePiece gamePiece) {
+    public void AbilityAdded(Ability ability, GamePiece gamePiece) {
         PopulateAbilites((Weapon) gamePiece);
     }
 
@@ -184,10 +184,10 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
     }
 
     private void PopulateAbilites( Weapon weapon)
-    {   linearLayout.removeAllViews();
-        for(AbilityEnum abilityEnum : weapon.GetAbilityBitField())
+    {
+        linearLayout.removeAllViews();
+        for(Ability ability : weapon.GetAbilities())
         {
-            Ability ability = DatabaseManager.getInstance().GetAbility(abilityEnum);
             CheckBox abilityCheckBox = new CheckBox(new ContextThemeWrapper(context, androidx.appcompat.R.style.Base_Widget_AppCompat_CompoundButton_CheckBox));
             abilityCheckBox.setTextSize(20);
             abilityCheckBox.setText(ability.name);

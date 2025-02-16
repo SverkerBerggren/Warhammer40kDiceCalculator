@@ -1,15 +1,14 @@
-package com.app.DamageCalculator40k;
+package com.app.DamageCalculator40k.DamageCalculation;
 
 import android.os.Trace;
 import android.util.Log;
 
 import com.app.DamageCalculator40k.Abilities.Ability;
-import com.app.DamageCalculator40k.Abilities.Dakka;
+import com.app.DamageCalculator40k.Conditions;
 import com.app.DamageCalculator40k.DatasheetModeling.Army;
 import com.app.DamageCalculator40k.DatasheetModeling.Model;
 import com.app.DamageCalculator40k.DatasheetModeling.Weapon;
 import com.app.DamageCalculator40k.DatasheetModeling.Unit;
-import com.app.DamageCalculator40k.Enums.AbilityEnum;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,28 +82,6 @@ public class RollingLogic {
                         if(requiredHitRoll < 2)
                         {
                             requiredHitRoll = 2;
-                        }
-
-                        // TODO: Maste bort hardcodat af
-                        if(condtitions.rapidFireRange )
-                        {
-                            for(AbilityEnum ability : currentWeapon.GetAbilityBitField())
-                            {
-                             //  if( ability.name.contains("Rapid Fire"))
-                             //  {
-                             //      currentWeapon.amountOfAttacks.baseAmount *=2;
-                             //  }
-                            }
-                        }
-                        if(condtitions.dakkaHalfRange )
-                        {
-                           // for(Ability ability : currentWeapon.weaponRules)
-                           // {
-                           //     if( ability.name.contains("Dakka"))
-                           //     {
-                           //         currentWeapon.amountOfAttacks.baseAmount = ((Dakka)ability).dakkaAmount;
-                           //     }
-                           // }
                         }
 
                         CheckWeaponConditions(currentWeapon,condtitions);
@@ -196,9 +173,8 @@ public class RollingLogic {
     private void CheckWeaponConditions(Weapon weapon, Conditions conditions)
     {
 
-        for(AbilityEnum abilityEnum : weapon.GetAbilityBitField())
+        for(Ability ability : weapon.GetAbilities())
         {
-            Ability ability = DatabaseManager.getInstance().GetAbility(abilityEnum);
             if((ability.name.contains("Heavy") || ability.name.contains("Grenade")) && conditions.devastatorDoctrine)
             {
                 weapon.ap -= 1;
@@ -233,9 +209,8 @@ public class RollingLogic {
             amountOffAttacksRollD3.add(diceResult);
         }
         if (currentWeapon.amountOfAttacks.numberOfD3 != 0) {
-            for (AbilityEnum abilityEnum : currentAttackingModel.GetAbilityBitField())
+            for (Ability ability : currentAttackingModel.GetAbilities())
             {
-                Ability ability = DatabaseManager.getInstance().GetAbility(abilityEnum);
                 ability.rollNumberOfShots(amountOffAttacksRollD3,metrics);
             }
         }
@@ -253,9 +228,8 @@ public class RollingLogic {
             amountOffAttacksRollD6.add(diceResult);
         }
         if (currentWeapon.amountOfAttacks.numberOfD6 != 0) {
-            for (AbilityEnum abilityEnum : currentAttackingModel.GetAbilityBitField())
+            for (Ability ability : currentAttackingModel.GetAbilities())
             {
-                Ability ability = DatabaseManager.getInstance().GetAbility(abilityEnum);
                 ability.rollNumberOfShots(amountOffAttacksRollD6,metrics);
             }
         }
@@ -356,80 +330,70 @@ public class RollingLogic {
 
     private void AbilitiesHitRollAttacker(MetricsOfAttacking metrics, DiceResult diceResult, Army attackingArmy, Model currentAttackingModel, Army defendingArmy, Unit attackingUnit, Unit defendingUnit, Weapon attackingWeapon, AtomicInteger requiredResult)
     {
-        for(Ability ability : attackingArmy.abilities)
+        for(Ability ability : attackingArmy.GetAbilities())
         {
             ability.hitRollAbilityAttacking(diceResult,metrics, requiredResult);
         }
-        for(AbilityEnum abilityEnum : attackingUnit.GetAbilityBitField())
+        for(Ability ability : attackingUnit.GetAbilities())
         {
-            Ability ability = DatabaseManager.getInstance().GetAbility(abilityEnum);
             ability.hitRollAbilityAttacking(diceResult,metrics, requiredResult);
         }
-        for(AbilityEnum abilityEnum : currentAttackingModel.GetAbilityBitField())
+        for(Ability ability : currentAttackingModel.GetAbilities())
         {
-            Ability ability = DatabaseManager.getInstance().GetAbility(abilityEnum);
             ability.hitRollAbilityAttacking(diceResult,metrics, requiredResult);
         }
-        for(AbilityEnum abilityEnum : attackingWeapon.GetAbilityBitField())
+        for(Ability ability : attackingWeapon.GetAbilities())
         {
-            Ability ability = DatabaseManager.getInstance().GetAbility(abilityEnum);
             ability.hitRollAbilityAttacking(diceResult,metrics, requiredResult);
         }
     }
     private void AbilitiesWoundRollAttacker(MetricsOfAttacking metrics, DiceResult diceResult, Army attackingArmy, Model currentAttackingModel, Army defendingArmy, Unit attackingUnit, Unit defendingUnit, Weapon attackingWeapon, AtomicInteger requiredResult)
     {
-        for(Ability ability : attackingArmy.abilities)
+        for(Ability ability : attackingArmy.GetAbilities())
         {
             ability.woundRollAbilityAttacker(diceResult,metrics, requiredResult);
         }
-        for(AbilityEnum abilityEnum : attackingUnit.GetAbilityBitField())
+        for(Ability ability : attackingUnit.GetAbilities())
         {
-            Ability ability = DatabaseManager.getInstance().GetAbility(abilityEnum);
             ability.woundRollAbilityAttacker(diceResult,metrics, requiredResult);
         }
-        for(AbilityEnum abilityEnum : currentAttackingModel.GetAbilityBitField())
+        for(Ability ability : currentAttackingModel.GetAbilities())
         {
-            Ability ability = DatabaseManager.getInstance().GetAbility(abilityEnum);
             ability.woundRollAbilityAttacker(diceResult,metrics, requiredResult);
         }
-        for(AbilityEnum abilityEnum : attackingWeapon.GetAbilityBitField())
+        for(Ability ability : attackingWeapon.GetAbilities())
         {
-            Ability ability = DatabaseManager.getInstance().GetAbility(abilityEnum);
             ability.woundRollAbilityAttacker(diceResult,metrics, requiredResult);
         }
     }
     private void AbilitiesWoundRollDefender(MetricsOfAttacking metrics, DiceResult diceResult, Army attackingArmy, Model currentAttackingModel, Model defendingModel, Army defendingArmy, Unit attackingUnit, Unit defendingUnit, Weapon attackingWeapon, AtomicInteger requiredResult)
     {
-        for(Ability ability : defendingArmy.abilities)
+        for(Ability ability : defendingArmy.GetAbilities())
         {
             ability.woundRollAbilityDefender(diceResult,metrics, requiredResult);
         }
-        for(AbilityEnum abilityEnum : defendingUnit.GetAbilityBitField())
+        for(Ability ability : defendingUnit.GetAbilities())
         {
-            Ability ability = DatabaseManager.getInstance().GetAbility(abilityEnum);
             ability.woundRollAbilityDefender(diceResult,metrics, requiredResult);
         }
-        for(AbilityEnum abilityEnum : defendingModel.GetAbilityBitField())
+        for(Ability ability : defendingModel.GetAbilities())
         {
-            Ability ability = DatabaseManager.getInstance().GetAbility(abilityEnum);
             ability.woundRollAbilityDefender(diceResult,metrics, requiredResult);
         }
 
     }
     private void AbilitiesHitRollDefender(MetricsOfAttacking metrics, DiceResult diceResult, Army defendingArmy, Unit defendingUnit, Model defendingModel, AtomicInteger requiredResult)
     {
-        for(Ability ability : defendingArmy.abilities)
+        for(Ability ability : defendingArmy.GetAbilities())
         {
             ability.HitRollAbilityDefender(diceResult,metrics, requiredResult);
         }
-        for(AbilityEnum abilityEnum : defendingUnit.GetAbilityBitField())
+        for(Ability ability : defendingUnit.GetAbilities())
         {
-            Ability ability = DatabaseManager.getInstance().GetAbility(abilityEnum);
             ability.HitRollAbilityDefender(diceResult,metrics, requiredResult);
         }
-        for(AbilityEnum abilityEnum : defendingModel.GetAbilityBitField())
+        for(Ability ability : defendingModel.GetAbilities())
         {
-            Ability ability = DatabaseManager.getInstance().GetAbility(abilityEnum);
             ability.HitRollAbilityDefender(diceResult,metrics, requiredResult);
         }
 
@@ -443,13 +407,12 @@ public class RollingLogic {
         int damageToReduce = 0;
 
 
-        for(Ability ability : defendingArmy.abilities)
+        for(Ability ability : defendingArmy.GetAbilities())
         {
            damageToReduce += ability.saveRollAbility(diceResult,metrics, damageToBeTaken);
         }
-        for(AbilityEnum abilityEnum : defendingUnit.GetAbilityBitField())
+        for(Ability ability : defendingUnit.GetAbilities())
         {
-            Ability ability = DatabaseManager.getInstance().GetAbility(abilityEnum);
             damageToReduce+= ability.saveRollAbility(diceResult,metrics, damageToBeTaken);
         }
 

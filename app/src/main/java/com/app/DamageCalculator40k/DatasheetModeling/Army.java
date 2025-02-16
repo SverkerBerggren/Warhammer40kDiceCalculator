@@ -1,5 +1,7 @@
 package com.app.DamageCalculator40k.DatasheetModeling;
 
+import androidx.annotation.NonNull;
+
 import com.app.DamageCalculator40k.Abilities.Ability;
 import com.app.DamageCalculator40k.Activities.CompareActivity;
 import com.app.DamageCalculator40k.BitFunctionality.AbilityBitField;
@@ -14,8 +16,6 @@ public class Army extends GamePiece implements ModifierHolder {
 
     public ArrayList<Unit> units = new ArrayList<>();
 
-    public ArrayList<Ability> abilities = new ArrayList<>();
-
     public int toughnessModifier = 0;
     public int strengthModifier = 0;
     public int armorSaveModifier = 0;
@@ -24,42 +24,18 @@ public class Army extends GamePiece implements ModifierHolder {
     public int hitSkill = 0;
     public int attacksModifier = 0;
 
-    public  Army(String name, int toughnessModifier, int strengthModifier, int armorSaveModifier, int invulnerableSaveModifier, int woundsModifier, int hitSkill,
-                 int attacksModifier, ArrayList<Unit> units, ArrayList<Ability> abilities)
-    {
-        this.name = name;
-
-        this.toughnessModifier = toughnessModifier;
-        this.strengthModifier = strengthModifier;
-        this.armorSaveModifier = armorSaveModifier;
-        this.invulnerableSaveModifier = invulnerableSaveModifier;
-        this.woundsModifier = woundsModifier;
-        this.hitSkill = hitSkill;
-        this.attacksModifier = attacksModifier;
-
-        this.units = units;
-
-        this.abilities = abilities;
-    }
 
     public  Army()
     {
 
     }
 
-    public Army(String name,ArrayList<Unit> units,ArrayList<Ability> abilities)
-    {
-        this.name = name;
-        this.units = units;
-        this.abilities = abilities;
-    }
-
+    @NonNull
     @Override
     public String toString() {
         return "Army{" +
                 "name='" + name + '\'' +
                 ", units=" + units +
-                ", abilities=" + abilities +
                 ", toughnessModifier=" + toughnessModifier +
                 ", strengthModifier=" + strengthModifier +
                 ", armorSaveModifier=" + armorSaveModifier +
@@ -165,14 +141,7 @@ public class Army extends GamePiece implements ModifierHolder {
                 break;
         }
     }
-    public Ability GetAbility(int index) {
-        return abilities.get(index);
-    }
 
-    @Override
-    public AbilityBitField GetAbilityBitField() {
-        return null;
-    }
 
     @Override
     public boolean IsActive(AbilityEnum abilityEnum) {

@@ -23,6 +23,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.app.DamageCalculator40k.Abilities.Ability;
 import com.app.DamageCalculator40k.AbilityUIHolder;
 import com.app.DamageCalculator40k.DatasheetModeling.GamePiece;
 import com.app.DamageCalculator40k.DatasheetModeling.Army;
@@ -44,7 +45,7 @@ import java.util.ArrayList;
 
 public class EditUnitActivity extends AppCompatActivity implements AbilityUIHolder {
 
-
+    //TODO: rework whole class
     private Matchup matchup;
     private Context context;
 
@@ -160,7 +161,7 @@ public class EditUnitActivity extends AppCompatActivity implements AbilityUIHold
     }
 
     @Override
-    public void AbilityAdded(AbilityEnum abilityEnum, GamePiece gamePiece) {
+    public void AbilityAdded(Ability abilityEnum, GamePiece gamePiece) {
 
     }
 
@@ -317,7 +318,7 @@ public class EditUnitActivity extends AppCompatActivity implements AbilityUIHold
         nameText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
         TextView abilityText = new TextView(context);
-        abilityText.setText(""+weapon.GetAbilityBitField().Count());
+        abilityText.setText(""+weapon.GetAbilities().size());
         abilityText.setTextSize(10);
         abilityText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 

@@ -31,10 +31,6 @@ public class Model extends GamePiece implements ModifierHolder, DeactivatableInt
         return wahapediaDataId;
     }
 
-    @Override
-    public AbilityBitField GetAbilityBitField() {
-        return abilityFlags;
-    }
 
     @Override
     public boolean IsActive(AbilityEnum abilityEnum) {

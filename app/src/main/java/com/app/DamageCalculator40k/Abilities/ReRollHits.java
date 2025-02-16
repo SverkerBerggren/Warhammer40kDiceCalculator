@@ -1,15 +1,17 @@
 package com.app.DamageCalculator40k.Abilities;
 
-import com.app.DamageCalculator40k.DiceResult;
-import com.app.DamageCalculator40k.MetricsOfAttacking;
+import com.app.DamageCalculator40k.DamageCalculation.DiceResult;
+import com.app.DamageCalculator40k.DamageCalculation.MetricsOfAttacking;
 
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ReRollHits extends Ability{
+
+    public static String baseName = "ReRollHits";
     public ReRollHits()
     {
-        super("ReRollHits");
+        super(baseName);
     }
 
     @Override

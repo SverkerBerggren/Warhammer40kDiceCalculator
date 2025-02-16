@@ -17,13 +17,16 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.app.DamageCalculator40k.Abilities.Ability;
+import com.app.DamageCalculator40k.Abilities.WeaponAbilities.RapidFire;
 import com.app.DamageCalculator40k.AbilityUIHolder;
 import com.app.DamageCalculator40k.DatabaseManager;
+import com.app.DamageCalculator40k.DatasheetModeling.DiceAmount;
 import com.app.DamageCalculator40k.DatasheetModeling.GamePiece;
 import com.app.DamageCalculator40k.Enums.AbilityEnum;
 import com.app.DamageCalculator40k.FileHandling.FileHandler;
 import com.app.DamageCalculator40k.Matchup;
 import com.app.DamageCalculator40k.R;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -39,6 +42,15 @@ public class  MainActivity extends AppCompatActivity {
 
         FileHandler.InitializeFileHandler(context);
         DatabaseManager.InitializeDatabaseManager(context);
+
+        Gson gson = new Gson();
+
+        RapidFire hej = new RapidFire(new DiceAmount(1,2,3));
+
+        String abow = gson.toJson(hej);
+        RapidFire hej2 = gson.fromJson(abow,RapidFire.class);
+
+
     }
 
     public void OpenSavedMatchups(View v)
@@ -71,14 +83,9 @@ public class  MainActivity extends AppCompatActivity {
         InflateSearch(baseView,context);
         SearchView searchView = baseView.findViewById(R.id.searchView);
         ListView listView = baseView.findViewById(R.id.listView);
-        ArrayList<AbilityEnum> searchList = new ArrayList<>();
+        ArrayList<Ability> searchList = new ArrayList<>(DatabaseManager.getInstance().GetAbilities());
 
-        for(AbilityEnum abilityEnum : AbilityEnum.values())
-        {
-            searchList.add(abilityEnum);
-        }
-
-        ArrayAdapter<AbilityEnum> arrayAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1,searchList);
+        ArrayAdapter<Ability> arrayAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1,searchList);
 
         listView.setAdapter(arrayAdapter);
 
@@ -102,7 +109,7 @@ public class  MainActivity extends AppCompatActivity {
         private final GamePiece gamePiece;
         private final ViewGroup baseView;
         private final Matchup matchup;
-        private AbilityUIHolder abilityUIHolder;
+        private final AbilityUIHolder abilityUIHolder;
 
         public OnClickAbilityItem(GamePiece gamePiece, ViewGroup baseView, Matchup matchup, AbilityUIHolder abilityUIHolder)
         {
@@ -116,10 +123,9 @@ public class  MainActivity extends AppCompatActivity {
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
             String item = ((TextView)view).getText().toString();
             Ability ability = DatabaseManager.getInstance().GetAbility(item);
-            AbilityEnum abilityEnum = (AbilityEnum) adapterView.getAdapter().getItem(i);
 
-            gamePiece.GetAbilityBitField().Set(abilityEnum,true);
-            abilityUIHolder.AbilityAdded(abilityEnum, gamePiece);
+            gamePiece.GetAbilities().add(ability);
+            abilityUIHolder.AbilityAdded(ability, gamePiece);
 
             View searchLayout = baseView.findViewById(R.id.SearchLayout);
             searchLayout.setVisibility(View.GONE);

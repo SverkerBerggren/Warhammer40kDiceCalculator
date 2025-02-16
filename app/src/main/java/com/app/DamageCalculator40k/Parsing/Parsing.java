@@ -3,6 +3,8 @@ package com.app.DamageCalculator40k.Parsing;
 import android.util.Log;
 import android.util.Pair;
 
+import com.app.DamageCalculator40k.Abilities.Ability;
+import com.app.DamageCalculator40k.Abilities.AbilityStub;
 import com.app.DamageCalculator40k.DatabaseManager;
 import com.app.DamageCalculator40k.DatasheetModeling.Army;
 import com.app.DamageCalculator40k.DatasheetModeling.Model;
@@ -14,6 +16,7 @@ import com.app.DamageCalculator40k.Enums.Faction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 enum ItemType
@@ -32,6 +35,7 @@ public class Parsing
     private final String BATTLELINE = "battleline";
     private final String CHARACTER = "character";
     private final String DEDICATED_TRANSPORTS = "dedicated transports";
+    private final String OTHER_DATASHEETS = "other datasheet";
     private HashMap<DatabaseManager.IdNameKey, Model> modelDatasheetDatabase;
     private HashMap<DatabaseManager.IdNameKey, Weapon> wargearDatabase;
     private HashMap<DatabaseManager.NameFactionKey, Unit> datasheetDatabase;
@@ -78,7 +82,7 @@ public class Parsing
         {
             return true;
         }
-        return false;
+        return itemName.contains(BATTLELINE) || itemName.contains(DEDICATED_TRANSPORTS) || itemName.contains(CHARACTER) || itemName.contains(OTHER_DATASHEETS);
     }
 
     public Army ParseGWListFormat(String armyListString)
@@ -175,12 +179,7 @@ public class Parsing
 
     private boolean IsDemarcation(String subString)
     {
-        if(subString.contains(BATTLELINE) ||subString.contains(DEDICATED_TRANSPORTS) || subString.contains(CHARACTER) )
-        {
-            return  true;
-        }
-
-        return  false;
+        return subString.contains(BATTLELINE) || subString.contains(DEDICATED_TRANSPORTS) || subString.contains(CHARACTER) || subString.contains(OTHER_DATASHEETS);
     }
 
     // GetItem can be called with wahapediaIdHolder as null. That means that it will only search the databases where no id is needed
@@ -217,10 +216,11 @@ public class Parsing
             {
                 return new Pair<>(ItemType.UNIT,datasheetDatabase.get(idNameFaction));
             }
-            AbilityEnum abilityEnum = DatabaseManager.getInstance().GetAbilityEnumFromWahapediaName(itemName);
-            if(abilityEnum != null)
+
+            Ability ability = DatabaseManager.getInstance().GetAbility(itemName);
+            if(ability != null)
             {
-                return new Pair<>(ItemType.ABILITY,abilityEnum);
+                return new Pair<>(ItemType.ABILITY,ability);
             }
 
             if(IsItemUnimplementedValue(itemName))
@@ -257,8 +257,8 @@ public class Parsing
         int armyLength = armyList.length();
         int startIndex = (unit.listOfModels.isEmpty()) ? (0):(unit.listOfModels.size());
         // Lite cap langsamt af men lite snyggare
-        Integer modelsRangeWeaponIndex = startIndex;
-        Integer modelsMeleeWeaponIndex = startIndex;
+        AtomicInteger modelsRangeWeaponIndex = new AtomicInteger(startIndex);
+        AtomicInteger modelsMeleeWeaponIndex = new AtomicInteger(startIndex);
 
         for(int i = 0; i < modelCount; i++)
         {
@@ -283,17 +283,17 @@ public class Parsing
                 ArrayList<Weapon> weaponToGive = (ArrayList<Weapon>)parsedItem.second;
                 // Se ovan
                 // Assumes that weapon modes are always of the same range type
-                Integer modelIndexStart = (weaponToGive.get(0).isMelee) ? ( modelsMeleeWeaponIndex):(  modelsRangeWeaponIndex);
+                AtomicInteger modelIndexStart = (weaponToGive.get(0).isMelee) ? ( modelsMeleeWeaponIndex):(  modelsRangeWeaponIndex);
                 for(int i = 0; i < amount; i++ )
                 {
-                    unit.listOfModels.get(modelIndexStart).weapons.addAll(weaponToGive);
-                    if(modelIndexStart >= unit.listOfModels.size() -1)
+                    unit.listOfModels.get(modelIndexStart.get()).weapons.addAll(weaponToGive);
+                    if(modelIndexStart.get() >= unit.listOfModels.size() -1)
                     {
-                        modelIndexStart = 0;
+                        modelIndexStart.set( startIndex);
                     }
                     else
                     {
-                        modelIndexStart +=1;
+                        modelIndexStart.incrementAndGet();
                     }
                 }
             }
@@ -354,10 +354,7 @@ public class Parsing
             }
             if(parsedItem.first.equals(ItemType.ABILITY))
             {
-                if(parsedItem.second == AbilityEnum.Unimplemented )
-                {
-                    unit.GetUnimplementedAbilities().add(offsetAndParsedString.second);
-                }
+                unit.GetAbilities().add((Ability) parsedItem.second);
             }
             if(unit.singleModelUnit && parsedItem.first.equals(ItemType.WEAPON))
             {

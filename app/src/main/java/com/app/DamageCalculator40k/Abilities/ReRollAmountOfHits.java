@@ -1,16 +1,17 @@
 package com.app.DamageCalculator40k.Abilities;
 
-import com.app.DamageCalculator40k.DiceResult;
-import com.app.DamageCalculator40k.MetricsOfAttacking;
+import com.app.DamageCalculator40k.DamageCalculation.DiceResult;
+import com.app.DamageCalculator40k.DamageCalculation.MetricsOfAttacking;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ReRollAmountOfHits extends Ability {
 
+    public static String baseName = "ReRollAmountOfHits";
     public ReRollAmountOfHits()
     {
-        super("ReRollAmountOfHits");
+        super(baseName);
     }
 
     public   void rollNumberOfShots( List<DiceResult>  diceResultList, MetricsOfAttacking metricsOfAttacking)

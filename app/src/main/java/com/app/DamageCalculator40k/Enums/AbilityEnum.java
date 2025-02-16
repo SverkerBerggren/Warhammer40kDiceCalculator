@@ -8,6 +8,16 @@ public enum AbilityEnum implements BitEnum<AbilityEnum> {
     MinusOneToWound,
     ReRollHits,
     ReRollOnes,
+    AntiKeyword,
+    Blast,
+    DevastatingWounds,
+    Heavy,
+    IgnoresCover,
+    LethalHits,
+    RapidFire,
+    SustainedHits,
+    Torrent,
+    TwinLinked,
     Unimplemented;
 
     private final static AbilityEnum[] enums = values();

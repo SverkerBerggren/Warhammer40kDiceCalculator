@@ -36,8 +36,8 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
     private Identifier identifier;
     private String uiElement;
     private TableLayout tableLayoutAbilities;
-    private final AbilityBitField abilitiesAdded = new AbilityBitField(AbilityEnum.ReRollOnes);
-    private final AbilityBitField abilitiesRemoved = new AbilityBitField(AbilityEnum.ReRollOnes);
+    private final ArrayList<Ability> abilitiesAdded = new ArrayList<>();
+    private final ArrayList<Ability> abilitiesRemoved = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +55,7 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
         matchup = FileHandler.GetInstance().getMatchup(identifier.GetMatchupName());
         GamePiece gamePiece = matchup.GetGamePiece(identifier);
 
-        for(AbilityEnum ability : gamePiece.GetAbilityBitField())
+        for(Ability ability : gamePiece.GetAbilities())
         {
             CreateButton(ability, gamePiece);
         }
@@ -77,24 +77,23 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
         getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
-    private void CreateButton(AbilityEnum abilityEnum, GamePiece gamePiece)
+    private void CreateButton(Ability ability, GamePiece gamePiece)
     {
-        Ability ability = DatabaseManager.getInstance().GetAbility(abilityEnum);
 
         TableRow tableRow = new TableRow(context);
         CheckBox checkBox = new CheckBox(new ContextThemeWrapper(this, androidx.appcompat.R.style.Base_Widget_AppCompat_CompoundButton_CheckBox));
         checkBox.setTextSize(20);
         ImageButton imageButton = new ImageButton(context);
 
-        checkBox.setChecked(gamePiece.IsActive(abilityEnum));
+        checkBox.setChecked(ability.active);
         checkBox.setText(ability.name);
         checkBox.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         CompareActivity compareActivity = new CompareActivity();
         compareActivity.Setup(context,matchup);
-        checkBox.setOnClickListener(compareActivity. new OnClickDeactivateAbility(gamePiece.GetAbilityBitField(), abilityEnum));
+        checkBox.setOnClickListener(compareActivity. new OnClickDeactivateAbility(ability));
         imageButton.setImageResource(com.google.android.material.R.drawable.abc_ic_menu_cut_mtrl_alpha);
 
-        imageButton.setOnClickListener(new OnClickRemoveAbility(gamePiece,abilityEnum));
+        imageButton.setOnClickListener(new OnClickRemoveAbility(gamePiece,ability));
 
         tableRow.addView(checkBox);
         tableRow.addView(imageButton);
@@ -104,19 +103,19 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
 
     private class OnClickRemoveAbility implements View.OnClickListener
     {
-        private AbilityEnum abilityEnum;
+        private Ability ability;
         private GamePiece gamePiece;
 
-        public OnClickRemoveAbility(GamePiece gamePiece, AbilityEnum ability)
+        public OnClickRemoveAbility(GamePiece gamePiece, Ability ability)
         {
             this.gamePiece = gamePiece;
-            this.abilityEnum = ability;
+            this.ability = ability;
         }
 
         @Override
         public void onClick(View view) {
 
-            gamePiece.GetAbilityBitField().Set(abilityEnum,false);
+            gamePiece.GetAbilities().remove(ability);
 
             FileHandler.GetInstance().saveMatchup(matchup);
 
@@ -124,15 +123,15 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
 
             viewParent.removeView((TableRow)view.getParent());
 
-            abilitiesAdded.Set(abilityEnum,false);
-            abilitiesRemoved.Set(abilityEnum,true);
+            abilitiesAdded.remove(ability);
+            abilitiesRemoved.add(ability);
         }
     }
     @Override
-    public void AbilityAdded(AbilityEnum ability, GamePiece gamePiece) {
+    public void AbilityAdded(Ability ability, GamePiece gamePiece) {
 
-        abilitiesAdded.Set(ability,true);
-        abilitiesRemoved.Set(ability,false);
+        abilitiesAdded.add(ability);
+        abilitiesRemoved.remove(ability);
         CreateButton(ability, gamePiece);
     }
 
@@ -143,16 +142,16 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
         Intent data = new Intent();
 
         ArrayList<String> removedArray = new ArrayList<>();
-        for(AbilityEnum abilityEnum : abilitiesRemoved)
+        for(Ability ability : abilitiesRemoved)
         {
-            removedArray.add(DatabaseManager.getInstance().GetAbility(abilityEnum).name);
+            removedArray.add(ability.name);
         }
         data.putStringArrayListExtra("abilitiesRemoved" , removedArray);
 
         ArrayList<String> addedArray = new ArrayList<>();
-        for(AbilityEnum abilityEnum :  abilitiesAdded)
+        for(Ability ability :  abilitiesAdded)
         {
-            addedArray.add(DatabaseManager.getInstance().GetAbility(abilityEnum).name);
+            addedArray.add(ability.name);
         }
         data.putStringArrayListExtra("abilitiesAdded" , addedArray);
 
@@ -179,6 +178,6 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
 
         }
         setResult(RESULT_OK,data);
-        finish();;
+        finish();
     }
 }

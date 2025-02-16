@@ -1,5 +1,7 @@
 package com.app.DamageCalculator40k.DatasheetModeling;
 
+import androidx.annotation.NonNull;
+
 import com.app.DamageCalculator40k.DamageAmount;
 
 public class DiceAmount {
@@ -27,6 +29,26 @@ public class DiceAmount {
         this.baseAmount = other.baseAmount;
         this.numberOfD6 = other.numberOfD6;
         this.numberOfD3 = other.numberOfD3;
+    }
+
+    @NonNull
+    @Override
+    public String toString()
+    {
+        StringBuilder retValue = new StringBuilder();
+        if(baseAmount > 0)
+        {
+            retValue.append(baseAmount);
+        }
+        if(numberOfD3 > 0)
+        {
+            retValue.append(" D").append(numberOfD3);
+        }
+        if(numberOfD6 > 0 )
+        {
+            retValue.append(" D").append(numberOfD6);
+        }
+        return  retValue.toString();
     }
 
     public DiceAmount Copy()

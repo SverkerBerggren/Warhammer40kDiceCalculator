@@ -1,5 +1,6 @@
 package com.app.DamageCalculator40k.DatasheetModeling;
 
+import com.app.DamageCalculator40k.Abilities.Ability;
 import com.app.DamageCalculator40k.BitFunctionality.AbilityBitField;
 import com.app.DamageCalculator40k.Enums.AbilityEnum;
 import com.app.DamageCalculator40k.Enums.IdentifierType;
@@ -27,10 +28,6 @@ public class Weapon extends GamePiece implements DeactivatableInterface, Wahaped
         return wahapediaDataId;
     }
 
-    @Override
-    public AbilityBitField GetAbilityBitField() {
-        return weaponRules;
-    }
 
     @Override
     public boolean IsActive(AbilityEnum abilityEnum) {
@@ -63,6 +60,8 @@ public class Weapon extends GamePiece implements DeactivatableInterface, Wahaped
         weaponToReturn.amountOfAttacks = amountOfAttacks.Copy();
         weaponToReturn.wahapediaDataId = wahapediaDataId;
 
+        //TODO: not sure if abilities should be copied or not
+        weaponToReturn.GetAbilities().addAll( GetAbilities());
         weaponToReturn.weaponRules = weaponRules.Copy();
 
         return weaponToReturn;

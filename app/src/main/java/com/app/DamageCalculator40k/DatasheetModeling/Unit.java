@@ -174,11 +174,6 @@ public class Unit extends GamePiece implements ModifierHolder, WahapediaIdHolder
     }
 
     @Override
-    public AbilityBitField GetAbilityBitField() {
-        return listOfAbilitys;
-    }
-
-    @Override
     public boolean IsActive(AbilityEnum abilityEnum) {
         return listOfAbilitys.IsActive(abilityEnum);
     }

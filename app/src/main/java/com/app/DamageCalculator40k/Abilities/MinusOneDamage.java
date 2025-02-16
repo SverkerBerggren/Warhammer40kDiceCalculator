@@ -1,13 +1,14 @@
 package com.app.DamageCalculator40k.Abilities;
 
-import com.app.DamageCalculator40k.DiceResult;
-import com.app.DamageCalculator40k.MetricsOfAttacking;
+import com.app.DamageCalculator40k.DamageCalculation.DiceResult;
+import com.app.DamageCalculator40k.DamageCalculation.MetricsOfAttacking;
 
 public class MinusOneDamage extends Ability{
 
+    public static String baseName = "MinusOneDamage";
     public MinusOneDamage()
     {
-        super("MinusOneDamage");
+        super(baseName);
     }
 
     @Override

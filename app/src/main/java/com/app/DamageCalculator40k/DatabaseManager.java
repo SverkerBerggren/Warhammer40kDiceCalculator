@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 import android.util.Pair;
+import android.widget.TableLayout;
 
 import androidx.annotation.RequiresApi;
 
@@ -18,12 +19,30 @@ import com.app.DamageCalculator40k.Abilities.MinusOneDamage;
 import com.app.DamageCalculator40k.Abilities.MinusOneToWound;
 import com.app.DamageCalculator40k.Abilities.ReRollHits;
 import com.app.DamageCalculator40k.Abilities.ReRollOnes;
+import com.app.DamageCalculator40k.Abilities.UnimplementedAbility;
+import com.app.DamageCalculator40k.Abilities.WeaponAbilities.AntiKeyword;
+import com.app.DamageCalculator40k.Abilities.WeaponAbilities.Assault;
+import com.app.DamageCalculator40k.Abilities.WeaponAbilities.Blast;
+import com.app.DamageCalculator40k.Abilities.WeaponAbilities.DevastatingWounds;
+import com.app.DamageCalculator40k.Abilities.WeaponAbilities.ExtraAttacks;
+import com.app.DamageCalculator40k.Abilities.WeaponAbilities.Heavy;
+import com.app.DamageCalculator40k.Abilities.WeaponAbilities.IgnoresCover;
+import com.app.DamageCalculator40k.Abilities.WeaponAbilities.IndirectFire;
+import com.app.DamageCalculator40k.Abilities.WeaponAbilities.LethalHits;
+import com.app.DamageCalculator40k.Abilities.WeaponAbilities.Melta;
+import com.app.DamageCalculator40k.Abilities.WeaponAbilities.Pistol;
+import com.app.DamageCalculator40k.Abilities.WeaponAbilities.Precision;
+import com.app.DamageCalculator40k.Abilities.WeaponAbilities.RapidFire;
+import com.app.DamageCalculator40k.Abilities.WeaponAbilities.SustainedHits;
+import com.app.DamageCalculator40k.Abilities.WeaponAbilities.Torrent;
+import com.app.DamageCalculator40k.Abilities.WeaponAbilities.TwinLinked;
 import com.app.DamageCalculator40k.DatasheetModeling.DiceAmount;
 import com.app.DamageCalculator40k.DatasheetModeling.Model;
 import com.app.DamageCalculator40k.DatasheetModeling.Unit;
 import com.app.DamageCalculator40k.DatasheetModeling.Weapon;
 import com.app.DamageCalculator40k.Enums.AbilityEnum;
 import com.app.DamageCalculator40k.Enums.Faction;
+import com.app.DamageCalculator40k.Enums.Keyword;
 import com.app.DamageCalculator40k.FileHandling.FileHandler;
 import com.app.DamageCalculator40k.FileHandling.UpdateArgumentStruct;
 
@@ -32,7 +51,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import kotlin.jvm.ImplicitlyActualizedByJvmDeclaration;
 
 public class DatabaseManager {
 
@@ -42,14 +67,12 @@ public class DatabaseManager {
     private final HashMap<IdNameKey, ArrayList<Weapon>> MultiModeWeaponDatabase = new HashMap<>();
     private final HashMap<NameFactionKey, Unit> Datasheets = new HashMap<>();
     private final HashMap<IdNameKey, Model> modelsDatasheet = new HashMap<>();
-    private final ArrayList<Ability> abilityEnumDatabase = new ArrayList<>();
     private final HashMap<String,Ability> stringAbilityDatabase = new HashMap<>();
 
     //TODO: bor lowkey tas bort lite sus men skit samma
-    private final HashMap<String,AbilityEnum> stringAbilityEnumDatabase = new HashMap<>();
 
     // Assumes that all ability names have the same description
-    private final HashMap<String,AbilityEnum> wahapediaUniqueNamedAbilityDatabase = new HashMap<>();
+    private final HashMap<String,Ability> wahapediaUniqueNamedAbilityDatabase = new HashMap<>();
     public static volatile DatabaseManager instance;
 
     public static final Object onlineDatabaseLock = new Object();
@@ -195,11 +218,11 @@ public class DatabaseManager {
 
     private void InitializeInternetDatabases()
     {
-        CreateWeaponDatabase();
-        CleanUpWeaponDatabase();
         CreateDatasheetDatabase();
         CreateModelsDatasheet();
         CreateWahapediaAbilityDatabase();
+        CreateWeaponDatabase();
+        CleanUpWeaponDatabase();
     }
 
     private  void DownloadWahapediaData(Context context)
@@ -251,11 +274,11 @@ public class DatabaseManager {
                     continue;
                 }
 
-                AbilityEnum ability;
-                ability = stringAbilityEnumDatabase.get(abilityEntry.get(4));
+                Ability ability;
+                ability = stringAbilityDatabase.get(abilityEntry.get(4));
                 if (ability == null)
                 {
-                    ability = AbilityEnum.Unimplemented;
+                    ability = new UnimplementedAbility(abilityEntry.get(4));
                 }
 
                 wahapediaUniqueNamedAbilityDatabase.put(abilityEntry.get(4),ability);
@@ -267,46 +290,30 @@ public class DatabaseManager {
     {
         synchronized (localAbilitiesLock)
         {
-            for(AbilityEnum abilityEnum : AbilityEnum.values())
-            {
-                Ability ability = null;
-                switch (abilityEnum)
-                {
-                    case MinusOneDamage:
-                        ability = new MinusOneDamage();
-                        break;
-                    case MinusOneToWound:
-                        ability = new MinusOneToWound();
-                        break;
-                    case ReRollHits:
-                        ability = new ReRollHits();
-                        break;
-                    case ReRollOnes:
-                        ability = new ReRollOnes();
-                        break;
-                    case Unimplemented:
-                        ability = new AbilityStub();
-                    default:
-                        Log.d("Ability database","Enum without corresponding ability found");
-                }
-                if(ability != null)
-                {
-                    abilityEnumDatabase.add(ability);
-                    stringAbilityDatabase.put(ability.name,ability);
-                    stringAbilityEnumDatabase.put(ability.name,abilityEnum);
-                }
-            }
+            stringAbilityDatabase.put(MinusOneDamage.baseName, new MinusOneDamage());
+            stringAbilityDatabase.put(Blast.baseName, new Blast());
+            stringAbilityDatabase.put(Assault.baseName, new Assault());
+            stringAbilityDatabase.put(DevastatingWounds.baseName, new DevastatingWounds());
+            stringAbilityDatabase.put(Heavy.baseName, new Heavy());
+            stringAbilityDatabase.put(ExtraAttacks.baseName, new ExtraAttacks());
+            stringAbilityDatabase.put(IgnoresCover.baseName, new IgnoresCover());
+            stringAbilityDatabase.put(IndirectFire.baseName, new IndirectFire());
+            stringAbilityDatabase.put(LethalHits.baseName, new LethalHits());
+            stringAbilityDatabase.put(Pistol.baseName, new Pistol());
+            stringAbilityDatabase.put(Torrent.baseName, new Torrent());
+            stringAbilityDatabase.put(TwinLinked.baseName, new TwinLinked());
+            stringAbilityDatabase.put(Precision.baseName, new Precision());
+            // TODO: Not quite sure how to handle these
+            stringAbilityDatabase.put(RapidFire.baseName, new RapidFire(new DiceAmount()));
+            stringAbilityDatabase.put(SustainedHits.baseName, new SustainedHits(0));
+            stringAbilityDatabase.put(AntiKeyword.baseName, new AntiKeyword(Keyword.infantry,0));
+            stringAbilityDatabase.put(Melta.baseName, new Melta(new DiceAmount()));
         }
     }
 
-    public AbilityEnum GetAbilityEnumFromWahapediaName(String name)
+    public ArrayList<Ability> GetAbilities()
     {
-        return wahapediaUniqueNamedAbilityDatabase.get(name);
-    }
-
-    public Ability GetAbility(AbilityEnum abilityEnum)
-    {
-        return abilityEnumDatabase.get(abilityEnum.ordinal());
+        return new ArrayList<>(stringAbilityDatabase.values());
     }
 
     // Name of the ability
@@ -359,10 +366,7 @@ public class DatabaseManager {
                 Log.d("Datasheet database", "Invalid datasheet entry length");
                 continue;
             }
-            if(datasheetEntry.get(1).equals("azrael"))
-            {
-                Log.d("azreal","hitta han");
-            }
+
             Unit unitDatasheet = new Unit();
             unitDatasheet.wahapediaDataId = datasheetEntry.get(0);
             unitDatasheet.unitName = datasheetEntry.get(1);
@@ -377,6 +381,98 @@ public class DatabaseManager {
         return MultiModeWeaponDatabase.get(idNameKey);
     }
 
+    private void AddParsedAbility(String abilityEntry, Weapon weapon)
+    {
+        StringBuilder baseName = new StringBuilder();
+        boolean startParsingKeyword = false;
+        boolean parseDiceAmount = false;
+        StringBuilder keyWord = new StringBuilder();
+        StringBuilder amount  = new StringBuilder();
+
+
+
+        for(int i = 0; i < abilityEntry.length(); i++)
+        {
+            if(Character.isDigit( abilityEntry.charAt(i)) && !parseDiceAmount)
+            {
+                if(abilityEntry.charAt(i -1) == 'd')
+                {
+                    parseDiceAmount = true;
+                    amount.append('d');
+                    baseName.deleteCharAt(baseName.length() -1);
+                }
+                amount.append(abilityEntry.charAt(i));
+                continue;
+            }
+            //assumes that the last element of an ability always is the dice amount
+            if(parseDiceAmount)
+            {
+                amount.append(abilityEntry.charAt(i));
+                continue;
+            }
+            if(abilityEntry.charAt(i) == '-')
+            {
+                if(!baseName.toString().equals("twin"))
+                {
+                    startParsingKeyword = true;
+                    continue;
+                }
+            }
+            if(startParsingKeyword)
+            {
+                if(Character.isAlphabetic(abilityEntry.charAt(i)))
+                {
+                    keyWord.append(abilityEntry.charAt(i));
+                }
+            }
+            else
+            {
+                baseName.append(abilityEntry.charAt(i));
+            }
+        }
+        String builtName = baseName.toString().trim();
+
+        // A bit wack with inefficient iteration but rather that than maintaining multiple lists
+        for(String abilityName : stringAbilityDatabase.keySet())
+        {
+            if(abilityName.equals(builtName))
+            {
+                //TODO: hard coded af fix later
+                if(amount.length() != 0)
+                {
+                    try {
+                        DiceAmount builtAmount = ParseDiceAmount( amount.toString());
+                        if (abilityName.equals(RapidFire.baseName)) {
+                            weapon.GetAbilities().add(new RapidFire(builtAmount));
+                            return;
+                        }
+                        if (abilityName.equals(SustainedHits.baseName)) {
+                            weapon.GetAbilities().add(new SustainedHits(builtAmount.baseAmount));
+                            return;
+                        }
+                        if (abilityName.equals(AntiKeyword.baseName)) {
+                            // TODO: Could use a smarter solution
+                            Keyword builtKeyword = Keyword.valueOf(keyWord.toString());
+                            weapon.GetAbilities().add(new AntiKeyword(builtKeyword, builtAmount.baseAmount));
+                            return;
+                        }
+                    } catch (Exception exception) {
+                        Log.d("Ability parsing weapons", exception.getMessage());
+                    }
+                }
+                weapon.GetAbilities().add( stringAbilityDatabase.get(abilityName));
+                return;
+            }
+        }
+        // debugAbilities.add(abilityEntry);
+        // totalAmount.add(abilityEntry);
+        weapon.GetAbilities().add(new AbilityStub(abilityEntry));
+        //Log.d("Weapon abilities","Undentified ability found");
+    }
+
+    static HashSet<String> debugAbilities = new HashSet<>();
+    static ArrayList<String> totalAmount = new ArrayList<>();
+
     private void CreateWeaponDatabase()
     {
         ArrayList<ArrayList<String>> DatasheetWeapons = FileHandler.instance.GetWahapediaDataCSV("Datasheets_wargear.csv");
@@ -390,6 +486,21 @@ public class DatabaseManager {
             Weapon weaponToConstruct = new Weapon();
             weaponToConstruct.wahapediaDataId = weaponEntry.get(0);
             weaponToConstruct.name = weaponEntry.get(4);
+
+            // https://regexr.com/8c2nj
+            // regex is made to catch the errors in the wahapedia data
+            String[] abilityEntries = weaponEntry.get(5).split("((, )?<([^<>]*)>)(, |,|\\. )*");
+            // TODO: Kan man ta bort de tomma delarna pa ett snyggare satt?
+            for(String abilityItem : abilityEntries )
+            {
+                if(abilityItem.isEmpty())
+                {
+                    continue;
+                }
+
+                AddParsedAbility(abilityItem,weaponToConstruct);
+            }
+
             weaponToConstruct.isMelee =  weaponEntry.get(7).equals("melee");
             weaponToConstruct.amountOfAttacks = ParseDiceAmount(weaponEntry.get(8));
             try {
