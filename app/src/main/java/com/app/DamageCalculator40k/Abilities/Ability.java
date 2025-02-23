@@ -2,34 +2,36 @@ package com.app.DamageCalculator40k.Abilities;
 
 import androidx.annotation.NonNull;
 
+import com.app.DamageCalculator40k.Conditions;
+import com.app.DamageCalculator40k.DamageCalculation.AbilitySources;
 import com.app.DamageCalculator40k.DatasheetModeling.DeactivatableInterface;
 import com.app.DamageCalculator40k.DamageCalculation.DiceResult;
-import com.app.DamageCalculator40k.DamageCalculation.MetricsOfAttacking;
+import com.app.DamageCalculator40k.DamageCalculation.AttackResults;
+import com.app.DamageCalculator40k.Enums.AbilityTiming;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
-public class Ability implements DeactivatableInterface {
+public abstract class Ability implements DeactivatableInterface {
 
     public String name;
     public boolean active = true;
 
-    public void hitRollAbilityAttacking(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult){};
+    private final AbilityTiming abilityTiming;
 
-    public void HitRollAbilityDefender(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult){};
+    public AbilityTiming GetAbilityTiming()
+    {
+        return abilityTiming;
+    }
 
-    public void woundRollAbilityAttacker(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult){};
+    public abstract void ApplyAbility(DiceResult diceResult, AttackResults attackResults, AbilitySources attackingSource, AbilitySources defendingSources, int requiredRoll, Conditions conditions);
 
-    public void woundRollAbilityDefender(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, AtomicInteger requiredResult){};
+    public void rollNumberOfShots(List<DiceResult> diceResult){};
 
-    public int saveRollAbility(DiceResult diceResult, MetricsOfAttacking metricsOfAttacking, int damageToBeTaken){return 0;};
-
-    public void rollNumberOfShots(List<DiceResult> diceResult, MetricsOfAttacking metricsOfAttacking){};
-
-    public Ability(String name)
+    public Ability(String name, AbilityTiming abilityTiming)
     {
         this.name = name;
+        this.abilityTiming = abilityTiming;
     }
 
     @NonNull

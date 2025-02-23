@@ -9,19 +9,17 @@ import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 import android.util.Pair;
-import android.widget.TableLayout;
 
 import androidx.annotation.RequiresApi;
 
 import com.app.DamageCalculator40k.Abilities.Ability;
-import com.app.DamageCalculator40k.Abilities.AbilityStub;
-import com.app.DamageCalculator40k.Abilities.MinusOneDamage;
-import com.app.DamageCalculator40k.Abilities.MinusOneToWound;
-import com.app.DamageCalculator40k.Abilities.ReRollHits;
-import com.app.DamageCalculator40k.Abilities.ReRollOnes;
+import com.app.DamageCalculator40k.Abilities.GenericAbilities.MortalWoundOnHit;
+import com.app.DamageCalculator40k.Abilities.GenericAbilities.ReRollHits;
+import com.app.DamageCalculator40k.Abilities.GenericAbilities.ReRollOnes;
+import com.app.DamageCalculator40k.Abilities.GenericAbilities.ReRollOnesWound;
+import com.app.DamageCalculator40k.Abilities.GenericAbilities.ReRollWoundRoll;
 import com.app.DamageCalculator40k.Abilities.UnimplementedAbility;
 import com.app.DamageCalculator40k.Abilities.WeaponAbilities.AntiKeyword;
-import com.app.DamageCalculator40k.Abilities.WeaponAbilities.Assault;
 import com.app.DamageCalculator40k.Abilities.WeaponAbilities.Blast;
 import com.app.DamageCalculator40k.Abilities.WeaponAbilities.DevastatingWounds;
 import com.app.DamageCalculator40k.Abilities.WeaponAbilities.ExtraAttacks;
@@ -30,8 +28,6 @@ import com.app.DamageCalculator40k.Abilities.WeaponAbilities.IgnoresCover;
 import com.app.DamageCalculator40k.Abilities.WeaponAbilities.IndirectFire;
 import com.app.DamageCalculator40k.Abilities.WeaponAbilities.LethalHits;
 import com.app.DamageCalculator40k.Abilities.WeaponAbilities.Melta;
-import com.app.DamageCalculator40k.Abilities.WeaponAbilities.Pistol;
-import com.app.DamageCalculator40k.Abilities.WeaponAbilities.Precision;
 import com.app.DamageCalculator40k.Abilities.WeaponAbilities.RapidFire;
 import com.app.DamageCalculator40k.Abilities.WeaponAbilities.SustainedHits;
 import com.app.DamageCalculator40k.Abilities.WeaponAbilities.Torrent;
@@ -40,7 +36,6 @@ import com.app.DamageCalculator40k.DatasheetModeling.DiceAmount;
 import com.app.DamageCalculator40k.DatasheetModeling.Model;
 import com.app.DamageCalculator40k.DatasheetModeling.Unit;
 import com.app.DamageCalculator40k.DatasheetModeling.Weapon;
-import com.app.DamageCalculator40k.Enums.AbilityEnum;
 import com.app.DamageCalculator40k.Enums.Faction;
 import com.app.DamageCalculator40k.Enums.Keyword;
 import com.app.DamageCalculator40k.FileHandling.FileHandler;
@@ -52,12 +47,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import kotlin.jvm.ImplicitlyActualizedByJvmDeclaration;
 
 public class DatabaseManager {
 
@@ -290,19 +280,22 @@ public class DatabaseManager {
     {
         synchronized (localAbilitiesLock)
         {
-            stringAbilityDatabase.put(MinusOneDamage.baseName, new MinusOneDamage());
             stringAbilityDatabase.put(Blast.baseName, new Blast());
-            stringAbilityDatabase.put(Assault.baseName, new Assault());
             stringAbilityDatabase.put(DevastatingWounds.baseName, new DevastatingWounds());
             stringAbilityDatabase.put(Heavy.baseName, new Heavy());
             stringAbilityDatabase.put(ExtraAttacks.baseName, new ExtraAttacks());
             stringAbilityDatabase.put(IgnoresCover.baseName, new IgnoresCover());
             stringAbilityDatabase.put(IndirectFire.baseName, new IndirectFire());
             stringAbilityDatabase.put(LethalHits.baseName, new LethalHits());
-            stringAbilityDatabase.put(Pistol.baseName, new Pistol());
             stringAbilityDatabase.put(Torrent.baseName, new Torrent());
             stringAbilityDatabase.put(TwinLinked.baseName, new TwinLinked());
-            stringAbilityDatabase.put(Precision.baseName, new Precision());
+            stringAbilityDatabase.put(ReRollHits.baseName, new ReRollHits());
+            stringAbilityDatabase.put(ReRollOnes.baseName, new ReRollOnes());
+            stringAbilityDatabase.put(ReRollOnesWound.baseName, new ReRollOnesWound());
+            stringAbilityDatabase.put(ReRollWoundRoll.baseName, new ReRollWoundRoll());
+            MortalWoundOnHit mortalWoundOnHit = new MortalWoundOnHit(6);
+            mortalWoundOnHit.name = mortalWoundOnHit.name + " 6";
+            stringAbilityDatabase.put(mortalWoundOnHit.name, mortalWoundOnHit);
             // TODO: Not quite sure how to handle these
             stringAbilityDatabase.put(RapidFire.baseName, new RapidFire(new DiceAmount()));
             stringAbilityDatabase.put(SustainedHits.baseName, new SustainedHits(0));
@@ -466,7 +459,7 @@ public class DatabaseManager {
         }
         // debugAbilities.add(abilityEntry);
         // totalAmount.add(abilityEntry);
-        weapon.GetAbilities().add(new AbilityStub(abilityEntry));
+        weapon.GetAbilities().add(new UnimplementedAbility(abilityEntry));
         //Log.d("Weapon abilities","Undentified ability found");
     }
 

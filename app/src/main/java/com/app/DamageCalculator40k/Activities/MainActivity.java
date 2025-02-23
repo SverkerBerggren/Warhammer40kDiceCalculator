@@ -17,6 +17,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.app.DamageCalculator40k.Abilities.Ability;
+import com.app.DamageCalculator40k.Abilities.WeaponAbilities.LethalHits;
 import com.app.DamageCalculator40k.Abilities.WeaponAbilities.RapidFire;
 import com.app.DamageCalculator40k.AbilityUIHolder;
 import com.app.DamageCalculator40k.DatabaseManager;
@@ -45,10 +46,10 @@ public class  MainActivity extends AppCompatActivity {
 
         Gson gson = new Gson();
 
-        RapidFire hej = new RapidFire(new DiceAmount(1,2,3));
+        LethalHits hej = new LethalHits();
 
         String abow = gson.toJson(hej);
-        RapidFire hej2 = gson.fromJson(abow,RapidFire.class);
+        Ability hej2 = gson.fromJson(abow,LethalHits.class);
 
 
     }
@@ -89,7 +90,7 @@ public class  MainActivity extends AppCompatActivity {
 
         listView.setAdapter(arrayAdapter);
 
-        listView.setOnItemClickListener(new OnClickAbilityItem(gamePiece,baseView,matchup, abilityUIHolder));
+        listView.setOnItemClickListener(new OnClickAbilityItem(gamePiece, baseView, matchup, abilityUIHolder));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -104,7 +105,7 @@ public class  MainActivity extends AppCompatActivity {
         });
     }
 
-    private class OnClickAbilityItem implements AdapterView.OnItemClickListener
+    private static class OnClickAbilityItem implements AdapterView.OnItemClickListener
     {
         private final GamePiece gamePiece;
         private final ViewGroup baseView;

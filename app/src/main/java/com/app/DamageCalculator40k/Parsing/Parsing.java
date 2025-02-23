@@ -4,14 +4,12 @@ import android.util.Log;
 import android.util.Pair;
 
 import com.app.DamageCalculator40k.Abilities.Ability;
-import com.app.DamageCalculator40k.Abilities.AbilityStub;
 import com.app.DamageCalculator40k.DatabaseManager;
 import com.app.DamageCalculator40k.DatasheetModeling.Army;
 import com.app.DamageCalculator40k.DatasheetModeling.Model;
 import com.app.DamageCalculator40k.DatasheetModeling.Unit;
 import com.app.DamageCalculator40k.DatasheetModeling.WahapediaIdHolder;
 import com.app.DamageCalculator40k.DatasheetModeling.Weapon;
-import com.app.DamageCalculator40k.Enums.AbilityEnum;
 import com.app.DamageCalculator40k.Enums.Faction;
 
 import java.util.ArrayList;

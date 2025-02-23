@@ -22,7 +22,7 @@ public class Model extends GamePiece implements ModifierHolder, DeactivatableInt
 
     public boolean active = true;
 
-    private AbilityBitField abilityFlags = new AbilityBitField(AbilityEnum.MinusOneDamage);
+    private AbilityBitField abilityFlags = new AbilityBitField(AbilityEnum.Blast);
 
     public ArrayList<Weapon> weapons = new ArrayList<>();
 

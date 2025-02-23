@@ -1,20 +1,29 @@
-package com.app.DamageCalculator40k.Abilities;
+package com.app.DamageCalculator40k.Abilities.GenericAbilities;
 
+import com.app.DamageCalculator40k.Abilities.Ability;
+import com.app.DamageCalculator40k.Conditions;
+import com.app.DamageCalculator40k.DamageCalculation.AbilitySources;
+import com.app.DamageCalculator40k.DamageCalculation.AttackResults;
 import com.app.DamageCalculator40k.DamageCalculation.DiceResult;
-import com.app.DamageCalculator40k.DamageCalculation.MetricsOfAttacking;
+import com.app.DamageCalculator40k.Enums.AbilityTiming;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class ReRollAmountOfHits extends Ability {
+public class ReRollAmountOfAttacks extends Ability {
 
     public static String baseName = "ReRollAmountOfHits";
-    public ReRollAmountOfHits()
+    public ReRollAmountOfAttacks()
     {
-        super(baseName);
+        super(baseName, AbilityTiming.ReRollAttacks);
     }
 
-    public   void rollNumberOfShots( List<DiceResult>  diceResultList, MetricsOfAttacking metricsOfAttacking)
+    @Override
+    public void ApplyAbility(DiceResult diceResult, AttackResults attackResults, AbilitySources attackingSource, AbilitySources defendingSources, int requiredRoll, Conditions conditions) {
+
+    }
+
+    public   void rollNumberOfShots(List<DiceResult>  diceResultList)
     {
         int currentAmountOfAttacks = 0;
 

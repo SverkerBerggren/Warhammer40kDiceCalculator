@@ -272,7 +272,7 @@ public  class FileHandler  {
             assetManager = context.getAssets();
             contentResolver = context.getContentResolver();
             GsonBuilder gsonBuilder = new GsonBuilder();
-            // gsonBuilder.registerTypeAdapter(Ability.class, new AbilityElementAdapter());
+            gsonBuilder.registerTypeAdapter(Ability.class, new AbilityElementAdapter());
             gson = gsonBuilder.create();
         }
     }

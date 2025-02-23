@@ -4,141 +4,158 @@ import android.os.Trace;
 import android.util.Log;
 
 import com.app.DamageCalculator40k.Abilities.Ability;
+import com.app.DamageCalculator40k.Abilities.WeaponAbilities.DevastatingWounds;
 import com.app.DamageCalculator40k.Conditions;
 import com.app.DamageCalculator40k.DatasheetModeling.Army;
+import com.app.DamageCalculator40k.DatasheetModeling.DiceAmount;
 import com.app.DamageCalculator40k.DatasheetModeling.Model;
 import com.app.DamageCalculator40k.DatasheetModeling.Weapon;
 import com.app.DamageCalculator40k.DatasheetModeling.Unit;
+import com.app.DamageCalculator40k.Enums.AbilityTiming;
+import com.app.DamageCalculator40k.Enums.StatModifier;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.atomic.AtomicInteger;
+
 
 public class RollingLogic {
     private Conditions conditionen;
 
-    public RollResult newCalculateDamage(ArrayList<Unit> attackerList, Unit defender, Army attackingArmy, Army defendingArmy, Conditions condtitions) {
-        int amountOfWoundsTotal;
-        int amountOfModelsKilled;
-        int currentModelDamage;
+    private enum WoundType
+    {
+        NormalWound,
+        MortalWound,
+        DevastatingWound
+    }
+    private int amountOfHits = 0;
+    private int amountOfAttacksDebug = 0;
+    private int amountOfWoundsTotal = 0;
+    private int currentModelDamage = 0;
+    private int amountOfModelsKilled = 0;
+    private int currentDefendingModelIndex = 0;
+    private Model defendingModel;
+
+    public RollResult newCalculateDamage(ArrayList<Unit> attackerList, Unit defendingUnit, Army attackingArmy, Army defendingArmy, Conditions condtitions) {
+        //Debug
+        int[] resultsAmountOfHits = new int[10000];
+        int[] resultsAmountOfAttacks = new int[10000];
+
         int[] resultWoundsDealt = new int[10000];
         int[] resultModelsSlain = new int[10000];
         conditionen = condtitions;
-        Unit OriginalUnit;
-        ArrayList<Unit> originalAttackers = new ArrayList<>();
-        for(Unit unit : attackerList)
-        {
-            originalAttackers.add(unit.Copy());
-        }
 
-        ArrayList<Unit> currentAttackers;
+        AbilitySources attackingAbilitySources = new AbilitySources(attackingArmy);
+        AbilitySources defendingAbilitySources = new AbilitySources(defendingArmy);
+        defendingAbilitySources.unit = defendingUnit;
 
-        double averageAmountOfAttacks = 0;
+        StatModifiers attackingStatModifiers = new StatModifiers();
+        StatModifiers defendingStatModifiers = new StatModifiers();
 
         Trace.beginSection("loopen");
         for (int attackSequenceCount = 0; attackSequenceCount < 10000; attackSequenceCount++)
         {
-            Unit attacker;
-            OriginalUnit = defender.Copy();
+            //Debug
+            amountOfHits = 0;
+            amountOfAttacksDebug = 0;
+
 
             amountOfWoundsTotal = 0;
             amountOfModelsKilled = 0;
             currentModelDamage = 0;
             int currentDefendingModelIndex = 0;
-            Model currentDefendingModel = OriginalUnit.listOfModels.get(0);
-            currentAttackers = new ArrayList<>();
 
-            for(Unit unit : originalAttackers)
+            defendingModel = defendingUnit.listOfModels.get(0);
+            defendingAbilitySources.model = defendingModel;
+            SetStatModifiers(defendingArmy,defendingUnit,defendingStatModifiers);
+
+
+            for(Unit attackingUnit : attackerList )
             {
-                currentAttackers.add(unit.Copy());
-            }
+                attackingAbilitySources.unit = attackingUnit;
 
-            for(int attackerIndex = 0; attackerIndex < currentAttackers.size(); attackerIndex++)
-            {
-                attacker = currentAttackers.get(attackerIndex);
-
-
-                for (int i = 0; i < attacker.listOfModels.size(); i++)
+                int mortalWounds = 0;
+                //TODO: ar detta snabbare?
+                ArrayList<Integer> devastatingWounds = new ArrayList<>();
+                for (Model attackingModel : attackingUnit.listOfModels)
                 {
-                    Model currentAttackingModel = attacker.listOfModels.get(i);
-                    if(!currentAttackingModel.active)
+                    if(!attackingModel.active)
                     {
                         continue;
                     }
-                    AddAllModifiersAttacker(attackingArmy,attacker,currentAttackingModel);
-                    for (int attackingWeaponIndex = 0; attackingWeaponIndex < currentAttackingModel.weapons.size(); attackingWeaponIndex++)
-                    {
-                        Weapon currentWeapon = currentAttackingModel.weapons.get(attackingWeaponIndex);
 
-                        if(ShouldSkipWeapon(currentWeapon,condtitions))
+                    attackingAbilitySources.model = attackingModel;
+
+                    SetStatModifiers(attackingArmy,attackingUnit,attackingStatModifiers);
+
+                    for (Weapon attackingWeapon : attackingModel.weapons)
+                    {
+                        if(ShouldSkipWeapon(attackingWeapon,condtitions))
                         {
                             continue;
                         }
+                        attackingAbilitySources.weapon = attackingWeapon;
 
-                        int requiredHitRoll = currentWeapon.ballisticSkill;
-                        int damage = currentWeapon.damageAmount.baseAmount;
+                        int requiredHitRoll = attackingWeapon.ballisticSkill - attackingStatModifiers.GetModifier(StatModifier.HitRoll);
 
                         if(requiredHitRoll < 2)
                         {
                             requiredHitRoll = 2;
                         }
 
-                        CheckWeaponConditions(currentWeapon,condtitions);
-
-                        MetricsOfAttacking currentMetricsOfAttacking = new MetricsOfAttacking(0, currentWeapon.ap, damage, 0, 0);
-                        int amountOfAttacks = AmountOfAttacks(currentMetricsOfAttacking, attacker, currentWeapon, defender, currentAttackingModel);
-
-                        averageAmountOfAttacks +=amountOfAttacks;
+                        int amountOfAttacks = AmountOfAttacks(attackingAbilitySources,attackingWeapon);
+                        amountOfAttacksDebug += amountOfAttacks;
 
 
-                        for (int p = 0; p < amountOfAttacks; p++) {
+                        for (int attackCount = 0; attackCount < amountOfAttacks; attackCount++) {
+                            AttackResults attackResults = new AttackResults();
+                            DiceResult hitRoll = CreateD6Result();
+                            HitRoll(attackResults,attackingAbilitySources,defendingAbilitySources,hitRoll,requiredHitRoll);
 
-                            // Log.d(("Testar loopar: "),"Fungerar amount of attacks loopen loopen " + p);
-                            DiceResult hitRoll = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 + 1));
+                            amountOfHits += attackResults.hits;
 
-                            HitRoll(currentMetricsOfAttacking, attackingArmy,attacker,currentWeapon,defendingArmy, defender, currentAttackingModel,currentDefendingModel, hitRoll,new AtomicInteger(requiredHitRoll));
-
-                            for (int j = 0; j < currentMetricsOfAttacking.extraHits; j++) {
-                                DiceResult woundRoll = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 + 1));
-
-                                WoundRoll(currentMetricsOfAttacking, attackingArmy,defendingArmy,attacker, defender, currentAttackingModel, currentDefendingModel, woundRoll, currentWeapon);
+                            for (int woundRollCount = 0; woundRollCount < attackResults.hits; woundRollCount++) {
+                                DiceResult woundRoll = CreateD6Result();
+                                WoundRoll(attackResults, attackingAbilitySources,defendingAbilitySources,woundRoll,defendingStatModifiers);
                             }
-                            int requiredSaveRoll = currentDefendingModel.armorSave - currentMetricsOfAttacking.ap;
-                            if(requiredSaveRoll > currentDefendingModel.invulnerableSave && currentDefendingModel.invulnerableSave != 7)
+                            int requiredSaveRoll = defendingModel.armorSave - attackResults.ap - attackingWeapon.ap - defendingStatModifiers.GetModifier(StatModifier.ArmorSave);
+                            int invulnerableSave = defendingModel.invulnerableSave - defendingStatModifiers.GetModifier(StatModifier.InvulnerableSave);
+
+                            if(requiredSaveRoll > invulnerableSave && !(invulnerableSave > 6))
                             {
-                                requiredSaveRoll = currentDefendingModel.invulnerableSave;
+                                requiredSaveRoll = defendingModel.invulnerableSave;
                             }
 
-                            for (int e = 0; e < currentMetricsOfAttacking.wounds; e++)
+                            for (int saveRollCount = 0; saveRollCount < attackResults.wounds; saveRollCount++)
                             {
-                                DiceResult defenderSaveRoll = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 + 1));
-                                int damageToBeTaken = SaveRoll(currentMetricsOfAttacking,attackingArmy,attacker,defendingArmy,defender,currentAttackingModel,currentDefendingModel,currentWeapon,defenderSaveRoll,requiredSaveRoll);
+                                DiceResult defenderSaveRoll = CreateD6Result();
+                                if (defenderSaveRoll.result < requiredSaveRoll) {
 
-                                amountOfWoundsTotal += damageToBeTaken;
-                                currentModelDamage += damageToBeTaken;
-
-                                if (currentDefendingModel.wounds <= currentModelDamage)
-                                {
-
-                                    amountOfModelsKilled += 1;
-
-                                    if (!(currentDefendingModelIndex == defender.listOfModels.size() - 1))
-                                    {
-                                        currentDefendingModelIndex += 1;
-                                        currentDefendingModel = defender.listOfModels.get(currentDefendingModelIndex);
-                                    }
-                                    currentModelDamage = 0;
+                                    ApplyDamage(RollDiceAmount(attackingWeapon.damageAmount),defenderSaveRoll,WoundType.NormalWound,attackResults,attackingAbilitySources,defendingAbilitySources,requiredSaveRoll);
                                 }
                             }
-                            currentMetricsOfAttacking.wounds = 0;
-                            currentMetricsOfAttacking.extraHits = 0;
+                            mortalWounds += attackResults.mortalWounds;
+                            devastatingWounds.addAll(attackResults.devastatingWounds);
                         }
+                    }
+                }
+                if(mortalWounds > 0)
+                {
+                    //Yikes med create d6 result och required roll result
+                    ApplyDamage(mortalWounds,CreateD6Result(),WoundType.MortalWound,new AttackResults(),attackingAbilitySources,defendingAbilitySources,7);
+                }
+                if(!devastatingWounds.isEmpty())
+                {
+                    for(Integer integer : devastatingWounds)
+                    {
+                        ApplyDamage(integer,CreateD6Result(),WoundType.DevastatingWound,new AttackResults(),attackingAbilitySources,defendingAbilitySources,7);
                     }
                 }
             }
             resultWoundsDealt[attackSequenceCount] = amountOfWoundsTotal;
             resultModelsSlain[attackSequenceCount] = amountOfModelsKilled;
+            resultsAmountOfHits[attackSequenceCount] = amountOfHits;
+            resultsAmountOfAttacks[attackSequenceCount] = amountOfAttacksDebug;
         }
         Trace.endSection();
 
@@ -156,9 +173,22 @@ public class RollingLogic {
             anotherSum += result;
         }
 
+        float amountOfAttacks = 0;
+        for(int attacks : resultsAmountOfAttacks)
+        {
+            amountOfAttacks += attacks;
+        }
+
+        float amountOfHitsFloat = 0;
+        for(int hits : resultsAmountOfHits)
+        {
+            amountOfHitsFloat += hits;
+        }
+
         average = sum / 10000;
         averageModelsKilled = anotherSum / 10000;
-        Log.d("Result", "Average amount of attacks: " + averageAmountOfAttacks / 10000);
+        Log.d("Result:", " Average amount of attacks: " + (amountOfAttacks/10000));
+        Log.d("Result:", " Average amount of hits: " + (amountOfHitsFloat/10000));
         Log.d("Result", "Average amount of wounds: " + average);
         Log.d("Result", "Average amount of killed models: " + averageModelsKilled);
         RollResult returnResult = new RollResult();
@@ -169,49 +199,102 @@ public class RollingLogic {
         return returnResult;
     }
 
-
-    private void CheckWeaponConditions(Weapon weapon, Conditions conditions)
+    private void ApplyDamage(int damage, DiceResult diceResult, WoundType woundType, AttackResults attackResults, AbilitySources attackingAbilities,AbilitySources defendingAbilities,int requiredSaveRoll )
     {
+        attackResults.damage = damage;
 
-        for(Ability ability : weapon.GetAbilities())
+        if(woundType == WoundType.NormalWound)
         {
-            if((ability.name.contains("Heavy") || ability.name.contains("Grenade")) && conditions.devastatorDoctrine)
-            {
-                weapon.ap -= 1;
-            }
-            if((ability.name.contains("Rapid Fire") || ability.name.contains("Assault")) && conditions.tacticalDoctrine)
-            {
-                weapon.ap -= 1;
-            }
-            if((ability.name.contains("Pistol") )&& conditions.assaultDoctrine)
-            {
-                weapon.ap -= 1;
-            }
+            defendingAbilities.ApplyAbility(AbilityTiming.ReduceDamageCharacteristic,diceResult,attackResults,attackingAbilities,defendingAbilities,requiredSaveRoll,conditionen);
         }
 
-
-        if(conditions.assaultDoctrine && weapon.isMelee)
+        if(woundType == WoundType.DevastatingWound || woundType == WoundType.MortalWound)
         {
-            weapon.ap -=1;
+            defendingAbilities.ApplyAbility(AbilityTiming.PreventMortalWoundDamage,diceResult,attackResults,attackingAbilities,defendingAbilities,requiredSaveRoll,conditionen);
         }
 
+        amountOfWoundsTotal += damage;
+        if(woundType == WoundType.MortalWound)
+        {
+            int mortalWoundsLeft = damage;
+            while (mortalWoundsLeft > 0)
+            {
+                int mortalWoundsToDeal = (defendingModel.wounds - currentModelDamage);
+                if(mortalWoundsToDeal > mortalWoundsLeft)
+                {
+                    mortalWoundsToDeal = mortalWoundsLeft;
+                }
+                if(mortalWoundsToDeal == (defendingModel.wounds - currentModelDamage))
+                {
+                    currentModelDamage = 0;
+                    amountOfModelsKilled += 1;
+                }
+                else
+                {
+                    currentModelDamage += mortalWoundsToDeal;
+                }
+                mortalWoundsLeft -= mortalWoundsToDeal;
+            }
+        }
+        else
+        {
+            currentModelDamage += damage;
 
+            if (defendingModel.wounds <= currentModelDamage)
+            {
+                amountOfModelsKilled += 1;
+
+                if (!(currentDefendingModelIndex == defendingAbilities.unit.listOfModels.size() - 1))
+                {
+                    currentDefendingModelIndex += 1;
+                    defendingModel = defendingAbilities.unit.listOfModels.get(currentDefendingModelIndex);
+                    defendingAbilities.model = defendingModel;
+                }
+                currentModelDamage = 0;
+            }
+        }
+    }
+    private DiceResult CreateD6Result()
+    {
+        DiceResult ret = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 + 1));
+        ret.isD6Roll = true;
+        return ret;
     }
 
-    private int AmountOfAttacks(MetricsOfAttacking metrics, Unit currentAttackingUnit, Weapon currentWeapon, Unit defendingUnit, Model currentAttackingModel) {
+    private DiceResult CreateD3Result()
+    {
+        DiceResult ret = new DiceResult(ThreadLocalRandom.current().nextInt(1, 3 + 1));
+        ret.isD3Roll = true;
+        return ret;
+    }
+
+    // Assumes that there are no defending units that can modify the attack amount of a unit
+    private int AmountOfAttacks( AbilitySources attackerAbilities,Weapon weapon) {
         int amountOfAttacks = 0;
 
-        amountOfAttacks += currentWeapon.amountOfAttacks.baseAmount;
+        amountOfAttacks += weapon.amountOfAttacks.baseAmount;
         List<DiceResult> amountOffAttacksRollD3 = new ArrayList<>();
-        for (int p = 0; p < currentWeapon.amountOfAttacks.numberOfD3; p++) {
-            DiceResult diceResult = new DiceResult(ThreadLocalRandom.current().nextInt(1, 3 + 1));
-            diceResult.isD3Roll = true;
+        for (int d3Count = 0; d3Count < weapon.amountOfAttacks.numberOfD3; d3Count++) {
+            DiceResult diceResult = CreateD3Result();
             amountOffAttacksRollD3.add(diceResult);
         }
-        if (currentWeapon.amountOfAttacks.numberOfD3 != 0) {
-            for (Ability ability : currentAttackingModel.GetAbilities())
+        if (weapon.amountOfAttacks.numberOfD3 != 0)
+        {
+            for (Ability ability : attackerAbilities.model.GetAbilities())
             {
-                ability.rollNumberOfShots(amountOffAttacksRollD3,metrics);
+                ability.rollNumberOfShots(amountOffAttacksRollD3);
+            }
+            for (Ability ability : attackerAbilities.unit.GetAbilities())
+            {
+                ability.rollNumberOfShots(amountOffAttacksRollD3 );
+            }
+            for (Ability ability : attackerAbilities.army.GetAbilities())
+            {
+                ability.rollNumberOfShots(amountOffAttacksRollD3 );
+            }
+            for (Ability ability : attackerAbilities.weapon.GetAbilities())
+            {
+                ability.rollNumberOfShots(amountOffAttacksRollD3 );
             }
         }
 
@@ -219,7 +302,7 @@ public class RollingLogic {
             amountOfAttacks += amountOffAttacksRollD3.get(l).result;
         }
         List<DiceResult> amountOffAttacksRollD6 = new ArrayList<>();
-        for (int p = 0; p < currentWeapon.amountOfAttacks.numberOfD6; p++) {
+        for (int p = 0; p < weapon.amountOfAttacks.numberOfD6; p++) {
 
             //  Log.d(("Testar loopar: "),"Fungerar vapen loopen loopen");
 
@@ -227,10 +310,24 @@ public class RollingLogic {
             diceResult.isD6Roll = true;
             amountOffAttacksRollD6.add(diceResult);
         }
-        if (currentWeapon.amountOfAttacks.numberOfD6 != 0) {
-            for (Ability ability : currentAttackingModel.GetAbilities())
+
+        if (weapon.amountOfAttacks.numberOfD6 != 0)
+        {
+            for (Ability ability : attackerAbilities.model.GetAbilities())
             {
-                ability.rollNumberOfShots(amountOffAttacksRollD6,metrics);
+                ability.rollNumberOfShots(amountOffAttacksRollD6);
+            }
+            for (Ability ability : attackerAbilities.unit.GetAbilities())
+            {
+                ability.rollNumberOfShots(amountOffAttacksRollD6);
+            }
+            for (Ability ability : attackerAbilities.army.GetAbilities())
+            {
+                ability.rollNumberOfShots(amountOffAttacksRollD6);
+            }
+            for (Ability ability : attackerAbilities.weapon.GetAbilities())
+            {
+                ability.rollNumberOfShots(amountOffAttacksRollD6);
             }
         }
         for (int l = 0; l < amountOffAttacksRollD6.size(); l++) {
@@ -240,200 +337,69 @@ public class RollingLogic {
         return amountOfAttacks;
     }
 
-    private MetricsOfAttacking HitRoll(MetricsOfAttacking metrics, Army attackingArmy, Unit currentAttackingUnit, Weapon attackingWeapon, Army defendingArmy, Unit defendingUnit, Model currentAttackingModel,
-                                       Model defendingModel, DiceResult hitRoll,
-                                       AtomicInteger requiredHit) {
+    private void HitRoll(AttackResults attackResults, AbilitySources attackingAbilities, AbilitySources defendingAbilities, DiceResult hitRoll, int requiredHit) {
 
-        AbilitiesHitRollDefender(metrics,hitRoll,defendingArmy,defendingUnit,defendingModel,requiredHit);
-        AbilitiesHitRollAttacker(metrics,hitRoll,attackingArmy, currentAttackingModel,defendingArmy,currentAttackingUnit,defendingUnit,attackingWeapon, requiredHit);
+        attackingAbilities.ApplyAbility(AbilityTiming.ReRollHits, hitRoll, attackResults, attackingAbilities, defendingAbilities,requiredHit,conditionen);
+        attackingAbilities.ApplyAbility(AbilityTiming.TriggerOnHitRoll, hitRoll, attackResults, attackingAbilities, defendingAbilities,requiredHit,conditionen);
 
-
-        if (hitRoll.result >= requiredHit.get()) {
-            metrics.extraHits += 1;
+        if (hitRoll.result >= requiredHit) {
+            attackResults.hits += 1;
         }
-        return metrics;
     }
 
-    private int WoundRoll(MetricsOfAttacking metrics,Army attackingArmy, Army defendingArmy,  Unit currentAttackingUnit, Unit defendingUnit, Model currentAttackingModel, Model defendingModel, DiceResult woundRoll, Weapon weapon) {
+    private void WoundRoll(AttackResults attackResults, AbilitySources attackingAbilities, AbilitySources defendingAbilities, DiceResult woundRoll, StatModifiers defendingModifiers) {
 
-        int amountOfWoundsDealt = 0;
-
-
-        int requiredResult = -1;
-        if (weapon.strength == defendingModel.toughness) {
+        int requiredResult = 0;
+        Weapon weapon = attackingAbilities.weapon;
+        int toughness = defendingAbilities.model.toughness + defendingModifiers.GetModifier(StatModifier.Toughness);
+        if (weapon.strength ==  toughness) {
             requiredResult = 4;
-        } else if (weapon.strength >= defendingModel.toughness * 2) {
+        } else if (weapon.strength >= toughness *2) {
             requiredResult = 2;
-        } else if (weapon.strength > defendingModel.toughness) {
+        } else if (weapon.strength > toughness) {
             requiredResult = 3;
         }
-        if (weapon.strength <= defendingModel.toughness / 2) {
+        if (weapon.strength <= toughness / 2) {
             requiredResult = 6;
-        } else if (weapon.strength < defendingModel.toughness) {
+        } else if (weapon.strength < defendingAbilities.model.toughness) {
             requiredResult = 5;
         }
-
-        if(conditionen.plusOneToWound)
-        {
-            requiredResult-=1;
-        }
-
-        AtomicInteger atomicInteger = new AtomicInteger(requiredResult);
-
-        AbilitiesWoundRollDefender(metrics,woundRoll, attackingArmy,  currentAttackingModel,defendingModel,  defendingArmy,  currentAttackingUnit,  defendingUnit, weapon , atomicInteger);
-        AbilitiesWoundRollAttacker(metrics,woundRoll, attackingArmy,  currentAttackingModel,  defendingArmy,  currentAttackingUnit,  defendingUnit, weapon , atomicInteger);
-
-
-        requiredResult = atomicInteger.get();
+        attackingAbilities.ApplyAbility(AbilityTiming.ReRollWounds, woundRoll, attackResults, attackingAbilities, defendingAbilities,requiredResult,conditionen);
+        attackingAbilities.ApplyAbility(AbilityTiming.TriggerOnWoundRoll, woundRoll, attackResults, attackingAbilities, defendingAbilities,requiredResult,conditionen);
 
         if (woundRoll.result >= requiredResult) {
-            metrics.wounds += 1;
-            amountOfWoundsDealt+=1;
-        }
-        return amountOfWoundsDealt;
-    }
-
-
-    private int SaveRoll(MetricsOfAttacking metrics, Army attackingArmy, Unit currentAttackingUnit, Army defendingArmy, Unit defendingUnit, Model currentAttackingModel, Model currentDefendingModel, Weapon weapon, DiceResult saveRoll, int requiredSaveRoll)
-    {
-        int damageToBeTaken = 0;
-
-        if (saveRoll.result < requiredSaveRoll) {
-            //amountOfWoundsTotal += currentWeapon.damageAmount.rawDamageAmount;
-            damageToBeTaken = weapon.damageAmount.baseAmount;
-            for (int o = 0; o < weapon.damageAmount.numberOfD3; o++) {
-                //  Log.d(("Testar loopar: "),"Fungerar vapen loopen loopen");
-                DiceResult diceResult = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 + 1));
-
-
-                if (diceResult.result == 1 || diceResult.result == 2) {
-                    damageToBeTaken += 1;
-                }
-                if (diceResult.result == 3 || diceResult.result == 4) {
-                    damageToBeTaken += 2;
-                }
-                if (diceResult.result == 5 || diceResult.result == 6) {
-                    damageToBeTaken += 3;
-                }
-            }
-            for (int o = 0; o < weapon.damageAmount.numberOfD6; o++) {
-                DiceResult diceResult = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 + 1));
-
-                damageToBeTaken += diceResult.result;
-            }
-        }
-
-        damageToBeTaken = SaveRollAbilities(metrics,attackingArmy,defendingArmy,currentAttackingUnit,defendingUnit,weapon,damageToBeTaken);
-
-        return damageToBeTaken;
-    }
-
-    private void AbilitiesHitRollAttacker(MetricsOfAttacking metrics, DiceResult diceResult, Army attackingArmy, Model currentAttackingModel, Army defendingArmy, Unit attackingUnit, Unit defendingUnit, Weapon attackingWeapon, AtomicInteger requiredResult)
-    {
-        for(Ability ability : attackingArmy.GetAbilities())
-        {
-            ability.hitRollAbilityAttacking(diceResult,metrics, requiredResult);
-        }
-        for(Ability ability : attackingUnit.GetAbilities())
-        {
-            ability.hitRollAbilityAttacking(diceResult,metrics, requiredResult);
-        }
-        for(Ability ability : currentAttackingModel.GetAbilities())
-        {
-            ability.hitRollAbilityAttacking(diceResult,metrics, requiredResult);
-        }
-        for(Ability ability : attackingWeapon.GetAbilities())
-        {
-            ability.hitRollAbilityAttacking(diceResult,metrics, requiredResult);
+            attackResults.wounds += 1;
         }
     }
-    private void AbilitiesWoundRollAttacker(MetricsOfAttacking metrics, DiceResult diceResult, Army attackingArmy, Model currentAttackingModel, Army defendingArmy, Unit attackingUnit, Unit defendingUnit, Weapon attackingWeapon, AtomicInteger requiredResult)
+    //TODO: hitta ett battre namespace
+    public static int RollDiceAmount(DiceAmount diceAmount)
     {
-        for(Ability ability : attackingArmy.GetAbilities())
+        int ret = 0;
+        ret += diceAmount.baseAmount;
+        for(int i = 0; i < diceAmount.numberOfD3; i++)
         {
-            ability.woundRollAbilityAttacker(diceResult,metrics, requiredResult);
+            ret += ThreadLocalRandom.current().nextInt(1,4);
         }
-        for(Ability ability : attackingUnit.GetAbilities())
+        for(int i = 0; i < diceAmount.numberOfD6; i++)
         {
-            ability.woundRollAbilityAttacker(diceResult,metrics, requiredResult);
+            ret += ThreadLocalRandom.current().nextInt(1,7);
         }
-        for(Ability ability : currentAttackingModel.GetAbilities())
-        {
-            ability.woundRollAbilityAttacker(diceResult,metrics, requiredResult);
-        }
-        for(Ability ability : attackingWeapon.GetAbilities())
-        {
-            ability.woundRollAbilityAttacker(diceResult,metrics, requiredResult);
-        }
-    }
-    private void AbilitiesWoundRollDefender(MetricsOfAttacking metrics, DiceResult diceResult, Army attackingArmy, Model currentAttackingModel, Model defendingModel, Army defendingArmy, Unit attackingUnit, Unit defendingUnit, Weapon attackingWeapon, AtomicInteger requiredResult)
-    {
-        for(Ability ability : defendingArmy.GetAbilities())
-        {
-            ability.woundRollAbilityDefender(diceResult,metrics, requiredResult);
-        }
-        for(Ability ability : defendingUnit.GetAbilities())
-        {
-            ability.woundRollAbilityDefender(diceResult,metrics, requiredResult);
-        }
-        for(Ability ability : defendingModel.GetAbilities())
-        {
-            ability.woundRollAbilityDefender(diceResult,metrics, requiredResult);
-        }
-
-    }
-    private void AbilitiesHitRollDefender(MetricsOfAttacking metrics, DiceResult diceResult, Army defendingArmy, Unit defendingUnit, Model defendingModel, AtomicInteger requiredResult)
-    {
-        for(Ability ability : defendingArmy.GetAbilities())
-        {
-            ability.HitRollAbilityDefender(diceResult,metrics, requiredResult);
-        }
-        for(Ability ability : defendingUnit.GetAbilities())
-        {
-            ability.HitRollAbilityDefender(diceResult,metrics, requiredResult);
-        }
-        for(Ability ability : defendingModel.GetAbilities())
-        {
-            ability.HitRollAbilityDefender(diceResult,metrics, requiredResult);
-        }
-
+        return  ret;
     }
 
-    private int SaveRollAbilities(MetricsOfAttacking metrics, Army attackingArmy, Army defendingArmy, Unit attackingUnit, Unit defendingUnit, Weapon attackingWeapon, int damageToBeTaken)
+    // TODO: Refactor so it inherits instead
+    private void SetStatModifiers(Army army, Unit unit, StatModifiers statModifiers)
     {
-        DiceResult diceResult = new DiceResult(ThreadLocalRandom.current().nextInt(1, 6 + 1));
-
-
-        int damageToReduce = 0;
-
-
-        for(Ability ability : defendingArmy.GetAbilities())
-        {
-           damageToReduce += ability.saveRollAbility(diceResult,metrics, damageToBeTaken);
-        }
-        for(Ability ability : defendingUnit.GetAbilities())
-        {
-            damageToReduce+= ability.saveRollAbility(diceResult,metrics, damageToBeTaken);
-        }
-
-        return damageToBeTaken -damageToReduce;
-    }
-
-    // TODO: Formodligen maste den vara smarate
-    private void AddAllModifiersAttacker(Army attackingArmy, Unit currentAttackingUnit, Model currentAttackingModel)
-    {
-        currentAttackingModel.toughness += attackingArmy.toughnessModifier +  currentAttackingUnit.toughnessModifier;
-        currentAttackingModel.strength += attackingArmy.strengthModifier +  currentAttackingUnit.strengthModifier;
-        currentAttackingModel.armorSave -= attackingArmy.armorSaveModifier +  currentAttackingUnit.armorSaveModifier;
-        currentAttackingModel.invulnerableSave -= attackingArmy.invulnerableSaveModifier +  currentAttackingUnit.invulnerableSaveModifier;
-        currentAttackingModel.wounds += attackingArmy.woundsModifier +  currentAttackingUnit.woundsModifier;
-        currentAttackingModel.attacks +=  attackingArmy.attacksModifier +  currentAttackingUnit.attacksModifier;
+        statModifiers.SetStatModifier(StatModifier.Toughness, (short) (army.toughnessModifier + unit.toughnessModifier ) );
+        statModifiers.SetStatModifier(StatModifier.Strength, (short) (army.strengthModifier + unit.strengthModifier));
+        statModifiers.SetStatModifier(StatModifier.ArmorSave, (short) (army.armorSaveModifier + unit.armorSaveModifier));
+        statModifiers.SetStatModifier(StatModifier.InvulnerableSave, (short) (army.invulnerableSaveModifier + unit.invulnerableSaveModifier));
+        statModifiers.SetStatModifier(StatModifier.WoundAmount, (short) (army.woundsModifier + unit.woundsModifier));
+        statModifiers.SetStatModifier(StatModifier.Attacks, (short) (army.attacksModifier + unit.attacksModifier));
     }
 
     private boolean ShouldSkipWeapon(Weapon rangedWeapon, Conditions conditions)
     {
-
-
         if(!rangedWeapon.active)
             return true;
 

@@ -57,6 +57,7 @@ public class Weapon extends GamePiece implements DeactivatableInterface, Wahaped
         weaponToReturn.strength = strength;
         weaponToReturn.isMelee = isMelee;
         weaponToReturn.active = active;
+        weaponToReturn.ballisticSkill = ballisticSkill;
         weaponToReturn.amountOfAttacks = amountOfAttacks.Copy();
         weaponToReturn.wahapediaDataId = wahapediaDataId;
 
