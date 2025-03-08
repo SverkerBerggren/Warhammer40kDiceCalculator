@@ -7,7 +7,6 @@ import java.util.Objects;
 
 public class ModelIdentifier extends Identifier{
 
-    public String allegiance;
     public String tag;
     public int indexUnit;
     public int indexModel;

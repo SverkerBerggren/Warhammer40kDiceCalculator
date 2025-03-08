@@ -329,6 +329,12 @@ public class DatabaseManager {
             Model model = new Model();
             model.wahapediaDataId = modelEntry.get(0);
             model.name = modelEntry.get(2);
+            if(modelEntry.get(2).equals("rogal dorn tank commander"))
+            {
+                Log.d("Models database", "Invalid model entry length");
+                model.name = "rogal dorn commander";
+
+            }
 
             try {
                 model.toughness = Integer.parseInt( modelEntry.get(4));

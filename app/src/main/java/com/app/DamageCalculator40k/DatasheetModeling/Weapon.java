@@ -16,37 +16,16 @@ public class Weapon extends GamePiece implements DeactivatableInterface, Wahaped
     public int strength;
     public boolean isMelee = false;
     public boolean active = true;
-    private AbilityBitField weaponRules = new AbilityBitField(AbilityEnum.MinusOneDamage);
-
-    public Weapon()
-    {
-
-    }
 
     @Override
     public String GetWahapediaId() {
         return wahapediaDataId;
     }
 
-
-    @Override
-    public boolean IsActive(AbilityEnum abilityEnum) {
-        return weaponRules.IsActive(abilityEnum);
-    }
-
     @Override
     public IdentifierType GetIdentifierType() {
         return IdentifierType.WEAPON;
     }
-
-    public Weapon(int strength, int ap, DiceAmount damageAmount, DiceAmount amountOfAttacks)
-    {
-        this.damageAmount = damageAmount;
-        this.strength = strength;
-        this.ap = ap;
-        this.amountOfAttacks = new DiceAmount(amountOfAttacks) ;
-    }
-
 
     public Weapon Copy( )
     {
@@ -63,32 +42,9 @@ public class Weapon extends GamePiece implements DeactivatableInterface, Wahaped
 
         //TODO: not sure if abilities should be copied or not
         weaponToReturn.GetAbilities().addAll( GetAbilities());
-        weaponToReturn.weaponRules = weaponRules.Copy();
 
         return weaponToReturn;
     }
-
-
-    public Weapon(int strength, int ap, DiceAmount damageAmount, DiceAmount amountOfAttacks, AbilityBitField weaponRules)
-    {
-        this.damageAmount = damageAmount;
-        this.strength = strength;
-        this.ap = ap;
-        this.amountOfAttacks = new DiceAmount(amountOfAttacks) ;
-        this.weaponRules = weaponRules.Copy();
-    }
-
-
-    public Weapon(String name, int strength, int ap, DiceAmount damageAmount, DiceAmount amountOfAttacks, AbilityBitField weaponRules)
-    {
-        this.name = name;
-        this.damageAmount = damageAmount;
-        this.strength = strength;
-        this.ap = ap;
-        this.amountOfAttacks = new DiceAmount(amountOfAttacks) ;
-        this.weaponRules = weaponRules.Copy();
-    }
-
     @Override
     public void FlipActive() {
         active = !active;

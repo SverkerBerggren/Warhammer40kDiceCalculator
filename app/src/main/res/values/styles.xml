@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="TableRowModifier">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+    <style name="TableRowModifierName" parent="TableRowModifier">
+        <item name="android:background">#B5B2B2</item>
+    </style>
+    <style name="TableRowModifierValues" parent="TableRowModifier">
+        <item name="android:background">#DFDADA</item>
+    </style>
+    <style name="AbilitiesTable" parent="TableRowModifier">
+        <item name="android:background">#DFDADA</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">10sp</item>
+    </style>
+</resources>

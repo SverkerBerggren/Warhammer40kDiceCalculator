@@ -4,6 +4,7 @@ import com.app.DamageCalculator40k.Enums.IdentifierType;
 import com.app.DamageCalculator40k.Matchup;
 
 public abstract class Identifier   {
+    public String allegiance;
 
     public abstract String toString();
     public abstract IdentifierType GetIdentifierEnum();

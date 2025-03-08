@@ -34,7 +34,7 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
     private Context context;
     private Matchup matchup;
     private Identifier identifier;
-    private String uiElement;
+    private CompareActivity.WidgetType widgetType;
     private TableLayout tableLayoutAbilities;
     private final ArrayList<Ability> abilitiesAdded = new ArrayList<>();
     private final ArrayList<Ability> abilitiesRemoved = new ArrayList<>();
@@ -48,7 +48,7 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
         context = getBaseContext();
 
         ImageButton addAbilityButton = findViewById(R.id.EditAbilitiesAdd);
-        uiElement =  intent.getStringExtra(""+R.string.UI_IDENTIFIER);
+        widgetType =  (CompareActivity.WidgetType) intent.getSerializableExtra(""+R.string.UI_IDENTIFIER);
         tableLayoutAbilities = findViewById(R.id.TableLayoutEditAbilities);
 
         identifier = IdentifierUtils.GetIdentifierFromExtra(intent);
@@ -89,7 +89,7 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
         checkBox.setText(ability.name);
         checkBox.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         CompareActivity compareActivity = new CompareActivity();
-        compareActivity.Setup(context,matchup);
+        compareActivity.Setup(context,matchup, getLayoutInflater(),tableLayoutAbilities);
         checkBox.setOnClickListener(compareActivity. new OnClickDeactivateAbility(ability));
         imageButton.setImageResource(com.google.android.material.R.drawable.abc_ic_menu_cut_mtrl_alpha);
 
@@ -155,7 +155,7 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
         }
         data.putStringArrayListExtra("abilitiesAdded" , addedArray);
 
-        data.putExtra(""+R.string.UI_IDENTIFIER, uiElement);
+        data.putExtra(""+R.string.UI_IDENTIFIER, widgetType);
 
         // TODO: Ta bort skiten
         data.putExtra(""+ R.string.IDENTIFIER, identifier.toString());

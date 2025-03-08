@@ -1,25 +1,19 @@
 package com.app.DamageCalculator40k.Identifiers;
 
+import com.app.DamageCalculator40k.Activities.CompareActivity;
+
 import java.util.Objects;
 
 public class UIIdentifier {
-
-
-    public String elementName;
-
+    public CompareActivity.WidgetType widgetType;
     public Identifier id;
 
-
-    public UIIdentifier(String elementName, Identifier id)
+    public UIIdentifier(CompareActivity.WidgetType widgetType, Identifier id)
     {
-        this.elementName = elementName;
+        this.widgetType = widgetType;
 
         this.id = id;
     }
-
-
-
-
 
     @Override
     public boolean equals(Object o) {
@@ -27,11 +21,11 @@ public class UIIdentifier {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UIIdentifier that = (UIIdentifier) o;
-        return Objects.equals(elementName, that.elementName) && Objects.equals(id, that.id);
+        return Objects.equals(widgetType, that.widgetType) && Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(elementName, id);
+        return Objects.hash(widgetType, id);
     }
 }

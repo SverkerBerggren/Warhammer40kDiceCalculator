@@ -10,8 +10,6 @@ import java.util.regex.Pattern;
 
 
 public class UnitIdentifier extends Identifier{
-
-    public String allegiance;
     public String tag;
     public int index;
     public String matchupName;

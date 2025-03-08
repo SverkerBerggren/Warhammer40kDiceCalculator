@@ -30,8 +30,6 @@ import android.widget.TextView;
 
 import com.app.DamageCalculator40k.Abilities.Ability;
 import com.app.DamageCalculator40k.AbilityUIHolder;
-import com.app.DamageCalculator40k.BitFunctionality.AbilityBitField;
-import com.app.DamageCalculator40k.DatabaseManager;
 import com.app.DamageCalculator40k.DatasheetModeling.GamePiece;
 import com.app.DamageCalculator40k.DatasheetModeling.Army;
 import com.app.DamageCalculator40k.DatasheetModeling.DeactivatableInterface;
@@ -39,8 +37,8 @@ import com.app.DamageCalculator40k.DatasheetModeling.Model;
 import com.app.DamageCalculator40k.DatasheetModeling.DiceAmount;
 import com.app.DamageCalculator40k.DatasheetModeling.Weapon;
 import com.app.DamageCalculator40k.DatasheetModeling.Unit;
-import com.app.DamageCalculator40k.Enums.AbilityEnum;
 import com.app.DamageCalculator40k.Enums.IdentifierType;
+import com.app.DamageCalculator40k.Enums.StatModifier;
 import com.app.DamageCalculator40k.FileHandling.FileHandler;
 import com.app.DamageCalculator40k.Identifiers.ArmyIdentifier;
 import com.app.DamageCalculator40k.Identifiers.Identifier;
@@ -48,70 +46,61 @@ import com.app.DamageCalculator40k.Identifiers.ModelIdentifier;
 import com.app.DamageCalculator40k.Identifiers.UIIdentifier;
 import com.app.DamageCalculator40k.Identifiers.UnitIdentifier;
 import com.app.DamageCalculator40k.Matchup;
-import com.app.DamageCalculator40k.ModifierHolder;
 import com.app.DamageCalculator40k.R;
+import com.app.DamageCalculator40k.UI.EditModifierPopup;
+import com.app.DamageCalculator40k.UI.ModifierEditing;
 
 import java.util.ArrayList;
 
-public class CompareActivity extends AppCompatActivity implements AbilityUIHolder {
+public class CompareActivity extends AppCompatActivity implements AbilityUIHolder, ModifierEditing {
 
     public Matchup matchup;
-
     private String DONT_DROP_DOWN = "dontDropDown";
 
     private String FRIENDLY = "friendly";
     private String ENEMY = "enemy";
 
     // TODO: bababooey should be enum
-    public final String ABILITY_LAYOUT_UNIT = "AbilityLayoutUnit";
-    public final String UI_WEAPON_LAYOUT_MODEL = "WeaponLayoutModel";
-    public final String UI_UNIT_MODIFIER_LAYOUT = "UnitModifierLayout";
-    public final String UI_MODEL_MODIFIER_LAYOUT = "ModelModifierLayout";
-    public final String UI_ARMY_MODIFIER_LAYOUT = "ArmyModifierLayout";
-    public final String UI_ABILITY_LAYOUT_MODEL = "AbilityLayoutModel";
-    public final String UI_ARMY_ABILITY_LAYOUT = "ArmyAbilityLayout";
-    public final String UI_WEAPON_LAYOUT = "UiWeaponLayout";
+    public enum WidgetType
+    {
+        TableRow,
+        ArmyEditButton,
+        ArmyVerticalLayout,
+        ArmyAbilitiesTableLayout,
+        EditArmyAbilities,
+        AbilityLayoutUnit,
+        WeaponLayoutModel,
+        ModelModifierLayout,
+        UnitModifierLayout,
+        ArmyModifierLayout,
+        ModelAbilityLayout,
+        ArmyAbilityLayout,
+        AbilityEditButton,
+        AbilityLayout,
+        WeaponLayout
+    }
 
     private LayoutInflater inflater;
 
-    private boolean inflatedModelStats = false;
+    private EditModifierPopup editModifierPopup;
 
-    private EditText weaponSkillView;
-    private EditText ballisticSkillView;
-    private EditText strengthView;
-    private EditText toughnessView;
-    private EditText woundsView;
-    private EditText attacksView;
-    private EditText armorSaveView;
-    private EditText InvSaveView;
-
-    private ImageButton weaponSkillIncrease;
-    private ImageButton weaponSkillDecrease;
-    private ImageButton ballisticSkillIncrease;
-    private ImageButton ballisticSkillDecrease;
-    private ImageButton strengthIncrease;
-    private ImageButton strengthDecrease;
-    private ImageButton toughnessIncrease;
-    private ImageButton toughnessDecrease;
-    private ImageButton woundsIncrease;
-    private ImageButton woundsDecrease;
-    private ImageButton attacksIncrease;
-    private ImageButton attacksDecrease;
-    private ImageButton armorSavesIncrease;
-    private ImageButton armorSavesDecrease;
-    private ImageButton invulnerableSavesIncrease;
-    private ImageButton invulnerableSavesDecrease;
-
-    private boolean popupActive = false;
-
-
-    public ConstraintLayout highestConstraint;
+    public ViewGroup highestConstraint;
 
     private ActivityResultLauncher<Intent> activityResultLauncherAbility;
     private ActivityResultLauncher<Intent> activityResultLauncherWeapon;
 
     private Context context;
 
+
+    // Hard coded af do be like that
+    public void UpdateModifierValue(StatModifier modifier, int value, UIIdentifier uiId)
+    {
+        ViewGroup tableLayout = highestConstraint.findViewWithTag(uiId);
+
+        ViewGroup tableRow = (TableRow)tableLayout.getChildAt(1);
+        TextView textView = (TextView) tableRow.getChildAt(modifier.ordinal());
+        textView.setText(context.getString(R.string.SingleIntegerText,value));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,9 +115,10 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
         activityResultLauncherWeapon = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),new UpdateUIWeaponCallback());
 
-
-
         highestConstraint = findViewById(R.id.ConstraintLayoutCompare);
+
+
+        editModifierPopup = new EditModifierPopup(highestConstraint,inflater,matchup, context, this);
         Trace.beginSection("Arme skapande");
         createArmy(matchup.friendlyArmy,FRIENDLY);
         createArmy(matchup.enemyArmy,ENEMY);
@@ -136,10 +126,12 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
     }
 
-    public void Setup(Context context, Matchup matchup)
+    public void Setup(Context context, Matchup matchup, LayoutInflater inflater, ViewGroup highestConstraint)
     {
+        this.highestConstraint = highestConstraint;
         this.context =context ;
         this.matchup = matchup;
+        this.inflater = inflater;
 
         activityResultLauncherAbility = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),new UpdateUiActivityCallbackAbilities());
 
@@ -199,7 +191,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
             ArrayList<String> abilitiesToRemove = data.getStringArrayListExtra("abilitiesRemoved");
             ArrayList<String> abilitiesToAdd = data.getStringArrayListExtra("abilitiesAdded");
 
-            UIIdentifier uiId = new UIIdentifier(data.getStringExtra(""+ R.string.UI_IDENTIFIER),abilityHolderIdentifier);
+            UIIdentifier uiId = new UIIdentifier((WidgetType) data.getSerializableExtra(""+ R.string.UI_IDENTIFIER),abilityHolderIdentifier);
 
 
             UpdateAbilityRow(abilitiesToAdd,abilitiesToRemove,uiId);
@@ -225,7 +217,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
             Model model = matchup.GetModel(modelId);
 
-            UIIdentifier uiId = new UIIdentifier(data.getStringExtra(""+R.string.UI_IDENTIFIER),modelId);
+            UIIdentifier uiId = new UIIdentifier((WidgetType) data.getSerializableExtra(""+R.string.UI_IDENTIFIER),modelId);
 
             TableLayout tableLayout = highestConstraint.findViewWithTag(uiId);
 
@@ -278,8 +270,6 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
     public View CreateTableRow(String text)
     {
-
-
         TableRow tableRow = new TableRow(context);
         tableRow.setBackgroundColor(Color.parseColor("#DFDADA"));
         tableRow.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -295,51 +285,73 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         return tableRow;
     }
 
-    private enum WidgetType
-    {
-        TableRow,
-        ArmyEditButton,
-        ArmyVerticalLayout,
-        ArmyAbilitiesTableLayout,
-        EditArmyAbilities
-    }
-
     private void createArmy(Army army, String allegiance)
     {
         ArmyIdentifier armyId = new ArmyIdentifier(allegiance, matchup.name);
-        UIIdentifier uiIdArmy = new UIIdentifier(UI_ARMY_MODIFIER_LAYOUT, armyId);
-        TableRow tableRow = (TableRow)GetUiElement(allegiance,WidgetType.TableRow);
+        UIIdentifier uiIdArmy = new UIIdentifier(WidgetType.ArmyModifierLayout, armyId);
+        TableLayout tableLayout = (TableLayout) GetUiElement(allegiance,WidgetType.ArmyModifierLayout);
         ImageButton editButton = (ImageButton)GetUiElement(allegiance,WidgetType.ArmyEditButton);
-        CreateModifiers(army, uiIdArmy, tableRow, editButton);
-        CreateArmyAbilities(armyId,army);
+        CreateModifiers(army, uiIdArmy, editButton, tableLayout);
+        CreateGamePieceAbilities(highestConstraint,army,armyId);
 
         instantiateArmies(allegiance);
     }
 
+
+    //TODO: Hela skiten med att ha friendly ar cap. Borde bort men manana
     private Object GetUiElement( String allegiance, WidgetType type)
     {
-        Trace.beginSection("Leta efter vy");
         switch (type)
         {
-            case TableRow:
-                Trace.endSection();
-                return (allegiance.equals(FRIENDLY)) ? (findViewById(R.id.TableRowFriendlyArmy)):(findViewById(R.id.TableRowEnemyArmy));
             case ArmyEditButton:
-                Trace.endSection();
                 return (allegiance.equals(FRIENDLY)) ? (findViewById(R.id.EditFriendlyArmyButton)):(findViewById(R.id.EditEnemyArmyButton));
             case ArmyVerticalLayout:
-                Trace.endSection();
                 return (allegiance.equals(FRIENDLY)) ? (findViewById(R.id.VerticalLayoutFriendlyArmy)):(findViewById(R.id.VerticalLayoutEnemyArmy));
             case ArmyAbilitiesTableLayout:
-                Trace.endSection();
                 return (allegiance.equals(FRIENDLY)) ? (findViewById(R.id.AbilityLayoutFriendlyArmy)):(findViewById(R.id.AbilityLayoutEnemyArmy));
             case EditArmyAbilities:
-                Trace.endSection();
                 return (allegiance.equals(FRIENDLY)) ? (findViewById(R.id.EditFriendlyArmyAbilities)):(findViewById(R.id.EditEnemyArmyAbilities));
+            case ArmyModifierLayout:
+                return (allegiance.equals(FRIENDLY)) ? (findViewById(R.id.FriendlyArmyModifier)):(findViewById(R.id.EnemyArmyModifiers));
         }
 
         Log.d("Compare activity","Requested invalid ui element");
         return  null;
+    }
+
+    private int GetUIResourceId(WidgetType widgetType, Identifier identifier)
+    {
+        switch (widgetType)
+        {
+            case AbilityEditButton:
+                if(identifier.GetIdentifierEnum().equals(IdentifierType.MODEL))
+                {
+                    return R.id.EditModelAbilities;
+                }
+                if(identifier.GetIdentifierEnum().equals(IdentifierType.UNIT))
+                {
+                    return R.id.EditUnitAbilities;
+                }
+                if(identifier.GetIdentifierEnum().equals(IdentifierType.ARMY))
+                {
+                    return  (identifier.allegiance.equals(FRIENDLY)) ? (R.id.EditFriendlyArmyAbilities):( R.id.EditEnemyArmyAbilities);
+                }
+                break;
+            case AbilityLayout:
+                if(identifier.GetIdentifierEnum().equals(IdentifierType.MODEL))
+                {
+                    return R.id.AbilityLayoutModels;
+                }
+                if(identifier.GetIdentifierEnum().equals(IdentifierType.UNIT))
+                {
+                    return R.id.AbilityLayoutUnits;
+                }
+                if(identifier.GetIdentifierEnum().equals(IdentifierType.ARMY))
+                {
+                    return  (identifier.allegiance.equals(FRIENDLY)) ? (R.id.AbilityLayoutFriendlyArmy):( R.id.AbilityLayoutEnemyArmy);
+                }
+        }
+        return 0;
     }
 
     private ArrayList<Unit> GetMatchupUnitsFromAllegiance(String allegiance)
@@ -354,20 +366,24 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         ArrayList<Unit> units = GetMatchupUnitsFromAllegiance(allegiance);
         for(int i = 0; i < units.size();i++)
         {
-            Trace.beginSection("Unit inflating");
-            ViewGroup verticalLayout = (ViewGroup) inflater.inflate(R.layout.unitviewprefab,(ViewGroup)GetUiElement(allegiance,WidgetType.ArmyVerticalLayout));
-            Trace.endSection();
-            Unit unit = units.get(i);
             UnitIdentifier unitIdentifier = new UnitIdentifier(allegiance,null,i,matchup.name);
-            instantiateUnitButton(verticalLayout.getChildAt(verticalLayout.getChildCount()-1),unit,unitIdentifier);
-            CreateUnitAbilites(unit,(LinearLayout) verticalLayout,inflater, unitIdentifier);
-
-            TableRow tableRow = (TableRow)findViewById(R.id.TableRowUnitModifiers);
-            ImageButton button = (ImageButton)findViewById(R.id.EditUnitModifierButton);
-            UIIdentifier uiId = new UIIdentifier(UI_UNIT_MODIFIER_LAYOUT, unitIdentifier);
-            CreateModifiers(unit, uiId, tableRow, button);
-            CreateModel(verticalLayout.getChildAt(verticalLayout.getChildCount()-1),unit,i,allegiance,inflater);
+            CreateUnit(unitIdentifier,(ViewGroup)GetUiElement(unitIdentifier.allegiance,WidgetType.ArmyVerticalLayout) );
         }
+    }
+
+    public void CreateUnit(UnitIdentifier unitIdentifier, ViewGroup parentView)
+    {
+        Unit unit = matchup.GetUnit(unitIdentifier);
+        ViewGroup verticalLayout = (ViewGroup) inflater.inflate(R.layout.unitviewprefab,parentView, false);
+        instantiateUnitButton(verticalLayout,unit,unitIdentifier);
+        CreateGamePieceAbilities(verticalLayout, unit, unitIdentifier);
+
+        TableLayout tableLayout = verticalLayout.findViewById(R.id.UnitTable);
+        ImageButton button = verticalLayout.findViewById(R.id.EditUnitModifierButton);
+        UIIdentifier uiId = new UIIdentifier(WidgetType.UnitModifierLayout, unitIdentifier);
+        CreateModifiers(unit, uiId, button,tableLayout);
+        CreateModel(verticalLayout,unit,unitIdentifier.index,unitIdentifier.allegiance,inflater);
+        parentView.addView(verticalLayout);
     }
 
     private void CreateArmyAbilities(ArmyIdentifier armyIdentifier, Army army)
@@ -378,73 +394,66 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
             tableLayout.addView(CreateTableRow(army.GetAbilities().get(i).name));
         }
         ImageButton editButton = (ImageButton) GetUiElement(armyIdentifier.allegiance,WidgetType.EditArmyAbilities);
-        UIIdentifier uiId = new UIIdentifier(UI_ARMY_ABILITY_LAYOUT, armyIdentifier);
+        UIIdentifier uiId = new UIIdentifier(WidgetType.ArmyAbilityLayout, armyIdentifier);
         editButton.setOnClickListener(new OnClickListenerEditAbilites(army,uiId));
         editButton.setTag(IdentifierType.ARMY.GetResourceId(),armyIdentifier);
         tableLayout.setTag(uiId);
     }
 
-    public void CreateModifiers(ModifierHolder modifierHolder, UIIdentifier uiId, TableRow tableRow, ImageButton button)
+    public void CreateModifiers(GamePiece gamePiece, UIIdentifier uiId , ImageButton button, TableLayout parentLayout)
     {
-        tableRow.setTag(uiId);
-        tableRow.setId(R.id.noId);
-        SetModifiers(uiId, modifierHolder);
+        parentLayout.setTag(uiId);
 
-        button.setOnClickListener(new OnClickListenerModelAndUnitStats(modifierHolder, uiId));
+        ContextThemeWrapper themeNames = new ContextThemeWrapper(context,R.style.TableRowModifierName);
+        ContextThemeWrapper themeValues = new ContextThemeWrapper(context,R.style.TableRowModifierValues);
+        TableRow tableRowNames = new TableRow(themeNames);
+        TableRow tableRowValues = new TableRow(themeValues);
+        for(StatModifier statModifier : StatModifier.values())
+        {
+            TextView textViewName = new TextView(themeNames);
+            textViewName.setText(statModifier.GetAbbreviation());
+            tableRowNames.addView(textViewName);
+
+
+            TextView textViewValues = new TextView(themeValues);
+            textViewValues.setText( context.getString(R.string.SingleIntegerText,gamePiece.getStatModifiers().GetModifier(statModifier)));
+            tableRowValues.addView(textViewValues);
+        }
+        parentLayout.addView(tableRowNames);
+        parentLayout.addView(tableRowValues);
+
+        button.setOnClickListener(editModifierPopup.GetOpenModifierPopupOnClickListener(gamePiece,uiId));
         button.setId(R.id.noId);
     }
-    private void SetModifiers(UIIdentifier uiId, ModifierHolder modifierHolder)
+
+    private void CreateGamePieceAbilities(ViewGroup parentView, GamePiece gamePiece, Identifier identifier)
     {
-        TableRow tableRow = (TableRow)highestConstraint.findViewWithTag(uiId);
+        TableLayout abilityTable =  parentView.findViewById(GetUIResourceId(WidgetType.AbilityLayout,identifier));
 
-        ((TextView) (tableRow.getChildAt(0))).setText("" + modifierHolder.GetModifierValue(UnitAndModelSkill.Strength));
-        ((TextView) (tableRow.getChildAt(1))).setText("" + modifierHolder.GetModifierValue(UnitAndModelSkill.Toughness));
-        ((TextView) (tableRow.getChildAt(2))).setText("" + modifierHolder.GetModifierValue(UnitAndModelSkill.Wounds));
-        ((TextView) (tableRow.getChildAt(3))).setText("" + modifierHolder.GetModifierValue(UnitAndModelSkill.Attacks));
-        ((TextView) (tableRow.getChildAt(4))).setText("" + modifierHolder.GetModifierValue(UnitAndModelSkill.ArmorSaves));
-        ((TextView) (tableRow.getChildAt(5))).setText("" + modifierHolder.GetModifierValue(UnitAndModelSkill.InvulnerableSaves));
-    }
-
-
-    public void CreateUnitAbilites(Unit unit, LinearLayout linearLayout, LayoutInflater inflater, UnitIdentifier unitIdentifier)
-    {
-        TableLayout unitAbilitLayout = linearLayout.findViewWithTag("AbilityLayoutUnit");
-
-        UIIdentifier uiId = new UIIdentifier(ABILITY_LAYOUT_UNIT, unitIdentifier);
-        unitAbilitLayout.setTag(uiId);
-
-
-        for(Ability ability : unit.GetAbilities())
+        ContextThemeWrapper abilityTheme = new ContextThemeWrapper(context,R.style.AbilitiesTable);
+        for(Ability ability : gamePiece.GetAbilities())
         {
-            TableRow tableRow = new TableRow(context);
-            tableRow.setBackgroundColor(Color.parseColor("#DFDADA"));
-            tableRow.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
-
-            TextView abilityTextView = new TextView(context);
+            TableRow tableRow = new TableRow(abilityTheme);
+            TextView abilityTextView = new TextView(abilityTheme);
             abilityTextView.setText(ability.name);
-            abilityTextView.setTextSize(10);
-            abilityTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
             tableRow.addView(abilityTextView);
-            unitAbilitLayout.addView(tableRow);
+            abilityTable.addView(tableRow);
         }
+        TableRow tableRowButton = new TableRow(abilityTheme);
+        UIIdentifier uiId = new UIIdentifier(WidgetType.AbilityEditButton,identifier);
+        ImageButton addButton = parentView.findViewById(GetUIResourceId(WidgetType.AbilityEditButton,identifier));
 
-        ImageButton editAbilities = highestConstraint.findViewById(R.id.EditUnitAbilities);
-
-        editAbilities.setTag(IdentifierType.UNIT.GetResourceId(),unitIdentifier);
-
-        editAbilities.setOnClickListener(new OnClickListenerEditAbilites(unit, uiId));
-
-        editAbilities.setId(R.id.noId);
-
+        addButton.setOnClickListener(new OnClickListenerEditAbilites(gamePiece,  uiId));
+        addButton.setTag(identifier.GetIdentifierEnum().GetResourceId(), identifier);
+        abilityTable.addView(tableRowButton);
+        abilityTable.setTag(uiId);
     }
-
 
     private class OnClickListenerEditAbilites implements View.OnClickListener
     {
-        private GamePiece gamePiece;
-        private UIIdentifier uiId;
+        private final GamePiece gamePiece;
+        private final UIIdentifier uiId;
 
 
         public OnClickListenerEditAbilites(GamePiece gamePiece, UIIdentifier uiId)
@@ -467,23 +476,23 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         intent.putExtra(IdentifierType.IDENTIFIER.name(), gamePiece.GetIdentifierType().name());
         intent.putExtra(""+gamePiece.GetIdentifierType().GetResourceId(),identifier.toString());
         intent.putExtra("matchupName",identifier.GetMatchupName());
-        intent.putExtra(""+R.string.UI_IDENTIFIER, uiId.elementName);
+        intent.putExtra(""+R.string.UI_IDENTIFIER, uiId.widgetType);
 
         activityResultLauncherAbility.launch(intent);
     }
 
     // TODO: Tag systemet suger fet lowkey
-    public void CreateModel(View buttonToModify, Unit unit, int unitNumber,String Allegiance , LayoutInflater inflater)
+    public void CreateModel(ViewGroup parentView, Unit unit, int unitNumber, String Allegiance , LayoutInflater inflater)
     {
-        LinearLayout modelsLayout = (LinearLayout) buttonToModify.findViewById(R.id.ModelsSubLayout);
+        LinearLayout modelsLayout = parentView.findViewById(R.id.ModelsSubLayout);
         for(int i = 0; i < unit.listOfModels.size();i++)
         {
             Model currentModel = unit.listOfModels.get(i);
             Trace.beginSection("Inflatea modeller");
-            View inflatedView = inflater.inflate(R.layout.model_stats_prefab,modelsLayout);
+            ViewGroup inflatedView = (ViewGroup) inflater.inflate(R.layout.model_stats_prefab,modelsLayout, false);
             Trace.endSection();
 
-            Button modelTopButton = highestConstraint.findViewWithTag("inividualModelTopButton");
+            Button modelTopButton = inflatedView.findViewWithTag("inividualModelTopButton");
             modelTopButton.setText(currentModel.name);
             modelTopButton.setTag("");
 
@@ -491,23 +500,22 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
             ImageButton editWeaponButton = inflatedView.findViewById(R.id.EditWeaponsButton);
             editWeaponButton.setTag(IdentifierType.MODEL.GetResourceId(),modelId);
-            editWeaponButton.setTag(R.string.UI_IDENTIFIER,new UIIdentifier(UI_WEAPON_LAYOUT_MODEL,modelId));
+            editWeaponButton.setTag(R.string.UI_IDENTIFIER,new UIIdentifier(WidgetType.WeaponLayoutModel,modelId));
             editWeaponButton.setId(R.id.noId);
 
-            ImageButton addWeaponButton = highestConstraint.findViewWithTag("AddWeaponModelButton");
+            ImageButton addWeaponButton = inflatedView.findViewWithTag("AddWeaponModelButton");
             addWeaponButton.setOnClickListener(new OnClickAddWeapon(modelId));
             addWeaponButton.setTag("");
 
-            CheckBox deactivateModelCheckBox = highestConstraint.findViewById(R.id.DeactivateModelsButton);
+            CheckBox deactivateModelCheckBox = inflatedView.findViewById(R.id.DeactivateModelsButton);
             deactivateModelCheckBox.setChecked(currentModel.active);
             deactivateModelCheckBox.setOnClickListener(new OnClickDeactivate(currentModel));
             deactivateModelCheckBox.setId(R.id.noId);
-            ConstraintLayout constraintLayout = ((ConstraintLayout)inflatedView.getParent()).findViewWithTag("ConstraintLayoutModel");
 
-            SetModelAbilites(currentModel, constraintLayout,  modelId);
-            constraintLayout.setTag("");
-            SetModelStats(inflatedView.findViewById(R.id.ModelStatsIndicator), currentModel, modelId);
+            CreateGamePieceAbilities(inflatedView, currentModel,  modelId);
+            SetModelStats( inflatedView,currentModel, modelId);
             modelTopButton.callOnClick();
+            modelsLayout.addView(inflatedView);
         }
     }
 
@@ -653,7 +661,11 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
                 DiceAmount dA = new DiceAmount(damage,damageD3,damageD6);
                 DiceAmount rAA = new DiceAmount(amount,amountD3,amountD6);
 
-                Weapon weapon = new Weapon(strength, aP, dA, rAA );
+                Weapon weapon = new Weapon();
+                weapon.strength = strength;
+                weapon.ap = aP;
+                weapon.damageAmount = dA;
+                weapon.amountOfAttacks = rAA;
                 weapon.name = name;
 
                 Model modelToAddWeapon = matchup.GetModel(modelId);
@@ -664,7 +676,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
                 FileHandler.GetInstance().saveMatchup(matchup);
 
-                UIIdentifier uiIdentifier = new UIIdentifier(UI_WEAPON_LAYOUT_MODEL,modelId);
+                UIIdentifier uiIdentifier = new UIIdentifier(WidgetType.WeaponLayoutModel,modelId);
 
 
                 AddWeapon(highestConstraint.findViewWithTag(uiIdentifier),weapon);
@@ -680,13 +692,11 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
     public void EditWeaponActivityStart(View v)
     {
         Intent intent = new Intent(this,EditWeaponActivity.class);
-
         ModelIdentifier modelId = (ModelIdentifier) v.getTag(IdentifierType.MODEL.GetResourceId());
-
         UIIdentifier uiId = (UIIdentifier) v.getTag(R.string.UI_IDENTIFIER);
 
 
-        intent.putExtra(""+R.string.UI_IDENTIFIER,uiId.elementName);
+        intent.putExtra(""+R.string.UI_IDENTIFIER,uiId.widgetType);
 
 
         intent.putExtra("" +R.string.MODEL_IDENTIFIER, modelId.toString());
@@ -698,49 +708,17 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
     }
 
-    private void SetModelAbilites(Model model, ConstraintLayout constraintLayout, ModelIdentifier modelId)
+    private void SetModelStats(ViewGroup parentView, Model model, ModelIdentifier modelId)
     {
-          TableLayout abilityTable =  highestConstraint.findViewWithTag("AbilityLayoutModels");
+        TableLayout tableLayout = parentView.findViewById(R.id.layoutStatsen);
 
-          abilityTable.setBackgroundColor(Color.parseColor("#DFDADA"));
-          for(Ability ability : model.GetAbilities())
-          {
-              TableRow tableRow = new TableRow(context);
-              tableRow.setBackgroundColor(Color.parseColor("#DFDADA"));
-              tableRow.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        UIIdentifier uiId = new UIIdentifier(WidgetType.ModelModifierLayout, modelId);
+        ImageButton button = (ImageButton)parentView.findViewById(R.id.EditModelStatsButton);
+        CreateModifiers(model,uiId, button, tableLayout);
 
+        TableLayout weaponLayout = parentView.findViewWithTag("WeaponLayout");
 
-              TextView abilityTextView = new TextView(context);
-              abilityTextView.setText(ability.name);
-              abilityTextView.setTextSize(10);
-              abilityTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
-              tableRow.addView(abilityTextView);
-              abilityTable.addView(tableRow);
-          }
-          TableRow tableRowButton = new TableRow(context);
-          tableRowButton.setBackgroundColor(Color.parseColor("#DFDADA"));
-          UIIdentifier uiId = new UIIdentifier(UI_ABILITY_LAYOUT_MODEL,modelId);
-          ImageButton addButton = highestConstraint.findViewById(R.id.EditModelAbilities);
-
-          addButton.setOnClickListener(new OnClickListenerEditAbilites(model,  uiId));
-          addButton.setTag(IdentifierType.MODEL.GetResourceId(), modelId);
-          abilityTable.addView(tableRowButton);
-          addButton.setId(R.id.noId);
-          abilityTable.setTag(uiId);
-    }
-
-    private void SetModelStats(TableRow tableRow, Model model, ModelIdentifier modelId)
-    {
-
-        UIIdentifier uiId = new UIIdentifier(UI_MODEL_MODIFIER_LAYOUT, modelId);
-        ImageButton button = (ImageButton)highestConstraint.findViewById(R.id.EditModelStatsButton);
-        CreateModifiers(model,uiId, tableRow, button);
-        ConstraintLayout constraintLayout = (ConstraintLayout)tableRow.getParent().getParent();
-
-        TableLayout weaponLayout = constraintLayout.findViewWithTag("WeaponLayout");
-
-        UIIdentifier uiIdWeapon = new UIIdentifier(UI_WEAPON_LAYOUT_MODEL,modelId);
+        UIIdentifier uiIdWeapon = new UIIdentifier(WidgetType.WeaponLayoutModel,modelId);
         weaponLayout.setTag(uiIdWeapon);
         for(int i = 0; i < model.weapons.size(); i++)
         {
@@ -849,6 +827,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
 
 
 
+
     public void instantiateUnitButton(View buttonToModify, Unit unit, UnitIdentifier unitId)
     {
         Button topButton = (Button)buttonToModify.findViewById(R.id.UnitTopButton);
@@ -892,165 +871,12 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
     }
 
 
-    private  class OnClickListenerModelAndUnitStats implements View.OnClickListener
-    {
-        private  ModifierHolder modifierHolder;
-        private UIIdentifier uiId;
-
-
-        public OnClickListenerModelAndUnitStats(ModifierHolder modifierHolder, UIIdentifier uiId)
-        {
-            this.modifierHolder = modifierHolder;
-            this.uiId = uiId;
-        }
-
-
-        @Override
-        public void onClick(View view) {
-            if(!inflatedModelStats)
-            {
-                inflater.inflate(R.layout.activity_popup,highestConstraint);
-
-                weaponSkillView = (EditText)highestConstraint.findViewById(R.id.WeaponSkillModelPopup);
-                ballisticSkillView   = (EditText)highestConstraint.findViewById(R.id.BallisticSkillModelPopup);
-                strengthView  = (EditText)highestConstraint.findViewById(R.id.StrengthModelPopup);
-                toughnessView = (EditText)highestConstraint.findViewById(R.id.ToughnessModelPopup);
-                woundsView  = (EditText)highestConstraint.findViewById(R.id.WoundsModelPopup);
-                attacksView  = (EditText)highestConstraint.findViewById(R.id.AttacksModelPopup);
-                armorSaveView  = (EditText)highestConstraint.findViewById(R.id.ArmorSaveModelPopup);
-                InvSaveView  = (EditText)highestConstraint.findViewById(R.id.InvSaveModelPopup);
-
-                weaponSkillIncrease = (ImageButton)highestConstraint.findViewById(R.id.WeaponSkillIncrease);
-                weaponSkillDecrease = (ImageButton)highestConstraint.findViewById(R.id.WeaponSkillDecrease);
-                ballisticSkillIncrease = (ImageButton)highestConstraint.findViewById(R.id.BallisticSkillIncrease);
-                ballisticSkillDecrease = (ImageButton)highestConstraint.findViewById(R.id.BallisticSkillDecrease);
-                strengthIncrease = (ImageButton)highestConstraint.findViewById(R.id.StrengthIncrease);
-                strengthDecrease = (ImageButton)highestConstraint.findViewById(R.id.StrengthDecrease);
-                toughnessIncrease = (ImageButton)highestConstraint.findViewById(R.id.ToughnessIncrease);
-                toughnessDecrease = (ImageButton)highestConstraint.findViewById(R.id.ToughnessDecrease);
-                woundsIncrease = (ImageButton)highestConstraint.findViewById(R.id.WoundsIncrease);
-                woundsDecrease = (ImageButton)highestConstraint.findViewById(R.id.WoundsDecrease);
-                attacksIncrease = (ImageButton)highestConstraint.findViewById(R.id.AttacksIncrease);
-                attacksDecrease = (ImageButton)highestConstraint.findViewById(R.id.AttacksDecrease);
-                armorSavesIncrease = (ImageButton)highestConstraint.findViewById(R.id.SavesIncrease);
-                armorSavesDecrease = (ImageButton)highestConstraint.findViewById(R.id.SavesDecrease);
-                invulnerableSavesIncrease = (ImageButton)highestConstraint.findViewById(R.id.InvulnerableIncrease);
-                invulnerableSavesDecrease = (ImageButton)highestConstraint.findViewById(R.id.InvulnerableDecrease);
-
-                inflatedModelStats = true;
-            }
-            else
-            {
-                ShowPopup(view);
-            }
-            popupActive = true;
-            ((Button)highestConstraint.findViewById(R.id.SaveModelPopup)).setOnClickListener(new OnClickListenerModelSave(modifierHolder, uiId));
-
-
-            strengthView.setText(""+ modifierHolder.GetModifierValue(UnitAndModelSkill.Strength));
-            toughnessView.setText(""+ modifierHolder.GetModifierValue(UnitAndModelSkill.Toughness));
-            woundsView.setText(""+ modifierHolder.GetModifierValue(UnitAndModelSkill.Wounds));
-            attacksView.setText(""+ modifierHolder.GetModifierValue(UnitAndModelSkill.Attacks));
-            armorSaveView.setText(""+ modifierHolder.GetModifierValue(UnitAndModelSkill.ArmorSaves));
-            InvSaveView.setText(""+ modifierHolder.GetModifierValue(UnitAndModelSkill.InvulnerableSaves));
-
-            strengthIncrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, strengthView,UnitAndModelSkill.Strength,true));
-            strengthDecrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, strengthView,UnitAndModelSkill.Strength,false));
-            toughnessIncrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, toughnessView,UnitAndModelSkill.Toughness,true));
-            toughnessDecrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, toughnessView,UnitAndModelSkill.Toughness,false));
-            woundsIncrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, woundsView,UnitAndModelSkill.Wounds,true));
-            woundsDecrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, woundsView,UnitAndModelSkill.Wounds,false));
-            attacksIncrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, attacksView,UnitAndModelSkill.Attacks,true));
-            attacksDecrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, attacksView,UnitAndModelSkill.Attacks,false));
-            armorSavesIncrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, armorSaveView,UnitAndModelSkill.ArmorSaves,true));
-            armorSavesDecrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, armorSaveView,UnitAndModelSkill.ArmorSaves,false));
-            invulnerableSavesIncrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, InvSaveView,UnitAndModelSkill.InvulnerableSaves,true));
-            invulnerableSavesDecrease.setOnClickListener(new OnClickIncreaseStats(modifierHolder, InvSaveView,UnitAndModelSkill.InvulnerableSaves,false));
-        }
-    }
-
-    public enum UnitAndModelSkill
-    {   HitSkill,
-        Strength,
-        Toughness,
-        Wounds,
-        Attacks,
-        ArmorSaves,
-        InvulnerableSaves
-    }
-
-    private class OnClickIncreaseStats implements View.OnClickListener
-    {
-        private ModifierHolder modifierHolder;
-        private EditText textToChange;
-        private UnitAndModelSkill whatToChange;
-        private int amount;
-        public OnClickIncreaseStats(ModifierHolder modifierHolder, EditText textToChange, UnitAndModelSkill whatToChange, boolean increase)
-        {
-            this.modifierHolder = modifierHolder;
-            this.textToChange = textToChange;
-            this.whatToChange = whatToChange;
-            if (increase) amount = 1;
-            else amount = -1;
-        }
-        @Override
-        public void onClick(View buttonClicked) {
-            int value = modifierHolder.ChangeModifiers(whatToChange, amount);
-            textToChange.setText(""+value);
-        }
-    }
-
-    private class  OnClickListenerModelSave implements View.OnClickListener
-    {
-        private  ModifierHolder modifierHolder;
-        private UIIdentifier uiId;
-
-        public OnClickListenerModelSave(ModifierHolder modifierHolder, UIIdentifier uiId)
-        {
-            this.modifierHolder = modifierHolder;
-            this.uiId = uiId;
-        }
-
-
-        @Override
-        public void onClick(View view)
-        {
-
-            modifierHolder.SetModifierValue(UnitAndModelSkill.Strength, Integer.parseInt(strengthView.getText().toString()));
-            modifierHolder.SetModifierValue(UnitAndModelSkill.Toughness, Integer.parseInt(toughnessView.getText().toString()));
-            modifierHolder.SetModifierValue(UnitAndModelSkill.Wounds, Integer.parseInt(woundsView.getText().toString()));
-            modifierHolder.SetModifierValue(UnitAndModelSkill.Attacks, Integer.parseInt(attacksView.getText().toString()));
-            modifierHolder.SetModifierValue(UnitAndModelSkill.ArmorSaves, Integer.parseInt(armorSaveView.getText().toString()));
-            modifierHolder.SetModifierValue(UnitAndModelSkill.InvulnerableSaves, Integer.parseInt(InvSaveView.getText().toString()));
-
-            SetModifiers(uiId, modifierHolder);
-
-            FileHandler.GetInstance().saveMatchup(matchup);
-            ClosePopup(view);
-        }
-    }
-
-
-    public void ShowPopup(View v)
-    {
-        View popup = highestConstraint.findViewById(R.id.ConstraintLayoutModelPopup);
-        popup.setVisibility(View.VISIBLE);
-    }
-
-    public void ClosePopup(View v)
-    {
-        View popup = highestConstraint.findViewById(R.id.ConstraintLayoutModelPopup);
-        popup.setVisibility(View.GONE);
-        popupActive = false;
-    }
 
     @Override
     public void onBackPressed() {
-        if (popupActive)
-        {
-            ClosePopup(null);
-            return;
-        }
+
+        editModifierPopup.ClosePopup();
+
         super.onBackPressed();
     }
 }

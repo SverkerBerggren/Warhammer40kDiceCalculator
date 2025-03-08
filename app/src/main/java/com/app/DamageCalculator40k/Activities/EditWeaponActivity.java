@@ -98,7 +98,7 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
             checkBox.setTextSize(20);
             checkBox.setChecked(weapons.get(i).active);
             CompareActivity compareActivity = new CompareActivity();
-            compareActivity.Setup(context,matchup);
+            compareActivity.Setup(context,matchup, getLayoutInflater(),linearLayout);
 
             checkBox.setOnClickListener(compareActivity.new OnClickDeactivate(weapons.get(i)));
             tableLayout.addView(tableRow);

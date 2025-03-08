@@ -43,9 +43,6 @@
             android:name=".Activities.StatisticActivity"
             android:exported="false" />
         <activity
-            android:name=".Activities.activity_popup"
-            android:exported="false" />
-        <activity
             android:name=".Activities.SavedMatchupsActivity"
             android:exported="false" />
         <activity

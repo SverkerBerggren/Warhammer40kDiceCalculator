@@ -29,12 +29,14 @@ import com.app.DamageCalculator40k.DatasheetModeling.GamePiece;
 import com.app.DamageCalculator40k.DatasheetModeling.Army;
 import com.app.DamageCalculator40k.DatasheetModeling.Model;
 import com.app.DamageCalculator40k.DatasheetModeling.DiceAmount;
+import com.app.DamageCalculator40k.DatasheetModeling.Unit;
 import com.app.DamageCalculator40k.DatasheetModeling.Weapon;
 import com.app.DamageCalculator40k.Enums.AbilityEnum;
 import com.app.DamageCalculator40k.Enums.IdentifierType;
 import com.app.DamageCalculator40k.FileHandling.FileHandler;
 import com.app.DamageCalculator40k.Identifiers.ArmyIdentifier;
 import com.app.DamageCalculator40k.Identifiers.Identifier;
+import com.app.DamageCalculator40k.Identifiers.IdentifierUtils;
 import com.app.DamageCalculator40k.Identifiers.ModelIdentifier;
 import com.app.DamageCalculator40k.Identifiers.UIIdentifier;
 import com.app.DamageCalculator40k.Identifiers.UnitIdentifier;
@@ -45,19 +47,16 @@ import java.util.ArrayList;
 
 public class EditUnitActivity extends AppCompatActivity implements AbilityUIHolder {
 
-    //TODO: rework whole class
     private Matchup matchup;
     private Context context;
 
-    private ConstraintLayout highestConstraint;
+    private ViewGroup highestConstraint;
     private CompareActivity compareActivity;
 
-    private ActivityResultLauncher<Intent>    activityResultLauncherWeapon;
+    private ActivityResultLauncher<Intent> activityResultLauncherWeapon;
     private ActivityResultLauncher<Intent> activityResultLauncherAbility;
 
     private UnitIdentifier unitIdentifier;
-
-
 
 
     @Override
@@ -68,72 +67,18 @@ public class EditUnitActivity extends AppCompatActivity implements AbilityUIHold
 
         context = getBaseContext();
         Intent intent = getIntent();
-        highestConstraint = findViewById(R.id.ConstraintLayoutEditUnit);
-        matchup = FileHandler.GetInstance().getMatchup(intent.getStringExtra("matchup"));
+        highestConstraint = findViewById(R.id.LinearLayoutEditUnit);
 
-        unitIdentifier = new UnitIdentifier(intent.getStringExtra(""+R.string.UNIT_IDENTIFIER));
-
+        unitIdentifier = (UnitIdentifier) IdentifierUtils.GetIdentifierFromExtra(intent);
+        matchup = FileHandler.GetInstance().getMatchup(unitIdentifier.GetMatchupName());
 
         LayoutInflater inflater = getLayoutInflater();
 
-        Army army;
-
-        if(unitIdentifier.allegiance.equals("friendly"))
-        {
-            army = matchup.friendlyArmy;
-        }
-        else
-        {
-            army = matchup.enemyArmy;
-        }
         compareActivity = new CompareActivity();
-        compareActivity.highestConstraint = highestConstraint;
-        compareActivity.Setup(context,matchup);
-        compareActivity.SetInflater(inflater);
-
-        ViewGroup verticalLayout = (ViewGroup) inflater.inflate(R.layout.unitviewprefab, ((ViewGroup)findViewById(R.id.LinearLayoutEditUnit)));
-        compareActivity.instantiateUnitButton(verticalLayout.getChildAt(verticalLayout.getChildCount()-1),army.units.get(unitIdentifier.index),unitIdentifier);
-        compareActivity.CreateUnitAbilites(army.units.get(unitIdentifier.index),(LinearLayout) verticalLayout,inflater, unitIdentifier);
-        TableRow tableRow = (TableRow)findViewById(R.id.TableRowUnitModifiers);
-        ImageButton button = (ImageButton)findViewById(R.id.EditUnitModifierButton);
-        UIIdentifier uiId = new UIIdentifier(compareActivity.UI_UNIT_MODIFIER_LAYOUT, unitIdentifier);
-
-        compareActivity.CreateModifiers(army.units.get(unitIdentifier.index), uiId, tableRow, button);
-        compareActivity.CreateModel(highestConstraint,army.units.get(unitIdentifier.index),unitIdentifier.index,unitIdentifier.allegiance,inflater);
+        compareActivity.Setup(context,matchup,inflater,highestConstraint);
 
 
-
-
-        Button topButton = findViewById(R.id.UnitTopButton);
-
-
-
-        topButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                compareActivity.DropDownClick(view);
-            }
-        });
-        findViewById(R.id.modelsTopButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                compareActivity.DropDownClick(view);
-
-            }
-        });
-        findViewById(R.id.abilitiesTopButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                compareActivity.DropDownClick(view);
-
-            }
-        });
-
-
-
-        activityResultLauncherWeapon = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),new OnActivityResultEditUnitWeapon() );
-
-        activityResultLauncherAbility = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),new OnActivityResultEditUnitAbilities());
+        compareActivity.CreateUnit(unitIdentifier,highestConstraint);
 
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
@@ -146,9 +91,7 @@ public class EditUnitActivity extends AppCompatActivity implements AbilityUIHold
         };
         getOnBackPressedDispatcher().addCallback(this, callback);
 
-        topButton.callOnClick();
     }
-
     public void Setup(Context context, Matchup matchup)
     {
 
@@ -229,7 +172,7 @@ public class EditUnitActivity extends AppCompatActivity implements AbilityUIHold
 
             Model model = matchup.GetModel(modelId);
 
-            UIIdentifier uiId = new UIIdentifier(data.getStringExtra(""+R.string.UI_IDENTIFIER),modelId);
+            UIIdentifier uiId = new UIIdentifier((CompareActivity.WidgetType) data.getSerializableExtra(""+R.string.UI_IDENTIFIER),modelId);
 
             TableLayout tableLayout = highestConstraint.findViewWithTag(uiId);
 
@@ -278,7 +221,7 @@ public class EditUnitActivity extends AppCompatActivity implements AbilityUIHold
             ArrayList<String> abilitiesToRemove = StringArrayFromIntent(data,"abilitiesRemoved");
             ArrayList<String> abilitiesToAdd = StringArrayFromIntent(data, "abilitiesAdded");
 
-            UIIdentifier uiId = new UIIdentifier(data.getStringExtra(""+ R.string.UI_IDENTIFIER),abilityHolderIdentifier);
+            UIIdentifier uiId = new UIIdentifier((CompareActivity.WidgetType) data.getSerializableExtra(""+ R.string.UI_IDENTIFIER),abilityHolderIdentifier);
 
 
             UpdateAbilityRow(abilitiesToAdd,abilitiesToRemove,uiId);
@@ -297,7 +240,7 @@ public class EditUnitActivity extends AppCompatActivity implements AbilityUIHold
         UIIdentifier uiId = (UIIdentifier) v.getTag(R.string.UI_IDENTIFIER);
 
 
-        intent.putExtra(""+R.string.UI_IDENTIFIER,uiId.elementName);
+        intent.putExtra(""+R.string.UI_IDENTIFIER,uiId.widgetType);
 
 
         intent.putExtra("" +R.string.MODEL_IDENTIFIER, modelId.toString());

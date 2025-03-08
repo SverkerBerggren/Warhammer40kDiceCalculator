@@ -23,5 +23,15 @@
     <string name="CONDITIONS">randomText</string>
     <string name="APPLY_TO_ALL">randomText</string>
 
+    <string name="HitRoll">BS</string>
+    <string name="WoundRoll">WR</string>
+    <string name="ArmorSave">SV</string>
+    <string name="InvulnerableSave">ISV</string>
+    <string name="Toughness">T</string>
+    <string name="Strength">S</string>
+    <string name="WoundAmount">W</string>
+    <string name="Attacks">A</string>
+
+    <string name="SingleIntegerText">%1$d</string>
 
 </resources>

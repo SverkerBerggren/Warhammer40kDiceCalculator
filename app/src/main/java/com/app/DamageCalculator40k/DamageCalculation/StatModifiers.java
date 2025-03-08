@@ -4,7 +4,7 @@ import com.app.DamageCalculator40k.Enums.StatModifier;
 
 public  class StatModifiers
 {
-    public short GetModifier(StatModifier statModifier)
+    public int GetModifier(StatModifier statModifier)
     {
         return statModifiers[statModifier.ordinal()];
     }
@@ -35,6 +35,15 @@ public  class StatModifiers
             }
         }
         return retValue;
+    }
+    public StatModifiers Copy()
+    {
+        StatModifiers retModifiers = new StatModifiers();
+        for(int i = 0; i < retModifiers.statModifiers.length; i++)
+        {
+            retModifiers.statModifiers[i] = statModifiers[i];
+        }
+        return retModifiers;
     }
 
     public void AddToModifier(StatModifier statModifier, short value)

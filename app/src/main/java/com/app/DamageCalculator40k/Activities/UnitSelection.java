@@ -342,9 +342,7 @@ public class UnitSelection extends AppCompatActivity {
 
     private class StartAbilitiesEdit implements View.OnClickListener
     {
-
         private UnitIdentifier unitIdentifier;
-
 
         public StartAbilitiesEdit(UnitIdentifier unitIdentifier)
         {
@@ -357,9 +355,9 @@ public class UnitSelection extends AppCompatActivity {
             Intent intent = new Intent(context, Activity_Edit_Abilities.class);
             intent.putExtra(IdentifierType.IDENTIFIER.name(), unitIdentifier.GetIdentifierEnum().name());
             intent.putExtra("" +unitIdentifier.GetIdentifierEnum().GetResourceId(), unitIdentifier.toString());
-            UIIdentifier uiId = new UIIdentifier("stub??",unitIdentifier);
+            UIIdentifier uiId = new UIIdentifier(CompareActivity.WidgetType.ArmyEditButton,unitIdentifier);
 
-            intent.putExtra(""+R.string.UI_IDENTIFIER, uiId.elementName);
+            intent.putExtra(""+R.string.UI_IDENTIFIER, uiId.widgetType);
             activityResultLauncherAbility.launch(intent);
         }
     }
@@ -396,10 +394,8 @@ public class UnitSelection extends AppCompatActivity {
     {
         Intent intent = new Intent(this, EditUnitActivity.class);
 
-        intent.putExtra("matchup",matchup.name);
-
-        intent.putExtra(""+R.string.UNIT_IDENTIFIER, unitId.toString());
-
+        intent.putExtra(IdentifierType.IDENTIFIER.name(), unitId.GetIdentifierEnum().name());
+        intent.putExtra("" +unitId.GetIdentifierEnum().GetResourceId(), unitId.toString());
 
         launchUnitEditActivity.launch(intent);
 

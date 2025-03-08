@@ -56,123 +56,7 @@
             android:stretchColumns="*"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TableRow
-                android:id="@+id/TableRowTest"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#B4B2B5"
-                android:textAlignment="center">
-
-                <TextView
-                    android:id="@+id/StrengthRow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="S"
-                    android:textAlignment="center"
-                    android:textSize="10sp" />
-
-                <TextView
-                    android:id="@+id/ToughnssRow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="T"
-                    android:textAlignment="center"
-                    android:textSize="10sp" />
-
-                <TextView
-                    android:id="@+id/WoundsRow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="W"
-                    android:textAlignment="center"
-                    android:textSize="10sp" />
-
-                <TextView
-                    android:id="@+id/AttacksRow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="A"
-                    android:textAlignment="center"
-                    android:textSize="10sp" />
-
-                <TextView
-                    android:id="@+id/SaveRow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Sv"
-                    android:textAlignment="center"
-                    android:textSize="10sp" />
-
-                <TextView
-                    android:id="@+id/InvulrnebaleSaveRow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="ISv"
-                    android:textAlignment="center"
-                    android:textSize="10sp" />
-
-            </TableRow>
-
-            <TableRow
-                android:id="@+id/ModelStatsIndicator"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#DFDADA"
-                android:tag="TableModelStatsIndicator">
-
-                <TextView
-                    android:id="@+id/StrengthStatIndicator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textSize="10sp" />
-
-                <TextView
-                    android:id="@+id/ToughnessStatIndicator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textSize="10sp" />
-
-                <TextView
-                    android:id="@+id/WoundsStatIndicator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textSize="10sp" />
-
-                <TextView
-                    android:id="@+id/AttacksStatIndicator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textSize="10sp" />
-
-                <TextView
-                    android:id="@+id/SaveStatIndicator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textSize="10sp" />
-
-                <TextView
-                    android:id="@+id/InvulStatIndicator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textSize="10sp" />
-
-            </TableRow>
-
-        </TableLayout>
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <TableLayout
             android:id="@+id/WeaponsLayout"
@@ -267,7 +151,6 @@
             android:layout_marginTop="50dp"
             android:background="#B5B2B2"
             android:stretchColumns="*"
-            android:tag="AbilityLayoutModels"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/AddWeaponButton">

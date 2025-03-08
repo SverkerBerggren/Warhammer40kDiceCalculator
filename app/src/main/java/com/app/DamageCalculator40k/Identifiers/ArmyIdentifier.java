@@ -5,7 +5,6 @@ import com.app.DamageCalculator40k.Enums.IdentifierType;
 import java.util.Objects;
 
 public class ArmyIdentifier extends Identifier{
-    public String allegiance;
     public String matchupName;
 
     public ArmyIdentifier(String allegiance, String matchupName)

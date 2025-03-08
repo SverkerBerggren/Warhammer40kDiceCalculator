@@ -26,7 +26,7 @@
             app:layout_constraintWidth_percent="0.85">
 
             <TableLayout
-                android:id="@+id/tableLayout"
+                android:id="@+id/tableLayoutModifiersEdit"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
@@ -303,7 +303,7 @@
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
+                app:layout_constraintTop_toBottomOf="@+id/tableLayoutModifiersEdit" />
 
             <androidx.core.widget.NestedScrollView
                 android:id="@+id/ScrollViewAbilityWeapon"
