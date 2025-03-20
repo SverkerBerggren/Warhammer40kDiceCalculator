@@ -10,11 +10,15 @@ public enum IdentifierType {
     IDENTIFIER(R.string.IDENTIFIER);
 
     private final int resourceId;
+    private final String name;
     IdentifierType(int applicationResourceId)
     {
         this.resourceId = applicationResourceId;
+        //TODO: Checka om detta faktiskt orsakar en dynamisk allokering
+        this.name = this.toString();
     }
 
+    public String getName(){return name;};
     public int GetResourceId()
     {
         return resourceId;

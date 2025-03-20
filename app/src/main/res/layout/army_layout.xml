@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ArmyLinearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/ArmyNameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="DropDownClick"
+        android:text="@string/egen_arme"
+        android:textAlignment="center"
+        android:textSize="34sp" />
+
+    <TextView
+        android:id="@+id/textView39"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Army modifiers"
+        android:textAlignment="center"
+        android:textSize="24sp" />
+
+    <TableLayout
+        android:id="@+id/ArmyModifiers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="40dp"
+        android:stretchColumns='*'
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/EditArmyModifiersButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@android:drawable/ic_menu_edit" />
+
+    <TableLayout
+        android:id="@+id/ArmyAbilityLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="#B5B2B2"
+        android:stretchColumns="*"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/AddWeaponButton">
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#B5B2B2">
+
+            <TextView
+                android:id="@+id/textView480"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Abilities"
+                android:textAlignment="center" />
+        </TableRow>
+
+    </TableLayout>
+
+    <ImageButton
+        android:id="@+id/ArmyEditAbilitiesButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@android:drawable/ic_menu_edit" />
+
+</LinearLayout>

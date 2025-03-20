@@ -32,6 +32,8 @@
     <string name="WoundAmount">W</string>
     <string name="Attacks">A</string>
 
+    <string name="ExcludeDropDownTag">NoDropDown</string>
+
     <string name="SingleIntegerText">%1$d</string>
 
 </resources>

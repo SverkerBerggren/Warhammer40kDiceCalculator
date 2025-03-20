@@ -15,7 +15,7 @@ public class UnitIdentifier extends Identifier{
     public String matchupName;
 
 
-   public UnitIdentifier(String allegiance, String tag, int index, String matchupName)
+   public UnitIdentifier(Allegiance allegiance, String tag, int index, String matchupName)
    {
         this.allegiance = allegiance;
         this.tag = tag;
@@ -29,7 +29,7 @@ public class UnitIdentifier extends Identifier{
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(identifierString);
         if (matcher.matches()) {
-            this.allegiance = matcher.group(1);
+            this.allegiance = Allegiance.valueOf( matcher.group(1));
 
 
 

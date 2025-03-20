@@ -12,7 +12,7 @@ public class ModelIdentifier extends Identifier{
     public int indexModel;
     public String matchupName;
 
-    public ModelIdentifier(String allegiance, String tag, int indexUnit, int indexModel, String matchupName)
+    public ModelIdentifier(Allegiance allegiance, String tag, int indexUnit, int indexModel, String matchupName)
     {
         this.allegiance = allegiance;
         this.tag = tag;
@@ -57,7 +57,7 @@ public class ModelIdentifier extends Identifier{
                     // Assign the value to the corresponding field
                     switch (key) {
                         case "allegiance":
-                            allegiance = value.equals("null") ? null : value;
+                            allegiance = Allegiance.valueOf(value);
                             break;
                         case "tag":
                             tag = value.equals("null") ? null : value;

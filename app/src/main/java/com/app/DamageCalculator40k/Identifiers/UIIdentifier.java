@@ -1,14 +1,16 @@
 package com.app.DamageCalculator40k.Identifiers;
 
 import com.app.DamageCalculator40k.Activities.CompareActivity;
+import com.app.DamageCalculator40k.Activities.EditUnitActivity;
+import com.app.DamageCalculator40k.UI.WidgetType;
 
 import java.util.Objects;
 
 public class UIIdentifier {
-    public CompareActivity.WidgetType widgetType;
+    public WidgetType widgetType;
     public Identifier id;
 
-    public UIIdentifier(CompareActivity.WidgetType widgetType, Identifier id)
+    public UIIdentifier(WidgetType widgetType, Identifier id)
     {
         this.widgetType = widgetType;
 

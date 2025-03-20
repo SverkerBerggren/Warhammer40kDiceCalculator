@@ -19,6 +19,7 @@
         app:layout_constraintVertical_bias="1.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/ConstraintLayoutArmies"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -33,18 +34,24 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <LinearLayout
+                android:id="@+id/VerticalLayoutArmies"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@+id/ComparisonButton"></LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/VerticalLayoutFriendlyArmy"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_height="match_parent"
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ComparisonButton">
 
                 <TextView
-                    android:id="@+id/textView3"
+                    android:id="@+id/ArmyNameText"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:onClick="DropDownClick"
@@ -61,7 +68,7 @@
                     android:textSize="24sp" />
 
                 <TableLayout
-                    android:id="@+id/FriendlyArmyModifier"
+                    android:id="@+id/ArmyModifiers"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="30dp"
@@ -70,16 +77,16 @@
                     android:stretchColumns='*'
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageButton
-                    android:id="@+id/EditFriendlyArmyButton"
+                    android:id="@+id/EditArmyModifiersButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:srcCompat="@android:drawable/ic_menu_edit" />
 
                 <TableLayout
-                    android:id="@+id/AbilityLayoutFriendlyArmy"
+                    android:id="@+id/ArmyAbilityLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="20dp"
@@ -105,7 +112,7 @@
                 </TableLayout>
 
                 <ImageButton
-                    android:id="@+id/EditFriendlyArmyAbilities"
+                    android:id="@+id/ArmyEditAbilitiesButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:srcCompat="@android:drawable/ic_menu_edit" />
@@ -118,6 +125,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/VerticalLayoutFriendlyArmy">
@@ -141,7 +149,7 @@
                     android:stretchColumns='*'
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageButton
                     android:id="@+id/EditEnemyArmyButton"

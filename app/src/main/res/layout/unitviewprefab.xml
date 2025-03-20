@@ -9,13 +9,11 @@
     android:tag="ConstraintLayoutUnit">
 
 
-
-
     <Button
         android:id="@+id/UnitTopButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="DropDownClick"
+        android:backgroundTint="@color/purple_500"
         android:text="Ingen text satt"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -28,7 +26,7 @@
         android:id="@+id/UnitStatsLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -66,7 +64,7 @@
             android:stretchColumns='*'
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/ModelsLayout"
@@ -97,6 +95,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/modelsTopButton"></LinearLayout>

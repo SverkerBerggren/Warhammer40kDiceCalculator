@@ -7,7 +7,7 @@ import java.util.Objects;
 public class ArmyIdentifier extends Identifier{
     public String matchupName;
 
-    public ArmyIdentifier(String allegiance, String matchupName)
+    public ArmyIdentifier(Allegiance allegiance, String matchupName)
     {
         this.allegiance = allegiance;
         this.matchupName = matchupName;
@@ -46,7 +46,7 @@ public class ArmyIdentifier extends Identifier{
                     // Assign the value to the corresponding field
                     switch (key) {
                         case "allegiance":
-                            allegiance = value.equals("null") ? null : value;
+                            allegiance = value.equals("null") ? null : Allegiance.valueOf(value);
                             break;
                         case "matchupName":
                             matchupName = value.equals("null") ? null : value;

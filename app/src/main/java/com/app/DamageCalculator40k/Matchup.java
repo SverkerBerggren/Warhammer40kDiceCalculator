@@ -6,6 +6,7 @@ import com.app.DamageCalculator40k.DatasheetModeling.GamePiece;
 import com.app.DamageCalculator40k.DatasheetModeling.Army;
 import com.app.DamageCalculator40k.DatasheetModeling.Model;
 import com.app.DamageCalculator40k.DatasheetModeling.Unit;
+import com.app.DamageCalculator40k.Identifiers.Allegiance;
 import com.app.DamageCalculator40k.Identifiers.ArmyIdentifier;
 import com.app.DamageCalculator40k.Identifiers.Identifier;
 import com.app.DamageCalculator40k.Identifiers.ModelIdentifier;
@@ -32,7 +33,7 @@ public class Matchup {
     {
         Model modelToReturn;
 
-        if(modelId.allegiance.equals("friendly"))
+        if(modelId.allegiance.equals(Allegiance.friendly))
         {
             modelToReturn =friendlyArmy.units.get(modelId.indexUnit).listOfModels.get(modelId.indexModel);
         }
@@ -64,7 +65,7 @@ public class Matchup {
     {
         Unit unitToReturn;
 
-        if(unitId.allegiance.equals("friendly"))
+        if(unitId.allegiance.equals(Allegiance.friendly))
         {
             unitToReturn =friendlyArmy.units.get(unitId.index);
         }
@@ -76,9 +77,7 @@ public class Matchup {
     }
     public Army GetArmy(ArmyIdentifier armyId)
     {
-        Army armyToReturn;
-
-        if(armyId.allegiance.equals("friendly"))
+        if(armyId.allegiance.equals(Allegiance.friendly))
         {
             return friendlyArmy;
         }

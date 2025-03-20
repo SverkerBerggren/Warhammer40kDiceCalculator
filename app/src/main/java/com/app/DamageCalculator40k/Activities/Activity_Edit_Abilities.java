@@ -27,6 +27,7 @@ import com.app.DamageCalculator40k.Identifiers.ModelIdentifier;
 import com.app.DamageCalculator40k.Identifiers.UnitIdentifier;
 import com.app.DamageCalculator40k.Matchup;
 import com.app.DamageCalculator40k.R;
+import com.app.DamageCalculator40k.UI.WidgetType;
 
 import java.util.ArrayList;
 
@@ -34,7 +35,7 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
     private Context context;
     private Matchup matchup;
     private Identifier identifier;
-    private CompareActivity.WidgetType widgetType;
+    private WidgetType widgetType;
     private TableLayout tableLayoutAbilities;
     private final ArrayList<Ability> abilitiesAdded = new ArrayList<>();
     private final ArrayList<Ability> abilitiesRemoved = new ArrayList<>();
@@ -48,7 +49,7 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
         context = getBaseContext();
 
         ImageButton addAbilityButton = findViewById(R.id.EditAbilitiesAdd);
-        widgetType =  (CompareActivity.WidgetType) intent.getSerializableExtra(""+R.string.UI_IDENTIFIER);
+        widgetType =  (WidgetType) intent.getSerializableExtra(""+R.string.UI_IDENTIFIER);
         tableLayoutAbilities = findViewById(R.id.TableLayoutEditAbilities);
 
         identifier = IdentifierUtils.GetIdentifierFromExtra(intent);
@@ -71,12 +72,27 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
             public void handleOnBackPressed() {
-                // Handle the back button event
+                OnBackPressedCallback();
             }
         };
         getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
+    public class OnClickDeactivateAbility implements  View.OnClickListener
+    {
+        private final Ability ability;
+
+        public OnClickDeactivateAbility(Ability ability)
+        {
+            this.ability = ability;
+        }
+        @Override
+        public void onClick(View view) {
+            ability.active = !ability.active;
+
+            FileHandler.GetInstance().saveMatchup(matchup);
+        }
+    }
     private void CreateButton(Ability ability, GamePiece gamePiece)
     {
 
@@ -88,9 +104,7 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
         checkBox.setChecked(ability.active);
         checkBox.setText(ability.name);
         checkBox.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        CompareActivity compareActivity = new CompareActivity();
-        compareActivity.Setup(context,matchup, getLayoutInflater(),tableLayoutAbilities);
-        checkBox.setOnClickListener(compareActivity. new OnClickDeactivateAbility(ability));
+        checkBox.setOnClickListener(new OnClickDeactivateAbility(ability));
         imageButton.setImageResource(com.google.android.material.R.drawable.abc_ic_menu_cut_mtrl_alpha);
 
         imageButton.setOnClickListener(new OnClickRemoveAbility(gamePiece,ability));
@@ -135,10 +149,8 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
         CreateButton(ability, gamePiece);
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-
+    private void OnBackPressedCallback()
+    {
         Intent data = new Intent();
 
         ArrayList<String> removedArray = new ArrayList<>();
@@ -158,25 +170,7 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
         data.putExtra(""+R.string.UI_IDENTIFIER, widgetType);
 
         // TODO: Ta bort skiten
-        data.putExtra(""+ R.string.IDENTIFIER, identifier.toString());
-        if(identifier instanceof UnitIdentifier)
-        {
-            data.putExtra(""+R.string.TYPE_OF_IDENTIFIER, "unit");
-            data.putExtra(""+R.string.UNIT_IDENTIFIER, identifier.toString());
-
-        }
-        if(identifier instanceof ModelIdentifier)
-        {
-            data.putExtra(""+R.string.TYPE_OF_IDENTIFIER, "model");
-            data.putExtra(""+R.string.MODEL_IDENTIFIER, identifier.toString());
-
-        }
-        if(identifier instanceof ArmyIdentifier)
-        {
-            data.putExtra(""+R.string.TYPE_OF_IDENTIFIER, "army");
-            data.putExtra(""+R.string.ARMY_IDENTIFIER, identifier.toString());
-
-        }
+        IdentifierUtils.FillIntentWithIdentifier(data,identifier);
         setResult(RESULT_OK,data);
         finish();
     }

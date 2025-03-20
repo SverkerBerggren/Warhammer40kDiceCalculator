@@ -28,10 +28,14 @@ import com.app.DamageCalculator40k.DatabaseManager;
 import com.app.DamageCalculator40k.DatasheetModeling.GamePiece;
 import com.app.DamageCalculator40k.DatasheetModeling.Weapon;
 import com.app.DamageCalculator40k.Enums.AbilityEnum;
+import com.app.DamageCalculator40k.Enums.IdentifierType;
 import com.app.DamageCalculator40k.FileHandling.FileHandler;
+import com.app.DamageCalculator40k.Identifiers.IdentifierUtils;
 import com.app.DamageCalculator40k.Identifiers.ModelIdentifier;
 import com.app.DamageCalculator40k.Matchup;
 import com.app.DamageCalculator40k.R;
+import com.app.DamageCalculator40k.UI.OnClickDeactivate;
+import com.app.DamageCalculator40k.UI.WidgetType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,11 +59,9 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
 
     private Matchup matchup;
     private Context context;
+    private WidgetType widgetType;
 
     private EditWeaponActivity abilityHolder = this;
-
-
-    private String uiElementName = "";
     private ModelIdentifier modelId;
 
     @Override
@@ -75,7 +77,7 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
 
         modelId = new ModelIdentifier(intent.getStringExtra(""+R.string.MODEL_IDENTIFIER));
 
-        uiElementName = intent.getStringExtra(""+R.string.UI_IDENTIFIER);
+        widgetType = (WidgetType) intent.getSerializableExtra(""+R.string.UI_IDENTIFIER);
 
 
         matchup = FileHandler.GetInstance().getMatchup(matchupName);
@@ -97,19 +99,13 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
             CheckBox checkBox = new CheckBox(new ContextThemeWrapper(context, androidx.appcompat.R.style.Widget_AppCompat_CompoundButton_CheckBox));
             checkBox.setTextSize(20);
             checkBox.setChecked(weapons.get(i).active);
-            CompareActivity compareActivity = new CompareActivity();
-            compareActivity.Setup(context,matchup, getLayoutInflater(),linearLayout);
 
-            checkBox.setOnClickListener(compareActivity.new OnClickDeactivate(weapons.get(i)));
+            checkBox.setOnClickListener( new OnClickDeactivate(weapons.get(i), matchup));
             tableLayout.addView(tableRow);
             tableRow.addView(weaponButton);
             tableRow.addView(checkBox);
 
         }
-
-
-
-
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
@@ -313,18 +309,11 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
 
     @Override
     public void onBackPressed() {
-
-
         super.onBackPressed();
 
         Intent data = new Intent();
-    //    data.putExtra("abilitiesRemoved", abilitiesRemoved.size());
-
-
-
-        data.putExtra(""+R.string.MODEL_IDENTIFIER, modelId.toString());
-        data.putExtra(""+R.string.UI_IDENTIFIER, uiElementName);
-
+        IdentifierUtils.FillIntentWithIdentifier(data,modelId);
+        data.putExtra(""+R.string.UI_IDENTIFIER, widgetType);
 
         setResult(RESULT_OK,data);
         finish();

@@ -27,10 +27,13 @@ import com.app.DamageCalculator40k.Conditions;
 import com.app.DamageCalculator40k.DatasheetModeling.Unit;
 import com.app.DamageCalculator40k.Enums.IdentifierType;
 import com.app.DamageCalculator40k.FileHandling.FileHandler;
+import com.app.DamageCalculator40k.Identifiers.Allegiance;
 import com.app.DamageCalculator40k.Identifiers.UIIdentifier;
 import com.app.DamageCalculator40k.Identifiers.UnitIdentifier;
 import com.app.DamageCalculator40k.Matchup;
 import com.app.DamageCalculator40k.R;
+import com.app.DamageCalculator40k.UI.UiUtils;
+import com.app.DamageCalculator40k.UI.WidgetType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -139,7 +142,7 @@ public class UnitSelection extends AppCompatActivity {
                 checkBox.setTextSize(14);
 
                 checkBox.setText(friendlyArmy.get(i).unitName);
-                checkBox.setOnClickListener(new ClickListenerChoice( true, friendlyArmy.get(i), i,"friendly"));
+                checkBox.setOnClickListener(new ClickListenerChoice( true, friendlyArmy.get(i), i,Allegiance.friendly));
                 attackingLayout.addView(checkBox);
 
 
@@ -151,7 +154,7 @@ public class UnitSelection extends AppCompatActivity {
 
                 radioButton.setText(enemyArmy.get(i).unitName);
                 radioButton.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
-                radioButton.setOnClickListener(new ClickListenerChoice(false, enemyArmy.get(i), i,"enemy"));
+                radioButton.setOnClickListener(new ClickListenerChoice(false, enemyArmy.get(i), i,Allegiance.enemy));
                 defendingGroup.addView(radioButton);
             }
         }
@@ -169,7 +172,7 @@ public class UnitSelection extends AppCompatActivity {
                 checkBox.setTextSize(14);
 
                 checkBox.setText(enemyArmy.get(i).unitName);
-                checkBox.setOnClickListener(new ClickListenerChoice(true, enemyArmy.get(i), i,"enemy"));
+                checkBox.setOnClickListener(new ClickListenerChoice(true, enemyArmy.get(i), i,Allegiance.enemy));
                 attackingLayout.addView(checkBox);
             }
             for (int i = 0; i < friendlyArmy.size(); i++)
@@ -178,7 +181,7 @@ public class UnitSelection extends AppCompatActivity {
                 radioButton.setTextSize(14);
                 radioButton.setText(friendlyArmy.get(i).unitName);
                 radioButton.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
-                radioButton.setOnClickListener(new ClickListenerChoice(false, friendlyArmy.get(i), i,"friendly"));
+                radioButton.setOnClickListener(new ClickListenerChoice(false, friendlyArmy.get(i), i,Allegiance.friendly));
                 defendingGroup.addView(radioButton);
             }
         }
@@ -236,9 +239,9 @@ public class UnitSelection extends AppCompatActivity {
         String name;
         int index;
 
-        private String allegiance;
+        private Allegiance allegiance;
 
-        ClickListenerChoice(boolean attacking, Unit unitAdded, int index, String allegiance)
+        ClickListenerChoice(boolean attacking, Unit unitAdded, int index,  Allegiance  allegiance)
         {
             this.attacking = attacking;
             this.unitAdded = unitAdded;
@@ -292,7 +295,7 @@ public class UnitSelection extends AppCompatActivity {
         }
     }
 
-    private View CreateTableRow(String name,int index,String allegiance)
+    private View CreateTableRow(String name, int index, Allegiance allegiance)
     {
 
         UnitIdentifier unitId = new UnitIdentifier(allegiance,null,index,matchup.name);
@@ -323,7 +326,8 @@ public class UnitSelection extends AppCompatActivity {
         editAbilitiesButton.setMinWidth((int)(scrollViewWidth * 0.25));
 
 
-        editAbilitiesButton.setOnClickListener(new StartAbilitiesEdit(unitId));
+        Unit unit = matchup.GetUnit(unitId);
+        editAbilitiesButton.setOnClickListener(new UiUtils.OnClickListenerEditAbilites(unitId,new UIIdentifier(WidgetType.AbilityLayout,unitId),null,context));
 
         editAbilitiesButton.setTextSize(Dimension.DP,28);
 
@@ -355,7 +359,7 @@ public class UnitSelection extends AppCompatActivity {
             Intent intent = new Intent(context, Activity_Edit_Abilities.class);
             intent.putExtra(IdentifierType.IDENTIFIER.name(), unitIdentifier.GetIdentifierEnum().name());
             intent.putExtra("" +unitIdentifier.GetIdentifierEnum().GetResourceId(), unitIdentifier.toString());
-            UIIdentifier uiId = new UIIdentifier(CompareActivity.WidgetType.ArmyEditButton,unitIdentifier);
+            UIIdentifier uiId = new UIIdentifier(WidgetType.ArmyEditButton,unitIdentifier);
 
             intent.putExtra(""+R.string.UI_IDENTIFIER, uiId.widgetType);
             activityResultLauncherAbility.launch(intent);
@@ -393,10 +397,7 @@ public class UnitSelection extends AppCompatActivity {
     public void StartUnitEditActivity(UnitIdentifier unitId)
     {
         Intent intent = new Intent(this, EditUnitActivity.class);
-
-        intent.putExtra(IdentifierType.IDENTIFIER.name(), unitId.GetIdentifierEnum().name());
-        intent.putExtra("" +unitId.GetIdentifierEnum().GetResourceId(), unitId.toString());
-
+        EditUnitActivity.FillIntent(intent,unitId);
         launchUnitEditActivity.launch(intent);
 
     }
@@ -420,6 +421,5 @@ public class UnitSelection extends AppCompatActivity {
 
 
     }
-
 }
 

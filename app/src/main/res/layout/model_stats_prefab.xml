@@ -13,7 +13,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginEnd="60dp"
         android:contentDescription="@string/UNIT_MODIFIER"
-        android:tag="dontDropDown"
+        android:tag="@string/ExcludeDropDownTag"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/inividualModelTopButton"
         app:layout_constraintTop_toTopOf="@+id/inividualModelTopButton"
@@ -224,7 +224,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="5dp"
         android:checked="true"
-        android:tag="dontDropDown"
+        android:tag="@string/ExcludeDropDownTag"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imageButton" />
 

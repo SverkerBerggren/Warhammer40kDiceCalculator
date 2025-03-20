@@ -1,5 +1,6 @@
 package com.app.DamageCalculator40k.Identifiers;
 
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
@@ -11,24 +12,24 @@ public class IdentifierUtils {
     // TODO: Make this more efficient by reducing string constructions
     public static Identifier GetIdentifierFromExtra(Intent intent)
     {
-        // TODO: upgrade api?
         IdentifierType identifierType = IdentifierType.valueOf(intent.getStringExtra(IdentifierType.IDENTIFIER.name()));
         Identifier identifier;
+        String identifierData = intent.getStringExtra( identifierType.getName());
         switch (identifierType)
         {
             case UNIT:
             {
-                identifier = new UnitIdentifier(intent.getStringExtra( ""+ R.string.UNIT_IDENTIFIER));
+                identifier = new UnitIdentifier(identifierData);
                 break;
             }
             case ARMY:
             {
-                identifier = new ArmyIdentifier(intent.getStringExtra("" + R.string.ARMY_IDENTIFIER));
+                identifier = new ArmyIdentifier(identifierData);
                 break;
             }
             case MODEL:
             {
-                identifier = new ModelIdentifier(intent.getStringExtra("" + R.string.MODEL_IDENTIFIER));
+                identifier = new ModelIdentifier(identifierData);
                 break;
             }
             default:
@@ -38,5 +39,11 @@ public class IdentifierUtils {
             }
         }
         return identifier;
+    }
+
+    public static void FillIntentWithIdentifier(Intent intent, Identifier identifier )
+    {
+        intent.putExtra(IdentifierType.IDENTIFIER.name(),identifier.GetIdentifierEnum().getName());
+        intent.putExtra(identifier.GetIdentifierEnum().getName(),identifier.toString());
     }
 }

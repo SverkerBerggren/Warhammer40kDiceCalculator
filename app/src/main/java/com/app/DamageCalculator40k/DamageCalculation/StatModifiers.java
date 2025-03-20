@@ -19,9 +19,9 @@ public  class StatModifiers
     }
 
     // According to the rules a hit roll or a wound roll can never be modified by more than 1
-    public short GetModifierRespectingCap(StatModifier statModifier)
+    public int GetModifierRespectingCap(StatModifier statModifier)
     {
-        short retValue = 0;
+        int retValue = 0;
         retValue = statModifiers[statModifier.ordinal()];
         if(statModifier == StatModifier.HitRoll || statModifier == StatModifier.WoundRoll )
         {
@@ -39,20 +39,17 @@ public  class StatModifiers
     public StatModifiers Copy()
     {
         StatModifiers retModifiers = new StatModifiers();
-        for(int i = 0; i < retModifiers.statModifiers.length; i++)
-        {
-            retModifiers.statModifiers[i] = statModifiers[i];
-        }
+        System.arraycopy(statModifiers, 0, retModifiers.statModifiers, 0, retModifiers.statModifiers.length);
         return retModifiers;
     }
 
-    public void AddToModifier(StatModifier statModifier, short value)
+    public void AddToModifier(StatModifier statModifier, int value)
     {
         statModifiers[statModifier.ordinal()] += value;
     }
-    public void SetStatModifier(StatModifier statModifier, short value)
+    public void SetStatModifier(StatModifier statModifier, int value)
     {
         statModifiers[statModifier.ordinal()] = value;
     }
-    private final short[] statModifiers = new short[StatModifier.values().length];
+    private final int[] statModifiers = new int[StatModifier.values().length];
 }

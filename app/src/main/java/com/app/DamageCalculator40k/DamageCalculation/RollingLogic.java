@@ -390,12 +390,10 @@ public class RollingLogic {
     // TODO: Refactor so it inherits instead
     private void SetStatModifiers(Army army, Unit unit, StatModifiers statModifiers)
     {
-    //     statModifiers.SetStatModifier(StatModifier.Toughness, (short) (army.toughnessModifier + unit.toughnessModifier ) );
-    //     statModifiers.SetStatModifier(StatModifier.Strength, (short) (army.strengthModifier + unit.strengthModifier));
-    //     statModifiers.SetStatModifier(StatModifier.ArmorSave, (short) (army.armorSaveModifier + unit.armorSaveModifier));
-    //     statModifiers.SetStatModifier(StatModifier.InvulnerableSave, (short) (army.invulnerableSaveModifier + unit.invulnerableSaveModifier));
-    //     statModifiers.SetStatModifier(StatModifier.WoundAmount, (short) (army.woundsModifier + unit.woundsModifier));
-    //     statModifiers.SetStatModifier(StatModifier.Attacks, (short) (army.attacksModifier + unit.attacksModifier));
+        for(StatModifier statModifier : StatModifier.values())
+        {
+            statModifiers.SetStatModifier(statModifier,army.getStatModifiers().GetModifier(statModifier) + unit.getStatModifiers().GetModifier(statModifier) );
+        }
     }
 
     private boolean ShouldSkipWeapon(Weapon rangedWeapon, Conditions conditions)

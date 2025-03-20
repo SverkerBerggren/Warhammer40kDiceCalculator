@@ -15,4 +15,11 @@
         <item name="android:textAlignment">center</item>
         <item name="android:textSize">10sp</item>
     </style>
+    <style name="UnitButton">
+        <item name="android:textAlignment">center</item>
+        <item name="android:backgroundTint">@color/teal_200</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:width">250dp</item>>
+        <item name="android:autoSizeTextType">uniform</item>>
+    </style>
 </resources>
