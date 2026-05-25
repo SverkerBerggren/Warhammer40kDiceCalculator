@@ -33,7 +33,7 @@ public class ParseActivity extends AppCompatActivity {
 
                         FileHandler.GetInstance().CreateArmyFromFile(getBaseContext(), uri);
 
-
+                        FileHandler.GetInstance().SaveBsData(getBaseContext(),uri);
                         CreateArmyButtons(FileHandler.GetInstance().GetSavedArmies());
                     }
                 }

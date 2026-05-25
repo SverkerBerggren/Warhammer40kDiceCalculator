@@ -5,12 +5,12 @@ import android.util.Log;
 
 import com.app.DamageCalculator40k.Abilities.Ability;
 import com.app.DamageCalculator40k.Abilities.GenericAbilities.MortalWoundOnHit;
+import com.app.DamageCalculator40k.Abilities.UnimplementedAbility;
 import com.app.DamageCalculator40k.DatabaseManager;
-import com.app.DamageCalculator40k.DatasheetModeling.Army;
-import com.app.DamageCalculator40k.DatasheetModeling.DiceAmount;
 import com.app.DamageCalculator40k.DatasheetModeling.Model;
 import com.app.DamageCalculator40k.DatasheetModeling.Unit;
 import com.app.DamageCalculator40k.DatasheetModeling.Weapon;
+import com.app.DamageCalculator40k.Enums.Faction;
 
 import org.w3c.dom.*;
 import javax.xml.parsers.*;
@@ -21,21 +21,38 @@ import javax.xml.xpath.XPathFactory;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class XmlParser
 {
+    // Todo: fixa skiten ghetto af, men testar walla
+    public final HashMap<DatabaseManager.NameFactionKey, Unit> nameToUnit = new HashMap<>();
+    public final HashMap<String, Unit> idToUnit = new HashMap<>();
+    public final HashMap<DatabaseManager.NameFactionKey, Model> nameToModel = new HashMap<>();
+    public final HashMap<String, Model> idToModel = new HashMap<>();
+    public final HashMap<String, ArrayList<Weapon>> idToWeapon = new HashMap<>();
+    public final HashMap<DatabaseManager.NameFactionKey, ArrayList<Weapon>> nameToWeapon = new HashMap<>();
+    public final HashMap<DatabaseManager.NameFactionUnitKey, ArrayList<Weapon>> nameUnitToWeapon = new HashMap<>();
+    public final  HashMap<DatabaseManager.NameFactionUnitKey,Weapon> nameFactionUnitToWeapon = new HashMap<>();
+
     int p_ParseUnitStat(String StatString)
     {
-        int ReturnValue = 0;
-        String StringToParse = StatString.replaceAll("\\+|\\*|D|[a-zA-Z]+|\\s+","");
-        if(StringToParse.equals(""))
-        {
-            return(ReturnValue);
+        if (StatString == null || StatString.trim().isEmpty()
+                || StatString.equals("-") || StatString.equals("N/A")) {
+            return 0;
         }
-        ReturnValue = Integer.parseInt(StringToParse);
-
-        return ReturnValue;
+        // Take only the first value if slash-separated (e.g. plasma gun "2/3")
+        String firstPart = StatString.split("/")[0];
+        String cleaned = firstPart.replaceAll("\\+|\\*|[a-zA-Z]+|\\s+", "").trim();
+        if (cleaned.isEmpty()) return 0;
+        try {
+            return Integer.parseInt(cleaned);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
+
     static Node p_FirsChildByType(Node TopNode,String ChildType)
     {
         Node ReturnValue = null;
@@ -50,13 +67,110 @@ public class XmlParser
         }
         return(ReturnValue);
     }
-    public Army ParseArmy(String ArmyData)
+
+    static boolean ContainsTypeWithValue(Node node, String type,String value)
     {
-        Army ReturnValue = new Army();
-        try{
+        Node nodeToFind = node.getAttributes().getNamedItem(type);
+        if(nodeToFind != null)
+        {
+            return  nodeToFind.getNodeValue().equals(value);
+        }
+        return  false;
+    }
+
+    static Node GetChildNodeWithAttributeValue(Node node, String attribute,String value)
+    {
+        for(int i = 0; i < node.getChildNodes().getLength();i++)
+        {
+            Node childNode = node.getChildNodes().item(i);
+            Node attributeNode = childNode.getAttributes().getNamedItem(attribute);
+            if(attributeNode != null)
+            {
+                if(attributeNode.getNodeValue().equals(value))
+                {
+                    return childNode;
+                }
+            }
+        }
+        return null;
+    }
+
+    // If attributeType is null so does it only retrieve a node based on its element type
+    private Node GetFirstNodeOfTypeRecursively(Node node,String elementName,String attributeType,String attributeValue)
+    {
+        NodeList children = node.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++)
+        {
+            String nodeName = children.item(i).getNodeName();
+
+            if(children.item(i).getNodeName().equalsIgnoreCase(elementName))
+            {
+                if(attributeType != null)
+                {
+                    Node namedItem = children.item(i).getAttributes().getNamedItem(attributeType);
+                    if(namedItem != null)
+                    {
+                        if (namedItem.getNodeValue().equalsIgnoreCase(attributeValue))
+                        {
+                            return children.item(i);
+                        }
+                    }
+                }
+                else
+                {
+                    return children.item(i);
+                }
+            }
+        }
+        for (int i = 0; i < children.getLength(); i++)
+        {
+            Node nodeToFind =  GetFirstNodeOfTypeRecursively(children.item(i),elementName,attributeType,attributeValue);
+            if(nodeToFind != null)
+            {
+                return nodeToFind;
+            }
+        }
+        return null;
+    }
+
+    private String OnlyNumeric(String string)
+    {
+        StringBuilder retString = new StringBuilder();
+        for(int i = 0; i < string.length();i++)
+        {
+            if(Character.isDigit( string.charAt(i)))
+            {
+                retString.append(string.charAt(i));
+            }
+        }
+        return retString.toString();
+    }
+
+    //TODO: finns redan en metod som ska tas bort
+    private Model ParseModelFromProfile(Node node)
+    {
+        Model modelToReturn = new Model();
+        modelToReturn.name = node.getAttributes().getNamedItem("name").getNodeValue();
+        Node characteristics = p_FirsChildByType(node,"characteristics");
+
+        String toughnessString = GetChildNodeWithAttributeValue(characteristics,"name","T").getFirstChild().getNodeValue();
+        modelToReturn.toughness = Integer.parseInt(toughnessString);
+
+        String saveString = OnlyNumeric( GetChildNodeWithAttributeValue(characteristics,"name","SV").getFirstChild().getNodeValue());
+        modelToReturn.armorSave = Integer.parseInt(saveString);
+
+        String woundString = GetChildNodeWithAttributeValue(characteristics,"name","W").getFirstChild().getNodeValue();
+        modelToReturn.wounds = Integer.parseInt(woundString);
+
+        return modelToReturn;
+    }
+
+    private Document ParseXML(String data)
+    {
+        try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            InputStream stream = new ByteArrayInputStream(ArmyData.getBytes(Charset.defaultCharset()));
+            InputStream stream = new ByteArrayInputStream(data.getBytes(Charset.defaultCharset()));
             Document doc = dBuilder.parse(stream);
             doc.getDocumentElement().normalize();
             //COPY PASTE
@@ -71,448 +185,752 @@ public class XmlParser
                 Node emptyTextNode = emptyTextNodes.item(i);
                 emptyTextNode.getParentNode().removeChild(emptyTextNode);
             }
-            //END COPY PASTE
-            Node ForceNode = p_FirsChildByType(p_FirsChildByType(doc.getDocumentElement(),"forces"),"force");
-            Node ArmyRules = p_FirsChildByType(ForceNode,"rules");
-            if(ArmyRules != null)
-            {
-                ReturnValue.GetAbilities().addAll(ParseRule(ArmyRules));
-            }
-            Node ArmyModels = p_FirsChildByType(ForceNode,"selections");
-            for(int i = 0; i < ArmyModels.getChildNodes().getLength();i++)
-            {
-                Node Child = ArmyModels.getChildNodes().item(i);
-                if(Child.getAttributes().getNamedItem("type").getNodeValue().equals("model"))
-                {
-                    Unit NewUnit = new Unit();
-                    NewUnit.listOfModels = ParseModel(Child);
-                    NewUnit.unitName = NewUnit.listOfModels.get(0).name;
-                    ReturnValue.units.add(NewUnit);
-                }
-                else if(Child.getAttributes().getNamedItem("type").getNodeValue().equals("unit"))
-                {
-                    ReturnValue.units.add(ParseUnit(Child));
-                }
-                else if(Child.getAttributes().getNamedItem("type").getNodeValue().equals("upgrade"))
-                {
-                    Ability NewArmyRule = p_ParseArmyRule(Child);
-                    if(NewArmyRule != null)
-                    {
-                        ReturnValue.GetAbilities().add(NewArmyRule);
-                    }
-                }
-            }
+            return  doc;
         }
-        catch(Exception e)
+        catch (Exception e)
         {
-
-            Log.d("Knas i parse", e.getMessage());
+            Log.d("Knas i parse","abow");
             e.printStackTrace();
-
-            String Error = e.getMessage();
-            String Error2 = e.getMessage();
         }
-        return(ReturnValue);
+        return null;
     }
-    Ability p_ParseArmyRule(Node SelectionsNode)
-    {
-        Ability ReturnValue = null;
-        Node SubSelections = p_FirsChildByType(SelectionsNode,"selections");
-        if(SubSelections == null)
-        {
-            return ReturnValue;
-        }
-        Node RuleSelection = p_FirsChildByType(SubSelections,"selection");
-        if(RuleSelection == null) return ReturnValue;
 
-        ReturnValue = DatabaseManager.getInstance().GetAbility(RuleSelection.getAttributes().getNamedItem("name").getNodeValue());
-        return(ReturnValue);
-    }
-    DiceAmount p_DamageFromString(String StringToConvert)
+    // TODO: temporar skas andras trust
+    public void FillDatabase(ArrayList<String> xmlDocs)
     {
-        DiceAmount ReturnValue = new DiceAmount();
-        int ParseOffset = 0;
-        int CurrentInteger = -1;
-        while(ParseOffset < StringToConvert.length())
+        for (String xmlDoc : xmlDocs)
         {
-            if(StringToConvert.charAt(ParseOffset) == 'D')
-            {
-                ParseOffset += 1;
-                if(ParseOffset < StringToConvert.length())
+            Faction faction = Faction.AstraMilitarum;
+            Document doc = ParseXML(xmlDoc);
+            CreateSharedModelStats(doc,faction);   // builds idToModel from sharedProfiles
+        }
+        for (String xmlDoc : xmlDocs)
+        {
+            Document doc = ParseXML(xmlDoc);
+            Faction faction = Faction.AstraMilitarum;
+            IndexAllWeapons(doc.getDocumentElement(),faction);
+            IndexAllModels(doc.getDocumentElement(),faction);
+            IndexAllUnits(doc.getDocumentElement(),faction);
+        }
+        //Debug
+        Map<String,Integer> duplicateUnits = new HashMap<>();
+        idToUnit.forEach((key,value)->{
+            idToUnit.forEach((otherKey,otherValue)->{
+                if(!key.equals( otherKey) && value.unitName.equals(otherValue.unitName) )
                 {
-                    if(StringToConvert.charAt(ParseOffset) == '6')
+                    Integer duplicateValue = duplicateUnits.get(otherValue.unitName);
+                    if(duplicateValue == null)
                     {
-                        ReturnValue.numberOfD6 = CurrentInteger == -1 ? 1 : CurrentInteger;
+                        duplicateUnits.put(otherValue.unitName,1);
                     }
-                    else if(StringToConvert.charAt(ParseOffset) == '3')
+                    else
                     {
-                        ReturnValue.numberOfD3 = CurrentInteger == -1 ? 1 : CurrentInteger;
+                        duplicateUnits.put(otherValue.unitName,duplicateValue+1);
                     }
-                    ParseOffset += 1;
-                    CurrentInteger = -1;
                 }
-            }
-            else if(StringToConvert.charAt(ParseOffset) == '+')
-            {
-                if(CurrentInteger != -1)
-                {
-                    ReturnValue.baseAmount = CurrentInteger;
-                }
-                ParseOffset += 1;
-            }
-            else if(StringToConvert.charAt(ParseOffset) == '/')
-            {
-                break;
-            }
-            else
-            {
-                CurrentInteger = Character.getNumericValue(StringToConvert.charAt(ParseOffset));
-                ParseOffset +=1;
-            }
-        }
-        if(CurrentInteger != -1)
-        {
-
-
-            ReturnValue.baseAmount = CurrentInteger;
-        }
-        return(ReturnValue);
+            });
+        });
     }
-    void p_ParseWeaponType(Weapon ResultWeapon, String TypeString)
-    {
-        if(TypeString.equals("Melee"))
-        {
-            ResultWeapon.isMelee = true;
-            ResultWeapon.amountOfAttacks.baseAmount = 1;
-            return;
-        }
-        int ParseOffset = 0;
-        while(ParseOffset < TypeString.length())
-        {
-            char CurrentChar = TypeString.charAt(ParseOffset);
-            if( (CurrentChar == 'D' && ParseOffset + 1 < TypeString.length() && TypeString.charAt(ParseOffset+1) >= '0' &&
-                    TypeString.charAt(ParseOffset+1) <= '9')
-                    || CurrentChar >= '0' && CurrentChar <= '9')
+    public void IndexAllUnits(Node node,Faction faction) {
+        if (node.getNodeType() != Node.ELEMENT_NODE) return;
+
+        NamedNodeMap attrs = node.getAttributes();
+        if (attrs != null) {
+            if(node.getNodeName().equalsIgnoreCase("selectionEntry"))
             {
-                break;
-            }
-            ParseOffset += 1;
-        }
-        String DamageString = TypeString.substring(ParseOffset);
-        if(ParseOffset != 0)
-        {
-            String AbilityString = TypeString.substring(0,ParseOffset);
-            // Gammalt
-            if(AbilityString.contains("Dakka")) {
-                char LastCharacter = DamageString.charAt(DamageString.length()-1);
-                DamageString = "";
-                DamageString += LastCharacter;
+                Node typeAttr = attrs.getNamedItem("type");
+                Unit unit = null;
 
-            }
-            else{
-                // Gammalt
-                ResultWeapon.GetAbilities().add(new MortalWoundOnHit(4));
-            }
-        }
-        ResultWeapon.amountOfAttacks = new DiceAmount(p_DamageFromString(DamageString));
-    }
-    Weapon p_ParseWeapon(Node ProfileNode)
-    {
-        Node CharacteristicNode = p_FirsChildByType(ProfileNode,"characteristics");
-        Weapon NewWeapon = new Weapon();
-        NewWeapon.name =ProfileNode.getAttributes().getNamedItem("name").getNodeValue();
-
-        p_ParseWeaponType(NewWeapon,CharacteristicNode.getChildNodes().item(1).getTextContent());
-
-        String StrengthString = CharacteristicNode.getChildNodes().item(2).getTextContent();
-        if(StrengthString.equals("x2"))
-        {
-            NewWeapon.strength = -2;
-        }
-        else
-        {
-            NewWeapon.strength = p_ParseUnitStat(StrengthString);
-        }
-        NewWeapon.ap = p_ParseUnitStat(CharacteristicNode.getChildNodes().item(3).getTextContent());
-        NewWeapon.damageAmount = p_DamageFromString(CharacteristicNode.getChildNodes().item(4).getTextContent());
-        String WeaponAbilityString = CharacteristicNode.getChildNodes().item(5).getTextContent();
-        if(!WeaponAbilityString.equals("-"))
-        {
-           // NewWeapon.GetAbilities().addAll(WeaponAbilityString);
-        }
-        for(Ability ability : NewWeapon.GetAbilities())
-        {
-            if(ability.name.contains("grenade") ||ability.name.contains("Grenade")  )
-            {
-                NewWeapon.active = false;
-            }
-        }
-        return(NewWeapon);
-    }
-
-
-    void p_ParseProfile(Node ProfileNode, Model ModelToModify)
-    {
-        if(ProfileNode.getAttributes().getNamedItem("typeName").getNodeValue().equals("Abilities"))
-        {
-            String AbilityName =ProfileNode.getAttributes().getNamedItem("name").getNodeValue();
-            String AbilityDescription = "";
-            Node CharacteristicsNode = p_FirsChildByType(ProfileNode,"characteristics");
-            if(CharacteristicsNode != null)
-            {
-                Node DescriptionNode = p_FirsChildByType(CharacteristicsNode,"characteristic");
-                if(DescriptionNode != null)
+                if(typeAttr != null)
                 {
-                    AbilityDescription = DescriptionNode.getTextContent();
-                }
-            }
-            //Ability.addModelAbility(ModelToModify,AbilityName,AbilityDescription);
-            //Ability NewAbility = Ability.getAbilityType(ProfileNode.getAttributes().getNamedItem("name").getNodeValue());
-            //ModelToModify.listOfAbilites.add(NewAbility);
-        }
-        else if(ProfileNode.getAttributes().getNamedItem("typeName").getNodeValue().equals("Unit"))
-        {
-            Node Characteristics = p_FirsChildByType(ProfileNode,"characteristics");
-            String FirstChildValue = Characteristics.getChildNodes().item(0).getTextContent();
-            ModelToModify.strength = p_ParseUnitStat(Characteristics.getChildNodes().item(3).getTextContent());
-            ModelToModify.toughness = p_ParseUnitStat(Characteristics.getChildNodes().item(4).getTextContent());
-            ModelToModify.wounds = p_ParseUnitStat(Characteristics.getChildNodes().item(5).getTextContent());
-            ModelToModify.attacks = p_ParseUnitStat(Characteristics.getChildNodes().item(6).getTextContent());
-            ModelToModify.armorSave = p_ParseUnitStat(Characteristics.getChildNodes().item(8).getTextContent());
-        }
-        else if(ProfileNode.getAttributes().getNamedItem("typeName").getNodeValue().equals("Weapon"))
-        {
-            ModelToModify.weapons.add(p_ParseWeapon(ProfileNode));
-        }
-    }
-    ArrayList<Model> ParseModel(Node ModelNode)
-    {
-        ArrayList<Model> ReturnValue = new ArrayList<>();
-        NamedNodeMap Attributes = ModelNode.getAttributes();
-        Node NamedItem = Attributes.getNamedItem("number");
-        String NodeValue = NamedItem.getNodeValue();
-        int ModelCount = Integer.parseInt(ModelNode.getAttributes().getNamedItem("number").getNodeValue());
-        Model BaseModel = new Model();
-        BaseModel.name = ModelNode.getAttributes().getNamedItem("name").getNodeValue();
-        if(p_FirsChildByType(ModelNode,"rules") != null)
-        {
-            BaseModel.GetAbilities().addAll( ParseRule(p_FirsChildByType(ModelNode,"rules")));
-        }
-        Node ProfileNode = p_FirsChildByType(ModelNode,"profiles");
-        boolean ParsedStat = false;
-        for(int i = 0; i < ProfileNode.getChildNodes().getLength();i++)
-        {
-            Node CurrentNode = ProfileNode.getChildNodes().item(i);
-            if(CurrentNode.getAttributes().getNamedItem("typeName").getNodeValue().equals("Unit"))
-            {
-                if(!ParsedStat)
-                {
-                    p_ParseProfile(CurrentNode,BaseModel);
-                }
-                ParsedStat = true;
-            }
-            else
-            {
-                p_ParseProfile(CurrentNode,BaseModel);
-            }
-        }
-        Node WeaponsNode = p_FirsChildByType(ModelNode,"selections");
-        if(WeaponsNode != null)
-        {
-            for(int i = 0; i < WeaponsNode.getChildNodes().getLength();i++)
-            {
-                Node CurrentSelection = WeaponsNode.getChildNodes().item(i);
-                String NodeName = CurrentSelection.getNodeName();
-                //if(!NodeName.equals("selection"))
-                //{
-                //    continue;
-                //}
-                if(CurrentSelection.getAttributes().getNamedItem("type").getNodeValue().equals("upgrade"))
-                {
-                    Node ProfilesNode = p_FirsChildByType(CurrentSelection,"profiles");
-                    if(ProfilesNode == null)
+                    // Assumes that it is a composite unit consisting of different models, in that case so is the selection entry "unit"
+                    if (typeAttr.getNodeValue().equalsIgnoreCase("unit") ) {
+                        unit = ParseUnitFromSelectionEntry(node);
+                    }
+                    // Makes the assumptions that a single model unit is defined by its Model first. This will create more units than there are such in the case of sentinels, but that should not be a problem
+
+                    if(typeAttr.getNodeValue().equalsIgnoreCase("model"))
                     {
-                        Node NewSelection = p_FirsChildByType(CurrentSelection,"selections");
-                        if(NewSelection == null)
-                        {
-                            continue;
+                        Model model = ParseModelFromSelectionEntry(node);
+
+                        if (IsValidModel(model)) {
+                            unit = new Unit();
+                            unit.unitName = model.name;
+                            unit.GetAbilities().addAll(model.GetAbilities());
                         }
-                        NewSelection = p_FirsChildByType(NewSelection,"selection");
-                        if(NewSelection == null)
-                        {
-                            continue;
-                        }
-                        CurrentSelection = NewSelection;
-                        ProfilesNode = p_FirsChildByType(CurrentSelection,"profiles");
                     }
-                    if(ProfilesNode == null)
+                }
+                if(unit != null)
+                {
+                    Node idAttr = attrs.getNamedItem("id");
+                    if (idAttr != null) {
+                        idToUnit.put( idAttr.getNodeValue(), unit);
+                    }
+                    if(unit.unitName.equalsIgnoreCase("lord solar leontus"))
                     {
+                        Log.d("Unit parsing","Found unit with no weapons " );
+
+                    }
+                    nameToUnit.put(new DatabaseManager.NameFactionKey( unit.unitName,faction), unit);
+                    ArrayList<Weapon> weapons =  CollectWeaponsFromSubtree(node);
+                    if(weapons.isEmpty())
+                    {
+                        String message = unit.unitName;
+                        if(idAttr != null)
+                        {
+                            message += " " + idAttr.getNodeValue();
+                        }
+                        Log.d("Unit parsing","Found unit with no weapons " + message);
+                    }
+                    else
+                    {
+                        for(Weapon weapon : weapons)
+                        {
+                            ArrayList<Weapon> weaponArrayList = new ArrayList<>();
+                            weaponArrayList.add(weapon);
+                            nameUnitToWeapon.put(new DatabaseManager.NameFactionUnitKey(weapon.name,faction,unit.unitName),weaponArrayList);
+                            if(weapon.name.equalsIgnoreCase("tempestus dagger"))
+                            {
+                                Log.d("abow","multi weapon bullshit");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        NodeList children = node.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+            IndexAllUnits(children.item(i),faction);
+        }
+    }
+
+    private Unit ParseUnitFromSelectionEntry(Node unitNode) {
+        Unit unit = new Unit();
+
+        Node nameAttr = unitNode.getAttributes().getNamedItem("name");
+        if (nameAttr == null) return null;
+        unit.unitName = nameAttr.getNodeValue();
+
+        // Unit-level abilities (things like "Grim Demeanour", "Jungle Fighters" etc.)
+        // These live in the direct profiles child of the unit node, not nested deeper
+        Node profilesNode = p_FirsChildByType(unitNode, "profiles");
+
+        if (profilesNode != null) {
+            NodeList profileChildren = profilesNode.getChildNodes();
+            for (int i = 0; i < profileChildren.getLength(); i++) {
+                Node profileNode = profileChildren.item(i);
+                if (profileNode.getNodeType() != Node.ELEMENT_NODE) continue;
+
+                NamedNodeMap attrs = profileNode.getAttributes();
+                if (attrs == null) continue;
+
+                Node typeNameAttr = attrs.getNamedItem("typeName");
+                if (typeNameAttr == null) continue;
+
+                if (typeNameAttr.getNodeValue().equals("Abilities")) {
+                    Ability ability = parseAbilityFromProfileNode(profileNode);
+                    if (ability != null) {
+                        unit.GetAbilities().add(ability);
+                    }
+                }
+            }
+        }
+
+        // Also collect abilities from infoGroups (Leader ability, special rules etc.)
+        // These are in <infoGroups> > <infoGroup> > <profiles> > <profile typeName="Abilities">
+        Node infoGroupsNode = p_FirsChildByType(unitNode, "infoGroups");
+        if (infoGroupsNode != null) {
+            NodeList infoGroups = infoGroupsNode.getChildNodes();
+            for (int i = 0; i < infoGroups.getLength(); i++) {
+                Node infoGroup = infoGroups.item(i);
+                if (infoGroup.getNodeType() != Node.ELEMENT_NODE) continue;
+                Node infoProfilesNode = p_FirsChildByType(infoGroup, "profiles");
+                if (infoProfilesNode != null) {
+                    NodeList infoProfiles = infoProfilesNode.getChildNodes();
+                    for (int j = 0; j < infoProfiles.getLength(); j++) {
+                        Node profileNode = infoProfiles.item(j);
+                        if (profileNode.getNodeType() != Node.ELEMENT_NODE) continue;
+                        NamedNodeMap attrs = profileNode.getAttributes();
+                        if (attrs == null) continue;
+                        Node typeNameAttr = attrs.getNamedItem("typeName");
+                        if (typeNameAttr != null
+                                && typeNameAttr.getNodeValue().equals("Abilities")) {
+                            Ability ability = parseAbilityFromProfileNode(profileNode);
+                            if (ability != null) {
+                                unit.GetAbilities().add(ability);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Now collect the models that make up this unit
+        // They live inside selectionEntryGroups, potentially nested several levels deep
+
+
+        // collectModelsFromUnitSubtree(unitNode, unit);
+
+        return unit;
+    }
+
+    private void collectModelsFromUnitSubtree(Node node, Unit unit) {
+        if (node.getNodeType() != Node.ELEMENT_NODE) return;
+
+        NamedNodeMap attrs = node.getAttributes();
+        if (attrs != null) {
+            Node typeAttr = attrs.getNamedItem("type");
+            if (typeAttr != null && typeAttr.getNodeValue().equals("model")) {
+                Model m = ParseModelFromSelectionEntry(node);
+                if (m != null) {
+                    unit.listOfModels.add(m);
+                }
+                // Don't recurse further once we found a model entry,
+                // its children are weapon/upgrade options not more models
+                return;
+            }
+        }
+
+        NodeList children = node.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+            collectModelsFromUnitSubtree(children.item(i), unit);
+        }
+    }
+    private boolean IsValidModel(Model model)
+    {
+        if(model == null)
+        {
+            return false;
+        }
+        if(model.wounds == -1 || model.toughness == -1 || model.armorSave == -1 )
+        {
+            return false;
+        }
+        return true;
+    }
+    private void IndexAllModels(Node node,Faction faction) {
+        if (node.getNodeType() != Node.ELEMENT_NODE) return;
+
+        NamedNodeMap attrs = node.getAttributes();
+        if (attrs != null) {
+            String nodeName = node.getNodeName();
+            Node typeNode = attrs.getNamedItem("type");
+
+            if (typeNode != null && nodeName.equalsIgnoreCase("selectionEntry")) {
+                String typeString = typeNode.getNodeValue();
+                // Selection entries are scuffed
+                if (typeString.equalsIgnoreCase("model")) {
+                    Node idAttr = attrs.getNamedItem("id");
+                    String idValue = "";
+                    if (idAttr != null)
+                        idValue = idAttr.getNodeValue();
+
+                    Model model = ParseModelFromSelectionEntry(node);
+                    if(model.name.equalsIgnoreCase("tempestor aquilon"))
+                    {
+                        Log.d("Model parsing","Tempestor aquilon");
+                    }
+
+                    if (IsValidModel(model)) {
+                        if (idAttr != null) {
+                            idValue = idAttr.getNodeValue();
+                            idToModel.put(idValue, model);
+                        }
+                        nameToModel.put(new DatabaseManager.NameFactionKey(model.name,faction), model);
+                    }
+                    else
+                    {
+                        String message = "";
+                        if(model != null)
+                        {
+                            message = model.name + idValue;
+                        }
+                        Log.d("Model parsing","Invalid model found " + message);
+                    }
+                }
+            }
+        }
+
+        NodeList children = node.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+            IndexAllModels(children.item(i),faction);
+        }
+    }
+
+    private Node GetFirstParentNodeRecursively(Node node, String elementName, String attributeName, String attributeValue )
+    {
+        Node parentNode = node.getParentNode();
+        if(parentNode == null)
+        {
+            return  null;
+        }
+        if(parentNode.getNodeName().equalsIgnoreCase(elementName))
+        {
+            Node foundNodeType = parentNode.getAttributes().getNamedItem(attributeName);
+            if(foundNodeType != null)
+            {
+                if(foundNodeType.getNodeValue().equalsIgnoreCase(attributeValue))
+                {
+                    return parentNode;
+                }
+            }
+        }
+
+        return GetFirstParentNodeRecursively(parentNode,elementName,attributeName,attributeValue);
+    }
+
+    private Model ParseModelFromSelectionEntry(Node selectionEntry) {
+        Model model = new Model();
+
+        Node nameAttr = selectionEntry.getAttributes().getNamedItem("name");
+        if (nameAttr == null) return null;
+        model.name = nameAttr.getNodeValue();
+
+        // First try: look for a Unit profile directly on this node
+        boolean foundStats = false;
+        Node profilesNode = p_FirsChildByType(selectionEntry, "profiles");
+        if (profilesNode != null) {
+            foundStats = TryParseUnitStatsIntoModel(profilesNode, model);
+        }
+
+        // Second try: follow infoLinks to shared profiles
+        if (!foundStats) {
+            Node infoLinksNode = p_FirsChildByType(selectionEntry, "infoLinks");
+            if (infoLinksNode != null) {
+                NodeList infoLinks = infoLinksNode.getChildNodes();
+                for (int i = 0; i < infoLinks.getLength(); i++) {
+                    Node infoLink = infoLinks.item(i);
+                    if (infoLink.getNodeType() != Node.ELEMENT_NODE) continue;
+
+                    NamedNodeMap attrs = infoLink.getAttributes();
+                    if (attrs == null) continue;
+
+                    Node typeAttr = attrs.getNamedItem("type");
+                    if (typeAttr == null || !typeAttr.getNodeValue().equals("profile"))
                         continue;
+
+                    Node targetIdAttr = attrs.getNamedItem("targetId");
+                    if (targetIdAttr == null) continue;
+
+                    String targetId = targetIdAttr.getNodeValue();
+
+                    // Look up in the shared profiles we indexed earlier
+                    Model sharedModel = idToModel.get(targetId);
+                    if (sharedModel != null) {
+                        model.toughness = sharedModel.toughness;
+                        model.armorSave = sharedModel.armorSave;
+                        model.wounds = sharedModel.wounds;
+                        model.attacks = sharedModel.attacks;
+                        model.strength = sharedModel.strength;
+                        foundStats = true;
+                        break;
                     }
-                    if(ProfilesNode.getChildNodes().getLength() > 1)
+                }
+            }
+            // This case is very weird, Tempestor aquilons do not have their model profile defined except for inline in the unit selection. Hopefully does not result in weird side effects
+            if(!foundStats)
+            {
+                Node parentSelectionEntry = GetFirstParentNodeRecursively(selectionEntry,"selectionEntry","type","unit");
+                if(parentSelectionEntry != null)
+                {
+                    Node profileNode = GetFirstNodeOfTypeRecursively(parentSelectionEntry,"profile","typeName","unit");
+                    if(profileNode != null)
                     {
-                        //HACKY AF, relcis can contain charecteristics, so 2 could be relic instead of alternative stats
-                        //completelty breaks of the alternative stats are just 2 variatons however
-                        if(ProfilesNode.getChildNodes().getLength() <= 2) {
-                            Node CurrentProfile = p_FirsChildByType(ProfilesNode, "profile");
-                            if (CurrentProfile == null) {
-                                continue;
-                            }
-                            Node CharacteristicNode = p_FirsChildByType(CurrentProfile, "characteristics");
-                            if (CharacteristicNode == null) {
-                                continue;
-                            }
-                            if (CharacteristicNode.getChildNodes().getLength() < 6) {
-                                BaseModel.GetAbilities().add(DatabaseManager.getInstance().GetAbility(CurrentProfile.getAttributes().getNamedItem("name").getNodeValue()));
-                                continue;
-                            }
-                        }
-                        if(CurrentSelection.getAttributes().getNamedItem("name").getNodeValue().contains("Stat Damage"))
-                        {
-                            //we are dealing with the alternative stats for a unit
-                            Node FirstCharacterStats = p_FirsChildByType(p_FirsChildByType(ProfilesNode,"profile"),"characteristics");
-                            BaseModel.attacks = p_ParseUnitStat(FirstCharacterStats.getChildNodes().item(3).getTextContent());
-                            continue;
-                        }
+                        TryParseUnitStatsIntoModel(profileNode.getParentNode(),model);
+                        model.name = nameAttr.getNodeValue();
                     }
-                    for(int j = 0; j < ProfilesNode.getChildNodes().getLength();j++)
+                }
+            }
+        }
+
+        ArrayList<Weapon> weapons = CollectWeaponsFromSubtree(selectionEntry);
+        if(weapons.isEmpty())
+        {
+            String message = model.name;
+            message += " "+ selectionEntry.getAttributes().getNamedItem("id").getNodeValue();
+            Log.d("Weapon parsing","Model with no weapons found " + message);
+        }
+        model.weapons.addAll(weapons);
+        model.GetAbilities().addAll(ParseAbilitiesFromSubtree(selectionEntry));
+
+        return model;
+    }
+    // Returns true if it found and parsed a Unit profile
+    private boolean TryParseUnitStatsIntoModel(Node profilesNode, Model model) {
+        NodeList children = profilesNode.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+            Node profileNode = children.item(i);
+            if (profileNode.getNodeType() != Node.ELEMENT_NODE) continue;
+
+            NamedNodeMap attrs = profileNode.getAttributes();
+            if (attrs == null) continue;
+
+            Node typeNameAttr = attrs.getNamedItem("typeName");
+            if (typeNameAttr == null) continue;
+
+            if (typeNameAttr.getNodeValue().equals("Unit")) {
+                Node chars = p_FirsChildByType(profileNode, "characteristics");
+                if (chars == null) continue;
+
+                Node tNode = GetChildNodeWithAttributeValue(chars, "name", "T");
+                Node svNode = GetChildNodeWithAttributeValue(chars, "name", "SV");
+                Node wNode = GetChildNodeWithAttributeValue(chars, "name", "W");
+                Node aNode = GetChildNodeWithAttributeValue(chars, "name", "A");
+                Node sNode = GetChildNodeWithAttributeValue(chars, "name", "S");
+
+                if (tNode != null) model.toughness = p_ParseUnitStat(tNode.getTextContent());
+                if (svNode != null) model.armorSave = p_ParseUnitStat(svNode.getTextContent());
+                if (wNode != null) model.wounds = p_ParseUnitStat(wNode.getTextContent());
+                if (aNode != null) model.attacks = p_ParseUnitStat(aNode.getTextContent());
+                if (sNode != null) model.strength = p_ParseUnitStat(sNode.getTextContent());
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Walks the subtree collecting weapons by looking up already-indexed idToWeapon
+    private ArrayList<Weapon> CollectWeaponsFromSubtree(Node node) {
+        ArrayList<Weapon> result = new ArrayList<>();
+        collectWeaponsRecursive(node, result);
+        return result;
+    }
+
+    private void collectWeaponsRecursive(Node node, ArrayList<Weapon> result) {
+        if (node.getNodeType() != Node.ELEMENT_NODE) return;
+
+        NamedNodeMap attrs = node.getAttributes();
+        if (attrs != null) {
+
+            Node idNode = attrs.getNamedItem("id");
+            if(idNode != null)
+            {
+                if(idNode.getNodeValue().equalsIgnoreCase("3f82-134-f2ed-b02e"))
+                {
+                    // Log.d("Weapon database","Target link did not find its weapon ");
+                }
+            }
+            // entryLink nodes point to weapon selectionEntries by targetId
+            Node targetIdAttr = attrs.getNamedItem("targetId");
+            if (targetIdAttr != null) {
+                String targetId = targetIdAttr.getNodeValue();
+                ArrayList<Weapon> weapons = new ArrayList<>();
+                ArrayList<Weapon> databaseWeapons = idToWeapon.get(targetId);
+                if(databaseWeapons != null)
+                {
+                    weapons.addAll(databaseWeapons);
+                }
+                else
+                {
+                    Model model = idToModel.get(targetId);
+                    if(model != null)
                     {
-                        Node CurrentProfile = ProfilesNode.getChildNodes().item(j);
-                        if(!CurrentProfile.getNodeName().equals("profile"))
-                        {
-                            continue;
-                        }
-                        Node CharacteristicNode = p_FirsChildByType(CurrentProfile,"characteristics");
-                        if(CharacteristicNode.getChildNodes().getLength() < 5)
-                        {
-                            String AbilityName =    CurrentProfile.getAttributes().getNamedItem("name").getNodeValue();
-                            Ability NewAbility = DatabaseManager.getInstance().GetAbility(AbilityName);
-                            continue;
-                        }
-                        Weapon NewWeapon = p_ParseWeapon(CurrentProfile);
-                        int WeaponAmount = Integer.parseInt(CurrentSelection.getAttributes().getNamedItem("number").getNodeValue())/ModelCount;
-                        for(int k = 0; k < WeaponAmount;k++)
-                        {
-                            BaseModel.weapons.add(NewWeapon);
+                        weapons.addAll(model.weapons);
+                    }
+                }
+                if(!weapons.isEmpty())
+                {
+                    result.addAll(weapons);
+                }
+                else
+                {
+                    String name  = attrs.getNamedItem("name").getNodeValue();
+                    Log.d("Weapon database","Target link did not find its weapon " + targetId + " " + name);
+                }
+
+            }
+
+            // Also check if this node itself is a weapon profile
+            Node typeNameAttr = attrs.getNamedItem("type");
+            if (typeNameAttr != null) {
+                String typeName = typeNameAttr.getNodeValue();
+                if (typeName.equalsIgnoreCase("upgrade")) {
+                    Node idAttr = attrs.getNamedItem("id");
+                    if (idAttr != null) {
+                        ArrayList<Weapon> weapons = idToWeapon.get(idAttr.getNodeValue());
+                        if (weapons != null) {
+                            for(int i = 0; i < weapons.size(); i++)
+                            {
+                                result.add(weapons.get(i).Copy());
+                            }
+                            return; // don't recurse into the weapon profile itself
                         }
                     }
                 }
             }
         }
 
-        for(int i = 0; i < ModelCount;i++)
-        {
-            // ReturnValue.add(new Model(BaseModel));
+        NodeList children = node.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+            collectWeaponsRecursive(children.item(i), result);
         }
-        return(ReturnValue);
     }
-    Unit ParseUnit(Node UnitNode)
+
+    private boolean IsValidWeapon(Weapon weapon)
     {
-        Unit ReturnValue = new Unit();
-        ReturnValue.unitName = UnitNode.getAttributes().getNamedItem("name").getNodeValue();
-        Node SelectionsNode = p_FirsChildByType(UnitNode,"selections");
-        Node ProfilesNode = p_FirsChildByType(UnitNode,"profiles");
-        Model TemporaryModel = new Model();
-        if(ProfilesNode != null)
+        if(weapon == null)
         {
-            for(int i = 0; i < ProfilesNode.getChildNodes().getLength();i++)
-            {
-                p_ParseProfile(ProfilesNode.getChildNodes().item(i),TemporaryModel);
-            }
-            ReturnValue.GetAbilities().addAll(TemporaryModel.GetAbilities());
-            TemporaryModel.GetAbilities().clear();
-            //for(int i = 0; i < ReturnValue.listOfModels.size();i++)
-            //{
-            //    ReturnValue.listOfModels.get(i).listOfRangedWeapons.addAll(TemporaryModel.listOfRangedWeapons);
-            //}
+            return  false;
         }
-        for(int i = 0; i < SelectionsNode.getChildNodes().getLength();i++)
+        if(weapon.amountOfAttacks == null)
         {
-            if(SelectionsNode.getChildNodes().item(i).getAttributes().getNamedItem("type").getNodeValue().equals("model"))
+            return false;
+        }
+        if(weapon.amountOfAttacks.numberOfD3 == 0 && weapon.amountOfAttacks.numberOfD6 == 0 && weapon.amountOfAttacks.baseAmount == 0 )
+        {
+            return  false;
+        }
+        return true;
+    }
+    // Multi mode weapons are a bit tricky, implemented as a list of weapons for now
+    private ArrayList<Weapon> ParseWeaponsFromUpgradeEntry(Node node)
+    {
+        Node profilesNode =  GetFirstNodeOfTypeRecursively(node,"profiles",null,null);
+        ArrayList<Weapon> parsedWeapons = new ArrayList<>();
+        if(profilesNode != null)
+        {
+            NodeList profilesChildren = profilesNode.getChildNodes();
+            for(int i = 0; i < profilesChildren.getLength(); i++)
             {
-                ArrayList<Model> NewModels = ParseModel(SelectionsNode.getChildNodes().item(i));
-                if(TemporaryModel.strength != -1)
-                {
-                    for(Model ModelToModify : NewModels)
-                    {
-                       // TemporaryModel.CopyStats(ModelToModify);
-                    }
-                }
-                ReturnValue.listOfModels.addAll(NewModels);
-            }
-            else if(SelectionsNode.getChildNodes().item(i).getAttributes().getNamedItem("type").getNodeValue().equals("unit"))
-            {
-                Unit SubUnit = ParseUnit(SelectionsNode.getChildNodes().item(i));
-                for(Ability SubAbility : SubUnit.GetAbilities())
-                {
-                    for(Model SubModel : SubUnit.listOfModels)
-                    {
-                        SubModel.GetAbilities().add(SubAbility);
-                    }
-                }
-                ReturnValue.listOfModels.addAll(SubUnit.listOfModels);
-            }
-            else if(SelectionsNode.getChildNodes().item(i).getAttributes().getNamedItem("type").getNodeValue().equals("upgrade"))
-            {
-                Node Child = SelectionsNode.getChildNodes().item(i);
-                Node ChildProfiles = p_FirsChildByType(Child,"profiles");
-                if(ChildProfiles == null)
+                Node weaponNode = profilesChildren.item(i);
+                Node typeNameNode = weaponNode.getAttributes().getNamedItem("typeName");
+                if(typeNameNode == null)
                 {
                     continue;
                 }
-                Node ChildProfileNode = p_FirsChildByType(ChildProfiles,"profile");
-                if(ChildProfileNode == null)
+                if(typeNameNode.getNodeValue().equalsIgnoreCase("Ranged Weapons") || typeNameNode.getNodeValue().equalsIgnoreCase("Melee Weapons"))
                 {
-                    continue;
-                }
-                if(ChildProfileNode.getAttributes().getNamedItem("typeName").getNodeValue().equals("Abilities"))
-                {
-                    ReturnValue.GetAbilities().add(DatabaseManager.getInstance().GetAbility(Child.getAttributes().getNamedItem("name").getNodeValue()));
-                }
-                else if(ChildProfileNode.getAttributes().getNamedItem("typeName").getNodeValue().equals("Unit"))
-                {
-                    ReturnValue.listOfModels.addAll(ParseModel(SelectionsNode.getChildNodes().item(i)));
-                }
-                else if(ChildProfileNode.getAttributes().getNamedItem("typeName").getNodeValue().equals("Weapon"))
-                {
-                    for(int j = 0; j < ChildProfiles.getChildNodes().getLength();j++)
+                    Weapon weapon = ClaudeParseWeapon(weaponNode);
+                    if(IsValidWeapon(weapon))
                     {
-                        if(ChildProfiles.getChildNodes().item(j).getNodeName().equals("profile"))
-                        {
-                            TemporaryModel.weapons.add(p_ParseWeapon(ChildProfiles.getChildNodes().item(j)));
-                        }
+                        parsedWeapons.add(weapon);
                     }
                 }
             }
         }
-        if(ReturnValue.listOfModels.size() == 0 && TemporaryModel.strength != -1)
-        {
-            int Number = Integer.parseInt(UnitNode.getAttributes().getNamedItem("number").getNodeValue());
-            TemporaryModel.name = ReturnValue.unitName;
-            for(int i = 0; i < Number;i++)
-            {
-                ReturnValue.listOfModels.add(TemporaryModel);
-            }
-        }
-        else
-        {
-            for(int i = 0; i < ReturnValue.listOfModels.size();i++)
-            {
-                ReturnValue.listOfModels.get(i).weapons.addAll(TemporaryModel.weapons);
-            }
-        }
-        return(ReturnValue);
+
+        return parsedWeapons;
     }
-    ArrayList<Ability> ParseRule(Node RuleNode)
+    private void IndexAllWeapons(Node node, Faction faction)
     {
-        ArrayList<Ability> ReturnValue = new ArrayList<>();
-        for(int i = 0; i < RuleNode.getChildNodes().getLength();i++)
-        {
-            String AbilityName = RuleNode.getChildNodes().item(i).getAttributes().getNamedItem("name").getNodeValue();
-            ReturnValue.add(DatabaseManager.getInstance().GetAbility(AbilityName));
+        if (node.getNodeType() != Node.ELEMENT_NODE) return;
+
+        NamedNodeMap attrs = node.getAttributes();
+        if (attrs != null) {
+            Node typeAttr = attrs.getNamedItem("type");
+            if (typeAttr != null) {
+                String type = typeAttr.getNodeValue();
+                ArrayList<Weapon> weapons = null;
+                if (type.equalsIgnoreCase("upgrade")) {
+                    weapons = ParseWeaponsFromUpgradeEntry(node);
+                }
+                Node idAttr = node.getAttributes().getNamedItem("id");
+                if (idAttr != null && weapons != null && !weapons.isEmpty() ) {
+                    String id = idAttr.getNodeValue();
+                    String name = attrs.getNamedItem("name").getNodeValue();
+                    nameToWeapon.put(new DatabaseManager.NameFactionKey( name,faction), weapons);
+                    idToWeapon.put(id,weapons);
+                    if(weapons.size() > 1)
+                    {
+                        Log.d("abow","multi weapon bullshit");
+                    }
+                    if(name.equalsIgnoreCase("tempestus dagger"))
+                    {
+                        Log.d("abow","multi weapon bullshit");
+                    }
+                }
+            }
         }
-        return(ReturnValue);
+
+        // Recurse into all children
+        NodeList children = node.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+            IndexAllWeapons(children.item(i),faction);
+        }
     }
 
+    private String findOwningUnitName(Node weaponProfileNode) {
+        Node current = weaponProfileNode.getParentNode();
 
+        while (current != null) {
+            if (current.getNodeType() == Node.ELEMENT_NODE) {
+                NamedNodeMap attrs = current.getAttributes();
+                if (attrs != null) {
+                    Node typeAttr = attrs.getNamedItem("type");
+                    if (typeAttr != null) {
+                        String type = typeAttr.getNodeValue();
+                        if (type.equals("unit") || type.equals("model")) {
+                            Node nameAttr = attrs.getNamedItem("name");
+                            if (nameAttr != null) {
+                                return nameAttr.getNodeValue();
+                            }
+                        }
+                    }
+
+                    // Hit the sharedSelectionEntries container,
+                    // this weapon has no owning unit
+                    Node nodeNameAttr = attrs.getNamedItem("name");
+                    if (nodeNameAttr != null && current.getNodeName()
+                            .equals("sharedSelectionEntries")) {
+                        return null;
+                    }
+                }
+            }
+            current = current.getParentNode();
+        }
+        return null;
+    }
+    private Weapon ClaudeParseWeapon(Node profileNode)
+    {
+        Weapon returnWeapon = new Weapon();
+        returnWeapon.name = profileNode.getAttributes().getNamedItem("name").getNodeValue();
+
+        String typeName = profileNode.getAttributes()
+                .getNamedItem("typeName").getNodeValue();
+        returnWeapon.isMelee = typeName.equals("Melee Weapons");
+
+        Node chars = p_FirsChildByType(profileNode, "characteristics");
+        if (chars == null) return returnWeapon;
+
+        // Use name-based lookup instead of positional
+        Node attacksNode = GetChildNodeWithAttributeValue(chars, "name", "A");
+        Node strengthNode = GetChildNodeWithAttributeValue(chars, "name", "S");
+        Node apNode = GetChildNodeWithAttributeValue(chars, "name", "AP");
+        Node damageNode = GetChildNodeWithAttributeValue(chars, "name", "D");
+        Node bsWsNode = GetChildNodeWithAttributeValue(chars, "name",
+                returnWeapon.isMelee ? "WS" : "BS");
+
+        if (attacksNode != null)
+            returnWeapon.amountOfAttacks = Parsing.ParseDiceAmount(attacksNode.getTextContent());
+        if (strengthNode != null)
+            returnWeapon.strength = p_ParseUnitStat(strengthNode.getTextContent());
+        if (apNode != null)
+            returnWeapon.ap = p_ParseUnitStat(apNode.getTextContent());
+        if (damageNode != null)
+            returnWeapon.damageAmount = Parsing.ParseDiceAmount(damageNode.getTextContent());
+        if (bsWsNode != null)
+            returnWeapon.ballisticSkill = p_ParseUnitStat(bsWsNode.getTextContent());
+
+        // Replace the ParseAbilitiesFromSubtree call with keyword parsing
+        Node keywordsNode = GetChildNodeWithAttributeValue(chars, "name", "Keywords");
+        if (keywordsNode != null) {
+            String keywords = keywordsNode.getTextContent().trim();
+            if (!keywords.equals("-") && !keywords.isEmpty()) {
+                for (String keyword : keywords.split(",")) {
+                    keyword = keyword.trim();
+                    if (!keyword.isEmpty()) {
+                        UnimplementedAbility ability = new UnimplementedAbility(keyword);
+                        ability.description = claudeGetKeywordDescription(keyword);
+                        returnWeapon.GetAbilities().add(ability);
+                    }
+                }
+            }
+        }
+
+        return returnWeapon;
+    }
+
+    private ArrayList<Ability> ParseAbilitiesFromSubtree(Node root) {
+        ArrayList<Ability> result = new ArrayList<>();
+        collectAbilities(root, result);
+        return result;
+    }
+
+    private void collectAbilities(Node node, ArrayList<Ability> result) {
+        if (node.getNodeType() != Node.ELEMENT_NODE) return;
+
+        NamedNodeMap attrs = node.getAttributes();
+        if (attrs != null) {
+            Node typeNameAttr = attrs.getNamedItem("typeName");
+            if (typeNameAttr != null
+                    && typeNameAttr.getNodeValue().equals("Abilities")) {
+                Ability ability = parseAbilityFromProfileNode(node);
+                if (ability != null) {
+                    result.add(ability);
+                }
+                return; // don't recurse into the ability's own children
+            }
+        }
+
+        NodeList children = node.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+            collectAbilities(children.item(i), result);
+        }
+    }
+    private String claudeGetKeywordDescription(String keyword) {
+        // Strip trailing numbers first for lookup: "Rapid Fire 1" -> "Rapid Fire"
+        String baseName = keyword.replaceAll("\\s+\\d+$", "").trim();
+        switch (baseName) {
+            case "Blast":
+                return "Add 1 to the Attacks for every 5 models in the target unit.";
+            case "Rapid Fire":
+                return "If target is within half range, increase Attacks by the Rapid Fire value.";
+            case "Melta":
+                return "If target is within half range, add the Melta value to the Damage.";
+            case "Indirect Fire":
+                return "Can target units not visible to the firing model.";
+            case "Sustained Hits":
+                return "Each Critical Hit scores additional hits equal to the Sustained Hits value.";
+            case "Lethal Hits":
+                return "Critical Hits automatically wound.";
+            case "Devastating Wounds":
+                return "Critical Wounds cause mortal wounds equal to the Damage characteristic.";
+            case "Torrent":
+                return "This weapon automatically hits its target.";
+            case "Twin-linked":
+                return "Re-roll Wound rolls.";
+            case "Pistol":
+                return "Can be used in the Shooting phase even when within Engagement Range.";
+            case "Heavy":
+                return "Add 1 to Hit rolls if the bearer did not move this turn.";
+            case "Assault":
+                return "Can be used even after Advancing.";
+            case "One Shot":
+                return "This weapon can only be fired once per battle.";
+            case "Ignores Cover":
+                return "Target does not benefit from Cover.";
+            default:
+                return keyword; // fallback: just store the raw string
+        }
+    }
+    private Ability parseAbilityFromProfileNode(Node profileNode) {
+        NamedNodeMap attrs = profileNode.getAttributes();
+        if (attrs == null) return null;
+
+        Node nameAttr = attrs.getNamedItem("name");
+        if (nameAttr == null) return null;
+        String abilityName = nameAttr.getNodeValue();
+
+        // Description lives in characteristics > characteristic[name="Description"]
+        String description = "";
+        Node characteristics = p_FirsChildByType(profileNode, "characteristics");
+        if (characteristics != null) {
+            Node descNode = GetChildNodeWithAttributeValue(
+                    characteristics, "name", "Description");
+            if (descNode != null) {
+                description = descNode.getTextContent().trim();
+            }
+        }
+        UnimplementedAbility retAbility = new UnimplementedAbility(abilityName);
+        retAbility.description = description;
+        return retAbility;
+    }
+
+    private void CreateSharedModelStats(Document doc,Faction faction)
+    {
+        Node nodeToFind = p_FirsChildByType(doc.getDocumentElement(),"sharedProfiles");
+        if(nodeToFind != null)
+        {
+            for(int i = 0; i < nodeToFind.getChildNodes().getLength(); i++)
+            {
+                Node sharedProfileNode = nodeToFind.getChildNodes().item(i);
+                if( ContainsTypeWithValue(sharedProfileNode,"typeName","Unit"))
+                {
+                    Model parsedModel = ParseModelFromProfile(sharedProfileNode);
+                    nameToModel.put(new DatabaseManager.NameFactionKey(parsedModel.name,faction),parsedModel);
+                    idToModel.put(sharedProfileNode.getAttributes().getNamedItem("id").getNodeValue(),parsedModel);
+                }
+            }
+        }
+    }
 }

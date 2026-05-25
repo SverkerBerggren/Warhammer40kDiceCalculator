@@ -1,5 +1,6 @@
 package com.app.DamageCalculator40k.DatasheetModeling;
 
+import com.app.DamageCalculator40k.Abilities.Ability;
 import com.app.DamageCalculator40k.Activities.CompareActivity;
 import com.app.DamageCalculator40k.BitFunctionality.AbilityBitField;
 import com.app.DamageCalculator40k.Enums.AbilityEnum;
@@ -8,18 +9,13 @@ import com.app.DamageCalculator40k.ModifierHolder;
 
 import java.util.ArrayList;
 
-public class Unit extends GamePiece implements WahapediaIdHolder {
+public class Unit extends GamePiece   {
 
     public boolean singleModelUnit = false;
-    public String wahapediaDataId;
     public String unitName = "";
     public int pointCost;
 
     public ArrayList<Model> listOfModels = new ArrayList<>();
-    @Override
-    public String GetWahapediaId() {
-        return wahapediaDataId;
-    }
 
     public Unit Copy()
     {
@@ -32,7 +28,7 @@ public class Unit extends GamePiece implements WahapediaIdHolder {
             tempUnit.listOfModels.add(listOfModels.get(i).Copy());
         }
 
-        tempUnit.wahapediaDataId = wahapediaDataId;
+        tempUnit.abilities.addAll(abilities);
 
         return  tempUnit;
     }

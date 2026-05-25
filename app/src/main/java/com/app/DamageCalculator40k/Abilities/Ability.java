@@ -15,6 +15,8 @@ import java.util.Objects;
 public abstract class Ability implements DeactivatableInterface {
 
     public String name;
+    // TODO this one is a bit sus, should maybe be moved but it is here for testing
+    public String description;
     public boolean active = true;
 
     private final AbilityTiming abilityTiming;

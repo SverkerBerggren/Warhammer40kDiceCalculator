@@ -6,6 +6,7 @@ import android.util.Pair;
 import com.app.DamageCalculator40k.Abilities.Ability;
 import com.app.DamageCalculator40k.DatabaseManager;
 import com.app.DamageCalculator40k.DatasheetModeling.Army;
+import com.app.DamageCalculator40k.DatasheetModeling.DiceAmount;
 import com.app.DamageCalculator40k.DatasheetModeling.Model;
 import com.app.DamageCalculator40k.DatasheetModeling.Unit;
 import com.app.DamageCalculator40k.DatasheetModeling.WahapediaIdHolder;
@@ -16,31 +17,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-
-enum ItemType
-{
-    MODEL,
-    UNIT,
-    WEAPON,
-    ABILITY,
-    UNIMPLEMENTED,
-    UNIDENTIFIED
-}
+import kotlin.text.UStringsKt;
 
 public class Parsing
 {
 
-    private final String BATTLELINE = "battleline";
-    private final String CHARACTER = "character";
-    private final String DEDICATED_TRANSPORTS = "dedicated transports";
-    private final String OTHER_DATASHEETS = "other datasheet";
-    private HashMap<DatabaseManager.IdNameKey, Model> modelDatasheetDatabase;
-    private HashMap<DatabaseManager.IdNameKey, Weapon> wargearDatabase;
-    private HashMap<DatabaseManager.NameFactionKey, Unit> datasheetDatabase;
     // Kanske lite ghetto
     private Army armyToBuild;
     private Faction armyFaction;
-
+    private DatabaseManager databaseManager;
     //
     private String ConvertArmyListToWahapediaStandard(String armyList)
     {
@@ -66,23 +51,6 @@ public class Parsing
         return Faction.Unidentified;
     }
 
-    private boolean IsItemUnimplementedValue(String itemName)
-    {
-        if(itemName.contains("warlord"))
-        {
-            return true;
-        }
-        if(itemName.contains("Enhancement"))
-        {
-            return true;
-        }
-        if(itemName.contains("daemonic allegiance"))
-        {
-            return true;
-        }
-        return itemName.contains(BATTLELINE) || itemName.contains(DEDICATED_TRANSPORTS) || itemName.contains(CHARACTER) || itemName.contains(OTHER_DATASHEETS);
-    }
-
     public Army ParseGWListFormat(String armyListString)
     {
         // Waits for the database to be initialized
@@ -94,9 +62,7 @@ public class Parsing
                 }
             }
         }
-        modelDatasheetDatabase = DatabaseManager.getInstance().GetModelsDatasheetDatabase();
-        datasheetDatabase = DatabaseManager.getInstance().GetDatasheetsDatabase();
-        wargearDatabase = DatabaseManager.getInstance().GetDatasheetWargearDatabase();
+        databaseManager = DatabaseManager.getInstance();
 
         armyListString = ConvertArmyListToWahapediaStandard(armyListString);
         armyFaction = ParseArmyFaction(armyListString);
@@ -179,74 +145,43 @@ public class Parsing
     {
         return subString.contains(BATTLELINE) || subString.contains(DEDICATED_TRANSPORTS) || subString.contains(CHARACTER) || subString.contains(OTHER_DATASHEETS);
     }
-
+    //TODO: bruh mega ghetto
+    private final String BATTLELINE = "battleline";
+    private final String CHARACTER = "character";
+    private final String DEDICATED_TRANSPORTS = "dedicated transports";
+    private final String OTHER_DATASHEETS = "other datasheet";
+    private Faction ParseFaction(String factionString)
+    {
+        // TODO: add all factions
+        switch (factionString)
+        {
+            case "am":
+                return Faction.AstraMilitarum;
+            case "cd":
+                return Faction.ChaosDemons;
+            case "sm":
+                return Faction.SpaceMarines;
+            default:
+                return Faction.Unidentified;
+        }
+    }
     // GetItem can be called with wahapediaIdHolder as null. That means that it will only search the databases where no id is needed
     // Unit is a bit of a wack parameter
-    private Pair<ItemType,Object> GetItem(String itemName, WahapediaIdHolder wahapediaIdHolder, Unit unit)
+    private boolean IsItemUnimplementedValue(String itemName)
     {
-        if(wahapediaIdHolder != null)
+        if(itemName.contains("warlord"))
         {
-            DatabaseManager.IdNameKey idNameKey = new DatabaseManager.IdNameKey(wahapediaIdHolder.GetWahapediaId(),itemName);
-            if(modelDatasheetDatabase.containsKey(idNameKey))
-            {
-                return new Pair<>(ItemType.MODEL,modelDatasheetDatabase.get(idNameKey).Copy());
-            }
-            if(  wargearDatabase.containsKey(idNameKey))
-            {
-                ArrayList<Weapon> retList = new ArrayList<>();
-                retList.add(wargearDatabase.get(idNameKey).Copy());
-                return new Pair<>(ItemType.WEAPON, retList);
-            }
-
-            ArrayList<Weapon> multiModeWeapons = DatabaseManager.instance.GetMultiModeWeapons(idNameKey);
-            if(multiModeWeapons != null)
-            {
-                ArrayList<Weapon> retList = new ArrayList<>(multiModeWeapons);
-                // Make the standard so that only 1 weapon mode is active at the same time
-                retList.replaceAll(weapon -> {weapon.active = false; return  weapon.Copy();});
-                retList.get(0).active = true;
-                return new Pair<>(ItemType.WEAPON,retList);
-            }
-
-            DatabaseManager.NameFactionKey idNameFaction =  new DatabaseManager.NameFactionKey(itemName.split("\\(")[0].trim(),armyFaction);
-            //ghetto af
-            if(datasheetDatabase.containsKey( idNameFaction))
-            {
-                return new Pair<>(ItemType.UNIT,datasheetDatabase.get(idNameFaction));
-            }
-
-            Ability ability = DatabaseManager.getInstance().GetAbility(itemName);
-            if(ability != null)
-            {
-                return new Pair<>(ItemType.ABILITY,ability);
-            }
-
-            if(IsItemUnimplementedValue(itemName))
-            {
-                return new Pair<>(ItemType.UNIMPLEMENTED,null);
-            }
-
-            //Needs to be the last check before testing if it is a model
-            if(unit.singleModelUnit)
-            {
-                return new Pair<>(ItemType.UNIDENTIFIED,null);
-            }
-
-            //Wack case needed for single model units
-            // Certain models do not exist in the datasheets_model.csv so this sussy case is needed
-            DatabaseManager.IdNameKey modelKey = new DatabaseManager.IdNameKey(wahapediaIdHolder.GetWahapediaId(),unit.unitName);
-            if(modelDatasheetDatabase.containsKey(modelKey))
-            {
-                // Set their name to the parsed string which looks more intuitive
-                Model retModel = modelDatasheetDatabase.get(modelKey).Copy();
-                retModel.name = itemName;
-                return  new Pair<>(ItemType.MODEL,retModel);
-            }
-            // TODO: Abilities and stats such as warlord vox caster etc maybe
+            return true;
         }
-
-
-        return new Pair<>(ItemType.UNIDENTIFIED,null);
+        if(itemName.contains("Enhancement"))
+        {
+            return true;
+        }
+        if(itemName.contains("daemonic allegiance"))
+        {
+            return true;
+        }
+        return itemName.contains(BATTLELINE) || itemName.contains(DEDICATED_TRANSPORTS) || itemName.contains(CHARACTER) || itemName.contains(OTHER_DATASHEETS);
     }
 
     private int ParseModelEquipment(int offset, String armyList, Unit unit, Model modelType, int modelCount)
@@ -275,10 +210,19 @@ public class Parsing
 
             Pair<Integer,String> offsetAndItem = ParseUntilLineBreak(offset,armyList);
             offset = offsetAndItem.first;
-            Pair<ItemType,Object> parsedItem = GetItem(offsetAndItem.second,unit,unit);
-            if(parsedItem.first.equals(ItemType.WEAPON))
+            Pair<DatabaseManager.ItemType,Object> parsedItem = databaseManager.GetItem(offsetAndItem.second,unit,armyFaction);
+            if(parsedItem.first.equals(DatabaseManager.ItemType.WEAPON))
             {
                 ArrayList<Weapon> weaponToGive = (ArrayList<Weapon>)parsedItem.second;
+                weaponToGive.get(0).active = true;
+                for(int i = 1; i < weaponToGive.size();i++)
+                {
+                    weaponToGive.get(i).active = false;
+                }
+                if(weaponToGive.get(0).name.contains("Plasma"))
+                {
+                    Log.d("hej","hej");
+                }
                 // Se ovan
                 // Assumes that weapon modes are always of the same range type
                 AtomicInteger modelIndexStart = (weaponToGive.get(0).isMelee) ? ( modelsMeleeWeaponIndex):(  modelsRangeWeaponIndex);
@@ -295,11 +239,11 @@ public class Parsing
                     }
                 }
             }
-            if(parsedItem.first.equals(ItemType.MODEL))
+            if(parsedItem.first.equals(DatabaseManager.ItemType.MODEL))
             {
                 return ParseModelEquipment(offset +1, armyList,unit, (Model)parsedItem.second,amount);
             }
-            if(parsedItem.first.equals(ItemType.UNIT))
+            if(parsedItem.first.equals(DatabaseManager.ItemType.UNIT))
             {
                 return ParseUnit(offset - offsetAndItem.second.length(),armyList, armyToBuild);
             }
@@ -325,45 +269,54 @@ public class Parsing
 
             Pair<Integer,String> offsetAndParsedString = ParseUntilLineBreak(offset,armyList);
             offset = offsetAndParsedString.first;
-            Pair<ItemType, Object> parsedItem = GetItem(offsetAndParsedString.second,unit,unit);
-            if(parsedItem.first.equals(ItemType.UNIDENTIFIED) || parsedItem.first.equals(ItemType.UNIMPLEMENTED))
+            Pair<DatabaseManager.ItemType, Object> parsedItem = databaseManager.GetItem(offsetAndParsedString.second,unit,armyFaction);
+            if(parsedItem.first.equals(DatabaseManager.ItemType.UNIDENTIFIED) || parsedItem.first.equals(DatabaseManager.ItemType.UNIMPLEMENTED))
             {
-                Log.d("Unit item parsing","Unidentified item found");
+                Log.d("Unit item parsing","Unidentified item found " + offsetAndParsedString.second);
                 continue;
             }
             // If the first item is a weapon it is assumed that the unit is a single model unit
-            if( parsedItem.first.equals(ItemType.WEAPON) && unit.listOfModels.isEmpty())
+            if( parsedItem.first.equals(DatabaseManager.ItemType.WEAPON) && unit.listOfModels.isEmpty())
             {
                 unit.singleModelUnit = true;
                 // Assumes that a single model units models names corresponds with the unit name
-                Model modelToCopy = modelDatasheetDatabase.get( new DatabaseManager.IdNameKey( unit.GetWahapediaId() , unit.unitName));
+                Model modelToCopy = databaseManager.GetModel( new DatabaseManager.NameFactionKey( unit.unitName , armyFaction));
                 if(modelToCopy != null)
                 {
-                    unit.listOfModels.add( modelDatasheetDatabase.get( new DatabaseManager.IdNameKey( unit.GetWahapediaId() , unit.unitName)).Copy());
+                    unit.listOfModels.add( databaseManager.GetModel( new DatabaseManager.NameFactionKey(unit.unitName , armyFaction)).Copy());
                     unit.listOfModels.get(0).weapons.addAll((ArrayList<Weapon>) parsedItem.second);
                 }
                 else
                 {
-                    Log.d("Unit parsing","Single model unit without corresponding model found");
+                    Log.d("Unit parsing","Single model unit without corresponding model found " + offsetAndParsedString.second);
                 }
                 offset+=1;
 
                 continue;
             }
-            if(parsedItem.first.equals(ItemType.ABILITY))
+            if(parsedItem.first.equals(DatabaseManager.ItemType.ABILITY))
             {
                 unit.GetAbilities().add((Ability) parsedItem.second);
             }
-            if(unit.singleModelUnit && parsedItem.first.equals(ItemType.WEAPON))
+            if(unit.singleModelUnit && parsedItem.first.equals(DatabaseManager.ItemType.WEAPON))
             {
+                // TODO: does not deep copy yikes
                 ArrayList<Weapon> weapons = (ArrayList<Weapon>)parsedItem.second;
-                unit.listOfModels.get(0).weapons.addAll(weapons);
+                weapons.get(0).active = true;
+                for( int i = 0; i < weapons.size(); i++)
+                {
+                    weapons.get(i).active = false;
+                }
+                for( int i = 0; i < amount; i++ )
+                {
+                    unit.listOfModels.get(0).weapons.addAll(weapons);
+                }
             }
-            if(parsedItem.first.equals(ItemType.UNIT))
+            if(parsedItem.first.equals(DatabaseManager.ItemType.UNIT))
             {
                 return ParseUnit(offset - offsetAndParsedString.second.length(),armyList,armyToBuild);
             }
-            if(parsedItem.first.equals(ItemType.MODEL))
+            if(parsedItem.first.equals(DatabaseManager.ItemType.MODEL))
             {
                 offset = ParseModelEquipment(offset +1,armyList,unit,(Model) parsedItem.second,amount);
                 continue;
@@ -396,9 +349,24 @@ public class Parsing
                     unitToAdd.unitName = unitName.toString().trim();
                     offset = pointValue.first;
 
-                    DatabaseManager.NameFactionKey key =  new DatabaseManager.NameFactionKey(unitToAdd.unitName,armyFaction);
-                    unitToAdd.wahapediaDataId = datasheetDatabase.get(key).wahapediaDataId;
                     offset = ParseUnitItem(offset,armyListString,unitToAdd);
+                    if(!unitToAdd.singleModelUnit)
+                    {
+                        Unit databaseUnit = databaseManager.GetUnit(new DatabaseManager.NameFactionKey(unitToAdd.unitName,armyFaction));
+                        if( databaseUnit != null)
+                        {
+                            unitToAdd.GetAbilities().addAll(databaseUnit.GetAbilities());
+                        }
+                    }
+                    else
+                    {
+                        Model databaseModel = databaseManager.GetModel(new DatabaseManager.NameFactionKey(unitToAdd.unitName,armyFaction));
+                        if( databaseModel != null)
+                        {
+                            unitToAdd.GetAbilities().addAll(databaseModel.GetAbilities());
+                        }
+                    }
+
                     armyToBuild.units.add(unitToAdd);
                     return  offset;
                 }
@@ -485,6 +453,77 @@ public class Parsing
         return charToExamine == '•' || Character.isDigit(charToExamine);
     }
 
+
+    public static DiceAmount ParseDiceAmount(String string)
+    {
+        DiceAmount returnValue = new DiceAmount();
+        String[] components = string.split("\\+");
+        for(String component : components)
+        {
+            component = component.trim();
+            // Doubtful if there is a case in the game where there are more than 9 D3/D6 but it covers that case
+            StringBuilder dicePrefix = new StringBuilder();
+            boolean isDiceValue = false;
+            char diceSuffix = '0';
+
+            for(int i = 0; i < component.length(); i++ )
+            {
+                if(component.charAt(i) == 'd' || component.charAt(i) == 'D'  )
+                {
+                    isDiceValue = true;
+                    continue;
+                }
+
+                if(Character.isDigit(component.charAt(i)) )
+                {
+                    if(!isDiceValue)
+                    {
+                        dicePrefix.append(component.charAt(i));
+                    }
+                    else
+                    {
+                        if(component.charAt(i) == '3' || component.charAt(i) == '6')
+                        {
+                            diceSuffix = component.charAt(i);
+                        }
+                        else
+                        {
+                            Log.d("Dice parsing", "Invalid dice suffix, only D3 and D6 exists");
+                        }
+                    }
+                    continue;
+                }
+                Log.d("Dice parsing", "Unexpected character found in dice component");
+            }
+            try {
+                if(!isDiceValue)
+                {
+                    returnValue.baseAmount = Integer.parseInt(component);
+                }
+                else
+                {
+                    int diceAmount = 1;
+                    if(dicePrefix.length() != 0)
+                    {
+                        diceAmount = Integer.parseInt(dicePrefix.toString());
+                    }
+                    if(diceSuffix == '3')
+                    {
+                        returnValue.numberOfD3 = diceAmount;
+                    }
+                    else
+                    {
+                        returnValue.numberOfD6 = diceAmount;
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                Log.d("Dice parsing", "Failed to convert dice representation");
+            }
+        }
+        return returnValue;
+    }
     private boolean SkipCharacter(char charToExamine)
     {
         switch (charToExamine) {

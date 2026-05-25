@@ -15,13 +15,19 @@ import com.app.DamageCalculator40k.Abilities.Ability;
 import com.app.DamageCalculator40k.AbilityElementAdapter;
 import com.app.DamageCalculator40k.DatasheetModeling.Army;
 import com.app.DamageCalculator40k.Matchup;
+import com.app.DamageCalculator40k.Parsing.XmlParser;
+import com.app.DamageCalculator40k.R;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.app.DamageCalculator40k.Parsing.Parsing;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -42,6 +48,7 @@ public  class FileHandler  {
     private final File matchupDirectory;
     private final File armyDirectory;
     private final File wahapediaDataDirectory;
+    private final File bsDataDirectory;
 
     private final Gson gson;
     private final ContentResolver contentResolver;
@@ -49,6 +56,30 @@ public  class FileHandler  {
 
 
     public static volatile FileHandler instance;
+
+    private BattleScribeUpdater battleScribeUpdater;
+
+    public void UpdateBattlesScribeData(UpdateCallbackBsData updateCallbackBsData)
+    {
+
+        battleScribeUpdater.checkAndUpdate(updateCallbackBsData);
+    }
+
+    public ArrayList<String> GetXMLData()
+    {
+        ArrayList<String> retValues = new ArrayList<>();
+        File[] files = bsDataDirectory.listFiles((dir, name) ->
+                name.endsWith(".cat") || name.endsWith(".gst"));
+
+        for (File file : files) {
+            if (!file.toString().contains("Astra"))
+            {
+                continue;
+            }
+            retValues.add( ReadFileAsString(bsDataDirectory.toString(),file.getName()));
+        }
+        return  retValues;
+    }
 
 
     public void saveMatchup(Matchup matchup)
@@ -66,7 +97,7 @@ public  class FileHandler  {
         }
     }
 
-    public static String ReadFileAsString(String directory, String name, Context context)
+    public static String ReadFileAsString(String directory, String name )
     {
         String stringToReturn = "";
         try{
@@ -79,6 +110,48 @@ public  class FileHandler  {
 
         return stringToReturn;
     }
+
+    private static void SaveTextFile(File directory, String name, String content )
+    {
+        try {
+            FileWriter writer = new FileWriter(new File(directory, name));
+            writer.write( content);
+            writer.flush();
+            writer.close();
+        }
+        catch (Exception e)
+        {
+            Log.d("FileHandler","sket sig nar det skulle sparas localt senaste updaterat");
+        }
+    }
+
+    public void SaveBsData(Context context, Uri fileUri)
+    {
+        try {
+            // Is probably a better way to get the name that support  <29 versions
+            DocumentFile documentFile = DocumentFile.fromSingleUri(context,fileUri);
+
+            InputStream inputStream = contentResolver.openInputStream(fileUri);
+            Scanner s = new Scanner(inputStream).useDelimiter("\\A");
+            String result = s.hasNext() ? s.next() : "";
+
+            File armySave = new File(armyDirectory, documentFile.getName());
+
+            FileWriter writer = new FileWriter(armySave);
+            writer.write(result);
+            writer.flush();
+            writer.close();
+
+
+            inputStream.close();
+            s.close();
+        }
+        catch (Exception e)
+        {
+            Log.d("I xml sparandet",e.getMessage());
+        }
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     private String GetOnlineWahapediaResource( String onlineResource)
     {
@@ -113,15 +186,14 @@ public  class FileHandler  {
 
         return returnValue.toString();
     }
-
     public Pair<String,Context> UpdateWahapediaData(UpdateArgumentStruct Arguments)
     {
         //  Log.d("Wahapedia grejen: ", "den uppdaterade bra");
         String ReturnValue = "Success!";
 
-        String localLastUpdate = ReadFileAsString(wahapediaDataDirectory.toString(),Arguments.LastUpdateURL,Arguments.context);
+        String localLastUpdate = ReadFileAsString(wahapediaDataDirectory.toString(),Arguments.LastUpdateURL);
         String onlineLastUpdate =  GetOnlineWahapediaResource(Arguments.LastUpdateURL);
-        String previousArgumentLengthString = ReadFileAsString(wahapediaDataDirectory.toString(),LAST_ARGUMENT_LENGTH_NAME, Arguments.context);
+        String previousArgumentLengthString = ReadFileAsString(wahapediaDataDirectory.toString(),LAST_ARGUMENT_LENGTH_NAME);
 
         if(localLastUpdate.equals(onlineLastUpdate) && Integer.parseInt(previousArgumentLengthString) == Arguments.FilesToDownload.size() )
         {
@@ -221,10 +293,6 @@ public  class FileHandler  {
                 }
             }
         } else {
-            // Handle the case where dir is not really a directory.
-            // Checking dir.isDirectory() above would not be sufficient
-            // to avoid race conditions with another process that deletes
-            // directories.
             Log.d("saved matchups", "Hittade inte den givna matchupen" );
         }
         return null;
@@ -239,6 +307,7 @@ public  class FileHandler  {
         }
         context.getContentResolver();
         instance = new FileHandler(context);
+
     }
 
     public static FileHandler GetInstance( )
@@ -268,20 +337,23 @@ public  class FileHandler  {
             if (!wahapediaDataDirectory.exists()) {
                 wahapediaDataDirectory.mkdir();
             }
+            bsDataDirectory = new File(context.getFilesDir(), "BsDataDirectory");
+            if (!bsDataDirectory.exists()) {
+                bsDataDirectory.mkdir();
+            }
 
             assetManager = context.getAssets();
             contentResolver = context.getContentResolver();
             GsonBuilder gsonBuilder = new GsonBuilder();
             gsonBuilder.registerTypeAdapter(Ability.class, new AbilityElementAdapter());
             gson = gsonBuilder.create();
+            battleScribeUpdater = new BattleScribeUpdater(context);
         }
     }
 
     public void CreateArmyFromFile(Context context, Uri uri)
     {
-        File rozFile = new File(uri.getPath());
         Army TestArmy = new Army();
-        String fileName = "";
         try {
             // Is probably a better way to get the name that support  <29 versions
             DocumentFile documentFile = DocumentFile.fromSingleUri(context,uri);
@@ -300,6 +372,7 @@ public  class FileHandler  {
         catch (Exception e)
         {
             Log.d("GW parsing",e.getMessage());
+            e.printStackTrace();
         }
 
         try {
@@ -408,4 +481,150 @@ public  class FileHandler  {
         return  armiesToReturn;
     }
 
+
+    public class BattleScribeUpdater {
+
+        private static final String REPO_OWNER = "BSData";
+        private static final String REPO_NAME = "wh40k-10e";
+        private static final String BRANCH = "main";
+        private static final String API_BASE = "https://api.github.com";
+
+        private final Context context;
+
+        public BattleScribeUpdater(Context context) {
+            this.context = context;
+        }
+
+        // Call this on app start or when user requests update
+        public void checkAndUpdate(UpdateCallbackBsData callback) {
+            new Thread(() -> {
+                try {
+                    String latestSha = fetchLatestCommitSha();
+                    String storedSha = ReadFileAsString(bsDataDirectory.toString(),context.getString(R.string.last_commit_sha));
+                    if (latestSha.equals(storedSha)) {
+                        callback.onComplete(false); // already up to date
+                        return;
+                    }
+
+                    if (storedSha.isEmpty()) {
+                        // First run, download all .cat files
+                        downloadAllCatalogueFiles(callback);
+                    } else {
+                        // Only download changed files
+                        downloadChangedFiles(storedSha, latestSha, callback);
+                    }
+
+                    SaveTextFile(bsDataDirectory,context.getString(R.string.last_commit_sha),latestSha);
+                    callback.onComplete(true);
+
+                } catch (Exception e) {
+                    callback.onError(e);
+                    e.printStackTrace();
+                }
+            }).start();
+        }
+
+        private String fetchLatestCommitSha() throws Exception {
+            String url = API_BASE + "/repos/" + REPO_OWNER + "/" + REPO_NAME
+                    + "/commits/" + BRANCH;
+            JSONObject response = fetchJson(url);
+            return response.getString("sha");
+        }
+
+        private void downloadChangedFiles(String fromSha, String toSha,
+                                          UpdateCallbackBsData callback) throws Exception {
+            String url = API_BASE + "/repos/" + REPO_OWNER + "/" + REPO_NAME
+                    + "/compare/" + fromSha + "..." + toSha;
+            JSONObject response = fetchJson(url);
+            JSONArray files = response.getJSONArray("files");
+
+            for (int i = 0; i < files.length(); i++) {
+                JSONObject file = files.getJSONObject(i);
+                String filename = file.getString("filename");
+                String status = file.getString("status"); // added, modified, removed
+
+                if (!filename.endsWith(".cat") && !filename.endsWith(".gst")) continue;
+
+                if (status.equals("removed")) {
+                    deleteLocalFile(filename);
+                } else {
+                    // raw_url gives direct download without API rate limits
+                    String rawUrl = file.getString("raw_url");
+                    downloadFile(rawUrl, filename);
+                }
+
+                callback.onProgress(i + 1, files.length(), filename);
+            }
+        }
+
+        private void downloadAllCatalogueFiles(UpdateCallbackBsData callback) throws Exception {
+            // Use the git tree API to list all files without downloading them
+            String url = API_BASE + "/repos/" + REPO_OWNER + "/" + REPO_NAME
+                    + "/git/trees/" + BRANCH + "?recursive=1";
+            JSONObject response = fetchJson(url);
+            JSONArray tree = response.getJSONArray("tree");
+
+            // Filter to only .cat and .gst files
+            ArrayList<JSONObject> catFiles = new ArrayList<>();
+            for (int i = 0; i < tree.length(); i++) {
+                JSONObject item = tree.getJSONObject(i);
+                String path = item.getString("path");
+                if (path.endsWith(".cat") || path.endsWith(".gst")) {
+                    catFiles.add(item);
+                }
+            }
+
+            for (int i = 0; i < catFiles.size(); i++) {
+                JSONObject item = catFiles.get(i);
+                String path = item.getString("path");
+                String rawUrl = "https://raw.githubusercontent.com/" + REPO_OWNER
+                        + "/" + REPO_NAME + "/" + BRANCH + "/" + path;
+                downloadFile(rawUrl, path);
+                callback.onProgress(i + 1, catFiles.size(), path);
+            }
+        }
+
+        private void downloadFile(String url, String relativePath) throws Exception {
+            File outputFile = new File(bsDataDirectory, relativePath);
+            outputFile.getParentFile().mkdirs();
+
+            HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+            conn.setRequestProperty("Accept", "application/vnd.github.v3.raw");
+            // Add auth token if you have one, unauthenticated is limited to 60 req/hour
+            // conn.setRequestProperty("Authorization", "token YOUR_TOKEN");
+
+            try (InputStream in = conn.getInputStream(); FileOutputStream out = new FileOutputStream(outputFile)) {
+                byte[] buffer = new byte[8192];
+                int bytesRead;
+                while ((bytesRead = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, bytesRead);
+                }
+            } finally {
+                conn.disconnect();
+            }
+        }
+
+        private void deleteLocalFile(String relativePath) {
+            new File(bsDataDirectory, relativePath).delete();
+        }
+
+
+        private JSONObject fetchJson(String url) throws Exception {
+            HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+            conn.setRequestProperty("Accept", "application/vnd.github.v3+json");
+            conn.setRequestProperty("User-Agent", "DamageCalculator40k");
+
+            try (InputStream in = conn.getInputStream()) {
+                byte[] bytes = in.readAllBytes();
+                return new JSONObject(new String(bytes));
+            } finally {
+                conn.disconnect();
+            }
+        }
+}
+    public interface UpdateCallbackBsData {
+        void onProgress(int current, int total, String filename);
+        void onComplete(boolean didUpdate);
+        void onError(Exception e);
+    }
 }

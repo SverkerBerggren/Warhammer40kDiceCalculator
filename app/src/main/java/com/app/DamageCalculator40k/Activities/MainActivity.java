@@ -43,21 +43,11 @@ public class  MainActivity extends AppCompatActivity {
 
         FileHandler.InitializeFileHandler(context);
         DatabaseManager.InitializeDatabaseManager(context);
-
-        Gson gson = new Gson();
-
-        LethalHits hej = new LethalHits();
-
-        String abow = gson.toJson(hej);
-        Ability hej2 = gson.fromJson(abow,LethalHits.class);
-
-
     }
 
     public void OpenSavedMatchups(View v)
     {
         Intent intent = new Intent(this, SavedMatchupsActivity.class);
-
         startActivity(intent);
     }
 

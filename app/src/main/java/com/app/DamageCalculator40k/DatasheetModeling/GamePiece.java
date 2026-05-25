@@ -12,7 +12,7 @@ import java.util.ArrayList;
 // Halv kasst namn walla
 public abstract class GamePiece {
 
-    private final ArrayList<Ability> abilities = new ArrayList<>();
+    protected final ArrayList<Ability> abilities = new ArrayList<>();
 
     public ArrayList<Ability> GetAbilities()
     {

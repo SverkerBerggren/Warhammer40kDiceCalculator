@@ -125,7 +125,6 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         ImageButton editButton = inflatedView.findViewById(R.id.EditArmyModifiersButton);
         UiUtils.CreateModifiers(army, uiIdArmy, editButton, modifiersTable,context,editModifierPopup);
         UiUtils.CreateGamePieceAbilities(inflatedView,army,armyId,context,activityResultLauncherAbility);
-        // instantiateArmies(allegiance);
         CreateUnitButton(allegiance, inflatedView);
         parentView.addView(inflatedView);
     }

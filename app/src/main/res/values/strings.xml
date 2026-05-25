@@ -32,6 +32,9 @@
     <string name="WoundAmount">W</string>
     <string name="Attacks">A</string>
 
+    <string name="bs_data">bs_data</string>
+    <string name="last_commit_sha">last_commit_sha</string>
+
     <string name="ExcludeDropDownTag">NoDropDown</string>
 
     <string name="SingleIntegerText">%1$d</string>
