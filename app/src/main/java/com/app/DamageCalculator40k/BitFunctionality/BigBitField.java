@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public  class BigBitField<SpecifiedEnum extends  Enum<SpecifiedEnum> & BitEnum<SpecifiedEnum>> implements Iterable<SpecifiedEnum> {
     // Hard coded because I want to avoid dynamic allocations
@@ -12,48 +13,30 @@ public  class BigBitField<SpecifiedEnum extends  Enum<SpecifiedEnum> & BitEnum<S
     // Does not yet support more than 64 values
     private long SecondBitField = 0;
     private final int MAXSIZE = 64;
-    protected int count = 0;
     private final SpecifiedEnum[] enumValues;
 
-    // TODO: Ultra ghetto bababooey
-    private final SpecifiedEnum firstEnum;
+    private final Class<SpecifiedEnum> enumClass;
+    public int Count() {
+        return Long.bitCount(FirstBitField) + Long.bitCount(SecondBitField);
+    }
+    public BigBitField(Class<SpecifiedEnum> enumClass) {
+        this.enumClass = enumClass;  // store it
+        enumValues = enumClass.getEnumConstants();
 
-    public int Count()
-    {
-        return count;
+        if (enumValues.length > MAXSIZE) {
+            Log.d("Enum bitfield", "Too many variables in the enum");
+        }
     }
 
-    public BigBitField<SpecifiedEnum> Copy()
-    {
-        BigBitField<SpecifiedEnum> newBitField = new BigBitField<>(firstEnum);
+    public BigBitField<SpecifiedEnum> Copy() {
+        BigBitField<SpecifiedEnum> newBitField = new BigBitField<>(enumClass);  // reuse stored class
         newBitField.FirstBitField = FirstBitField;
         newBitField.SecondBitField = SecondBitField;
-        newBitField.count = count;
-
         return newBitField;
     }
 
-    public BigBitField(SpecifiedEnum bitEnum)
-    {
-        if( bitEnum.GetValues().length > MAXSIZE)
-        {
-           Log.d("Enum bitfield", "To many variables in the enum, Max size needs to be increased");
-        }
-        firstEnum = bitEnum;
-        enumValues = bitEnum.GetValues();
-    }
-
-    public boolean IsSet(SpecifiedEnum enumValue)
-    {
-        long index = (long) 1 << enumValue.ordinal() ;
-        if(enumValue.ordinal() <= 64)
-        {
-            return  (FirstBitField & index) != 0;
-        }
-        else
-        {
-            return (SecondBitField & index) != 0;
-        }
+    public boolean IsSet(SpecifiedEnum enumValue) {
+        return (FirstBitField & (1L << enumValue.ordinal())) != 0;
     }
     public void Set(SpecifiedEnum enumValue, boolean value)
     {
@@ -61,62 +44,39 @@ public  class BigBitField<SpecifiedEnum extends  Enum<SpecifiedEnum> & BitEnum<S
 
         if(value)
         {
-            if(enumValue.ordinal() <= 64)
+            if(enumValue.ordinal() < 64)
             {
-                long alreadySet = FirstBitField & index;
-                if(alreadySet == 0)
-                {
-                    count++;
-                }
                 FirstBitField =  (FirstBitField | index);
             }
         }
         else
         {
-            if(enumValue.ordinal() <= 64)
+            if(enumValue.ordinal() < 64)
             {
-                long alreadySet = FirstBitField & index;
-                if(alreadySet != 0)
-                {
-                    count--;
-                }
                 FirstBitField =  (FirstBitField & (~index));
             }
         }
     }
-
     @NonNull
     @Override
     public Iterator<SpecifiedEnum> iterator() {
-         Iterator<SpecifiedEnum> iterator = new Iterator<SpecifiedEnum>()
-         {
-            private int currentCount = 0;
-            private int nextBitIndex = 0;
-            @Override
-            public boolean hasNext() {
-                return currentCount < count;
-            }
+        return new Iterator<SpecifiedEnum>()
+        {
+           private int nextBitIndex = 0;
+           @Override
+           public boolean hasNext() {
+               return (FirstBitField >>> nextBitIndex) != 0;
+           }
 
-            @Override
-            public SpecifiedEnum next() {
-                if(!hasNext())
-                {
-                    throw new RuntimeException("Stub!");
-                }
-                int index = nextBitIndex;
-                for(;index < MAXSIZE;index++)
-                {
-                    long IsSet = FirstBitField & ((long) 1 <<index);
-                    if(IsSet != 0)
-                    {
-                        currentCount++;
-                        nextBitIndex = index +1;
-                        return enumValues[index];
-                    }
-                }
-                return null;
-            }
-        };
-        return  iterator;
+           @Override
+           public SpecifiedEnum next() {
+               if (FirstBitField >>> nextBitIndex == 0) throw new NoSuchElementException();
+
+               // Jump directly to the next set bit instead of scanning
+               int index = nextBitIndex + Long.numberOfTrailingZeros(FirstBitField >>> nextBitIndex);
+               nextBitIndex = index + 1;
+               return enumValues[index];
+           }
+       };
     }
 }

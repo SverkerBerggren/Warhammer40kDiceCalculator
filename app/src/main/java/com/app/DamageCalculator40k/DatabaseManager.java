@@ -47,7 +47,7 @@ import java.util.function.Function;
 
 public class DatabaseManager {
 
-    private final HashMap<String,Ability> stringAbilityDatabase = new HashMap<>();
+    private final HashMap<String,Ability> nameToImplementedAbility = new HashMap<>();
 
     //TODO: bor lowkey tas bort lite sus men skit samma
 
@@ -56,11 +56,13 @@ public class DatabaseManager {
     private final XmlParser xmlParser = new XmlParser();
 
     public static final Object onlineDatabaseLock = new Object();
+    public static boolean isInitialized = false;
     private final Object localAbilitiesLock = new Object();
     private  HashMap<NameFactionKey,Model> modelDatabase;
     private  HashMap<NameFactionKey,Unit> unitDatabase;
     private  HashMap<NameFactionUnitKey,ArrayList<Weapon>> nameFactionUnitToWeapon;
     private  HashMap<NameFactionKey,ArrayList<Weapon>> nameToWeapon;
+    private  HashMap<String,Ability> nameToParsedAbility;
 
     public static class NameFactionKey
     {
@@ -152,29 +154,37 @@ public class DatabaseManager {
         instance = new DatabaseManager();
 
         Log.d("Databas","Updaterar databasen");
-        FileHandler.UpdateCallbackBsData updateCallback = new FileHandler.UpdateCallbackBsData() {
-            @Override
-            public void onProgress(int current, int total, String filename) {
 
-            }
 
-            @Override
-            public void onComplete(boolean didUpdate) {
-                Log.d("Trådar","hej");
-                instance.xmlParser.FillDatabase(FileHandler.GetInstance().GetXMLData());
-            }
+            FileHandler.UpdateCallbackBsData updateCallback = new FileHandler.UpdateCallbackBsData() {
+                @Override
+                public void onProgress(int current, int total, String filename) {
 
-            @Override
-            public void onError(Exception e) {
+                }
 
-            }
-        };
+                @Override
+                public void onComplete(boolean didUpdate) {
+                    synchronized (onlineDatabaseLock) {
+                        Log.d("Trådar", "hej");
+                        instance.xmlParser.FillDatabase(FileHandler.GetInstance().GetXMLData());
+                        isInitialized = true;
+                    }
+                }
 
-        instance.modelDatabase = instance.xmlParser.nameToModel;
-        instance.unitDatabase = instance.xmlParser.nameToUnit;
-        instance.nameFactionUnitToWeapon = instance.xmlParser.nameUnitToWeapon;
-        instance.nameToWeapon = instance.xmlParser.nameToWeapon;
-        FileHandler.GetInstance().UpdateBattlesScribeData(updateCallback);
+                @Override
+                public void onError(Exception e) {
+
+                }
+            };
+
+            instance.modelDatabase = instance.xmlParser.nameToModel;
+            instance.unitDatabase = instance.xmlParser.nameToUnit;
+            instance.nameFactionUnitToWeapon = instance.xmlParser.nameUnitToWeapon;
+            instance.nameToWeapon = instance.xmlParser.nameToWeapon;
+            instance.nameToParsedAbility = instance.xmlParser.nameToAbility;
+            FileHandler.GetInstance().UpdateBattlesScribeData(updateCallback);
+
+        instance.InitializeLocalDatabases();
     }
 
     private void InitializeLocalDatabases()
@@ -225,10 +235,11 @@ public class DatabaseManager {
             return new Pair<>(ItemType.WEAPON, retList);
         }
 
-        DatabaseManager.NameFactionKey idNameFaction =  new DatabaseManager.NameFactionKey(itemName.split("\\(")[0].trim(),faction);
+        DatabaseManager.NameFactionKey idNameFaction =  new DatabaseManager.NameFactionKey(itemName,faction);
         //ghetto af
         if(unitDatabase.containsKey( idNameFaction))
         {
+
             return new Pair<>(ItemType.UNIT,unitDatabase.get(idNameFaction));
         }
         Ability ability = DatabaseManager.getInstance().GetAbility(itemName);
@@ -236,6 +247,12 @@ public class DatabaseManager {
         {
             return new Pair<>(ItemType.ABILITY,ability);
         }
+
+        if(itemName.equalsIgnoreCase("warlord"))
+        {
+            return new Pair<>(ItemType.KEYWORD,Keyword.Warlord);
+        }
+
         //Needs to be the last check before testing if it is a model
         if(unit.singleModelUnit)
         {
@@ -274,39 +291,45 @@ public class DatabaseManager {
     {
         synchronized (localAbilitiesLock)
         {
-            stringAbilityDatabase.put(Blast.baseName, new Blast());
-            stringAbilityDatabase.put(DevastatingWounds.baseName, new DevastatingWounds());
-            stringAbilityDatabase.put(Heavy.baseName, new Heavy());
-            stringAbilityDatabase.put(ExtraAttacks.baseName, new ExtraAttacks());
-            stringAbilityDatabase.put(IgnoresCover.baseName, new IgnoresCover());
-            stringAbilityDatabase.put(IndirectFire.baseName, new IndirectFire());
-            stringAbilityDatabase.put(LethalHits.baseName, new LethalHits());
-            stringAbilityDatabase.put(Torrent.baseName, new Torrent());
-            stringAbilityDatabase.put(TwinLinked.baseName, new TwinLinked());
-            stringAbilityDatabase.put(ReRollHits.baseName, new ReRollHits());
-            stringAbilityDatabase.put(ReRollOnes.baseName, new ReRollOnes());
-            stringAbilityDatabase.put(ReRollOnesWound.baseName, new ReRollOnesWound());
-            stringAbilityDatabase.put(ReRollWoundRoll.baseName, new ReRollWoundRoll());
+            nameToImplementedAbility.put(Blast.baseName, new Blast());
+            nameToImplementedAbility.put(DevastatingWounds.baseName, new DevastatingWounds());
+            nameToImplementedAbility.put(Heavy.baseName, new Heavy());
+            nameToImplementedAbility.put(ExtraAttacks.baseName, new ExtraAttacks());
+            nameToImplementedAbility.put(IgnoresCover.baseName, new IgnoresCover());
+            nameToImplementedAbility.put(IndirectFire.baseName, new IndirectFire());
+            nameToImplementedAbility.put(LethalHits.baseName, new LethalHits());
+            nameToImplementedAbility.put(Torrent.baseName, new Torrent());
+            nameToImplementedAbility.put(TwinLinked.baseName, new TwinLinked());
+            nameToImplementedAbility.put(ReRollHits.baseName, new ReRollHits());
+            nameToImplementedAbility.put(ReRollOnes.baseName, new ReRollOnes());
+            nameToImplementedAbility.put(ReRollOnesWound.baseName, new ReRollOnesWound());
+            nameToImplementedAbility.put(ReRollWoundRoll.baseName, new ReRollWoundRoll());
             MortalWoundOnHit mortalWoundOnHit = new MortalWoundOnHit(6);
             mortalWoundOnHit.name = mortalWoundOnHit.name + " 6";
-            stringAbilityDatabase.put(mortalWoundOnHit.name, mortalWoundOnHit);
+            nameToImplementedAbility.put(mortalWoundOnHit.name, mortalWoundOnHit);
             // TODO: Not quite sure how to handle these
-            stringAbilityDatabase.put(RapidFire.baseName, new RapidFire(new DiceAmount()));
-            stringAbilityDatabase.put(SustainedHits.baseName, new SustainedHits(0));
-            stringAbilityDatabase.put(AntiKeyword.baseName, new AntiKeyword(Keyword.infantry,0));
-            stringAbilityDatabase.put(Melta.baseName, new Melta(new DiceAmount()));
+            nameToImplementedAbility.put(RapidFire.baseName, new RapidFire(new DiceAmount()));
+            nameToImplementedAbility.put(SustainedHits.baseName, new SustainedHits(0));
+            nameToImplementedAbility.put(AntiKeyword.baseName, new AntiKeyword(Keyword.Infantry,0));
+            nameToImplementedAbility.put(Melta.baseName, new Melta(new DiceAmount()));
         }
     }
 
     public ArrayList<Ability> GetAbilities()
     {
-        return new ArrayList<>(stringAbilityDatabase.values());
+        return new ArrayList<>(nameToImplementedAbility.values());
     }
 
     // Name of the ability
     public Ability GetAbility(String name)
     {
-        return stringAbilityDatabase.get(name);
+        Ability ability = nameToImplementedAbility.get(name);
+        if(ability == null)
+        {
+            ability = nameToParsedAbility.get(name);
+
+        }
+        return ability;
     }
 
 
@@ -360,6 +383,8 @@ public class DatabaseManager {
         UNIT,
         WEAPON,
         ABILITY,
+        // Lowkey only used for warlords
+        KEYWORD,
         UNIMPLEMENTED,
         UNIDENTIFIED
     }

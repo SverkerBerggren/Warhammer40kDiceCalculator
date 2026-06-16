@@ -1,16 +1,17 @@
 package com.app.DamageCalculator40k.Parsing;
 
 import android.util.Log;
+import android.util.Pair;
 
 
 import com.app.DamageCalculator40k.Abilities.Ability;
-import com.app.DamageCalculator40k.Abilities.GenericAbilities.MortalWoundOnHit;
 import com.app.DamageCalculator40k.Abilities.UnimplementedAbility;
 import com.app.DamageCalculator40k.DatabaseManager;
 import com.app.DamageCalculator40k.DatasheetModeling.Model;
 import com.app.DamageCalculator40k.DatasheetModeling.Unit;
 import com.app.DamageCalculator40k.DatasheetModeling.Weapon;
 import com.app.DamageCalculator40k.Enums.Faction;
+import com.app.DamageCalculator40k.Enums.Keyword;
 
 import org.w3c.dom.*;
 import javax.xml.parsers.*;
@@ -35,7 +36,32 @@ public class XmlParser
     public final HashMap<DatabaseManager.NameFactionKey, ArrayList<Weapon>> nameToWeapon = new HashMap<>();
     public final HashMap<DatabaseManager.NameFactionUnitKey, ArrayList<Weapon>> nameUnitToWeapon = new HashMap<>();
     public final  HashMap<DatabaseManager.NameFactionUnitKey,Weapon> nameFactionUnitToWeapon = new HashMap<>();
+    public final HashMap<String,Ability> nameToAbility = new CaseInsensitiveMap<>();
+    public final HashMap<String,Ability> idToAbility = new HashMap<>();
 
+    //Might change in the future but I will try it for now
+    public class CaseInsensitiveMap<V> extends HashMap<String, V> {
+
+        @Override
+        public V put(String key, V value) {
+            return super.put(key.toLowerCase(), value);
+        }
+
+        @Override
+        public V remove(Object key) {
+            return super.remove(((String) key).toLowerCase());
+        }
+
+        @Override
+        public V get(Object key) {
+            return super.get(((String) key).toLowerCase());
+        }
+
+        @Override
+        public boolean containsKey(Object key) {
+            return super.containsKey(((String) key).toLowerCase());
+        }
+    }
     int p_ParseUnitStat(String StatString)
     {
         if (StatString == null || StatString.trim().isEmpty()
@@ -78,23 +104,57 @@ public class XmlParser
         return  false;
     }
 
-    static Node GetChildNodeWithAttributeValue(Node node, String attribute,String value)
+    // static Node GetChildNodeWithAttributeValue(Node node, String attribute,String value)
+    // {
+    //     for(int i = 0; i < node.getChildNodes().getLength();i++)
+    //     {
+    //         Node childNode = node.getChildNodes().item(i);
+    //         Node attributeNode = childNode.getAttributes().getNamedItem(attribute);
+    //         if(attributeNode != null)
+    //         {
+    //             if(attributeNode.getNodeValue().equals(value))
+    //             {
+    //                 return childNode;
+    //             }
+    //         }
+    //     }
+    //     return null;
+    // }
+    static Node GetChildNodeWithAttributeValue(Node node,String elementName,String attributeType,String attributeValue)
     {
+        if((attributeType != null && attributeValue == null ) || ( attributeType == null && attributeValue != null) )
+        {
+            Log.d("Invalid utilization","Invalid usage of method, given that either attributeType or attributeValid is set so does the other one also need to have a valid value ");
+            return  null;
+        }
         for(int i = 0; i < node.getChildNodes().getLength();i++)
         {
             Node childNode = node.getChildNodes().item(i);
-            Node attributeNode = childNode.getAttributes().getNamedItem(attribute);
-            if(attributeNode != null)
+            boolean elementNameCondition = true;
+            if(elementName != null)
             {
-                if(attributeNode.getNodeValue().equals(value))
+                elementNameCondition = childNode.getNodeName().equalsIgnoreCase(elementName);
+            }
+            boolean attributeCondition = true;
+            if(attributeType != null)
+            {
+                Node attributeNode = childNode.getAttributes().getNamedItem(attributeType);
+                if(attributeNode != null)
                 {
-                    return childNode;
+                    attributeCondition = attributeNode.getNodeValue().equalsIgnoreCase(attributeValue);
                 }
+                else
+                {
+                    attributeCondition = false;
+                }
+            }
+            if(elementNameCondition && attributeCondition)
+            {
+                return childNode;
             }
         }
         return null;
     }
-
     // If attributeType is null so does it only retrieve a node based on its element type
     private Node GetFirstNodeOfTypeRecursively(Node node,String elementName,String attributeType,String attributeValue)
     {
@@ -146,25 +206,6 @@ public class XmlParser
         return retString.toString();
     }
 
-    //TODO: finns redan en metod som ska tas bort
-    private Model ParseModelFromProfile(Node node)
-    {
-        Model modelToReturn = new Model();
-        modelToReturn.name = node.getAttributes().getNamedItem("name").getNodeValue();
-        Node characteristics = p_FirsChildByType(node,"characteristics");
-
-        String toughnessString = GetChildNodeWithAttributeValue(characteristics,"name","T").getFirstChild().getNodeValue();
-        modelToReturn.toughness = Integer.parseInt(toughnessString);
-
-        String saveString = OnlyNumeric( GetChildNodeWithAttributeValue(characteristics,"name","SV").getFirstChild().getNodeValue());
-        modelToReturn.armorSave = Integer.parseInt(saveString);
-
-        String woundString = GetChildNodeWithAttributeValue(characteristics,"name","W").getFirstChild().getNodeValue();
-        modelToReturn.wounds = Integer.parseInt(woundString);
-
-        return modelToReturn;
-    }
-
     private Document ParseXML(String data)
     {
         try {
@@ -196,18 +237,21 @@ public class XmlParser
     }
 
     // TODO: temporar skas andras trust
-    public void FillDatabase(ArrayList<String> xmlDocs)
+    public void FillDatabase(ArrayList<Pair<String,Faction>> xmlDocs)
     {
-        for (String xmlDoc : xmlDocs)
+        for (Pair<String,Faction> filePair : xmlDocs)
         {
-            Faction faction = Faction.AstraMilitarum;
+            String xmlDoc = filePair.first;
+            Faction faction = filePair.second;
             Document doc = ParseXML(xmlDoc);
             CreateSharedModelStats(doc,faction);   // builds idToModel from sharedProfiles
         }
-        for (String xmlDoc : xmlDocs)
+        for (Pair<String,Faction> filePair : xmlDocs)
         {
+            String xmlDoc = filePair.first;
+            Faction faction = filePair.second;
             Document doc = ParseXML(xmlDoc);
-            Faction faction = Faction.AstraMilitarum;
+            IndexAbilitySelections(doc.getDocumentElement());
             IndexAllWeapons(doc.getDocumentElement(),faction);
             IndexAllModels(doc.getDocumentElement(),faction);
             IndexAllUnits(doc.getDocumentElement(),faction);
@@ -230,6 +274,90 @@ public class XmlParser
                 }
             });
         });
+    }
+
+    private boolean IsValidAbility(Ability ability)
+    {
+        if(ability == null)
+        {
+            return  false;
+        }
+        if(ability.name == null || ability.name.isEmpty() )
+        {
+            return  false;
+        }
+        return true;
+    }
+    private void IndexAbilitySelections(Node node)
+    {
+        if (node.getNodeType() != Node.ELEMENT_NODE) return;
+
+        NamedNodeMap attrs = node.getAttributes();
+        if(attrs != null)
+        {
+            if(node.getNodeName().equalsIgnoreCase("selectionEntry"))
+            {
+                Node typeNode = attrs.getNamedItem("type");
+                if(typeNode != null && typeNode.getNodeValue().equalsIgnoreCase("upgrade"))
+                {
+                    Node profileNode = GetFirstNodeOfTypeRecursively(node,"profile","typeName","Abilities");
+                    if(profileNode != null)
+                    {
+                        Ability ability = parseAbilityFromProfileNode(profileNode);
+                        if(IsValidAbility(ability))
+                        {
+                            Node idNode = attrs.getNamedItem("id");
+                            if(idNode != null)
+                            {
+                                idToAbility.put(idNode.getNodeValue(),ability);
+                            }
+                            nameToAbility.put(ability.name,ability);
+                        }
+                    }
+                }
+            }
+        }
+
+        NodeList children = node.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+            IndexAbilitySelections(children.item(i));
+        }
+    }
+
+    private ArrayList<Keyword> GetKeywordsFromSelectionEntry(Node selectionEntryNode)
+    {
+        ArrayList<Keyword> retList = new ArrayList<>();
+
+        Node categoryLinksNode = GetFirstNodeOfTypeRecursively(selectionEntryNode,"categoryLinks",null,null);
+        if(categoryLinksNode != null)
+        {
+            NodeList categoryLinks = categoryLinksNode.getChildNodes();
+            for(int i = 0; i < categoryLinks.getLength();i++)
+            {
+                Node nodeName = categoryLinks.item(i).getAttributes().getNamedItem("name");
+                if(nodeName!= null)
+                {
+                    String prunedString = Parsing.toEnumName(nodeName.getNodeValue());
+                    Keyword keyword = Parsing.keywordFromString(prunedString);
+                    if(keyword != null)
+                    {
+                        retList.add(keyword);
+                    }
+                    else
+                    {
+                        String message = prunedString;
+                        Node idNode = categoryLinks.item(i).getAttributes().getNamedItem("id");
+                        if(idNode != null)
+                        {
+                            message += " " + idNode.getNodeValue();
+                        }
+                        Log.d("Unit parsing","Invalid keyword found " + message);
+                    }
+                }
+            }
+        }
+
+        return  retList;
     }
     public void IndexAllUnits(Node node,Faction faction) {
         if (node.getNodeType() != Node.ELEMENT_NODE) return;
@@ -259,17 +387,17 @@ public class XmlParser
                             unit.GetAbilities().addAll(model.GetAbilities());
                         }
                     }
+                    if(unit != null)
+                    {
+                        unit.keywords = GetKeywordsFromSelectionEntry(node);
+                    }
                 }
-                if(unit != null)
+                // Crucible units are not supported
+                if(unit != null && !unit.unitName.contains("[Crucible]"))
                 {
                     Node idAttr = attrs.getNamedItem("id");
                     if (idAttr != null) {
                         idToUnit.put( idAttr.getNodeValue(), unit);
-                    }
-                    if(unit.unitName.equalsIgnoreCase("lord solar leontus"))
-                    {
-                        Log.d("Unit parsing","Found unit with no weapons " );
-
                     }
                     nameToUnit.put(new DatabaseManager.NameFactionKey( unit.unitName,faction), unit);
                     ArrayList<Weapon> weapons =  CollectWeaponsFromSubtree(node);
@@ -289,10 +417,6 @@ public class XmlParser
                             ArrayList<Weapon> weaponArrayList = new ArrayList<>();
                             weaponArrayList.add(weapon);
                             nameUnitToWeapon.put(new DatabaseManager.NameFactionUnitKey(weapon.name,faction,unit.unitName),weaponArrayList);
-                            if(weapon.name.equalsIgnoreCase("tempestus dagger"))
-                            {
-                                Log.d("abow","multi weapon bullshit");
-                            }
                         }
                     }
                 }
@@ -406,6 +530,10 @@ public class XmlParser
         {
             return false;
         }
+        if(model.name == null)
+        {
+            return  false;
+        }
         return true;
     }
     private void IndexAllModels(Node node,Faction faction) {
@@ -426,9 +554,16 @@ public class XmlParser
                         idValue = idAttr.getNodeValue();
 
                     Model model = ParseModelFromSelectionEntry(node);
-                    if(model.name.equalsIgnoreCase("tempestor aquilon"))
+
+                    if(model != null)
                     {
-                        Log.d("Model parsing","Tempestor aquilon");
+                        //Crucible models are not supported
+                        if( model.weapons.isEmpty() && !model.name.contains("[Crucible]"))
+                        {
+                            String message = model.name;
+                            message += " "+ idValue;
+                            Log.d("Weapon parsing","Model with no weapons found " + message);
+                        }
                     }
 
                     if (IsValidModel(model)) {
@@ -441,9 +576,10 @@ public class XmlParser
                     else
                     {
                         String message = "";
-                        if(model != null)
+                        //Crucible models are not supported
+                        if(model != null && !model.name.contains("[Crucible]"))
                         {
-                            message = model.name + idValue;
+                            message = model.name + " " + idValue;
                         }
                         Log.d("Model parsing","Invalid model found " + message);
                     }
@@ -488,9 +624,14 @@ public class XmlParser
 
         // First try: look for a Unit profile directly on this node
         boolean foundStats = false;
-        Node profilesNode = p_FirsChildByType(selectionEntry, "profiles");
+        Node profilesNode = GetFirstNodeOfTypeRecursively(selectionEntry, "profiles",null,null);
         if (profilesNode != null) {
-            foundStats = TryParseUnitStatsIntoModel(profilesNode, model);
+            Node profileNode = GetFirstNodeOfTypeRecursively(profilesNode,"profile","typeName","Unit");
+            // Makes an assumption that there is only 1 model defined in a profiles node
+            if(profileNode != null)
+            {
+                foundStats = TryParseModelStatsFromProfile(profileNode, model);
+            }
         }
 
         // Second try: follow infoLinks to shared profiles
@@ -536,7 +677,7 @@ public class XmlParser
                     Node profileNode = GetFirstNodeOfTypeRecursively(parentSelectionEntry,"profile","typeName","unit");
                     if(profileNode != null)
                     {
-                        TryParseUnitStatsIntoModel(profileNode.getParentNode(),model);
+                        TryParseModelStatsFromProfile(profileNode,model);
                         model.name = nameAttr.getNodeValue();
                     }
                 }
@@ -544,48 +685,39 @@ public class XmlParser
         }
 
         ArrayList<Weapon> weapons = CollectWeaponsFromSubtree(selectionEntry);
-        if(weapons.isEmpty())
-        {
-            String message = model.name;
-            message += " "+ selectionEntry.getAttributes().getNamedItem("id").getNodeValue();
-            Log.d("Weapon parsing","Model with no weapons found " + message);
-        }
         model.weapons.addAll(weapons);
         model.GetAbilities().addAll(ParseAbilitiesFromSubtree(selectionEntry));
 
         return model;
     }
     // Returns true if it found and parsed a Unit profile
-    private boolean TryParseUnitStatsIntoModel(Node profilesNode, Model model) {
-        NodeList children = profilesNode.getChildNodes();
-        for (int i = 0; i < children.getLength(); i++) {
-            Node profileNode = children.item(i);
-            if (profileNode.getNodeType() != Node.ELEMENT_NODE) continue;
+    private void ParseModelInfoFromProfile(Node node,Model model)
+    {
 
-            NamedNodeMap attrs = profileNode.getAttributes();
-            if (attrs == null) continue;
+    }
+    private boolean TryParseModelStatsFromProfile(Node profileNode, Model model) {
 
-            Node typeNameAttr = attrs.getNamedItem("typeName");
-            if (typeNameAttr == null) continue;
-
-            if (typeNameAttr.getNodeValue().equals("Unit")) {
-                Node chars = p_FirsChildByType(profileNode, "characteristics");
-                if (chars == null) continue;
-
-                Node tNode = GetChildNodeWithAttributeValue(chars, "name", "T");
-                Node svNode = GetChildNodeWithAttributeValue(chars, "name", "SV");
-                Node wNode = GetChildNodeWithAttributeValue(chars, "name", "W");
-                Node aNode = GetChildNodeWithAttributeValue(chars, "name", "A");
-                Node sNode = GetChildNodeWithAttributeValue(chars, "name", "S");
-
-                if (tNode != null) model.toughness = p_ParseUnitStat(tNode.getTextContent());
-                if (svNode != null) model.armorSave = p_ParseUnitStat(svNode.getTextContent());
-                if (wNode != null) model.wounds = p_ParseUnitStat(wNode.getTextContent());
-                if (aNode != null) model.attacks = p_ParseUnitStat(aNode.getTextContent());
-                if (sNode != null) model.strength = p_ParseUnitStat(sNode.getTextContent());
-                return true;
-            }
+        if (profileNode.getNodeType() != Node.ELEMENT_NODE) return false;
+        NamedNodeMap attrs = profileNode.getAttributes();
+        if (attrs == null) return false;
+        Node typeNameAttr = attrs.getNamedItem("typeName");
+        if (typeNameAttr == null) return false;
+        if (typeNameAttr.getNodeValue().equals("Unit")) {
+            Node chars = p_FirsChildByType(profileNode, "characteristics");
+            if (chars == null) return false;
+            Node tNode = GetChildNodeWithAttributeValue(chars, null,"name", "T");
+            Node svNode = GetChildNodeWithAttributeValue(chars,null, "name", "SV");
+            Node wNode = GetChildNodeWithAttributeValue(chars, null,"name", "W");
+            Node aNode = GetChildNodeWithAttributeValue(chars, null,"name", "A");
+            Node sNode = GetChildNodeWithAttributeValue(chars, null,"name", "S");
+            if (tNode != null) model.toughness = p_ParseUnitStat(tNode.getTextContent());
+            if (svNode != null) model.armorSave = p_ParseUnitStat(svNode.getTextContent());
+            if (wNode != null) model.wounds = p_ParseUnitStat(wNode.getTextContent());
+            if (aNode != null) model.attacks = p_ParseUnitStat(aNode.getTextContent());
+            if (sNode != null) model.strength = p_ParseUnitStat(sNode.getTextContent());
+            return true;
         }
+
         return false;
     }
 
@@ -602,14 +734,6 @@ public class XmlParser
         NamedNodeMap attrs = node.getAttributes();
         if (attrs != null) {
 
-            Node idNode = attrs.getNamedItem("id");
-            if(idNode != null)
-            {
-                if(idNode.getNodeValue().equalsIgnoreCase("3f82-134-f2ed-b02e"))
-                {
-                    // Log.d("Weapon database","Target link did not find its weapon ");
-                }
-            }
             // entryLink nodes point to weapon selectionEntries by targetId
             Node targetIdAttr = attrs.getNamedItem("targetId");
             if (targetIdAttr != null) {
@@ -632,12 +756,6 @@ public class XmlParser
                 {
                     result.addAll(weapons);
                 }
-                else
-                {
-                    String name  = attrs.getNamedItem("name").getNodeValue();
-                    Log.d("Weapon database","Target link did not find its weapon " + targetId + " " + name);
-                }
-
             }
 
             // Also check if this node itself is a weapon profile
@@ -730,14 +848,6 @@ public class XmlParser
                     String name = attrs.getNamedItem("name").getNodeValue();
                     nameToWeapon.put(new DatabaseManager.NameFactionKey( name,faction), weapons);
                     idToWeapon.put(id,weapons);
-                    if(weapons.size() > 1)
-                    {
-                        Log.d("abow","multi weapon bullshit");
-                    }
-                    if(name.equalsIgnoreCase("tempestus dagger"))
-                    {
-                        Log.d("abow","multi weapon bullshit");
-                    }
                 }
             }
         }
@@ -793,11 +903,11 @@ public class XmlParser
         if (chars == null) return returnWeapon;
 
         // Use name-based lookup instead of positional
-        Node attacksNode = GetChildNodeWithAttributeValue(chars, "name", "A");
-        Node strengthNode = GetChildNodeWithAttributeValue(chars, "name", "S");
-        Node apNode = GetChildNodeWithAttributeValue(chars, "name", "AP");
-        Node damageNode = GetChildNodeWithAttributeValue(chars, "name", "D");
-        Node bsWsNode = GetChildNodeWithAttributeValue(chars, "name",
+        Node attacksNode = GetChildNodeWithAttributeValue(chars, null,"name", "A");
+        Node strengthNode = GetChildNodeWithAttributeValue(chars,null, "name", "S");
+        Node apNode = GetChildNodeWithAttributeValue(chars, null,"name", "AP");
+        Node damageNode = GetChildNodeWithAttributeValue(chars, null,"name", "D");
+        Node bsWsNode = GetChildNodeWithAttributeValue(chars, null,"name",
                 returnWeapon.isMelee ? "WS" : "BS");
 
         if (attacksNode != null)
@@ -812,7 +922,7 @@ public class XmlParser
             returnWeapon.ballisticSkill = p_ParseUnitStat(bsWsNode.getTextContent());
 
         // Replace the ParseAbilitiesFromSubtree call with keyword parsing
-        Node keywordsNode = GetChildNodeWithAttributeValue(chars, "name", "Keywords");
+        Node keywordsNode = GetChildNodeWithAttributeValue(chars, null,"name", "Keywords");
         if (keywordsNode != null) {
             String keywords = keywordsNode.getTextContent().trim();
             if (!keywords.equals("-") && !keywords.isEmpty()) {
@@ -849,6 +959,18 @@ public class XmlParser
                     result.add(ability);
                 }
                 return; // don't recurse into the ability's own children
+            }
+            if(node.getNodeName().equalsIgnoreCase("entrylink"))
+            {
+                Node targetIdNode = attrs.getNamedItem("targetId");
+                if(targetIdNode != null)
+                {
+                    Ability ability = idToAbility.get(targetIdNode.getNodeValue());
+                    if(ability != null)
+                    {
+                        result.add(ability);
+                    }
+                }
             }
         }
 
@@ -906,7 +1028,7 @@ public class XmlParser
         Node characteristics = p_FirsChildByType(profileNode, "characteristics");
         if (characteristics != null) {
             Node descNode = GetChildNodeWithAttributeValue(
-                    characteristics, "name", "Description");
+                    characteristics,null, "name", "Description");
             if (descNode != null) {
                 description = descNode.getTextContent().trim();
             }
@@ -921,14 +1043,24 @@ public class XmlParser
         Node nodeToFind = p_FirsChildByType(doc.getDocumentElement(),"sharedProfiles");
         if(nodeToFind != null)
         {
+
             for(int i = 0; i < nodeToFind.getChildNodes().getLength(); i++)
             {
                 Node sharedProfileNode = nodeToFind.getChildNodes().item(i);
                 if( ContainsTypeWithValue(sharedProfileNode,"typeName","Unit"))
                 {
-                    Model parsedModel = ParseModelFromProfile(sharedProfileNode);
-                    nameToModel.put(new DatabaseManager.NameFactionKey(parsedModel.name,faction),parsedModel);
-                    idToModel.put(sharedProfileNode.getAttributes().getNamedItem("id").getNodeValue(),parsedModel);
+                    Model parsedModel = new Model();
+                    TryParseModelStatsFromProfile(sharedProfileNode,parsedModel);
+                    Node nameNode = sharedProfileNode.getAttributes().getNamedItem("name");
+                    if(nameNode != null)
+                    {
+                        parsedModel.name = nameNode.getNodeValue();
+                    }
+                    if(IsValidModel(parsedModel))
+                    {
+                        nameToModel.put(new DatabaseManager.NameFactionKey(parsedModel.name,faction),parsedModel);
+                        idToModel.put(sharedProfileNode.getAttributes().getNamedItem("id").getNodeValue(),parsedModel);
+                    }
                 }
             }
         }

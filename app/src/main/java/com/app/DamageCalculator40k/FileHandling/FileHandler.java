@@ -14,6 +14,8 @@ import androidx.documentfile.provider.DocumentFile;
 import com.app.DamageCalculator40k.Abilities.Ability;
 import com.app.DamageCalculator40k.AbilityElementAdapter;
 import com.app.DamageCalculator40k.DatasheetModeling.Army;
+import com.app.DamageCalculator40k.Enums.Faction;
+import com.app.DamageCalculator40k.Enums.Keyword;
 import com.app.DamageCalculator40k.Matchup;
 import com.app.DamageCalculator40k.Parsing.XmlParser;
 import com.app.DamageCalculator40k.R;
@@ -65,18 +67,37 @@ public  class FileHandler  {
         battleScribeUpdater.checkAndUpdate(updateCallbackBsData);
     }
 
-    public ArrayList<String> GetXMLData()
+    private Faction getFactionFromName(String fileName)
     {
-        ArrayList<String> retValues = new ArrayList<>();
+        String fileEnumName = Parsing.toEnumName(fileName);
+
+        for( Faction faction : Faction.values())
+        {
+            String factionName = faction.name();
+            if(fileEnumName.contains(factionName))
+            {
+                return faction;
+            }
+        }
+        return  Faction.Unidentified;
+    }
+
+    public ArrayList< Pair<String,Faction>> GetXMLData()
+    {
+        ArrayList< Pair<String,Faction>> retValues = new ArrayList<>();
         File[] files = bsDataDirectory.listFiles((dir, name) ->
                 name.endsWith(".cat") || name.endsWith(".gst"));
 
         for (File file : files) {
-            if (!file.toString().contains("Astra"))
+
+            Faction faction = getFactionFromName(file.getName());
+
+            retValues.add( new Pair<>(ReadFileAsString(bsDataDirectory.toString(),file.getName()),faction));
+
+            if(faction == Faction.Unidentified)
             {
-                continue;
+                Log.d("Database source problem","Faction for file name could not be found " + file.getName());
             }
-            retValues.add( ReadFileAsString(bsDataDirectory.toString(),file.getName()));
         }
         return  retValues;
     }

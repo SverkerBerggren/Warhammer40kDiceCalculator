@@ -9,9 +9,8 @@ import com.app.DamageCalculator40k.ModifierHolder;
 
 import java.util.ArrayList;
 
-public class Model extends GamePiece  implements DeactivatableInterface, WahapediaIdHolder{
+public class Model extends GamePiece  implements DeactivatableInterface{
 
-    public String wahapediaDataId;
     public String name;
     public int toughness = -1;;
     public int strength = -1;
@@ -19,18 +18,13 @@ public class Model extends GamePiece  implements DeactivatableInterface, Wahaped
     //Todo: Fix invulnerable save condition
     public int invulnerableSave = 7;
     public int wounds = -1;
-    public int attacks=  -1;
+    public int attacks =  -1;
 
     public boolean active = true;
 
-    private AbilityBitField abilityFlags = new AbilityBitField(AbilityEnum.Blast);
 
     public ArrayList<Weapon> weapons = new ArrayList<>();
 
-    @Override
-    public String GetWahapediaId() {
-        return wahapediaDataId;
-    }
 
     @Override
     public IdentifierType GetIdentifierType() {
@@ -46,10 +40,8 @@ public class Model extends GamePiece  implements DeactivatableInterface, Wahaped
         modelToReturn.invulnerableSave = invulnerableSave;
         modelToReturn.wounds = wounds;
         modelToReturn.attacks=  attacks;
-        modelToReturn.wahapediaDataId = wahapediaDataId;
         modelToReturn.active = active;
         modelToReturn.name = name;
-        modelToReturn.abilityFlags = abilityFlags.Copy();
         modelToReturn.setStatModifiers( getStatModifiers().Copy());
         ArrayList<Weapon> newList = new ArrayList<>();
 

@@ -5,6 +5,7 @@ import com.app.DamageCalculator40k.Activities.CompareActivity;
 import com.app.DamageCalculator40k.BitFunctionality.AbilityBitField;
 import com.app.DamageCalculator40k.Enums.AbilityEnum;
 import com.app.DamageCalculator40k.Enums.IdentifierType;
+import com.app.DamageCalculator40k.Enums.Keyword;
 import com.app.DamageCalculator40k.ModifierHolder;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ public class Unit extends GamePiece   {
     public int pointCost;
 
     public ArrayList<Model> listOfModels = new ArrayList<>();
+    public ArrayList<Keyword> keywords = new ArrayList<>();
 
     public Unit Copy()
     {
@@ -29,6 +31,7 @@ public class Unit extends GamePiece   {
         }
 
         tempUnit.abilities.addAll(abilities);
+        tempUnit.keywords.addAll(keywords);
 
         return  tempUnit;
     }

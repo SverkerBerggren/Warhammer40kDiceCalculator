@@ -10,7 +10,7 @@ public class AbilityBitField extends BigBitField<AbilityEnum> {
     private long activeAbilities = Long.MAX_VALUE;
 
     public AbilityBitField(AbilityEnum bitEnum) {
-        super(bitEnum);
+        super((Class<AbilityEnum>) bitEnum.getClass());
     }
 
     // A bit weird that it is almost a copy of big bit field set, but making it generic may sacrifice performance
@@ -39,7 +39,6 @@ public class AbilityBitField extends BigBitField<AbilityEnum> {
     {
         AbilityBitField newBitField = new AbilityBitField(AbilityEnum.MinusOneDamage);
         newBitField.FirstBitField = FirstBitField;
-        newBitField.count = count;
         newBitField.activeAbilities =  activeAbilities;
         return newBitField;
     }

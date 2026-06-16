@@ -2,6 +2,7 @@ package com.app.DamageCalculator40k.Parsing;
 
 import android.util.Log;
 import android.util.Pair;
+import android.widget.Toast;
 
 import com.app.DamageCalculator40k.Abilities.Ability;
 import com.app.DamageCalculator40k.DatabaseManager;
@@ -9,15 +10,12 @@ import com.app.DamageCalculator40k.DatasheetModeling.Army;
 import com.app.DamageCalculator40k.DatasheetModeling.DiceAmount;
 import com.app.DamageCalculator40k.DatasheetModeling.Model;
 import com.app.DamageCalculator40k.DatasheetModeling.Unit;
-import com.app.DamageCalculator40k.DatasheetModeling.WahapediaIdHolder;
 import com.app.DamageCalculator40k.DatasheetModeling.Weapon;
 import com.app.DamageCalculator40k.Enums.Faction;
+import com.app.DamageCalculator40k.Enums.Keyword;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import kotlin.text.UStringsKt;
 
 public class Parsing
 {
@@ -35,19 +33,15 @@ public class Parsing
     //TODO: add all factions
     private Faction ParseArmyFaction(String armyList)
     {
-        if(armyList.contains("astra militarum"))
+        String enumArmyList = toEnumName(armyList);
+        for( Faction faction : Faction.values())
         {
-            return Faction.AstraMilitarum;
+            String factionName = toEnumName( faction.name());
+            if(enumArmyList.contains(factionName))
+            {
+                return faction;
+            }
         }
-        if(armyList.contains("chaos daemons"))
-        {
-            return Faction.ChaosDemons;
-        }
-        if(armyList.contains("space marines"))
-        {
-            return Faction.SpaceMarines;
-        }
-
         return Faction.Unidentified;
     }
 
@@ -55,16 +49,18 @@ public class Parsing
     {
         // Waits for the database to be initialized
         synchronized (DatabaseManager.onlineDatabaseLock) {
-            while (DatabaseManager.getInstance() == null) {
-                try { DatabaseManager.onlineDatabaseLock.wait(); }
-                catch (Exception e) {
-                    Log.d("Lock knas arme parsing",e.getMessage());
+            while (!DatabaseManager.isInitialized) {
+                try {
+                    Log.d("Lock", "Waiting for database...");
+                    DatabaseManager.onlineDatabaseLock.wait();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return null;
                 }
             }
         }
         databaseManager = DatabaseManager.getInstance();
-
-        armyListString = ConvertArmyListToWahapediaStandard(armyListString);
+        // armyListString = ConvertArmyListToWahapediaStandard(armyListString);
         armyFaction = ParseArmyFaction(armyListString);
 
         int stringOffset = 0;
@@ -125,6 +121,22 @@ public class Parsing
         return  false;
     }
 
+    private Pair<Integer,String> ParseUntilBreak(int offset, String armyList)
+    {
+        StringBuilder parsedString = new StringBuilder();
+        while(offset < armyList.length())
+        {
+            if(armyList.charAt(offset) == '\r' || armyList.charAt(offset) == '\n' || armyList.charAt(offset) == ',' )
+            {
+                return new Pair<>(offset,parsedString.toString());
+            }
+            parsedString.append(armyList.charAt(offset));
+            offset += 1;
+        }
+
+        return new Pair<>(offset,parsedString.toString());
+    }
+
     private Pair<Integer,String> ParseUntilLineBreak(int offset, String armyList)
     {
         StringBuilder parsedString = new StringBuilder();
@@ -146,10 +158,10 @@ public class Parsing
         return subString.contains(BATTLELINE) || subString.contains(DEDICATED_TRANSPORTS) || subString.contains(CHARACTER) || subString.contains(OTHER_DATASHEETS);
     }
     //TODO: bruh mega ghetto
-    private final String BATTLELINE = "battleline";
-    private final String CHARACTER = "character";
-    private final String DEDICATED_TRANSPORTS = "dedicated transports";
-    private final String OTHER_DATASHEETS = "other datasheet";
+    private final String BATTLELINE = "BATTLELINE";
+    private final String CHARACTER = "CHARACTER";
+    private final String DEDICATED_TRANSPORTS = "DEDICATED TRANSPORTS";
+    private final String OTHER_DATASHEETS = "OTHER DATASHEETS";
     private Faction ParseFaction(String factionString)
     {
         // TODO: add all factions
@@ -158,7 +170,7 @@ public class Parsing
             case "am":
                 return Faction.AstraMilitarum;
             case "cd":
-                return Faction.ChaosDemons;
+                return Faction.ChaosDaemons;
             case "sm":
                 return Faction.SpaceMarines;
             default:
@@ -184,6 +196,31 @@ public class Parsing
         return itemName.contains(BATTLELINE) || itemName.contains(DEDICATED_TRANSPORTS) || itemName.contains(CHARACTER) || itemName.contains(OTHER_DATASHEETS);
     }
 
+    /**
+     * Claude shit
+     * Sanitizes a string to be a valid Java enum name.
+     * Removes "Faction: " prefix, then strips all characters not allowed in enum names.
+     */
+    public static String toEnumName(String raw) {
+        return raw
+                .replace("Faction: ", "")
+                .replaceAll("[^\\p{L}0-9_]", "");
+    }
+
+    /**
+     * Attempts to look up a Keyword enum by the given raw string.
+     * Returns the matching enum constant, or null if none found.
+     */
+    public static Keyword keywordFromString(String raw) {
+        String enumName = toEnumName(raw);
+        try {
+            return Keyword.valueOf(enumName);
+        } catch (IllegalArgumentException e) {
+            return null; // No matching enum constant
+        }
+    }
+
+
     private int ParseModelEquipment(int offset, String armyList, Unit unit, Model modelType, int modelCount)
     {
         int amount = 1;
@@ -208,9 +245,12 @@ public class Parsing
                 amount = offsetAndAmount.second;
             }
 
-            Pair<Integer,String> offsetAndItem = ParseUntilLineBreak(offset,armyList);
+            Pair<Integer,String> offsetAndItem = ParseUntilBreak(offset,armyList);
+            String[] splitString = offsetAndItem.second.split(" \\(");
+            String parsedString = splitString[0];
+            boolean hasPointValue = splitString.length > 1;
             offset = offsetAndItem.first;
-            Pair<DatabaseManager.ItemType,Object> parsedItem = databaseManager.GetItem(offsetAndItem.second,unit,armyFaction);
+            Pair<DatabaseManager.ItemType,Object> parsedItem = databaseManager.GetItem(parsedString,unit,armyFaction);
             if(parsedItem.first.equals(DatabaseManager.ItemType.WEAPON))
             {
                 ArrayList<Weapon> weaponToGive = (ArrayList<Weapon>)parsedItem.second;
@@ -219,11 +259,7 @@ public class Parsing
                 {
                     weaponToGive.get(i).active = false;
                 }
-                if(weaponToGive.get(0).name.contains("Plasma"))
-                {
-                    Log.d("hej","hej");
-                }
-                // Se ovan
+
                 // Assumes that weapon modes are always of the same range type
                 AtomicInteger modelIndexStart = (weaponToGive.get(0).isMelee) ? ( modelsMeleeWeaponIndex):(  modelsRangeWeaponIndex);
                 for(int i = 0; i < amount; i++ )
@@ -239,13 +275,27 @@ public class Parsing
                     }
                 }
             }
+            if(parsedItem.first.equals(DatabaseManager.ItemType.ABILITY))
+            {
+                //TODO: A open question is how abilities for models should be handled. Right now it is added to both the unit and the model
+                unit.GetAbilities().add((Ability)parsedItem.second);
+                modelType.GetAbilities().add((Ability)parsedItem.second);
+            }
+            if(parsedItem.first.equals(DatabaseManager.ItemType.UNIT) || (parsedItem.first.equals(DatabaseManager.ItemType.MODEL) && hasPointValue))
+            {
+                return ParseUnit(offset - offsetAndItem.second.length(),armyList, armyToBuild);
+            }
             if(parsedItem.first.equals(DatabaseManager.ItemType.MODEL))
             {
                 return ParseModelEquipment(offset +1, armyList,unit, (Model)parsedItem.second,amount);
             }
-            if(parsedItem.first.equals(DatabaseManager.ItemType.UNIT))
+            if(parsedItem.first.equals(DatabaseManager.ItemType.UNIDENTIFIED) || parsedItem.first.equals(DatabaseManager.ItemType.UNIMPLEMENTED))
             {
-                return ParseUnit(offset - offsetAndItem.second.length(),armyList, armyToBuild);
+                if(!IsDemarcation(parsedString))
+                {
+                    Log.d("Unit item parsing","Unidentified item found " + parsedString);
+                }
+                continue;
             }
 
             offset++;
@@ -268,11 +318,18 @@ public class Parsing
             }
 
             Pair<Integer,String> offsetAndParsedString = ParseUntilLineBreak(offset,armyList);
+            // Remove points indicators found in enhancements
+            String[] splitString = offsetAndParsedString.second.split(" \\(");
+            String parsedString = splitString[0];
+            boolean hasPointValue = splitString.length > 1;
             offset = offsetAndParsedString.first;
-            Pair<DatabaseManager.ItemType, Object> parsedItem = databaseManager.GetItem(offsetAndParsedString.second,unit,armyFaction);
+            Pair<DatabaseManager.ItemType, Object> parsedItem = databaseManager.GetItem(parsedString,unit,armyFaction);
             if(parsedItem.first.equals(DatabaseManager.ItemType.UNIDENTIFIED) || parsedItem.first.equals(DatabaseManager.ItemType.UNIMPLEMENTED))
             {
-                Log.d("Unit item parsing","Unidentified item found " + offsetAndParsedString.second);
+                if(!IsDemarcation( parsedString))
+                {
+                    Log.d("Unit item parsing","Unidentified item found " + parsedString);
+                }
                 continue;
             }
             // If the first item is a weapon it is assumed that the unit is a single model unit
@@ -288,7 +345,7 @@ public class Parsing
                 }
                 else
                 {
-                    Log.d("Unit parsing","Single model unit without corresponding model found " + offsetAndParsedString.second);
+                    Log.d("Unit parsing","Single model unit without corresponding model found " + parsedString);
                 }
                 offset+=1;
 
@@ -312,7 +369,8 @@ public class Parsing
                     unit.listOfModels.get(0).weapons.addAll(weapons);
                 }
             }
-            if(parsedItem.first.equals(DatabaseManager.ItemType.UNIT))
+            // Models and units being able to share name causes trouble
+            if(parsedItem.first.equals(DatabaseManager.ItemType.UNIT) || (parsedItem.first.equals(DatabaseManager.ItemType.MODEL) && hasPointValue))
             {
                 return ParseUnit(offset - offsetAndParsedString.second.length(),armyList,armyToBuild);
             }
@@ -320,6 +378,11 @@ public class Parsing
             {
                 offset = ParseModelEquipment(offset +1,armyList,unit,(Model) parsedItem.second,amount);
                 continue;
+            }
+            // Only warlord seems to be a keyword that can be dynamically added
+            if(parsedItem.first.equals(DatabaseManager.ItemType.KEYWORD))
+            {
+                unit.keywords.add(Keyword.Warlord);
             }
             offset +=1;
         }
@@ -350,21 +413,13 @@ public class Parsing
                     offset = pointValue.first;
 
                     offset = ParseUnitItem(offset,armyListString,unitToAdd);
-                    if(!unitToAdd.singleModelUnit)
+
+                    Unit databaseUnit = databaseManager.GetUnit(new DatabaseManager.NameFactionKey(unitToAdd.unitName,armyFaction));
+                    //This is a bit sus
+                    if( databaseUnit != null)
                     {
-                        Unit databaseUnit = databaseManager.GetUnit(new DatabaseManager.NameFactionKey(unitToAdd.unitName,armyFaction));
-                        if( databaseUnit != null)
-                        {
-                            unitToAdd.GetAbilities().addAll(databaseUnit.GetAbilities());
-                        }
-                    }
-                    else
-                    {
-                        Model databaseModel = databaseManager.GetModel(new DatabaseManager.NameFactionKey(unitToAdd.unitName,armyFaction));
-                        if( databaseModel != null)
-                        {
-                            unitToAdd.GetAbilities().addAll(databaseModel.GetAbilities());
-                        }
+                        unitToAdd.GetAbilities().addAll(databaseUnit.GetAbilities());
+                        unitToAdd.keywords.addAll(databaseUnit.keywords);
                     }
 
                     armyToBuild.units.add(unitToAdd);
