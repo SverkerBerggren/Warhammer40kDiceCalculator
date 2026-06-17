@@ -1,11 +1,7 @@
 package com.app.DamageCalculator40k.Identifiers;
 
-import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-
-import com.app.DamageCalculator40k.Enums.IdentifierType;
-import com.app.DamageCalculator40k.R;
 
 public class IdentifierUtils {
 

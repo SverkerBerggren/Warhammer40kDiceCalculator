@@ -1,8 +1,5 @@
 package com.app.DamageCalculator40k.Identifiers;
 
-import com.app.DamageCalculator40k.Enums.IdentifierType;
-import com.app.DamageCalculator40k.Matchup;
-
 public abstract class Identifier   {
     public Allegiance allegiance;
 

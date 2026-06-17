@@ -11,7 +11,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 
-import com.app.DamageCalculator40k.Conditions;
+import core.Conditions;
 import com.app.DamageCalculator40k.R;
 
 public class ConditionsActivity extends AppCompatActivity {

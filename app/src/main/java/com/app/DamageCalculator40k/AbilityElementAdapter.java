@@ -2,8 +2,8 @@ package com.app.DamageCalculator40k;
 
 import android.util.Log;
 
-import com.app.DamageCalculator40k.Abilities.Ability;
-import com.app.DamageCalculator40k.Abilities.UnimplementedAbility;
+import core.Abilities.Ability;
+import core.Abilities.UnimplementedAbility;
 import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;

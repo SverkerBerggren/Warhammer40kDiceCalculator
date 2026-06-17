@@ -16,14 +16,14 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.app.DamageCalculator40k.Conditions;
-import com.app.DamageCalculator40k.DatasheetModeling.Army;
-import com.app.DamageCalculator40k.DatasheetModeling.Unit;
-import com.app.DamageCalculator40k.FileHandling.FileHandler;
+import core.Conditions;
+import core.DatasheetModeling.Army;
+import core.DatasheetModeling.Unit;
+import com.app.DamageCalculator40k.FileHandling.AndroidFileHandler;
 import com.app.DamageCalculator40k.Matchup;
 import com.app.DamageCalculator40k.R;
-import com.app.DamageCalculator40k.DamageCalculation.RollResult;
-import com.app.DamageCalculator40k.DamageCalculation.RollingLogic;
+import core.DamageCalculation.RollResult;
+import core.DamageCalculation.RollingLogic;
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.BarGraphSeries;
@@ -72,7 +72,7 @@ public class StatisticActivity extends AppCompatActivity {
         int sizeOfAttack = intent.getIntExtra("AttackingUnitSize", -1);
         String matchupName = intent.getStringExtra("MatchupName");
 
-        Matchup matchup = FileHandler.GetInstance().getMatchup(matchupName);
+        Matchup matchup = AndroidFileHandler.GetInstance().getMatchup(matchupName);
 
         boolean myUnitsAttacking = intent.getBooleanExtra("FirendlyArmyAttacking", true);
 

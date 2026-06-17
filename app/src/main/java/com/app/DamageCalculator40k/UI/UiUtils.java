@@ -15,13 +15,12 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 
-import com.app.DamageCalculator40k.Abilities.Ability;
+import core.Abilities.Ability;
 import com.app.DamageCalculator40k.AbilityUIHolder;
 import com.app.DamageCalculator40k.Activities.Activity_Edit_Abilities;
-import com.app.DamageCalculator40k.Activities.EditUnitActivity;
-import com.app.DamageCalculator40k.DatasheetModeling.GamePiece;
-import com.app.DamageCalculator40k.Enums.IdentifierType;
-import com.app.DamageCalculator40k.Enums.StatModifier;
+import core.DatasheetModeling.GamePiece;
+import com.app.DamageCalculator40k.Identifiers.IdentifierType;
+import core.Enums.StatModifier;
 import com.app.DamageCalculator40k.Identifiers.Identifier;
 import com.app.DamageCalculator40k.Identifiers.IdentifierUtils;
 import com.app.DamageCalculator40k.Identifiers.UIIdentifier;

@@ -10,8 +10,8 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.app.DamageCalculator40k.DatasheetModeling.Army;
-import com.app.DamageCalculator40k.FileHandling.FileHandler;
+import core.DatasheetModeling.Army;
+import com.app.DamageCalculator40k.FileHandling.AndroidFileHandler;
 import com.app.DamageCalculator40k.Matchup;
 import com.app.DamageCalculator40k.R;
 import com.google.android.material.textfield.TextInputEditText;
@@ -45,7 +45,7 @@ public class ActivityCreateMatchup extends AppCompatActivity {
     public void CreateMatchupButtons()
     {
 
-        ArrayList<String> armies = FileHandler.GetInstance().GetSavedArmies();
+        ArrayList<String> armies = AndroidFileHandler.GetInstance().GetSavedArmies();
 
         LinearLayout linearLayout = findViewById(R.id.LinearLayoutArmies);
 
@@ -110,13 +110,13 @@ public class ActivityCreateMatchup extends AppCompatActivity {
         }
         TextInputEditText nameText = findViewById(R.id.InputFieldName);
 
-        Army friendlyArmy = FileHandler.GetInstance().getArmy(clickedCheckBoxes.get(0).getText().toString());
-        Army enemyArmy = FileHandler.GetInstance().getArmy(clickedCheckBoxes.get(1).getText().toString());
+        Army friendlyArmy = AndroidFileHandler.GetInstance().getArmy(clickedCheckBoxes.get(0).getText().toString());
+        Army enemyArmy = AndroidFileHandler.GetInstance().getArmy(clickedCheckBoxes.get(1).getText().toString());
 
         Matchup matchup = new Matchup(nameText.getText().toString(),friendlyArmy,enemyArmy);
 
 
-        FileHandler.GetInstance().saveMatchup(matchup);
+        AndroidFileHandler.GetInstance().saveMatchup(matchup);
 
         Toast.makeText(context, "Matchup created", Toast.LENGTH_SHORT).show();
     }

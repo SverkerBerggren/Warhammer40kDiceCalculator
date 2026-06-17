@@ -1,8 +1,5 @@
 package com.app.DamageCalculator40k.Identifiers;
 
-import com.app.DamageCalculator40k.Enums.IdentifierType;
-import com.app.DamageCalculator40k.Matchup;
-
 import java.util.Objects;
 
 public class ModelIdentifier extends Identifier{

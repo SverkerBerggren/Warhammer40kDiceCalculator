@@ -23,10 +23,10 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.app.DamageCalculator40k.Conditions;
-import com.app.DamageCalculator40k.DatasheetModeling.Unit;
-import com.app.DamageCalculator40k.Enums.IdentifierType;
-import com.app.DamageCalculator40k.FileHandling.FileHandler;
+import core.Conditions;
+import core.DatasheetModeling.Unit;
+import com.app.DamageCalculator40k.Identifiers.IdentifierType;
+import com.app.DamageCalculator40k.FileHandling.AndroidFileHandler;
 import com.app.DamageCalculator40k.Identifiers.Allegiance;
 import com.app.DamageCalculator40k.Identifiers.UIIdentifier;
 import com.app.DamageCalculator40k.Identifiers.UnitIdentifier;
@@ -70,7 +70,7 @@ public class UnitSelection extends AppCompatActivity {
         setContentView(R.layout.activity_unit_selection);
         context = getBaseContext();
 
-        FileHandler fileHandler = FileHandler.GetInstance();
+        AndroidFileHandler fileHandler = AndroidFileHandler.GetInstance();
         if (fileHandler.getMatchup( getIntent().getStringExtra("SourceFile")) != null)
         {
             matchup = fileHandler.getMatchup( getIntent().getStringExtra("SourceFile"));

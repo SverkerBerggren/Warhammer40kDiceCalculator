@@ -1,13 +1,10 @@
 package com.app.DamageCalculator40k.Activities;
 
-import static com.app.DamageCalculator40k.UI.UiUtils.CreateAbilityTableRow;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Trace;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,19 +26,18 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.app.DamageCalculator40k.Abilities.Ability;
+import core.Abilities.Ability;
 import com.app.DamageCalculator40k.AbilityUIHolder;
-import com.app.DamageCalculator40k.DatasheetModeling.DeactivatableInterface;
-import com.app.DamageCalculator40k.DatasheetModeling.GamePiece;
-import com.app.DamageCalculator40k.DatasheetModeling.Model;
-import com.app.DamageCalculator40k.DatasheetModeling.DiceAmount;
-import com.app.DamageCalculator40k.DatasheetModeling.Unit;
-import com.app.DamageCalculator40k.DatasheetModeling.Weapon;
-import com.app.DamageCalculator40k.Enums.IdentifierType;
-import com.app.DamageCalculator40k.Enums.StatModifier;
-import com.app.DamageCalculator40k.FileHandling.FileHandler;
+import core.DatasheetModeling.DeactivatableInterface;
+import core.DatasheetModeling.GamePiece;
+import core.DatasheetModeling.Model;
+import core.DatasheetModeling.DiceAmount;
+import core.DatasheetModeling.Unit;
+import core.DatasheetModeling.Weapon;
+import com.app.DamageCalculator40k.Identifiers.IdentifierType;
+import core.Enums.StatModifier;
+import com.app.DamageCalculator40k.FileHandling.AndroidFileHandler;
 import com.app.DamageCalculator40k.Identifiers.Allegiance;
-import com.app.DamageCalculator40k.Identifiers.ArmyIdentifier;
 import com.app.DamageCalculator40k.Identifiers.Identifier;
 import com.app.DamageCalculator40k.Identifiers.IdentifierUtils;
 import com.app.DamageCalculator40k.Identifiers.ModelIdentifier;
@@ -81,7 +77,7 @@ public class EditUnitActivity extends AppCompatActivity implements AbilityUIHold
         editModifierPopup = new EditModifierPopup(highestConstraint,inflater,matchup,context,this);
 
         UnitIdentifier unitIdentifier = (UnitIdentifier) IdentifierUtils.GetIdentifierFromExtra(getIntent());
-        matchup = FileHandler.GetInstance().getMatchup(unitIdentifier.GetMatchupName());
+        matchup = AndroidFileHandler.GetInstance().getMatchup(unitIdentifier.GetMatchupName());
 
         CreateUnit(unitIdentifier,findViewById( R.id.LinearLayoutEditUnit));
 
@@ -122,7 +118,7 @@ public class EditUnitActivity extends AppCompatActivity implements AbilityUIHold
     // TODO: Lowkey sus ska inte ljuga
     private void ReloadMatchup()
     {
-        matchup = FileHandler.GetInstance().getMatchup(matchup.name);
+        matchup = AndroidFileHandler.GetInstance().getMatchup(matchup.name);
     }
 
     public class UpdateUIWeaponCallback implements ActivityResultCallback<ActivityResult>
@@ -297,7 +293,7 @@ public class EditUnitActivity extends AppCompatActivity implements AbilityUIHold
         public void onClick(View view) {
             deactivatable.FlipActive();
 
-            FileHandler.GetInstance().saveMatchup(matchup);
+            AndroidFileHandler.GetInstance().saveMatchup(matchup);
         }
     }
 
@@ -429,7 +425,7 @@ public class EditUnitActivity extends AppCompatActivity implements AbilityUIHold
 
 
 
-                FileHandler.GetInstance().saveMatchup(matchup);
+                AndroidFileHandler.GetInstance().saveMatchup(matchup);
 
                 UIIdentifier uiIdentifier = new UIIdentifier(WidgetType.WeaponLayoutModel,modelId);
 

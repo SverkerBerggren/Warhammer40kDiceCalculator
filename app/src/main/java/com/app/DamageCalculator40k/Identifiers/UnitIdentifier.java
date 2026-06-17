@@ -1,9 +1,5 @@
 package com.app.DamageCalculator40k.Identifiers;
 
-import com.app.DamageCalculator40k.Enums.Faction;
-import com.app.DamageCalculator40k.Enums.IdentifierType;
-import com.app.DamageCalculator40k.Matchup;
-
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

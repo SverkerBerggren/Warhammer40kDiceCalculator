@@ -22,14 +22,11 @@ import android.widget.SearchView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
-import com.app.DamageCalculator40k.Abilities.Ability;
+import core.Abilities.Ability;
 import com.app.DamageCalculator40k.AbilityUIHolder;
-import com.app.DamageCalculator40k.DatabaseManager;
-import com.app.DamageCalculator40k.DatasheetModeling.GamePiece;
-import com.app.DamageCalculator40k.DatasheetModeling.Weapon;
-import com.app.DamageCalculator40k.Enums.AbilityEnum;
-import com.app.DamageCalculator40k.Enums.IdentifierType;
-import com.app.DamageCalculator40k.FileHandling.FileHandler;
+import core.DatasheetModeling.GamePiece;
+import core.DatasheetModeling.Weapon;
+import com.app.DamageCalculator40k.FileHandling.AndroidFileHandler;
 import com.app.DamageCalculator40k.Identifiers.IdentifierUtils;
 import com.app.DamageCalculator40k.Identifiers.ModelIdentifier;
 import com.app.DamageCalculator40k.Matchup;
@@ -80,7 +77,7 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
         widgetType = (WidgetType) intent.getSerializableExtra(""+R.string.UI_IDENTIFIER);
 
 
-        matchup = FileHandler.GetInstance().getMatchup(matchupName);
+        matchup = AndroidFileHandler.GetInstance().getMatchup(matchupName);
 
         ArrayList<Weapon> weapons = new ArrayList<>();
 
@@ -217,7 +214,7 @@ public class EditWeaponActivity extends AppCompatActivity implements AbilityUIHo
             weapon.ballisticSkill = Integer.parseInt(hitSkillView.getText().toString());
             weapon.isMelee = meleeView.isChecked();
 
-            FileHandler.GetInstance().saveMatchup(matchup);
+            AndroidFileHandler.GetInstance().saveMatchup(matchup);
 
         }
     }

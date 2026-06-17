@@ -16,18 +16,16 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
-import com.app.DamageCalculator40k.Abilities.Ability;
-import com.app.DamageCalculator40k.Abilities.WeaponAbilities.LethalHits;
-import com.app.DamageCalculator40k.Abilities.WeaponAbilities.RapidFire;
+import core.Abilities.Ability;
 import com.app.DamageCalculator40k.AbilityUIHolder;
-import com.app.DamageCalculator40k.DatabaseManager;
-import com.app.DamageCalculator40k.DatasheetModeling.DiceAmount;
-import com.app.DamageCalculator40k.DatasheetModeling.GamePiece;
-import com.app.DamageCalculator40k.Enums.AbilityEnum;
-import com.app.DamageCalculator40k.FileHandling.FileHandler;
+import core.DatabaseManager;
+import core.DatasheetModeling.GamePiece;
+import core.Logging.Logger;
+import core.Logging.Logging;
+
+import com.app.DamageCalculator40k.FileHandling.AndroidFileHandler;
 import com.app.DamageCalculator40k.Matchup;
 import com.app.DamageCalculator40k.R;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -41,8 +39,10 @@ public class  MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         context = getApplicationContext();
 
-        FileHandler.InitializeFileHandler(context);
-        DatabaseManager.InitializeDatabaseManager(context);
+        AndroidFileHandler.InitializeFileHandler(context);
+        DatabaseManager.InitializeDatabaseManager();
+        Logger logger = Log::d;
+        Logging.setLogger(logger);
     }
 
     public void OpenSavedMatchups(View v)
@@ -120,7 +120,7 @@ public class  MainActivity extends AppCompatActivity {
 
             View searchLayout = baseView.findViewById(R.id.SearchLayout);
             searchLayout.setVisibility(View.GONE);
-            FileHandler.GetInstance().saveMatchup(matchup);
+            AndroidFileHandler.GetInstance().saveMatchup(matchup);
         }
     }
 

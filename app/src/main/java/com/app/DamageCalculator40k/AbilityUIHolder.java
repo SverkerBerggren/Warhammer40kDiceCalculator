@@ -1,7 +1,7 @@
 package com.app.DamageCalculator40k;
 
-import com.app.DamageCalculator40k.Abilities.Ability;
-import com.app.DamageCalculator40k.DatasheetModeling.GamePiece;
+import core.Abilities.Ability;
+import core.DatasheetModeling.GamePiece;
 import com.app.DamageCalculator40k.Identifiers.UIIdentifier;
 
 import java.util.ArrayList;

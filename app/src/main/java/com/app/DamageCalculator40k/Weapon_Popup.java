@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-import com.app.DamageCalculator40k.Abilities.Ability;
+import core.Abilities.Ability;
 
 import java.util.HashMap;
 

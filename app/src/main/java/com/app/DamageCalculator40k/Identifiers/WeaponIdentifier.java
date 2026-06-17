@@ -1,7 +1,5 @@
 package com.app.DamageCalculator40k.Identifiers;
 
-import com.app.DamageCalculator40k.Enums.IdentifierType;
-
 public class WeaponIdentifier extends Identifier{
 
     @Override

@@ -13,18 +13,12 @@ import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
-import com.app.DamageCalculator40k.Abilities.Ability;
+import core.Abilities.Ability;
 import com.app.DamageCalculator40k.AbilityUIHolder;
-import com.app.DamageCalculator40k.BitFunctionality.AbilityBitField;
-import com.app.DamageCalculator40k.DatabaseManager;
-import com.app.DamageCalculator40k.DatasheetModeling.GamePiece;
-import com.app.DamageCalculator40k.Enums.AbilityEnum;
-import com.app.DamageCalculator40k.FileHandling.FileHandler;
-import com.app.DamageCalculator40k.Identifiers.ArmyIdentifier;
+import core.DatasheetModeling.GamePiece;
+import com.app.DamageCalculator40k.FileHandling.AndroidFileHandler;
 import com.app.DamageCalculator40k.Identifiers.Identifier;
 import com.app.DamageCalculator40k.Identifiers.IdentifierUtils;
-import com.app.DamageCalculator40k.Identifiers.ModelIdentifier;
-import com.app.DamageCalculator40k.Identifiers.UnitIdentifier;
 import com.app.DamageCalculator40k.Matchup;
 import com.app.DamageCalculator40k.R;
 import com.app.DamageCalculator40k.UI.WidgetType;
@@ -53,7 +47,7 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
         tableLayoutAbilities = findViewById(R.id.TableLayoutEditAbilities);
 
         identifier = IdentifierUtils.GetIdentifierFromExtra(intent);
-        matchup = FileHandler.GetInstance().getMatchup(identifier.GetMatchupName());
+        matchup = AndroidFileHandler.GetInstance().getMatchup(identifier.GetMatchupName());
         GamePiece gamePiece = matchup.GetGamePiece(identifier);
 
         for(Ability ability : gamePiece.GetAbilities())
@@ -90,7 +84,7 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
         public void onClick(View view) {
             ability.active = !ability.active;
 
-            FileHandler.GetInstance().saveMatchup(matchup);
+            AndroidFileHandler.GetInstance().saveMatchup(matchup);
         }
     }
     private void CreateButton(Ability ability, GamePiece gamePiece)
@@ -131,7 +125,7 @@ public class Activity_Edit_Abilities extends AppCompatActivity implements Abilit
 
             gamePiece.GetAbilities().remove(ability);
 
-            FileHandler.GetInstance().saveMatchup(matchup);
+            AndroidFileHandler.GetInstance().saveMatchup(matchup);
 
             TableLayout viewParent = (TableLayout)view.getParent().getParent();
 

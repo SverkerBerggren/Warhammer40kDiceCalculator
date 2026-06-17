@@ -1,6 +1,6 @@
 package com.app.DamageCalculator40k.UI;
 
-import com.app.DamageCalculator40k.Enums.StatModifier;
+import core.Enums.StatModifier;
 import com.app.DamageCalculator40k.Identifiers.UIIdentifier;
 
 public interface ModifierEditing {

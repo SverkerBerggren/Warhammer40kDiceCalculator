@@ -21,7 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
-import com.app.DamageCalculator40k.FileHandling.FileHandler;
+import com.app.DamageCalculator40k.FileHandling.AndroidFileHandler;
 import com.app.DamageCalculator40k.R;
 
 import java.io.File;
@@ -161,7 +161,7 @@ public class SavedMatchupsActivity extends AppCompatActivity {
         ImageButton deleteButton = (ImageButton)linearLayout.findViewWithTag(tag);
         ConstraintLayout viewToRemove = (ConstraintLayout) deleteButton.getParent();
         linearLayout.removeView(viewToRemove);
-        FileHandler.GetInstance().DeleteMatchup(tag);
+        AndroidFileHandler.GetInstance().DeleteMatchup(tag);
     }
 
     public void OpenCompareActivity(View v)

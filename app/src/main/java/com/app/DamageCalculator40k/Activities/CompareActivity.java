@@ -1,19 +1,13 @@
 package com.app.DamageCalculator40k.Activities;
 
-import static com.app.DamageCalculator40k.UI.UiUtils.CreateAbilityTableRow;
-
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 
-import android.os.Trace;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,18 +19,16 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 
-import com.app.DamageCalculator40k.Abilities.Ability;
+import core.Abilities.Ability;
 import com.app.DamageCalculator40k.AbilityUIHolder;
-import com.app.DamageCalculator40k.DatasheetModeling.GamePiece;
-import com.app.DamageCalculator40k.DatasheetModeling.Army;
-import com.app.DamageCalculator40k.DatasheetModeling.Model;
-import com.app.DamageCalculator40k.DatasheetModeling.Unit;
-import com.app.DamageCalculator40k.Enums.StatModifier;
-import com.app.DamageCalculator40k.FileHandling.FileHandler;
+import core.DatasheetModeling.GamePiece;
+import core.DatasheetModeling.Army;
+import core.DatasheetModeling.Model;
+import core.DatasheetModeling.Unit;
+import core.Enums.StatModifier;
+import com.app.DamageCalculator40k.FileHandling.AndroidFileHandler;
 import com.app.DamageCalculator40k.Identifiers.Allegiance;
 import com.app.DamageCalculator40k.Identifiers.ArmyIdentifier;
-import com.app.DamageCalculator40k.Identifiers.Identifier;
-import com.app.DamageCalculator40k.Identifiers.IdentifierUtils;
 import com.app.DamageCalculator40k.Identifiers.UIIdentifier;
 import com.app.DamageCalculator40k.Identifiers.UnitIdentifier;
 import com.app.DamageCalculator40k.Matchup;
@@ -81,7 +73,7 @@ public class CompareActivity extends AppCompatActivity implements AbilityUIHolde
         inflater =  getLayoutInflater();
         context = getBaseContext();
 
-        matchup = FileHandler.GetInstance().getMatchup( getIntent().getStringExtra("SourceFile"));
+        matchup = AndroidFileHandler.GetInstance().getMatchup( getIntent().getStringExtra("SourceFile"));
         highestConstraint = findViewById(R.id.ConstraintLayoutCompare);
 
         activityResultLauncherAbility = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),new UiUtils.UpdateUiActivityCallbackAbilities(this));

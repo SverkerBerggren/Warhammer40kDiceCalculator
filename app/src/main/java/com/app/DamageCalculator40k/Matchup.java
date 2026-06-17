@@ -2,10 +2,10 @@ package com.app.DamageCalculator40k;
 
 import android.util.Log;
 
-import com.app.DamageCalculator40k.DatasheetModeling.GamePiece;
-import com.app.DamageCalculator40k.DatasheetModeling.Army;
-import com.app.DamageCalculator40k.DatasheetModeling.Model;
-import com.app.DamageCalculator40k.DatasheetModeling.Unit;
+import core.DatasheetModeling.GamePiece;
+import core.DatasheetModeling.Army;
+import core.DatasheetModeling.Model;
+import core.DatasheetModeling.Unit;
 import com.app.DamageCalculator40k.Identifiers.Allegiance;
 import com.app.DamageCalculator40k.Identifiers.ArmyIdentifier;
 import com.app.DamageCalculator40k.Identifiers.Identifier;

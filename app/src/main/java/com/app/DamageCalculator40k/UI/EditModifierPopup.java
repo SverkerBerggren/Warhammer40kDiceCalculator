@@ -16,9 +16,9 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.app.DamageCalculator40k.DatasheetModeling.GamePiece;
-import com.app.DamageCalculator40k.Enums.StatModifier;
-import com.app.DamageCalculator40k.FileHandling.FileHandler;
+import core.DatasheetModeling.GamePiece;
+import core.Enums.StatModifier;
+import com.app.DamageCalculator40k.FileHandling.AndroidFileHandler;
 import com.app.DamageCalculator40k.Identifiers.UIIdentifier;
 import com.app.DamageCalculator40k.Matchup;
 import com.app.DamageCalculator40k.R;
@@ -163,7 +163,7 @@ public class EditModifierPopup {
         @Override
         public void onClick(View view)
         {
-            FileHandler.GetInstance().saveMatchup(matchup);
+            AndroidFileHandler.GetInstance().saveMatchup(matchup);
             ClosePopup();
         }
     }

@@ -14,7 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-import com.app.DamageCalculator40k.FileHandling.FileHandler;
+import com.app.DamageCalculator40k.FileHandling.AndroidFileHandler;
 import com.app.DamageCalculator40k.R;
 
 import java.util.ArrayList;
@@ -31,10 +31,10 @@ public class ParseActivity extends AppCompatActivity {
                         Intent data = result.getData();
                         Uri uri = data.getData();
 
-                        FileHandler.GetInstance().CreateArmyFromFile(getBaseContext(), uri);
+                        AndroidFileHandler.GetInstance().CreateArmyFromFile(getBaseContext(), uri);
 
-                        FileHandler.GetInstance().SaveBsData(getBaseContext(),uri);
-                        CreateArmyButtons(FileHandler.GetInstance().GetSavedArmies());
+                        AndroidFileHandler.GetInstance().SaveBsData(getBaseContext(),uri);
+                        CreateArmyButtons(AndroidFileHandler.GetInstance().GetSavedArmies());
                     }
                 }
             }
@@ -59,7 +59,7 @@ public class ParseActivity extends AppCompatActivity {
             }
         });
 
-        CreateArmyButtons(FileHandler.GetInstance().GetSavedArmies());
+        CreateArmyButtons(AndroidFileHandler.GetInstance().GetSavedArmies());
     }
     private void ReadFiles()
     {
