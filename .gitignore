@@ -9,6 +9,8 @@
 /.idea/assetWizardSettings.xml
 .DS_Store
 /build
+/core_40k_logic/build
+/server/build
 /captures
 .externalNativeBuild
 .cxx
