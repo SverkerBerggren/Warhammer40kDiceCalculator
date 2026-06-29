@@ -1,9 +1,9 @@
-package com.app.DamageCalculator40k;
-
-import android.util.Log;
+package core;
 
 import core.Abilities.Ability;
 import core.Abilities.UnimplementedAbility;
+import core.Logging.Logging;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -41,7 +41,7 @@ public class AbilityElementAdapter implements JsonSerializer<Ability>, JsonDeser
         }
         catch (Exception e )
         {
-            Log.d("Serialiserings knas",e.getMessage());
+            Logging.d("Serialiserings knas",e.getMessage());
         }
         if(ability != null)
         {

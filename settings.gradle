@@ -13,4 +13,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "Warhammer40kDiceCalculator"
-include ':app',":core_40k_logic"
+include ':app',":core_40k_logic",":server"

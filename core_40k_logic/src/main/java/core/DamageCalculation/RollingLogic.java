@@ -1,9 +1,12 @@
 package core.DamageCalculation;
 
+import com.google.gson.Gson;
+
 import core.Abilities.Ability;
 import core.Conditions;
 import core.DatasheetModeling.Army;
 import core.DatasheetModeling.DiceAmount;
+import core.DatasheetModeling.GamePiece;
 import core.DatasheetModeling.Model;
 import core.DatasheetModeling.Weapon;
 import core.DatasheetModeling.Unit;
@@ -11,6 +14,7 @@ import core.Enums.AbilityTiming;
 import core.Enums.StatModifier;
 import core.Logging.Logging;
 
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -32,14 +36,15 @@ public class RollingLogic {
     private int currentDefendingModelIndex = 0;
     private Model defendingModel;
 
-    public RollResult newCalculateDamage(ArrayList<Unit> attackerList, Unit defendingUnit, Army attackingArmy, Army defendingArmy, Conditions condtitions) {
+
+    public RollResult newCalculateDamage(ArrayList<Unit> attackerList, Unit defendingUnit, GamePiece attackingArmy, GamePiece defendingArmy, Conditions conditions) {
         //Debug
         int[] resultsAmountOfHits = new int[10000];
         int[] resultsAmountOfAttacks = new int[10000];
 
         int[] resultWoundsDealt = new int[10000];
         int[] resultModelsSlain = new int[10000];
-        conditionen = condtitions;
+        conditionen = conditions;
 
         AbilitySources attackingAbilitySources = new AbilitySources(attackingArmy);
         AbilitySources defendingAbilitySources = new AbilitySources(defendingArmy);
@@ -85,7 +90,7 @@ public class RollingLogic {
 
                     for (Weapon attackingWeapon : attackingModel.weapons)
                     {
-                        if(ShouldSkipWeapon(attackingWeapon,condtitions))
+                        if(ShouldSkipWeapon(attackingWeapon,conditions))
                         {
                             continue;
                         }
@@ -382,7 +387,7 @@ public class RollingLogic {
     }
 
     // TODO: Refactor so it inherits instead
-    private void SetStatModifiers(Army army, Unit unit, StatModifiers statModifiers)
+    private void SetStatModifiers(GamePiece army, Unit unit, StatModifiers statModifiers)
     {
         for(StatModifier statModifier : StatModifier.values())
         {

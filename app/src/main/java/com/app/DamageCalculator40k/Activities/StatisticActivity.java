@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import core.Conditions;
 import core.DatasheetModeling.Army;
+import core.DatasheetModeling.GamePiece;
 import core.DatasheetModeling.Unit;
 import com.app.DamageCalculator40k.FileHandling.AndroidFileHandler;
 import com.app.DamageCalculator40k.Matchup;
@@ -154,7 +155,7 @@ public class StatisticActivity extends AppCompatActivity {
         }
 
         Trace.beginSection("rull logiken: "  + listOfAttackingUnits.size());
-        rollResult = rollLogic.newCalculateDamage(listOfAttackingUnits, defendingUnit, attackingArmy,defendingArmy,conditions);
+        rollResult = rollLogic.newCalculateDamage(listOfAttackingUnits, defendingUnit, attackingArmy.toGamePieceSnapshot(),defendingArmy.toGamePieceSnapshot(),conditions);
         Trace.endSection();
 
         ConvertResult(rollResult);

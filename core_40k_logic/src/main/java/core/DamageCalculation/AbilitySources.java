@@ -3,6 +3,7 @@ package core.DamageCalculation;
 import core.Abilities.Ability;
 import core.Conditions;
 import core.DatasheetModeling.Army;
+import core.DatasheetModeling.GamePiece;
 import core.DatasheetModeling.Model;
 import core.DatasheetModeling.Unit;
 import core.DatasheetModeling.Weapon;
@@ -10,11 +11,11 @@ import core.Enums.AbilityTiming;
 
 public class AbilitySources
 {
-    public AbilitySources(Army army)
+    public AbilitySources(GamePiece army)
     {
         this.army = army;
     }
-    public final Army army;
+    public final GamePiece army;
     public Unit unit;
     public Model model;
     public Weapon weapon;

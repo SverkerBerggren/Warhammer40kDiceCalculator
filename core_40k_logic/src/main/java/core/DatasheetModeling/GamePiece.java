@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 
 // Halv kasst namn walla
-public abstract class GamePiece {
+public class GamePiece {
 
     protected final ArrayList<Ability> abilities = new ArrayList<>();
 
@@ -16,7 +16,12 @@ public abstract class GamePiece {
         return abilities;
     }
 
-
+    public GamePiece toGamePieceSnapshot() {
+        GamePiece piece = new GamePiece();
+        piece.setStatModifiers(this.getStatModifiers());
+        piece.GetAbilities().addAll(this.GetAbilities());
+        return piece;
+    }
     private StatModifiers statModifiers = new StatModifiers();
 
     public StatModifiers getStatModifiers() {

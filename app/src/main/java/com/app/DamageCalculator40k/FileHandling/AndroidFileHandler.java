@@ -9,7 +9,7 @@ import android.util.Log;
 import androidx.documentfile.provider.DocumentFile;
 
 import core.Abilities.Ability;
-import com.app.DamageCalculator40k.AbilityElementAdapter;
+import core.AbilityElementAdapter;
 import core.DatasheetModeling.Army;
 import core.Enums.Faction;
 
