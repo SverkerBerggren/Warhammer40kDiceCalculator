@@ -26,14 +26,15 @@ import java.util.Map;
 public class XmlParser
 {
     // Todo: fixa skiten ghetto af, men testar walla
-    public final HashMap<DatabaseManager.NameFactionKey, Unit> nameToUnit = new HashMap<>();
+    public final HashMap<DatabaseManager.NameFactionKey, Unit> nameFactionToUnit = new HashMap<>();
+    public final HashMap<String, Unit> nameToUnit = new HashMap<>();
     public final HashMap<String, Unit> idToUnit = new HashMap<>();
-    public final HashMap<DatabaseManager.NameFactionKey, Model> nameToModel = new HashMap<>();
+    public final HashMap<DatabaseManager.NameFactionKey, Model> nameFactionToModel = new HashMap<>();
+    public final HashMap<String, Model> nameToModel = new HashMap<>();
     public final HashMap<String, Model> idToModel = new HashMap<>();
     public final HashMap<String, ArrayList<Weapon>> idToWeapon = new HashMap<>();
-    public final HashMap<DatabaseManager.NameFactionKey, ArrayList<Weapon>> nameToWeapon = new HashMap<>();
-    public final HashMap<DatabaseManager.NameFactionUnitKey, ArrayList<Weapon>> nameUnitToWeapon = new HashMap<>();
-    public final  HashMap<DatabaseManager.NameFactionUnitKey,Weapon> nameFactionUnitToWeapon = new HashMap<>();
+    public final HashMap<String, ArrayList<Weapon>> nameToWeapon = new HashMap<>();
+    public final HashMap<DatabaseManager.NameFactionUnitKey, ArrayList<Weapon>> nameFactionUnitToWeapon = new HashMap<>();
     public final HashMap<String,Ability> nameToAbility = new CaseInsensitiveMap<>();
     public final HashMap<String,Ability> idToAbility = new HashMap<>();
 
@@ -397,7 +398,8 @@ public class XmlParser
                     if (idAttr != null) {
                         idToUnit.put( idAttr.getNodeValue(), unit);
                     }
-                    nameToUnit.put(new DatabaseManager.NameFactionKey( unit.unitName,faction), unit);
+                    nameFactionToUnit.put(new DatabaseManager.NameFactionKey( unit.unitName,faction), unit);
+                    nameToUnit.put(unit.unitName, unit);
                     ArrayList<Weapon> weapons =  CollectWeaponsFromSubtree(node);
                     if(weapons.isEmpty())
                     {
@@ -414,7 +416,7 @@ public class XmlParser
                         {
                             ArrayList<Weapon> weaponArrayList = new ArrayList<>();
                             weaponArrayList.add(weapon);
-                            nameUnitToWeapon.put(new DatabaseManager.NameFactionUnitKey(weapon.name,faction,unit.unitName),weaponArrayList);
+                            nameFactionUnitToWeapon.put(new DatabaseManager.NameFactionUnitKey(weapon.name,faction,unit.unitName),weaponArrayList);
                         }
                     }
                 }
@@ -569,7 +571,8 @@ public class XmlParser
                             idValue = idAttr.getNodeValue();
                             idToModel.put(idValue, model);
                         }
-                        nameToModel.put(new DatabaseManager.NameFactionKey(model.name,faction), model);
+                        nameFactionToModel.put(new DatabaseManager.NameFactionKey(model.name,faction), model);
+                        nameToModel.put(model.name, model);
                     }
                     else
                     {
@@ -844,7 +847,7 @@ public class XmlParser
                 if (idAttr != null && weapons != null && !weapons.isEmpty() ) {
                     String id = idAttr.getNodeValue();
                     String name = attrs.getNamedItem("name").getNodeValue();
-                    nameToWeapon.put(new DatabaseManager.NameFactionKey( name,faction), weapons);
+                    nameToWeapon.put( name, weapons);
                     idToWeapon.put(id,weapons);
                 }
             }
@@ -1056,7 +1059,7 @@ public class XmlParser
                     }
                     if(IsValidModel(parsedModel))
                     {
-                        nameToModel.put(new DatabaseManager.NameFactionKey(parsedModel.name,faction),parsedModel);
+                        nameFactionToModel.put(new DatabaseManager.NameFactionKey(parsedModel.name,faction),parsedModel);
                         idToModel.put(sharedProfileNode.getAttributes().getNamedItem("id").getNodeValue(),parsedModel);
                     }
                 }

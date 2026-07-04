@@ -51,8 +51,10 @@ public class DatabaseManager {
     private  HashMap<NameFactionKey,Model> modelDatabase;
     private  HashMap<NameFactionKey,Unit> unitDatabase;
     private  HashMap<NameFactionUnitKey,ArrayList<Weapon>> nameFactionUnitToWeapon;
-    private  HashMap<NameFactionKey,ArrayList<Weapon>> nameToWeapon;
+    private  HashMap<String,ArrayList<Weapon>> nameToWeapon;
     private  HashMap<String,Ability> nameToParsedAbility;
+    private HashMap<String, Model> nameToModel;
+    private HashMap<String, Unit> nameToUnit;
 
     public static class NameFactionKey
     {
@@ -161,9 +163,11 @@ public class DatabaseManager {
             public void onError(Exception e) {
             }
         };
-        instance.modelDatabase = instance.xmlParser.nameToModel;
-        instance.unitDatabase = instance.xmlParser.nameToUnit;
-        instance.nameFactionUnitToWeapon = instance.xmlParser.nameUnitToWeapon;
+        instance.modelDatabase = instance.xmlParser.nameFactionToModel;
+        instance.nameToModel = instance.xmlParser.nameToModel;
+        instance.unitDatabase = instance.xmlParser.nameFactionToUnit;
+        instance.nameToUnit = instance.xmlParser.nameToUnit;
+        instance.nameFactionUnitToWeapon = instance.xmlParser.nameFactionUnitToWeapon;
         instance.nameToWeapon = instance.xmlParser.nameToWeapon;
         instance.nameToParsedAbility = instance.xmlParser.nameToAbility;
         FileHandler.GetInstance().UpdateBattlesScribeData(updateCallback);
@@ -191,6 +195,13 @@ public class DatabaseManager {
             model.weapons.clear();
             return new Pair<>(ItemType.MODEL,model);
         }
+        if(nameToModel.containsKey(itemName))
+        {
+            Model model = nameToModel.get(itemName).Copy();
+            //Lowkey ghetto, but the models maintain their weapons in the xml parsing, maybe should be cleared after the parsing is done.
+            model.weapons.clear();
+            return new Pair<>(ItemType.MODEL,model);
+        }
         NameFactionUnitKey nameFactionUnitKey = new NameFactionUnitKey(itemName,faction,unit.unitName);
         if(  nameFactionUnitToWeapon.containsKey(nameFactionUnitKey))
         {
@@ -205,10 +216,12 @@ public class DatabaseManager {
             }
             return new Pair<>(ItemType.WEAPON, retList);
         }
-        if(  nameToWeapon.containsKey(nameFactionKey))
+
+        // Lowkey cap
+        if(  nameToWeapon.containsKey(itemName))
         {
             ArrayList<Weapon> retList = new ArrayList<>();
-            ArrayList<Weapon> databaseWeapons = nameToWeapon.get(nameFactionKey);
+            ArrayList<Weapon> databaseWeapons = nameToWeapon.get(itemName);
             if(databaseWeapons != null)
             {
                 for(Weapon weapon : databaseWeapons)
@@ -225,6 +238,10 @@ public class DatabaseManager {
         {
 
             return new Pair<>(ItemType.UNIT,unitDatabase.get(idNameFaction));
+        }
+        if(nameToUnit.containsKey(itemName))
+        {
+            return new Pair<>(ItemType.UNIT,nameToUnit.get(itemName));
         }
         Ability ability = DatabaseManager.getInstance().GetAbility(itemName);
         if(ability != null)

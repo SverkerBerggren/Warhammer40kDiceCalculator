@@ -2,8 +2,13 @@
 import { useState } from "react";
 import { json } from "stream/consumers";
 import { useRef } from "react";
-
-export default function ArmyUploader( {setLocalStorageArmies}:{setLocalStorageArmies: any}) {
+import { Army, Unit,GamePiece,gamePieceFromArmy, Conditions} from "@/app/src/DatasheetModeling/DatasheetModeling";
+import {assignUnitIds} from "@/app/src/utils/armyUtils"
+import { Dispatch, SetStateAction } from "react";
+type ArmySelectorProps = {
+    setLocalStorageArmies: Dispatch<SetStateAction<Army[]>>;
+}
+export default function ArmyUploader( {setLocalStorageArmies }: ArmySelectorProps) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -32,12 +37,14 @@ export default function ArmyUploader( {setLocalStorageArmies}:{setLocalStorageAr
         setError(data.error ?? "Server error");
         return;
       }
-      
-      localStorage.setItem(`army:${data.name}`, JSON.stringify(data));
-      const result = Object.keys(localStorage)
-            .filter(key => key.startsWith("army:"))
-            .map(key => JSON.parse(localStorage.getItem(key)!));
-      setLocalStorageArmies(result)
+    const army: Army = assignUnitIds(data); // <-- ID assignment happens exactly once, here
+
+    localStorage.setItem(`army:${army.name}`, JSON.stringify(army));
+    const result:Army[] = Object.keys(localStorage)
+          .filter(key => key.startsWith("army:"))
+          .map(key => JSON.parse(localStorage.getItem(key)!));
+
+    setLocalStorageArmies(result);
     } catch (err: any) {
       setError(err.message);
     } finally {

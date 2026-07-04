@@ -48,6 +48,10 @@ public abstract class Ability implements DeactivatableInterface {
         return Objects.equals(name, ability.name);
     }
 
+    public boolean isImplemented() {
+        return !(this instanceof UnimplementedAbility);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(name, active);

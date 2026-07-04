@@ -28,14 +28,18 @@ public class RollingLogic {
         MortalWound,
         DevastatingWound
     }
-    private int amountOfHits = 0;
-    private int amountOfAttacksDebug = 0;
-    private int amountOfWoundsTotal = 0;
-    private int currentModelDamage = 0;
-    private int amountOfModelsKilled = 0;
-    private int currentDefendingModelIndex = 0;
-    private Model defendingModel;
 
+    //TODO simple fix will need to look closer later
+    private static class RollingContext
+    {
+        private int amountOfHits = 0;
+        private int amountOfAttacksDebug = 0;
+        private int amountOfWoundsTotal = 0;
+        private int currentModelDamage = 0;
+        private int amountOfModelsKilled = 0;
+        private int currentDefendingModelIndex = 0;
+        private Model defendingModel;
+    }
 
     public RollResult newCalculateDamage(ArrayList<Unit> attackerList, Unit defendingUnit, GamePiece attackingArmy, GamePiece defendingArmy, Conditions conditions) {
         //Debug
@@ -56,17 +60,10 @@ public class RollingLogic {
         for (int attackSequenceCount = 0; attackSequenceCount < 10000; attackSequenceCount++)
         {
             //Debug
-            amountOfHits = 0;
-            amountOfAttacksDebug = 0;
+            RollingContext rollingContext = new RollingContext();
 
-
-            amountOfWoundsTotal = 0;
-            amountOfModelsKilled = 0;
-            currentModelDamage = 0;
-            int currentDefendingModelIndex = 0;
-
-            defendingModel = defendingUnit.listOfModels.get(0);
-            defendingAbilitySources.model = defendingModel;
+            rollingContext.defendingModel = defendingUnit.listOfModels.get(0);
+            defendingAbilitySources.model = rollingContext.defendingModel;
             SetStatModifiers(defendingArmy,defendingUnit,defendingStatModifiers);
 
 
@@ -104,7 +101,7 @@ public class RollingLogic {
                         }
 
                         int amountOfAttacks = AmountOfAttacks(attackingAbilitySources,attackingWeapon);
-                        amountOfAttacksDebug += amountOfAttacks;
+                        rollingContext.amountOfAttacksDebug += amountOfAttacks;
 
 
                         for (int attackCount = 0; attackCount < amountOfAttacks; attackCount++) {
@@ -112,18 +109,18 @@ public class RollingLogic {
                             DiceResult hitRoll = CreateD6Result();
                             HitRoll(attackResults,attackingAbilitySources,defendingAbilitySources,hitRoll,requiredHitRoll);
 
-                            amountOfHits += attackResults.hits;
+                            rollingContext.amountOfHits += attackResults.hits;
 
                             for (int woundRollCount = 0; woundRollCount < attackResults.hits; woundRollCount++) {
                                 DiceResult woundRoll = CreateD6Result();
                                 WoundRoll(attackResults, attackingAbilitySources,defendingAbilitySources,woundRoll,defendingStatModifiers);
                             }
-                            int requiredSaveRoll = defendingModel.armorSave - attackResults.ap - attackingWeapon.ap - defendingStatModifiers.GetModifier(StatModifier.ArmorSave);
-                            int invulnerableSave = defendingModel.invulnerableSave - defendingStatModifiers.GetModifier(StatModifier.InvulnerableSave);
+                            int requiredSaveRoll = rollingContext.defendingModel.armorSave - attackResults.ap - attackingWeapon.ap - defendingStatModifiers.GetModifier(StatModifier.ArmorSave);
+                            int invulnerableSave = rollingContext.defendingModel.invulnerableSave - defendingStatModifiers.GetModifier(StatModifier.InvulnerableSave);
 
                             if(requiredSaveRoll > invulnerableSave && !(invulnerableSave > 6))
                             {
-                                requiredSaveRoll = defendingModel.invulnerableSave;
+                                requiredSaveRoll = rollingContext.defendingModel.invulnerableSave;
                             }
 
                             for (int saveRollCount = 0; saveRollCount < attackResults.wounds; saveRollCount++)
@@ -131,7 +128,8 @@ public class RollingLogic {
                                 DiceResult defenderSaveRoll = CreateD6Result();
                                 if (defenderSaveRoll.result < requiredSaveRoll) {
 
-                                    ApplyDamage(RollDiceAmount(attackingWeapon.damageAmount),defenderSaveRoll,WoundType.NormalWound,attackResults,attackingAbilitySources,defendingAbilitySources,requiredSaveRoll);
+                                    ApplyDamage(RollDiceAmount(attackingWeapon.damageAmount),defenderSaveRoll,WoundType.NormalWound,attackResults,attackingAbilitySources,defendingAbilitySources,requiredSaveRoll
+                                    ,rollingContext);
                                 }
                             }
                             mortalWounds += attackResults.mortalWounds;
@@ -142,20 +140,22 @@ public class RollingLogic {
                 if(mortalWounds > 0)
                 {
                     //Yikes med create d6 result och required roll result
-                    ApplyDamage(mortalWounds,CreateD6Result(),WoundType.MortalWound,new AttackResults(),attackingAbilitySources,defendingAbilitySources,7);
+                    ApplyDamage(mortalWounds,CreateD6Result(),WoundType.MortalWound,new AttackResults(),attackingAbilitySources,defendingAbilitySources,7
+                    ,rollingContext);
                 }
                 if(!devastatingWounds.isEmpty())
                 {
                     for(Integer integer : devastatingWounds)
                     {
-                        ApplyDamage(integer,CreateD6Result(),WoundType.DevastatingWound,new AttackResults(),attackingAbilitySources,defendingAbilitySources,7);
+                        ApplyDamage(integer,CreateD6Result(),WoundType.DevastatingWound,new AttackResults(),attackingAbilitySources,defendingAbilitySources,7,
+                                rollingContext);
                     }
                 }
             }
-            resultWoundsDealt[attackSequenceCount] = amountOfWoundsTotal;
-            resultModelsSlain[attackSequenceCount] = amountOfModelsKilled;
-            resultsAmountOfHits[attackSequenceCount] = amountOfHits;
-            resultsAmountOfAttacks[attackSequenceCount] = amountOfAttacksDebug;
+            resultWoundsDealt[attackSequenceCount] = rollingContext.amountOfWoundsTotal;
+            resultModelsSlain[attackSequenceCount] = rollingContext.amountOfModelsKilled;
+            resultsAmountOfHits[attackSequenceCount] = rollingContext.amountOfHits;
+            resultsAmountOfAttacks[attackSequenceCount] = rollingContext.amountOfAttacksDebug;
         }
 
 
@@ -198,7 +198,8 @@ public class RollingLogic {
         return returnResult;
     }
 
-    private void ApplyDamage(int damage, DiceResult diceResult, WoundType woundType, AttackResults attackResults, AbilitySources attackingAbilities,AbilitySources defendingAbilities,int requiredSaveRoll )
+    private void ApplyDamage(int damage, DiceResult diceResult, WoundType woundType,
+                             AttackResults attackResults, AbilitySources attackingAbilities,AbilitySources defendingAbilities,int requiredSaveRoll, RollingContext rollingContext )
     {
         attackResults.damage = damage;
 
@@ -212,44 +213,44 @@ public class RollingLogic {
             defendingAbilities.ApplyAbility(AbilityTiming.PreventMortalWoundDamage,diceResult,attackResults,attackingAbilities,defendingAbilities,requiredSaveRoll,conditionen);
         }
 
-        amountOfWoundsTotal += damage;
+        rollingContext.amountOfWoundsTotal += damage;
         if(woundType == WoundType.MortalWound)
         {
             int mortalWoundsLeft = damage;
             while (mortalWoundsLeft > 0)
             {
-                int mortalWoundsToDeal = (defendingModel.wounds - currentModelDamage);
+                int mortalWoundsToDeal = (rollingContext.defendingModel.wounds - rollingContext.currentModelDamage);
                 if(mortalWoundsToDeal > mortalWoundsLeft)
                 {
                     mortalWoundsToDeal = mortalWoundsLeft;
                 }
-                if(mortalWoundsToDeal == (defendingModel.wounds - currentModelDamage))
+                if(mortalWoundsToDeal == (rollingContext.defendingModel.wounds - rollingContext.currentModelDamage))
                 {
-                    currentModelDamage = 0;
-                    amountOfModelsKilled += 1;
+                    rollingContext.currentModelDamage = 0;
+                    rollingContext.amountOfModelsKilled += 1;
                 }
                 else
                 {
-                    currentModelDamage += mortalWoundsToDeal;
+                    rollingContext.currentModelDamage += mortalWoundsToDeal;
                 }
                 mortalWoundsLeft -= mortalWoundsToDeal;
             }
         }
         else
         {
-            currentModelDamage += damage;
+            rollingContext.currentModelDamage += damage;
 
-            if (defendingModel.wounds <= currentModelDamage)
+            if (rollingContext.defendingModel.wounds <= rollingContext.currentModelDamage)
             {
-                amountOfModelsKilled += 1;
+                rollingContext.amountOfModelsKilled += 1;
 
-                if (!(currentDefendingModelIndex == defendingAbilities.unit.listOfModels.size() - 1))
+                if (!(rollingContext.currentDefendingModelIndex == defendingAbilities.unit.listOfModels.size() - 1))
                 {
-                    currentDefendingModelIndex += 1;
-                    defendingModel = defendingAbilities.unit.listOfModels.get(currentDefendingModelIndex);
-                    defendingAbilities.model = defendingModel;
+                    rollingContext.currentDefendingModelIndex += 1;
+                    rollingContext.defendingModel = defendingAbilities.unit.listOfModels.get(rollingContext.currentDefendingModelIndex);
+                    defendingAbilities.model = rollingContext.defendingModel;
                 }
-                currentModelDamage = 0;
+                rollingContext.currentModelDamage = 0;
             }
         }
     }
@@ -397,8 +398,8 @@ public class RollingLogic {
 
     private boolean ShouldSkipWeapon(Weapon rangedWeapon, Conditions conditions)
     {
-        if(!rangedWeapon.active)
-            return true;
+         if(!rangedWeapon.active)
+             return true;
 
         if(rangedWeapon.isMelee && !conditions.meleeCombat)
             return true;

@@ -126,7 +126,7 @@ public class Parsing
         StringBuilder parsedString = new StringBuilder();
         while(offset < armyList.length())
         {
-            if(armyList.charAt(offset) == '\r' || armyList.charAt(offset) == '\n' || armyList.charAt(offset) == ',' )
+            if(armyList.charAt(offset) == '\r' || armyList.charAt(offset) == '\n'  )
             {
                 return new Pair<>(offset,parsedString.toString());
             }
@@ -155,13 +155,14 @@ public class Parsing
 
     private boolean IsDemarcation(String subString)
     {
-        return subString.contains(BATTLELINE) || subString.contains(DEDICATED_TRANSPORTS) || subString.contains(CHARACTER) || subString.contains(OTHER_DATASHEETS);
+        return subString.contains(BATTLELINE) || subString.contains(DEDICATED_TRANSPORTS) || subString.contains(CHARACTER) || subString.contains(OTHER_DATASHEETS) || subString.contains(ALLIED_UNITS);
     }
     //TODO: bruh mega ghetto
     private final String BATTLELINE = "BATTLELINE";
     private final String CHARACTER = "CHARACTER";
     private final String DEDICATED_TRANSPORTS = "DEDICATED TRANSPORTS";
     private final String OTHER_DATASHEETS = "OTHER DATASHEETS";
+    private final String ALLIED_UNITS = "ALLIED UNITS";
     private Faction ParseFaction(String factionString)
     {
         // TODO: add all factions
@@ -238,6 +239,8 @@ public class Parsing
         while (offset < armyLength)
         {
             offset = RemoveWhiteSpaces(offset,armyList);
+            char debugChar = armyList.charAt(offset);
+            char debugChar_two = armyList.charAt(offset +1);
             if(IsItemAmountSignifier(armyList.charAt(offset)))
             {
                 Pair<Integer,Integer> offsetAndAmount = ParseItemAmount(armyList,offset);
@@ -360,7 +363,7 @@ public class Parsing
                 // TODO: does not deep copy yikes
                 ArrayList<Weapon> weapons = (ArrayList<Weapon>)parsedItem.second;
                 weapons.get(0).active = true;
-                for( int i = 0; i < weapons.size(); i++)
+                for( int i = 1; i < weapons.size(); i++)
                 {
                     weapons.get(i).active = false;
                 }
