@@ -662,8 +662,6 @@ public class XmlParser
                         model.toughness = sharedModel.toughness;
                         model.armorSave = sharedModel.armorSave;
                         model.wounds = sharedModel.wounds;
-                        model.attacks = sharedModel.attacks;
-                        model.strength = sharedModel.strength;
                         foundStats = true;
                         break;
                     }
@@ -709,13 +707,9 @@ public class XmlParser
             Node tNode = GetChildNodeWithAttributeValue(chars, null,"name", "T");
             Node svNode = GetChildNodeWithAttributeValue(chars,null, "name", "SV");
             Node wNode = GetChildNodeWithAttributeValue(chars, null,"name", "W");
-            Node aNode = GetChildNodeWithAttributeValue(chars, null,"name", "A");
-            Node sNode = GetChildNodeWithAttributeValue(chars, null,"name", "S");
             if (tNode != null) model.toughness = p_ParseUnitStat(tNode.getTextContent());
             if (svNode != null) model.armorSave = p_ParseUnitStat(svNode.getTextContent());
             if (wNode != null) model.wounds = p_ParseUnitStat(wNode.getTextContent());
-            if (aNode != null) model.attacks = p_ParseUnitStat(aNode.getTextContent());
-            if (sNode != null) model.strength = p_ParseUnitStat(sNode.getTextContent());
             return true;
         }
 

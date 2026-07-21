@@ -10,7 +10,6 @@ import core.Enums.Faction;
 import core.FileHandling.FileHandler;
 import core.Logging.Logging;
 import core.Util.Pair;
-import sun.font.TrueTypeFont;
 
 public class ServerFileHandler extends FileHandler {
     private File bsDataDirectory;

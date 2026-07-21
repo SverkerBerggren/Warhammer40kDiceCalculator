@@ -41,13 +41,13 @@ public class RollingLogic {
         private Model defendingModel;
     }
 
-    public RollResult newCalculateDamage(ArrayList<Unit> attackerList, Unit defendingUnit, GamePiece attackingArmy, GamePiece defendingArmy, Conditions conditions) {
+    public RollResult newCalculateDamage(ArrayList<Unit> attackerList, Unit defendingUnit, GamePiece attackingArmy, GamePiece defendingArmy, Conditions conditions, int trials) {
         //Debug
-        int[] resultsAmountOfHits = new int[10000];
-        int[] resultsAmountOfAttacks = new int[10000];
+        int[] resultsAmountOfHits = new int[trials];
+        int[] resultsAmountOfAttacks = new int[trials];
 
-        int[] resultWoundsDealt = new int[10000];
-        int[] resultModelsSlain = new int[10000];
+        int[] resultWoundsDealt = new int[trials];
+        int[] resultModelsSlain = new int[trials];
         conditionen = conditions;
 
         AbilitySources attackingAbilitySources = new AbilitySources(attackingArmy);
@@ -57,7 +57,7 @@ public class RollingLogic {
         StatModifiers attackingStatModifiers = new StatModifiers();
         StatModifiers defendingStatModifiers = new StatModifiers();
 
-        for (int attackSequenceCount = 0; attackSequenceCount < 10000; attackSequenceCount++)
+        for (int attackSequenceCount = 0; attackSequenceCount < trials; attackSequenceCount++)
         {
             //Debug
             RollingContext rollingContext = new RollingContext();
@@ -184,10 +184,10 @@ public class RollingLogic {
             amountOfHitsFloat += hits;
         }
 
-        average = sum / 10000;
-        averageModelsKilled = anotherSum / 10000;
-        Logging.d("Result:", " Average amount of attacks: " + (amountOfAttacks/10000));
-        Logging.d("Result:", " Average amount of hits: " + (amountOfHitsFloat/10000));
+        average = sum / trials;
+        averageModelsKilled = anotherSum / trials;
+        Logging.d("Result:", " Average amount of attacks: " + (amountOfAttacks/trials));
+        Logging.d("Result:", " Average amount of hits: " + (amountOfHitsFloat/trials));
         Logging.d("Result", "Average amount of wounds: " + average);
         Logging.d("Result", "Average amount of killed models: " + averageModelsKilled);
         RollResult returnResult = new RollResult();
@@ -342,7 +342,7 @@ public class RollingLogic {
         attackingAbilities.ApplyAbility(AbilityTiming.ReRollHits, hitRoll, attackResults, attackingAbilities, defendingAbilities,requiredHit,conditionen);
         attackingAbilities.ApplyAbility(AbilityTiming.TriggerOnHitRoll, hitRoll, attackResults, attackingAbilities, defendingAbilities,requiredHit,conditionen);
 
-        if (hitRoll.result >= requiredHit) {
+        if (hitRoll.result >= requiredHit && hitRoll.continueRegularCalculation) {
             attackResults.hits += 1;
         }
     }
@@ -367,7 +367,7 @@ public class RollingLogic {
         attackingAbilities.ApplyAbility(AbilityTiming.ReRollWounds, woundRoll, attackResults, attackingAbilities, defendingAbilities,requiredResult,conditionen);
         attackingAbilities.ApplyAbility(AbilityTiming.TriggerOnWoundRoll, woundRoll, attackResults, attackingAbilities, defendingAbilities,requiredResult,conditionen);
 
-        if (woundRoll.result >= requiredResult) {
+        if (woundRoll.result >= requiredResult && woundRoll.continueRegularCalculation) {
             attackResults.wounds += 1;
         }
     }
@@ -385,6 +385,10 @@ public class RollingLogic {
             ret += ThreadLocalRandom.current().nextInt(1,7);
         }
         return  ret;
+    }
+    public static int RollD6( )
+    {
+        return  ThreadLocalRandom.current().nextInt(1,7);
     }
 
     // TODO: Refactor so it inherits instead

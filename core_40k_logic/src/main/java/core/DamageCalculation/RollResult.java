@@ -7,7 +7,7 @@ public class RollResult {
 
 
 
-    public float averageAmountOfWounds;
-    public float averageAmountOfModelsSlain;
+    public double averageAmountOfWounds;
+    public double averageAmountOfModelsSlain;
 
 }

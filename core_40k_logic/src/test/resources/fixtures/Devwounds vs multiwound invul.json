@@ -1,0 +1,21 @@
+{
+  "name": "Devastating Wounds: bolt rifle vs multi-wound target with invuln save",
+  "attackerUnitFile": "units/intercessor_squad.json",
+  "defenderUnitFile": "units/terminator_squad.json",
+  "attackerGamePiece": "primary",
+  "defenderGamePiece": "primary",
+  "conditions": {
+    "rangeInches": 24,
+    "defenderInCover": false,
+    "attackerHasLineOfSight": true,
+    "attackerAdvanced": false,
+    "attackerRemainedStationary": false,
+    "phase": "SHOOTING"
+  },
+  "expectedMeanDamage": 2.78,
+  "expectedVariance": 0,
+  "referenceSampleSize": 0,
+  "source": "Cross-checked against MathHammer8thEd and 40kStats, agree to 2dp on 2026-07-16",
+  "abilitiesUnderTest": ["devastatingWounds"],
+  "profileTags": ["multiWound", "invulnSave"]
+}

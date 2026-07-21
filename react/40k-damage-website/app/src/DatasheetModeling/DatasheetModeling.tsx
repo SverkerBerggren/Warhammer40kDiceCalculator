@@ -3,21 +3,21 @@ export interface Unit {
     pointCost: number;
     abilities: AbilityData[]
     listOfModels: Model[];
-    statModifiers: StatModifier
+    statModifiers: StatModifiersData
     id: string
 }
-type ServerUnit = Omit<Unit, 'id'>;
+export type ServerUnit = Omit<Unit, 'id'>;
 
 export interface Model {
     name: string;
     toughness: number;
-    strength: number;
     armorSave: number;
     invulnerableSave: number;
     wounds: number;
 
     active: boolean;
     weapons: Weapon[]
+    abilities: AbilityData[]
 }
 export interface Weapon
 {
@@ -31,6 +31,7 @@ export interface Weapon
     strength:number;
     isMelee:boolean;
     active:boolean;
+    abilities: AbilityData[]
 }
 
 export interface DiceAmount {
@@ -121,16 +122,41 @@ export interface StatModifiersData {
  
 // Matches Ability.java. `implemented` requires the isImplemented() getter
 // suggested in chat — without it this field won't be present in the JSON.
+// `kind` matches the AbilityKind tag AbilityElementAdapter uses to pick a
+// class on deserialize; abilities added via the "custom" free-text flow
+// (no backing Java class) should use a kind that isn't in the server
+// registry, e.g. "CUSTOM", so they round-trip as UnimplementedAbility.
+// Any extra param fields (e.g. `keyword`, `woundThreshold` for Anti-Keyword)
+// are flattened directly onto the object — Gson writes fields flat, not
+// nested under a "params" key, so the wire shape needs to match that.
 export interface AbilityData {
+  kind: string;
   name: string;
   description: string;
   active: boolean;
   implemented: boolean;
+  [paramField: string]: unknown;
 }
- 
-// Shape returned by the (not-yet-built) GET /api/abilities catalog endpoint.
-// Adjust field names once the real endpoint exists.
+
+// Builds a brand-new, empty Unit for the "add unit" flow in the editor.
+// `id` is a fresh client-side id (mirrors what assignUnitIds does on upload).
+// statModifiers is sized to match the number of StatModifier enum entries —
+// keep in sync if you add/remove entries from that enum.
+export function createBlankUnit(): Unit {
+  const modifierCount = Object.keys(StatModifier).filter(k => isNaN(Number(k))).length;
+  return {
+    id: crypto.randomUUID(),
+    unitName: "New Unit",
+    pointCost: 0,
+    abilities: [],
+    listOfModels: [],
+    statModifiers: { statModifiers: new Array(modifierCount).fill(0) },
+  };
+}
+
 export interface AbilityCatalogEntry {
-  name: string;
+  kind: string;
+  displayName: string;
   description: string;
+  params: { fieldName: string; type: 'INT' | 'KEYWORD' | 'BOOLEAN'; uiLabel: string }[];
 }

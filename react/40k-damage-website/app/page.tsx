@@ -9,7 +9,7 @@ import { useEffect} from "react";
 import { useState} from "react";
 import ArmyLayout from "./src/ArmyLayout";
 
-import { Army, Unit,GamePiece,gamePieceFromArmy, Conditions, ServerUnit} from "@/app/src/DatasheetModeling/DatasheetModeling";
+import { Army, Unit,GamePiece,gamePieceFromArmy, Conditions, ServerUnit, createBlankUnit} from "@/app/src/DatasheetModeling/DatasheetModeling";
 import { NodeNextRequest } from "next/dist/server/base-http/node";
 import { log } from "console";
 import DistributionChart from "./src/DistributionChart";
@@ -43,8 +43,13 @@ class CalculateDamageRequest {
 export type EditingUnit = {
     unit: Unit;
     index: number;
-    attacker: boolean
+    attacker: boolean;
+    // True when this came from "+ Add unit" rather than editing an existing
+    // entry — lets UnitEditorModal show "Add unit" instead of "Save changes"
+    // and lets onSave know to append rather than replace in place.
+    isNew?: boolean;
 };
+
 
 export default function Home() {
   const [armies,setArmies] = useState<Army[] >([]);
@@ -72,6 +77,22 @@ export default function Home() {
     return defenderArmy.units.find(u => u.id === selectedDefenderId) ?? null;
   }, [defenderArmy, selectedDefenderId]);
 
+  
+  // Exports the current working unit as a .json fixture. Drops the client-only
+  // `id` field so the shape matches what the server / test fixtures expect.
+  function exportAttackingUnitAsJson( ) {
+    const serverShapedUnits = attackingUnits.map(({ id, ...rest }) => rest);
+    const blob = new Blob([JSON.stringify(serverShapedUnits, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const safeName = (serverShapedUnits[0].unitName || "unit").trim().replace(/\s+/g, "_");
+    a.href = url;
+    a.download = `${safeName}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
 
   function fetchCalculateDamageRequest(attackingUnits: Unit[],defendingUnit: Unit,attackingArmy: Army,defendingArmy: Army,conditions:Conditions){
     let attackingGamePiece = gamePieceFromArmy(attackingArmy);
@@ -125,6 +146,26 @@ export default function Home() {
      });
   }
 
+  // Opens the editor pre-loaded with a blank unit for the given side. Reuses
+  // the same UnitEditorModal + onSave path as editing an existing unit —
+  // index is set to the current end of the list so onSave's array-index
+  // assignment appends rather than overwrites.
+  function openAddUnit(attacker: boolean) {
+    const army = attacker ? attackerArmy : defenderArmy;
+    if (!army) return;
+    setEditingUnit({
+      unit: createBlankUnit(),
+      index: army.units.length,
+      attacker,
+      isNew: true,
+    });
+  }
+
+  function SaveArmy(army: Army)
+  {
+      const storageKey = `army:${army.name}`;
+      localStorage.setItem(storageKey, JSON.stringify(army));
+  }
 
 
   return (
@@ -138,7 +179,6 @@ export default function Home() {
               onClose={() => setEditingUnit(null)}
               onSave={(updated,index,attacker) => {
                 // replace the unit in its army's unit list + persist to localStorage
-                console.log("innan grejen")
 
                 const armyToUpdate = attacker ? attackerArmy : defenderArmy;
 
@@ -180,6 +220,22 @@ export default function Home() {
                     {attackerArmy && (
                         <ArmyLayout army={attackerArmy} toggleUnit={toggleUnit} attacker={true} setEditingUnit={setEditingUnit} ></ArmyLayout>
                     )}
+                    {attackerArmy && (
+                        <button
+                          onClick={() => openAddUnit(true)}
+                          className="mt-2 text-sm bg-green-100 hover:bg-green-200 text-green-800 px-3 py-1.5 rounded"
+                        >
+                          + Add unit
+                        </button>
+                    )}
+                    {attackerArmy && (
+                        <button
+                          onClick={() => SaveArmy(attackerArmy)}
+                          className="mt-2 text-sm bg-blue-100 hover:bg-blue-200 text-blue-800 px-3 py-1.5 rounded"
+                        >
+                          Save and persist army
+                        </button>
+                    )}
                 </div>
 
                 <div className="w-[20%] flex flex-col  items-center">
@@ -204,6 +260,22 @@ export default function Home() {
                     {defenderArmy && (
                         <ArmyLayout army={defenderArmy} toggleUnit={toggleDefendingUnit} attacker={false} setEditingUnit={setEditingUnit} ></ArmyLayout>
                     )}
+                    {defenderArmy && (
+                        <button
+                          onClick={() => openAddUnit(false)}
+                          className="mt-2 text-sm bg-green-100 hover:bg-green-200 text-green-800 px-3 py-1.5 rounded"
+                        >
+                          + Add unit
+                        </button>
+                    )}
+                    {defenderArmy && (
+                        <button
+                          onClick={() => SaveArmy(defenderArmy)}
+                          className="mt-2 text-sm bg-blue-100 hover:bg-blue-200 text-blue-800 px-3 py-1.5 rounded"
+                        >
+                          Save and persist army
+                        </button>
+                    )}
                 </div>
 
                 <div className="flex w-[60%] ">
@@ -221,6 +293,12 @@ export default function Home() {
                                   </li>
                                 )))}
                                 </ul>
+                                <button
+                                onClick={() => exportAttackingUnitAsJson()}
+                                    className="mt-2 text-sm bg-blue-100 hover:bg-blue-200 text-blue-800 px-3 py-1.5 rounded"
+                                    >
+                                    Export attacking units as json
+                                </button>
                             </div>
                             <div className="flex flex-col h-[30%]">
                                 <h1>Defending unit</h1>

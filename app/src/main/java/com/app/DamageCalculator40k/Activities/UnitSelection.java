@@ -109,7 +109,7 @@ public class UnitSelection extends AppCompatActivity {
 
             if(result.getResultCode() == RESULT_OK)
             {
-                conditions =new Conditions( result.getData().getStringExtra("" + R.string.CONDITIONS));
+                // conditions =new Conditions( result.getData().getStringExtra("" + R.string.CONDITIONS));
             }
         }
     }

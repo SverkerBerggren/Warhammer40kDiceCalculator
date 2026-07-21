@@ -7,12 +7,10 @@ public class Model extends GamePiece  implements DeactivatableInterface{
 
     public String name;
     public int toughness = -1;;
-    public int strength = -1;
     public int armorSave = -1;
     //Todo: Fix invulnerable save condition
     public int invulnerableSave = 7;
     public int wounds = -1;
-    public int attacks =  -1;
 
     public boolean active = true;
 
@@ -23,11 +21,9 @@ public class Model extends GamePiece  implements DeactivatableInterface{
     {
         Model modelToReturn = new Model();
         modelToReturn.toughness = toughness;
-        modelToReturn.strength = strength;
         modelToReturn.armorSave = armorSave;
         modelToReturn.invulnerableSave = invulnerableSave;
         modelToReturn.wounds = wounds;
-        modelToReturn.attacks=  attacks;
         modelToReturn.active = active;
         modelToReturn.name = name;
         modelToReturn.setStatModifiers( getStatModifiers().Copy());
@@ -40,7 +36,6 @@ public class Model extends GamePiece  implements DeactivatableInterface{
 
         modelToReturn.weapons = newList;
         return modelToReturn;
-
     }
 
     public Model()

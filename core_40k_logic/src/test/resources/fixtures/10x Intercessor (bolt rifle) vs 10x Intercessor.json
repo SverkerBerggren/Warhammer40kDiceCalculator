@@ -1,0 +1,23 @@
+{
+  "name": "10x Intercessor (bolt rifle) vs 10x Intercessor",
+  "attackerUnitsFile": "units/attacker/intercessor_squad.json",
+  "defenderUnitFile": "units/defender/intercessor_squad.json",
+  "attackerGamePiece": "army/ultramarines_standard",
+  "defenderGamePiece": "primary",
+  "conditions": {
+    "rapidFireRange": false,
+    "meleeCombat" : false,
+    "rangedCombat" : true,
+    "mediumBlast" : false,
+    "fullBlast" : false,
+    "tacticalDoctrine" : false,
+    "devastatorDoctrine" : false,
+    "assaultDoctrine" : false,
+    "plusOneToWound" : false,
+    "dakkaHalfRange" : false
+  },
+  "expectedMeanDamage": 3.33,
+  "referenceSampleSize": 10000,
+  "source": "Cross-checked against MathHammer8thEd and 40kStats calculators, both agree to 2dp on 2026-07-13",
+  "abilitiesUnderTest": []
+}

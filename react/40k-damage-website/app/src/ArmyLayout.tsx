@@ -19,7 +19,6 @@ type ArmyLayoutProps = {
 
 export default function ArmyLayout({ army, attacker, toggleUnit, setEditingUnit}: ArmyLayoutProps) {
 
-    
     return (
     <div>
       <ul>

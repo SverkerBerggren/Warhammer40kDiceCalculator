@@ -15,7 +15,7 @@ import core.Conditions;
 import com.app.DamageCalculator40k.R;
 
 public class ConditionsActivity extends AppCompatActivity {
-
+    // TODO: This whole activity is ass
 
     private LinearLayout linearLayout;
     private Context context;
@@ -32,7 +32,7 @@ public class ConditionsActivity extends AppCompatActivity {
 
         if(getIntent().getStringExtra(""+R.string.CONDITIONS) != null)
         {
-            conditions = new Conditions( getIntent().getStringExtra(""+R.string.CONDITIONS));
+           // conditions = new Conditions( getIntent().getStringExtra(""+R.string.CONDITIONS));
         }
 
         CreateConditionCheckboxes(conditions);

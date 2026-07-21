@@ -148,14 +148,14 @@ public class StatisticActivity extends AppCompatActivity {
             defendingArmy = matchup.friendlyArmy;
         }
 
-        conditions = new Conditions(intent.getStringExtra(""+R.string.CONDITIONS));
+       // conditions = new Conditions(intent.getStringExtra(""+R.string.CONDITIONS));
         if(conditions == null)
         {
             conditions = new Conditions();
         }
 
         Trace.beginSection("rull logiken: "  + listOfAttackingUnits.size());
-        rollResult = rollLogic.newCalculateDamage(listOfAttackingUnits, defendingUnit, attackingArmy.toGamePieceSnapshot(),defendingArmy.toGamePieceSnapshot(),conditions);
+        rollResult = rollLogic.newCalculateDamage(listOfAttackingUnits, defendingUnit, attackingArmy.toGamePieceSnapshot(),defendingArmy.toGamePieceSnapshot(),conditions,10000);
         Trace.endSection();
 
         ConvertResult(rollResult);

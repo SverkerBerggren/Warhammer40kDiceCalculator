@@ -1,0 +1,474 @@
+[
+  {
+    "unitName": " Intercessor Squad",
+    "pointCost": 0,
+    "abilities": [],
+    "listOfModels": [
+      {
+        "name": "Intercessor Sergeant",
+        "toughness": 4,
+        "armorSave": 3,
+        "invulnerableSave": 7,
+        "wounds": 2,
+        "active": true,
+        "weapons": [
+          {
+            "name": "Bolt rifle",
+            "isMelee": false,
+            "ballisticSkill": 3,
+            "strength": 4,
+            "ap": -1,
+            "amountOfAttacks": {
+              "baseAmount": 2,
+              "numberOfD6": 0,
+              "numberOfD3": 0
+            },
+            "damageAmount": {
+              "baseAmount": 1,
+              "numberOfD6": 0,
+              "numberOfD3": 0
+            },
+            "active": true,
+            "abilities": [
+              {
+                "kind": "CUSTOM",
+                "name": "Heavy",
+                "description": "",
+                "active": true,
+                "implemented": false
+              },
+              {
+                "kind": "CUSTOM",
+                "name": "Assault",
+                "description": "",
+                "active": true,
+                "implemented": false
+              }
+            ]
+          }
+        ],
+        "abilities": []
+      },
+      {
+        "name": "Intercessor Sergeant (copy)",
+        "toughness": 4,
+        "armorSave": 3,
+        "invulnerableSave": 7,
+        "wounds": 2,
+        "active": true,
+        "weapons": [
+          {
+            "name": "Bolt rifle",
+            "isMelee": false,
+            "ballisticSkill": 3,
+            "strength": 4,
+            "ap": -1,
+            "amountOfAttacks": {
+              "baseAmount": 2,
+              "numberOfD6": 0,
+              "numberOfD3": 0
+            },
+            "damageAmount": {
+              "baseAmount": 1,
+              "numberOfD6": 0,
+              "numberOfD3": 0
+            },
+            "active": true,
+            "abilities": [
+              {
+                "kind": "CUSTOM",
+                "name": "Heavy",
+                "description": "",
+                "active": true,
+                "implemented": false
+              },
+              {
+                "kind": "CUSTOM",
+                "name": "Assault",
+                "description": "",
+                "active": true,
+                "implemented": false
+              }
+            ]
+          }
+        ],
+        "abilities": []
+      },
+      {
+        "name": "Intercessor Sergeant (copy)",
+        "toughness": 4,
+        "armorSave": 3,
+        "invulnerableSave": 7,
+        "wounds": 2,
+        "active": true,
+        "weapons": [
+          {
+            "name": "Bolt rifle",
+            "isMelee": false,
+            "ballisticSkill": 3,
+            "strength": 4,
+            "ap": -1,
+            "amountOfAttacks": {
+              "baseAmount": 2,
+              "numberOfD6": 0,
+              "numberOfD3": 0
+            },
+            "damageAmount": {
+              "baseAmount": 1,
+              "numberOfD6": 0,
+              "numberOfD3": 0
+            },
+            "active": true,
+            "abilities": [
+              {
+                "kind": "CUSTOM",
+                "name": "Heavy",
+                "description": "",
+                "active": true,
+                "implemented": false
+              },
+              {
+                "kind": "CUSTOM",
+                "name": "Assault",
+                "description": "",
+                "active": true,
+                "implemented": false
+              }
+            ]
+          }
+        ],
+        "abilities": []
+      },
+      {
+        "name": "Intercessor Sergeant (copy)",
+        "toughness": 4,
+        "armorSave": 3,
+        "invulnerableSave": 7,
+        "wounds": 2,
+        "active": true,
+        "weapons": [
+          {
+            "name": "Bolt rifle",
+            "isMelee": false,
+            "ballisticSkill": 3,
+            "strength": 4,
+            "ap": -1,
+            "amountOfAttacks": {
+              "baseAmount": 2,
+              "numberOfD6": 0,
+              "numberOfD3": 0
+            },
+            "damageAmount": {
+              "baseAmount": 1,
+              "numberOfD6": 0,
+              "numberOfD3": 0
+            },
+            "active": true,
+            "abilities": [
+              {
+                "kind": "CUSTOM",
+                "name": "Heavy",
+                "description": "",
+                "active": true,
+                "implemented": false
+              },
+              {
+                "kind": "CUSTOM",
+                "name": "Assault",
+                "description": "",
+                "active": true,
+                "implemented": false
+              }
+            ]
+          }
+        ],
+        "abilities": []
+      },
+      {
+        "name": "Intercessor Sergeant (copy)",
+        "toughness": 4,
+        "armorSave": 3,
+        "invulnerableSave": 7,
+        "wounds": 2,
+        "active": true,
+        "weapons": [
+          {
+            "name": "Bolt rifle",
+            "isMelee": false,
+            "ballisticSkill": 3,
+            "strength": 4,
+            "ap": -1,
+            "amountOfAttacks": {
+              "baseAmount": 2,
+              "numberOfD6": 0,
+              "numberOfD3": 0
+            },
+            "damageAmount": {
+              "baseAmount": 1,
+              "numberOfD6": 0,
+              "numberOfD3": 0
+            },
+            "active": true,
+            "abilities": [
+              {
+                "kind": "CUSTOM",
+                "name": "Heavy",
+                "description": "",
+                "active": true,
+                "implemented": false
+              },
+              {
+                "kind": "CUSTOM",
+                "name": "Assault",
+                "description": "",
+                "active": true,
+                "implemented": false
+              }
+            ]
+          }
+        ],
+        "abilities": []
+      },
+      {
+        "name": "Intercessor Sergeant (copy)",
+        "toughness": 4,
+        "armorSave": 3,
+        "invulnerableSave": 7,
+        "wounds": 2,
+        "active": true,
+        "weapons": [
+          {
+            "name": "Bolt rifle",
+            "isMelee": false,
+            "ballisticSkill": 3,
+            "strength": 4,
+            "ap": -1,
+            "amountOfAttacks": {
+              "baseAmount": 2,
+              "numberOfD6": 0,
+              "numberOfD3": 0
+            },
+            "damageAmount": {
+              "baseAmount": 1,
+              "numberOfD6": 0,
+              "numberOfD3": 0
+            },
+            "active": true,
+            "abilities": [
+              {
+                "kind": "CUSTOM",
+                "name": "Heavy",
+                "description": "",
+                "active": true,
+                "implemented": false
+              },
+              {
+                "kind": "CUSTOM",
+                "name": "Assault",
+                "description": "",
+                "active": true,
+                "implemented": false
+              }
+            ]
+          }
+        ],
+        "abilities": []
+      },
+      {
+        "name": "Intercessor Sergeant (copy)",
+        "toughness": 4,
+        "armorSave": 3,
+        "invulnerableSave": 7,
+        "wounds": 2,
+        "active": true,
+        "weapons": [
+          {
+            "name": "Bolt rifle",
+            "isMelee": false,
+            "ballisticSkill": 3,
+            "strength": 4,
+            "ap": -1,
+            "amountOfAttacks": {
+              "baseAmount": 2,
+              "numberOfD6": 0,
+              "numberOfD3": 0
+            },
+            "damageAmount": {
+              "baseAmount": 1,
+              "numberOfD6": 0,
+              "numberOfD3": 0
+            },
+            "active": true,
+            "abilities": [
+              {
+                "kind": "CUSTOM",
+                "name": "Heavy",
+                "description": "",
+                "active": true,
+                "implemented": false
+              },
+              {
+                "kind": "CUSTOM",
+                "name": "Assault",
+                "description": "",
+                "active": true,
+                "implemented": false
+              }
+            ]
+          }
+        ],
+        "abilities": []
+      },
+      {
+        "name": "Intercessor Sergeant (copy)",
+        "toughness": 4,
+        "armorSave": 3,
+        "invulnerableSave": 7,
+        "wounds": 2,
+        "active": true,
+        "weapons": [
+          {
+            "name": "Bolt rifle",
+            "isMelee": false,
+            "ballisticSkill": 3,
+            "strength": 4,
+            "ap": -1,
+            "amountOfAttacks": {
+              "baseAmount": 2,
+              "numberOfD6": 0,
+              "numberOfD3": 0
+            },
+            "damageAmount": {
+              "baseAmount": 1,
+              "numberOfD6": 0,
+              "numberOfD3": 0
+            },
+            "active": true,
+            "abilities": [
+              {
+                "kind": "CUSTOM",
+                "name": "Heavy",
+                "description": "",
+                "active": true,
+                "implemented": false
+              },
+              {
+                "kind": "CUSTOM",
+                "name": "Assault",
+                "description": "",
+                "active": true,
+                "implemented": false
+              }
+            ]
+          }
+        ],
+        "abilities": []
+      },
+      {
+        "name": "Intercessor Sergeant (copy)",
+        "toughness": 4,
+        "armorSave": 3,
+        "invulnerableSave": 7,
+        "wounds": 2,
+        "active": true,
+        "weapons": [
+          {
+            "name": "Bolt rifle",
+            "isMelee": false,
+            "ballisticSkill": 3,
+            "strength": 4,
+            "ap": -1,
+            "amountOfAttacks": {
+              "baseAmount": 2,
+              "numberOfD6": 0,
+              "numberOfD3": 0
+            },
+            "damageAmount": {
+              "baseAmount": 1,
+              "numberOfD6": 0,
+              "numberOfD3": 0
+            },
+            "active": true,
+            "abilities": [
+              {
+                "kind": "CUSTOM",
+                "name": "Heavy",
+                "description": "",
+                "active": true,
+                "implemented": false
+              },
+              {
+                "kind": "CUSTOM",
+                "name": "Assault",
+                "description": "",
+                "active": true,
+                "implemented": false
+              }
+            ]
+          }
+        ],
+        "abilities": []
+      },
+      {
+        "name": "Intercessor Sergeant (copy)",
+        "toughness": 4,
+        "armorSave": 3,
+        "invulnerableSave": 7,
+        "wounds": 2,
+        "active": true,
+        "weapons": [
+          {
+            "name": "Bolt rifle",
+            "isMelee": false,
+            "ballisticSkill": 3,
+            "strength": 4,
+            "ap": -1,
+            "amountOfAttacks": {
+              "baseAmount": 2,
+              "numberOfD6": 0,
+              "numberOfD3": 0
+            },
+            "damageAmount": {
+              "baseAmount": 1,
+              "numberOfD6": 0,
+              "numberOfD3": 0
+            },
+            "active": true,
+            "abilities": [
+              {
+                "kind": "CUSTOM",
+                "name": "Heavy",
+                "description": "",
+                "active": true,
+                "implemented": false
+              },
+              {
+                "kind": "CUSTOM",
+                "name": "Assault",
+                "description": "",
+                "active": true,
+                "implemented": false
+              }
+            ]
+          }
+        ],
+        "abilities": []
+      }
+    ],
+    "statModifiers": {
+      "statModifiers": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  }
+]

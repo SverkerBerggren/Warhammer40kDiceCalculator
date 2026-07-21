@@ -1,6 +1,8 @@
 package core;
 
+
 import core.Abilities.Ability;
+import core.Abilities.AbilityKind;
 import core.Abilities.UnimplementedAbility;
 import core.Logging.Logging;
 
@@ -15,43 +17,36 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class AbilityElementAdapter implements JsonSerializer<Ability>, JsonDeserializer<Ability> {
     private Gson internalGson = new Gson();
 
+    private static final Map<Class<? extends Ability>, AbilityKind> REVERSE_REGISTRY =
+            Arrays.stream(AbilityKind.values())
+                    .collect(Collectors.toMap(AbilityKind::abilityClass, k -> k));
+
     @Override
     public JsonElement serialize(Ability src, Type typeOfSrc, JsonSerializationContext context) {
-
-        JsonElement regularAbilityParsing =  internalGson.toJsonTree(src);
-        JsonObject jsonObjectAbility = regularAbilityParsing.getAsJsonObject();
-        jsonObjectAbility.add("type",new JsonPrimitive( src.getClass().getTypeName()));
-
-        return jsonObjectAbility;
+        JsonElement tree = internalGson.toJsonTree(src);
+        JsonObject obj = tree.getAsJsonObject();
+        AbilityKind kind = REVERSE_REGISTRY.getOrDefault(src.getClass(), AbilityKind.UNIMPLEMENTED);
+        obj.add("kind", new JsonPrimitive(kind.name()));
+        return obj;
     }
 
     @Override
-    public Ability deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-            throws JsonParseException {
-        JsonObject jsonObject = json.getAsJsonObject();
-        Ability ability = null;
+    public Ability deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
+        JsonObject obj = json.getAsJsonObject();
+        Class<? extends Ability> clazz;
         try {
-            Type classType = Class.forName(jsonObject.get("type").getAsString());
-            jsonObject.remove("type");
-            ability = internalGson.fromJson(jsonObject.toString(),classType);
+            clazz = AbilityKind.valueOf(obj.get("kind").getAsString()).abilityClass();
+        } catch (IllegalArgumentException e) {
+            return new UnimplementedAbility(obj.get("name").getAsString());
         }
-        catch (Exception e )
-        {
-            Logging.d("Serialiserings knas",e.getMessage());
-        }
-        if(ability != null)
-        {
-            return ability;
-        }
-        else
-        {
-            String name = jsonObject.get("name").getAsString();
-            ability = new UnimplementedAbility(name);
-            return ability;
-        }
+        obj.remove("kind");
+        return internalGson.fromJson(obj, clazz);
     }
 }

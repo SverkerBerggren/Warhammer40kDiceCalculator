@@ -53,6 +53,7 @@ public class Main {
         Logging.d("hej","efter databasen");
 
         app.post("/api/calculate-damage", Main::handleCalculateDamage);
+        app.get("/api/implemented-abilities", Main::handleImplementedAbilities);
         app.post("/api/parse-army", Main::parseArmy);
 
         System.out.println("Server running on http://localhost:7070");
@@ -76,6 +77,15 @@ public class Main {
             ctx.result(gson.toJson(new ErrorResponse(e.getMessage())));
         }
     }
+    private static void handleImplementedAbilities(Context ctx) {
+        try {
+            ctx.contentType("application/json");
+            ctx.result(gson.toJson(DatabaseManager.GetCatalog()));
+        } catch (Exception e) {
+            ctx.status(400);
+            ctx.result(gson.toJson(new ErrorResponse(e.getMessage())));
+        }
+    }
     private static void handleCalculateDamage(Context ctx) {
         try {
             CalculateDamageRequest req = gson.fromJson(ctx.body(), CalculateDamageRequest.class);
@@ -85,7 +95,8 @@ public class Main {
                     req.defendingUnit,
                     req.attackingArmy,
                     req.defendingArmy,
-                    req.conditions
+                    req.conditions,
+                    10000
             );
 
             ctx.contentType("application/json");
