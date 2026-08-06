@@ -53,13 +53,6 @@ public  class AndroidFileHandler extends FileHandler{
 
     public static volatile AndroidFileHandler instance;
 
-    private AndroidBattleScribeUpdater battleScribeUpdater;
-
-    public void UpdateBattlesScribeData(UpdateCallbackBsData updateCallbackBsData)
-    {
-
-        battleScribeUpdater.checkAndUpdate(updateCallbackBsData);
-    }
 
     private Faction getFactionFromName(String fileName)
     {
@@ -97,6 +90,11 @@ public  class AndroidFileHandler extends FileHandler{
         return  retValues;
     }
 
+    @Override
+    public ArrayList< Pair<String,Faction>> GetJsonData()
+    {
+        return new ArrayList<>();
+    }
 
     public void saveMatchup(Matchup matchup)
     {
@@ -125,20 +123,6 @@ public  class AndroidFileHandler extends FileHandler{
         }
 
         return stringToReturn;
-    }
-
-    private static void SaveTextFile(File directory, String name, String content )
-    {
-        try {
-            FileWriter writer = new FileWriter(new File(directory, name));
-            writer.write( content);
-            writer.flush();
-            writer.close();
-        }
-        catch (Exception e)
-        {
-            Log.d("FileHandler","sket sig nar det skulle sparas localt senaste updaterat");
-        }
     }
 
     public void SaveBsData(Context context, Uri fileUri)
@@ -276,7 +260,6 @@ public  class AndroidFileHandler extends FileHandler{
             GsonBuilder gsonBuilder = new GsonBuilder();
             gsonBuilder.registerTypeAdapter(Ability.class, new AbilityElementAdapter());
             gson = gsonBuilder.create();
-            battleScribeUpdater = new AndroidBattleScribeUpdater(context);
         }
     }
 
@@ -375,147 +358,4 @@ public  class AndroidFileHandler extends FileHandler{
 
         return  armiesToReturn;
     }
-
-
-    public class AndroidBattleScribeUpdater {
-
-        private static final String REPO_OWNER = "BSData";
-        private static final String REPO_NAME = "wh40k-10e";
-        private static final String BRANCH = "main";
-        private static final String API_BASE = "https://api.github.com";
-
-        private final Context context;
-
-        public AndroidBattleScribeUpdater(Context context) {
-            this.context = context;
-        }
-
-        // Call this on app start or when user requests update
-        public void checkAndUpdate(UpdateCallbackBsData callback) {
-            new Thread(() -> {
-                try {
-                    String latestSha = fetchLatestCommitSha();
-                    String storedSha = ReadFileAsString(bsDataDirectory.toString(),context.getString(R.string.last_commit_sha));
-                    if (latestSha.equals(storedSha)) {
-                        callback.onComplete(false); // already up to date
-                        return;
-                    }
-
-                    if (storedSha.isEmpty()) {
-                        // First run, download all .cat files
-                        downloadAllCatalogueFiles(callback);
-                    } else {
-                        // Only download changed files
-                        downloadChangedFiles(storedSha, latestSha, callback);
-                    }
-
-                    SaveTextFile(bsDataDirectory,context.getString(R.string.last_commit_sha),latestSha);
-                    callback.onComplete(true);
-
-                } catch (Exception e) {
-                    callback.onError(e);
-                    e.printStackTrace();
-                }
-            }).start();
-        }
-
-        private String fetchLatestCommitSha() throws Exception {
-            String url = API_BASE + "/repos/" + REPO_OWNER + "/" + REPO_NAME
-                    + "/commits/" + BRANCH;
-            JSONObject response = fetchJson(url);
-            return response.getString("sha");
-        }
-
-        private void downloadChangedFiles(String fromSha, String toSha,
-                                          UpdateCallbackBsData callback) throws Exception {
-            String url = API_BASE + "/repos/" + REPO_OWNER + "/" + REPO_NAME
-                    + "/compare/" + fromSha + "..." + toSha;
-            JSONObject response = fetchJson(url);
-            JSONArray files = response.getJSONArray("files");
-
-            for (int i = 0; i < files.length(); i++) {
-                JSONObject file = files.getJSONObject(i);
-                String filename = file.getString("filename");
-                String status = file.getString("status"); // added, modified, removed
-
-                if (!filename.endsWith(".cat") && !filename.endsWith(".gst")) continue;
-
-                if (status.equals("removed")) {
-                    deleteLocalFile(filename);
-                } else {
-                    // raw_url gives direct download without API rate limits
-                    String rawUrl = file.getString("raw_url");
-                    downloadFile(rawUrl, filename);
-                }
-
-                callback.onProgress(i + 1, files.length(), filename);
-            }
-        }
-
-        private void downloadAllCatalogueFiles(UpdateCallbackBsData callback) throws Exception {
-            // Use the git tree API to list all files without downloading them
-            String url = API_BASE + "/repos/" + REPO_OWNER + "/" + REPO_NAME
-                    + "/git/trees/" + BRANCH + "?recursive=1";
-            JSONObject response = fetchJson(url);
-            JSONArray tree = response.getJSONArray("tree");
-
-            // Filter to only .cat and .gst files
-            ArrayList<JSONObject> catFiles = new ArrayList<>();
-            for (int i = 0; i < tree.length(); i++) {
-                JSONObject item = tree.getJSONObject(i);
-                String path = item.getString("path");
-                if (path.endsWith(".cat") || path.endsWith(".gst")) {
-                    catFiles.add(item);
-                }
-            }
-
-            for (int i = 0; i < catFiles.size(); i++) {
-                JSONObject item = catFiles.get(i);
-                String path = item.getString("path");
-                String rawUrl = "https://raw.githubusercontent.com/" + REPO_OWNER
-                        + "/" + REPO_NAME + "/" + BRANCH + "/" + path;
-                downloadFile(rawUrl, path);
-                callback.onProgress(i + 1, catFiles.size(), path);
-            }
-        }
-
-        private void downloadFile(String url, String relativePath) throws Exception {
-            File outputFile = new File(bsDataDirectory, relativePath);
-            outputFile.getParentFile().mkdirs();
-
-            HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
-            conn.setRequestProperty("Accept", "application/vnd.github.v3.raw");
-            // Add auth token if you have one, unauthenticated is limited to 60 req/hour
-            // conn.setRequestProperty("Authorization", "token YOUR_TOKEN");
-
-            try (InputStream in = conn.getInputStream(); FileOutputStream out = new FileOutputStream(outputFile)) {
-                byte[] buffer = new byte[8192];
-                int bytesRead;
-                while ((bytesRead = in.read(buffer)) != -1) {
-                    out.write(buffer, 0, bytesRead);
-                }
-            } finally {
-                conn.disconnect();
-            }
-        }
-
-        private void deleteLocalFile(String relativePath) {
-            new File(bsDataDirectory, relativePath).delete();
-        }
-
-
-        private JSONObject fetchJson(String url) throws Exception {
-            HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
-            conn.setRequestProperty("Accept", "application/vnd.github.v3+json");
-            conn.setRequestProperty("User-Agent", "DamageCalculator40k");
-
-            try (InputStream in = conn.getInputStream()) {
-                byte[] bytes = in.readAllBytes();
-                return new JSONObject(new String(bytes));
-            } finally {
-                conn.disconnect();
-            }
-        }
-}
-
 }

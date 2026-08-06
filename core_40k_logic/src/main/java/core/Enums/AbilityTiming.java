@@ -10,7 +10,7 @@ public enum AbilityTiming {
     Torrent,
     TriggerOnWoundRoll,
     IncreaseAttacks,
-    IncreaseWounds,
+    IncreaseDamage,
     ReRollAttacks,
     DetermineActiveState,
     PreventMortalWoundDamage,

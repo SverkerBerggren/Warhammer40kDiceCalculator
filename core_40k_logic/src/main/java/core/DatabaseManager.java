@@ -1,13 +1,19 @@
 package core;
 
 import core.Abilities.Ability;
+import core.Abilities.AbilityDefinition;
+import core.Abilities.AbilityKind;
 import core.Abilities.GenericAbilities.MortalWoundOnHit;
 import core.Abilities.GenericAbilities.ReRollHits;
 import core.Abilities.GenericAbilities.ReRollOnes;
 import core.Abilities.GenericAbilities.ReRollOnesWound;
 import core.Abilities.GenericAbilities.ReRollWoundRoll;
+import core.Abilities.ParamSpec;
+import core.Abilities.ParamType;
+import core.Abilities.UnimplementedAbility;
 import core.Abilities.WeaponAbilities.AntiKeyword;
 import core.Abilities.WeaponAbilities.Blast;
+import core.Abilities.WeaponAbilities.Cleave;
 import core.Abilities.WeaponAbilities.DevastatingWounds;
 import core.Abilities.WeaponAbilities.ExtraAttacks;
 import core.Abilities.WeaponAbilities.Heavy;
@@ -28,12 +34,14 @@ import core.Enums.Keyword;
 import core.FileHandling.FileHandler;
 
 import core.Logging.Logging;
+import core.Parsing.JsonParser;
 import core.Parsing.XmlParser;
 import core.Util.Pair;
 
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class DatabaseManager {
 
@@ -44,6 +52,7 @@ public class DatabaseManager {
     // Assumes that all ability names have the same description
     public static volatile DatabaseManager instance;
     private final XmlParser xmlParser = new XmlParser();
+    private final JsonParser jsonParser = new JsonParser();
 
     public static final Object onlineDatabaseLock = new Object();
     public static boolean isInitialized = false;
@@ -147,31 +156,22 @@ public class DatabaseManager {
         Logging.d("Databas","Updaterar databasen");
 
 
-        FileHandler.UpdateCallbackBsData updateCallback = new FileHandler.UpdateCallbackBsData() {
-            @Override
-            public void onProgress(int current, int total, String filename) {
-            }
-            @Override
-            public void onComplete(boolean didUpdate) {
-                synchronized (onlineDatabaseLock) {
-                    Logging.d("Trådar", "hej");
-                    instance.xmlParser.FillDatabase(FileHandler.GetInstance().GetXMLData());
-                    isInitialized = true;
-                }
-            }
-            @Override
-            public void onError(Exception e) {
-            }
-        };
-        instance.modelDatabase = instance.xmlParser.nameFactionToModel;
-        instance.nameToModel = instance.xmlParser.nameToModel;
-        instance.unitDatabase = instance.xmlParser.nameFactionToUnit;
-        instance.nameToUnit = instance.xmlParser.nameToUnit;
-        instance.nameFactionUnitToWeapon = instance.xmlParser.nameFactionUnitToWeapon;
-        instance.nameToWeapon = instance.xmlParser.nameToWeapon;
-        instance.nameToParsedAbility = instance.xmlParser.nameToAbility;
-        FileHandler.GetInstance().UpdateBattlesScribeData(updateCallback);
 
+        instance.modelDatabase = instance.jsonParser.nameFactionToModel;
+        instance.nameToModel = instance.jsonParser.nameToModel;
+        instance.unitDatabase = instance.jsonParser.nameFactionToUnit;
+        instance.nameToUnit = instance.jsonParser.nameToUnit;
+        instance.nameFactionUnitToWeapon = instance.jsonParser.nameFactionUnitToWeapon;
+        instance.nameToWeapon = instance.jsonParser.nameToWeapon;
+        instance.nameToParsedAbility = instance.jsonParser.nameToAbility;
+
+
+        synchronized (onlineDatabaseLock) {
+            Logging.d("Trådar", "hej");
+            //instance.xmlParser.FillDatabase(FileHandler.GetInstance().GetXMLData());
+            instance.jsonParser.FillDatabase(FileHandler.GetInstance().GetJsonData());
+            isInitialized = true;
+        }
         instance.InitializeLocalDatabases();
     }
 
@@ -288,11 +288,37 @@ public class DatabaseManager {
     {
         return unitDatabase.get(key);
     }
+
+    public static List<AbilityDefinition> GetCatalog()
+    {
+        return  CATALOG;
+    }
+    private static final List<AbilityDefinition> CATALOG = List.of(
+            new AbilityDefinition(AbilityKind.ANTI_KEYWORD, "Anti-Keyword",
+                    "Wounds on a fixed roll against a specific keyword.",
+                    List.of(new ParamSpec("keyword", ParamType.KEYWORD, "Keyword"),
+                            new ParamSpec("woundThreshold", ParamType.INT, "Threshold")),false),
+            new AbilityDefinition(AbilityKind.LETHAL_HITS, "Lethal Hits",
+                    "Critical hits auto-wound.", List.of(),false),
+            new AbilityDefinition(AbilityKind.DEVASTATING_WOUNDS,"Devastating wounds","Mortal wounds on critical hits",List.of(),false),
+            new AbilityDefinition(AbilityKind.BLAST,"Blast","Extra hits depending on size of defending unit",
+                    List.of(new ParamSpec("extra attacks", ParamType.INT, "extra attacks")),false),
+            new AbilityDefinition(AbilityKind.CLEAVE,"Cleave","Extra hits depending on size of defending unit",
+                            List.of(new ParamSpec("extra attacks", ParamType.INT, "extra attacks")),false),
+            new AbilityDefinition(AbilityKind.MELTA,"Melta","Extra wounds depending on range",
+                    List.of(new ParamSpec("extraWounds", ParamType.INT, "extra wounds")),true),
+            new AbilityDefinition(AbilityKind.SUSTAINED_HITS,"Sustained hits","Extra hits on critical hits",
+                    List.of(new ParamSpec("extraHits", ParamType.DICE_AMOUNT, "extra hits")),false),
+            new AbilityDefinition(AbilityKind.RAPID_FIRE,"Rapid fire","Extra hits when in half range",
+                    List.of(new ParamSpec("extra attacks", ParamType.DICE_AMOUNT, "extra attacks")),true),
+            new AbilityDefinition(AbilityKind.TWIN_LINKED,"Twin-linked","Reroll wound roll",
+                    List.of(),false)
+    );
     private void CreateImplementedAbilities()
     {
         synchronized (localAbilitiesLock)
         {
-            nameToImplementedAbility.put(Blast.baseName, new Blast());
+            nameToImplementedAbility.put(Blast.baseName, new Blast(0));
             nameToImplementedAbility.put(DevastatingWounds.baseName, new DevastatingWounds());
             nameToImplementedAbility.put(Heavy.baseName, new Heavy());
             nameToImplementedAbility.put(ExtraAttacks.baseName, new ExtraAttacks());
@@ -310,9 +336,9 @@ public class DatabaseManager {
             nameToImplementedAbility.put(mortalWoundOnHit.name, mortalWoundOnHit);
             // TODO: Not quite sure how to handle these
             nameToImplementedAbility.put(RapidFire.baseName, new RapidFire(new DiceAmount()));
-            nameToImplementedAbility.put(SustainedHits.baseName, new SustainedHits(0));
+            nameToImplementedAbility.put(SustainedHits.baseName, new SustainedHits(new DiceAmount()));
             nameToImplementedAbility.put(AntiKeyword.baseName, new AntiKeyword(Keyword.Infantry,0));
-            nameToImplementedAbility.put(Melta.baseName, new Melta(new DiceAmount()));
+            nameToImplementedAbility.put(Melta.baseName, new Melta(0));
         }
     }
 

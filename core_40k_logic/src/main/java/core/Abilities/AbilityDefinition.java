@@ -6,5 +6,6 @@ public record AbilityDefinition(
         AbilityKind kind,
         String displayName,
         String description,
-        List<ParamSpec> params
+        List<ParamSpec> params,
+        boolean hasBoosted
 ) {}

@@ -6,6 +6,7 @@ import core.DamageCalculation.RollResult;
 import core.DamageCalculation.RollingLogic;
 import core.DatabaseManager;
 import core.DatasheetModeling.Army;
+import core.FileHandling.BsDataUpdater;
 import core.FileHandling.FileHandler;
 import core.Logging.Logger;
 import core.Logging.Logging;
@@ -13,6 +14,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import java.io.File;
 
 import core.Parsing.Parsing;
 import io.javalin.Javalin;
@@ -25,13 +28,21 @@ public class Main {
     private static  Gson gson;
     private static final RollingLogic calculator = new RollingLogic();
 
-
+    private static File resolveDataDirectory() {
+        String envPath = System.getenv("WH40K_DATA_DIR");
+        if (envPath != null && !envPath.isBlank()) {
+            return new File(envPath);
+        }
+        // sensible default for local dev — lives next to the working directory
+        return new File(System.getProperty("user.dir"), "data/wh40k-11e");
+    }
     public static void main(String[] args) {
 
 
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(Ability.class, new AbilityElementAdapter());
         gson = gsonBuilder.create();
+
         // Wire up your static Logging facade for server-side output
         Logging.setLogger((tag, msg) -> System.out.println("[" + tag + "] " + msg));
 
@@ -40,17 +51,17 @@ public class Main {
                 cors.addRule(rule -> rule.anyHost()); // tighten this before going to production
             });
         }).start(7070);
+        File bsDataDirectory = resolveDataDirectory();
 
-        ServerFileHandler serverFileHandler = new ServerFileHandler();
+        ServerFileHandler serverFileHandler = new ServerFileHandler(bsDataDirectory);
+        BsDataUpdater bsDataUpdater = new BsDataUpdater(serverFileHandler,bsDataDirectory);
+        bsDataUpdater.checkAndUpdate();
         Logger logger = (tag,message) -> {System.out.println(tag + " " + message);};
         Logging.setLogger(logger);
 
         FileHandler.SetFileHandler(serverFileHandler);
-        System.out.println("abow");
 
-        Logging.d("hej","innan databasen");
         DatabaseManager.InitializeDatabaseManager();
-        Logging.d("hej","efter databasen");
 
         app.post("/api/calculate-damage", Main::handleCalculateDamage);
         app.get("/api/implemented-abilities", Main::handleImplementedAbilities);

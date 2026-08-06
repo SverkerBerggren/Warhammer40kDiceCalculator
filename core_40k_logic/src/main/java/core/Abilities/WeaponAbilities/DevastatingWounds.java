@@ -16,8 +16,8 @@ public class DevastatingWounds extends Ability {
     public void ApplyAbility(DiceResult diceResult, AttackResults attackResults, AbilitySources attackingSource, AbilitySources defendingSources, int requiredRoll, Conditions conditions) {
         if(diceResult.result == 6)
         {
-            attackResults.wounds -=1;
             attackResults.devastatingWounds.add( RollingLogic.RollDiceAmount(attackingSource.weapon.damageAmount));
+            diceResult.continueRegularCalculation = false;
         }
     }
 

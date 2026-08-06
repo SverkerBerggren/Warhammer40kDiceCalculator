@@ -1,0 +1,49 @@
+name: Damage Regression Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write   # needed for dorny/test-reporter to annotate PRs
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'   # match whatever you're building against locally
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        # this handles caching of ~/.gradle/caches and the wrapper automatically
+
+      - name: Run regression tests
+        run: ./gradlew :core_40k_logic:test
+        continue-on-error: true   # let the reporter step run even on failure
+
+      - name: Publish test report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Damage Regression Results
+          path: 'core_40k_logic/build/test-results/test/*.xml'
+          reporter: java-junit
+          fail-on-error: true   # this is what actually fails the check run/job
+
+      - name: Upload full HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gradle-test-html-report
+          path: core_40k_logic/build/reports/tests/test/

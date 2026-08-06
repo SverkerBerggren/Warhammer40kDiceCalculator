@@ -1426,5 +1426,8 @@ public enum Keyword {
     WazdakkaGutsmek,
     CadianReconSquad,
     TheRedTerror,
-    Warlord
+    Warlord,
+    Frame,
+    Leader,
+    NonKroot
 }

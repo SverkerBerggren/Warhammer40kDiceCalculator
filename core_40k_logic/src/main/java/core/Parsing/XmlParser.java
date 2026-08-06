@@ -21,6 +21,7 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 public class XmlParser
@@ -103,22 +104,6 @@ public class XmlParser
         return  false;
     }
 
-    // static Node GetChildNodeWithAttributeValue(Node node, String attribute,String value)
-    // {
-    //     for(int i = 0; i < node.getChildNodes().getLength();i++)
-    //     {
-    //         Node childNode = node.getChildNodes().item(i);
-    //         Node attributeNode = childNode.getAttributes().getNamedItem(attribute);
-    //         if(attributeNode != null)
-    //         {
-    //             if(attributeNode.getNodeValue().equals(value))
-    //             {
-    //                 return childNode;
-    //             }
-    //         }
-    //     }
-    //     return null;
-    // }
     static Node GetChildNodeWithAttributeValue(Node node,String elementName,String attributeType,String attributeValue)
     {
         if((attributeType != null && attributeValue == null ) || ( attributeType == null && attributeValue != null) )
@@ -190,19 +175,6 @@ public class XmlParser
             }
         }
         return null;
-    }
-
-    private String OnlyNumeric(String string)
-    {
-        StringBuilder retString = new StringBuilder();
-        for(int i = 0; i < string.length();i++)
-        {
-            if(Character.isDigit( string.charAt(i)))
-            {
-                retString.append(string.charAt(i));
-            }
-        }
-        return retString.toString();
     }
 
     private Document ParseXML(String data)
@@ -323,9 +295,9 @@ public class XmlParser
         }
     }
 
-    private ArrayList<Keyword> GetKeywordsFromSelectionEntry(Node selectionEntryNode)
+    private HashSet<Keyword> GetKeywordsFromSelectionEntry(Node selectionEntryNode)
     {
-        ArrayList<Keyword> retList = new ArrayList<>();
+        HashSet<Keyword> retList = new HashSet<>();
 
         Node categoryLinksNode = GetFirstNodeOfTypeRecursively(selectionEntryNode,"categoryLinks",null,null);
         if(categoryLinksNode != null)
@@ -392,7 +364,7 @@ public class XmlParser
                     }
                 }
                 // Crucible units are not supported
-                if(unit != null && !unit.unitName.contains("[Crucible]"))
+                if(unit != null && !unit.unitName.contains("[Crucible]") && !unit.unitName.contains("[Legends]"))
                 {
                     Node idAttr = attrs.getNamedItem("id");
                     if (idAttr != null) {
@@ -582,6 +554,10 @@ public class XmlParser
                         {
                             message = model.name + " " + idValue;
                         }
+                        if(model.name.contains("Nightmare"))
+                        {
+                            Logging.d("hej","hej");
+                        }
                         Logging.d("Model parsing","Invalid model found " + message);
                     }
                 }
@@ -688,11 +664,6 @@ public class XmlParser
         model.GetAbilities().addAll(ParseAbilitiesFromSubtree(selectionEntry));
 
         return model;
-    }
-    // Returns true if it found and parsed a Unit profile
-    private void ParseModelInfoFromProfile(Node node,Model model)
-    {
-
     }
     private boolean TryParseModelStatsFromProfile(Node profileNode, Model model) {
 
@@ -854,37 +825,6 @@ public class XmlParser
         }
     }
 
-    private String findOwningUnitName(Node weaponProfileNode) {
-        Node current = weaponProfileNode.getParentNode();
-
-        while (current != null) {
-            if (current.getNodeType() == Node.ELEMENT_NODE) {
-                NamedNodeMap attrs = current.getAttributes();
-                if (attrs != null) {
-                    Node typeAttr = attrs.getNamedItem("type");
-                    if (typeAttr != null) {
-                        String type = typeAttr.getNodeValue();
-                        if (type.equals("unit") || type.equals("model")) {
-                            Node nameAttr = attrs.getNamedItem("name");
-                            if (nameAttr != null) {
-                                return nameAttr.getNodeValue();
-                            }
-                        }
-                    }
-
-                    // Hit the sharedSelectionEntries container,
-                    // this weapon has no owning unit
-                    Node nodeNameAttr = attrs.getNamedItem("name");
-                    if (nodeNameAttr != null && current.getNodeName()
-                            .equals("sharedSelectionEntries")) {
-                        return null;
-                    }
-                }
-            }
-            current = current.getParentNode();
-        }
-        return null;
-    }
     private Weapon ClaudeParseWeapon(Node profileNode)
     {
         Weapon returnWeapon = new Weapon();

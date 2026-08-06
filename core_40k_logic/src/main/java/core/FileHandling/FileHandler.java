@@ -1,5 +1,8 @@
 package core.FileHandling;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 import core.Enums.Faction;
@@ -11,7 +14,8 @@ public abstract class FileHandler {
 
 
     public abstract ArrayList< Pair<String,Faction>> GetXMLData();
-    public abstract void UpdateBattlesScribeData(UpdateCallbackBsData callback);
+    public abstract ArrayList< Pair<String,Faction>> GetJsonData();
+
     public static void SetFileHandler(FileHandler fileHandler)
     {
         if(instance != null)
@@ -19,6 +23,20 @@ public abstract class FileHandler {
             Logging.d("File handling","Instance is already set");
         }
         instance = fileHandler;
+    }
+
+    public void SaveTextFile(File directory, String name, String content )
+    {
+        try {
+            FileWriter writer = new FileWriter(new File(directory, name));
+            writer.write( content);
+            writer.flush();
+            writer.close();
+        }
+        catch (Exception e)
+        {
+            Logging.d("FileHandler","sket sig nar det skulle sparas localt senaste updaterat");
+        }
     }
 
     public static FileHandler GetInstance( )
@@ -31,13 +49,5 @@ public abstract class FileHandler {
         return instance;
     }
 
-    public abstract class BattleScribeUpdater
-    {
 
-    }
-    public interface UpdateCallbackBsData {
-        void onProgress(int current, int total, String filename);
-        void onComplete(boolean didUpdate);
-        void onError(Exception e);
-    }
 }

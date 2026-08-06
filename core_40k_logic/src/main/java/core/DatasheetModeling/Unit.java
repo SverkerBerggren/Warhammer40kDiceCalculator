@@ -3,6 +3,8 @@ package core.DatasheetModeling;
 import core.Enums.Keyword;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Unit extends GamePiece   {
 
@@ -11,7 +13,7 @@ public class Unit extends GamePiece   {
     public int pointCost;
 
     public ArrayList<Model> listOfModels = new ArrayList<>();
-    public ArrayList<Keyword> keywords = new ArrayList<>();
+    public HashSet<Keyword> keywords = new HashSet<>();
 
     public Unit Copy()
     {

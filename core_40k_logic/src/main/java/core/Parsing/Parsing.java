@@ -2,6 +2,8 @@ package core.Parsing;
 
 
 
+import com.google.gson.annotations.Until;
+
 import core.Abilities.Ability;
 import core.DatabaseManager;
 import core.DatasheetModeling.Army;
@@ -20,8 +22,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Parsing
 {
 
-    // Kanske lite ghetto
-    private Army armyToBuild;
     private Faction armyFaction;
     private DatabaseManager databaseManager;
     //
@@ -65,33 +65,62 @@ public class Parsing
 
         int stringOffset = 0;
         int armyListStringLength = armyListString.length();
-        armyToBuild = new Army();
+        Army armyToBuild = new Army();
 
-        stringOffset = RemoveWhiteSpaces(stringOffset,armyListString);
+
+        Pair<Integer,Boolean> offsetAndAttachedBool = ParseFirstUnitAfterDemarcation(stringOffset,armyListString);
+        stringOffset = offsetAndAttachedBool.first;
+        boolean isAttached = offsetAndAttachedBool.second;
+
         while (stringOffset < armyListStringLength)
         {
-            stringOffset = ParseFirstUnitAfterDemarcation(stringOffset,armyListString);
-
-            stringOffset = ParseUnit(stringOffset,armyListString,armyToBuild);
-
+            Pair<Integer,String> offsetAndLine = ParseUntilLineBreak(stringOffset,armyListString);
+            if(offsetAndLine.second.contains("Attached Unit "))
+            {
+                isAttached = true;
+                stringOffset = offsetAndLine.first;
+            }
+            else if(IsDemarcation(offsetAndLine.second))
+            {
+                stringOffset = offsetAndLine.first;
+                continue;
+            }
+            if(!isAttached)
+            {
+                Pair<Integer,Unit> returnPair = ParseUnit(stringOffset,armyListString);
+                stringOffset = returnPair.first;
+                armyToBuild.units.add(returnPair.second);
+            }
+            else
+            {
+                Pair<Integer,Unit> returnPair = ParseAttachedUnit(stringOffset,armyListString);
+                armyToBuild.units.add(returnPair.second);
+                stringOffset = returnPair.first;
+                isAttached = false;
+            }
         }
         return  armyToBuild;
     }
 
-    private int ParseFirstUnitAfterDemarcation(int offset, String armyListString)
+    private Pair<Integer,Boolean> ParseFirstUnitAfterDemarcation(int offset, String armyListString )
     {
         while(offset < armyListString.length())
         {
             Pair<Integer,String> offsetAndLine = ParseUntilLineBreak(offset,armyListString);
             offset = offsetAndLine.first;
             //TODO: lite ghetto
+            // The boolean denotes if it is a attached unit or not
+            if(offsetAndLine.second.contains("Attached Unit "))
+            {
+                return new Pair<>( RemoveWhiteSpaces(offset +1,armyListString),true);
+            }
             if(IsDemarcation(offsetAndLine.second) && !offsetAndLine.second.contains("+") )
             {
-                return RemoveWhiteSpaces(offset +1,armyListString);
+                return new Pair<>( RemoveWhiteSpaces(offset +1,armyListString),false);
             }
             offset++;
         }
-        return offset;
+        return new Pair<>( offset ,false);
     }
 
     private int RemoveWhiteSpaces(int stringOffset, String armyListString)
@@ -152,10 +181,14 @@ public class Parsing
 
         return new Pair<>(offset,parsedString.toString());
     }
-
+    private boolean IsLogicLessAttribute(String subString)
+    {
+        return subString.contains(ATTACHED_INDICATOR);
+    }
+    private final String ATTACHED_INDICATOR = "Attached as: ";
     private boolean IsDemarcation(String subString)
     {
-        return subString.contains(BATTLELINE) || subString.contains(DEDICATED_TRANSPORTS) || subString.contains(CHARACTER) || subString.contains(OTHER_DATASHEETS) || subString.contains(ALLIED_UNITS);
+        return subString.contains(BATTLELINE) || subString.contains(ATTACHED_UNIT) || subString.contains(DEDICATED_TRANSPORTS) || subString.contains(CHARACTER) || subString.contains(OTHER_DATASHEETS) || subString.contains(ALLIED_UNITS);
     }
     //TODO: bruh mega ghetto
     private final String BATTLELINE = "BATTLELINE";
@@ -163,6 +196,7 @@ public class Parsing
     private final String DEDICATED_TRANSPORTS = "DEDICATED TRANSPORTS";
     private final String OTHER_DATASHEETS = "OTHER DATASHEETS";
     private final String ALLIED_UNITS = "ALLIED UNITS";
+    private final String ATTACHED_UNIT = "Attached Unit";
     private Faction ParseFaction(String factionString)
     {
         // TODO: add all factions
@@ -239,8 +273,7 @@ public class Parsing
         while (offset < armyLength)
         {
             offset = RemoveWhiteSpaces(offset,armyList);
-            char debugChar = armyList.charAt(offset);
-            char debugChar_two = armyList.charAt(offset +1);
+
             if(IsItemAmountSignifier(armyList.charAt(offset)))
             {
                 Pair<Integer,Integer> offsetAndAmount = ParseItemAmount(armyList,offset);
@@ -286,7 +319,7 @@ public class Parsing
             }
             if(parsedItem.first.equals(DatabaseManager.ItemType.UNIT) || (parsedItem.first.equals(DatabaseManager.ItemType.MODEL) && hasPointValue))
             {
-                return ParseUnit(offset - offsetAndItem.second.length(),armyList, armyToBuild);
+                return offset - offsetAndItem.second.length();
             }
             if(parsedItem.first.equals(DatabaseManager.ItemType.MODEL))
             {
@@ -294,9 +327,17 @@ public class Parsing
             }
             if(parsedItem.first.equals(DatabaseManager.ItemType.UNIDENTIFIED) || parsedItem.first.equals(DatabaseManager.ItemType.UNIMPLEMENTED))
             {
+
                 if(!IsDemarcation(parsedString))
                 {
-                    Logging.d("Unit item parsing","Unidentified item found " + parsedString);
+                    if(!IsLogicLessAttribute(parsedString))
+                    {
+                        Logging.d("Unit item parsing","Unidentified item found " + parsedString);
+                    }
+                }
+                else
+                {
+                    return offset - offsetAndItem.second.length();
                 }
                 continue;
             }
@@ -306,7 +347,8 @@ public class Parsing
         return offset;
     }
 
-    private int ParseUnitItem(int offset, String armyList, Unit unit)
+
+    private int ParseUnitItems(int offset, String armyList, Unit unit)
     {
         int armyLength = armyList.length();
         int amount = 1;
@@ -331,7 +373,14 @@ public class Parsing
             {
                 if(!IsDemarcation( parsedString))
                 {
-                    Logging.d("Unit item parsing","Unidentified item found " + parsedString);
+                    if(!IsLogicLessAttribute(parsedString))
+                    {
+                        Logging.d("Unit item parsing","Unidentified item found " + parsedString);
+                    }
+                }
+                else
+                {
+                    return offset - offsetAndParsedString.second.length();
                 }
                 continue;
             }
@@ -341,15 +390,21 @@ public class Parsing
                 unit.singleModelUnit = true;
                 // Assumes that a single model units models names corresponds with the unit name
                 Model modelToCopy = databaseManager.GetModel( new DatabaseManager.NameFactionKey( unit.unitName , armyFaction));
+                // Weird case where units are named in plural despite being a single model unit. Armoured sentinels are an example
+                if(modelToCopy == null && unit.unitName.charAt(unit.unitName.length()-1) == 's' )
+                {
+                    modelToCopy =  databaseManager.GetModel( new DatabaseManager.NameFactionKey(  unit.unitName.substring(0,unit.unitName.length()-1) , armyFaction));
+                }
                 if(modelToCopy != null)
                 {
-                    unit.listOfModels.add( databaseManager.GetModel( new DatabaseManager.NameFactionKey(unit.unitName , armyFaction)).Copy());
+                    unit.listOfModels.add( modelToCopy.Copy());
                     unit.listOfModels.get(0).weapons.addAll((ArrayList<Weapon>) parsedItem.second);
                 }
                 else
                 {
                     Logging.d("Unit parsing","Single model unit without corresponding model found " + parsedString);
                 }
+
                 offset+=1;
 
                 continue;
@@ -375,7 +430,8 @@ public class Parsing
             // Models and units being able to share name causes trouble
             if(parsedItem.first.equals(DatabaseManager.ItemType.UNIT) || (parsedItem.first.equals(DatabaseManager.ItemType.MODEL) && hasPointValue))
             {
-                return ParseUnit(offset - offsetAndParsedString.second.length(),armyList,armyToBuild);
+                //return ParseUnit(offset - offsetAndParsedString.second.length(),armyList,armyToBuild);
+                return offset - offsetAndParsedString.second.length();
             }
             if(parsedItem.first.equals(DatabaseManager.ItemType.MODEL))
             {
@@ -392,8 +448,48 @@ public class Parsing
 
         return offset;
     }
+    private Pair<Integer,Unit> ParseAttachedUnit(int offset, String armyListString )
+    {
+        int armyLength = armyListString.length();
+        Unit unitToAdd = new Unit();
 
-    private int ParseUnit(int offset, String armyListString, Army armyToBuild )
+        while (offset < armyLength)
+        {
+            Pair<Integer,String> offsetAndParsedString = ParseUntilLineBreak(offset,armyListString);
+            if(IsDemarcation( offsetAndParsedString.second))
+            {
+                return new Pair<>(offset,unitToAdd);
+            }
+            Pair<Integer,Unit> offsetAndUnit =  ParseUnit(offset,armyListString);
+            offset = offsetAndUnit.first;
+            unitToAdd = offsetAndUnit.second;
+            unitToAdd.unitName = "Attached unit: " + offsetAndUnit.second.unitName;
+            int pointCost = offsetAndUnit.second.pointCost;
+            while (offset < armyLength )
+            {
+                int newOffset = offset;
+                newOffset = RemoveWhiteSpaces(newOffset,armyListString);
+                Pair<Integer,String> offsetAndLine = ParseUntilLineBreak(newOffset,armyListString);
+                if(IsDemarcation(offsetAndLine.second) || offsetAndLine.second.contains("Attached Unit "))
+                {
+                    unitToAdd.pointCost = pointCost;
+
+                    return new Pair<>(newOffset,unitToAdd);
+                }
+                else
+                {
+                    Pair<Integer,Unit> unitPair = ParseUnit(newOffset,armyListString);
+                    unitToAdd.GetAbilities().addAll(unitPair.second.GetAbilities());
+                    unitToAdd.keywords.addAll(unitPair.second.keywords);
+                    unitToAdd.listOfModels.addAll(unitPair.second.listOfModels);
+                    pointCost += unitPair.second.pointCost;
+                    offset = unitPair.first;
+                }
+            }
+        }
+        return  new Pair<>(offset,unitToAdd);
+    }
+    private Pair<Integer,Unit> ParseUnit(int offset, String armyListString )
     {
         int armyLength = armyListString.length();
 
@@ -415,7 +511,7 @@ public class Parsing
                     unitToAdd.unitName = unitName.toString().trim();
                     offset = pointValue.first;
 
-                    offset = ParseUnitItem(offset,armyListString,unitToAdd);
+                    offset = ParseUnitItems(offset,armyListString,unitToAdd);
 
                     Unit databaseUnit = databaseManager.GetUnit(new DatabaseManager.NameFactionKey(unitToAdd.unitName,armyFaction));
                     //This is a bit sus
@@ -425,8 +521,7 @@ public class Parsing
                         unitToAdd.keywords.addAll(databaseUnit.keywords);
                     }
 
-                    armyToBuild.units.add(unitToAdd);
-                    return  offset;
+                    return  new Pair<>(offset,unitToAdd);
                 }
                 else
                 {
@@ -435,7 +530,7 @@ public class Parsing
             }
             offset +=1;
         }
-        return  offset;
+        return  new Pair<>(offset,unitToAdd);
     }
 
     private Pair<Integer,Integer> ParseItemAmount(String armyList, int stringOffset)

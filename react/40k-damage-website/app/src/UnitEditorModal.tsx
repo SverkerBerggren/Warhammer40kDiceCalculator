@@ -184,6 +184,7 @@ export default function UnitEditorModal({ editingUnit, isOpen, onClose, onSave }
   function updateAbilitiesAt(path: AbilityPath, updater: (abilities: AbilityData[]) => AbilityData[]) {
     mutateUnit(draft => {
       const current = abilitiesAt(draft, path);
+      console.log(current)
       const next = updater(current);
       if (path.scope === "unit") {
         draft.abilities = next as unknown as AbilityData[];
@@ -204,6 +205,14 @@ export default function UnitEditorModal({ editingUnit, isOpen, onClose, onSave }
     return {
       onToggle: (i: number) =>
         updateAbilitiesAt(path, abilities => abilities.map((a, idx) => (idx === i ? { ...a, active: !a.active } : a))),
+      // Only present when the backing Java class extends DualModeAbility —
+      // see the `'boosted' in ability` guard in the render below. Mirrors
+      // FlipBoosted() on the Java side; Gson round-trips `boosted` as a
+      // plain field regardless of which class hierarchy defines it.
+      onToggleBoost: (i: number) =>
+      {      
+        updateAbilitiesAt(path, abilities => abilities.map((a, idx) => (idx === i ? { ...a, isBoosted: !a.isBoosted } : a)))
+      },
       onRemove: (i: number) => updateAbilitiesAt(path, abilities => abilities.filter((_, idx) => idx !== i)),
       // paramValues holds whatever the entry's ParamSpecs asked for (e.g.
       // { keyword: "Infantry", woundThreshold: 4 } for Anti-Keyword). They're
@@ -212,7 +221,7 @@ export default function UnitEditorModal({ editingUnit, isOpen, onClose, onSave }
       // with params can be added more than once with different values
       // (Anti-Infantry 2+ and Anti-Monster 4+ are both valid on one weapon);
       // parameterless entries are singleton-ish, so we still dedupe those.
-      onAddCatalog: (entry: AbilityCatalogEntry, paramValues: Record<string, string | number | boolean> = {}) =>
+      onAddCatalog: (entry: AbilityCatalogEntry, paramValues: Record<string, string | number | boolean | DiceAmount> = {}) =>
         updateAbilitiesAt(path, abilities =>
           entry.params.length === 0 && abilities.some(a => a.kind === entry.kind)
             ? abilities
@@ -224,6 +233,8 @@ export default function UnitEditorModal({ editingUnit, isOpen, onClose, onSave }
                   description: entry.description,
                   active: true,
                   implemented: true,
+                  hasBoosted: entry.hasBoosted,
+                  isBoosted: false,
                   ...paramValues,
                 },
               ]
@@ -231,7 +242,7 @@ export default function UnitEditorModal({ editingUnit, isOpen, onClose, onSave }
       onAddCustom: (name: string, description: string) =>
         updateAbilitiesAt(path, abilities => [
           ...abilities,
-          { kind: "CUSTOM", name, description, active: true, implemented: false },
+          { kind: "CUSTOM", name, description, active: true, implemented: false,hasBoosted: false,isBoosted:false},
         ]),
     };
   }
@@ -759,15 +770,17 @@ function ModifierInput({
   );
 }
 
-type ParamValue = string | number | boolean;
+type ParamValue = string | number | boolean | DiceAmount;
 
 // Small inline form shown after picking a catalog entry that needs setup
-// (Anti-Keyword's keyword + threshold, Lethal Hits' threshold, etc). Only
+// (Anti-Keyword's keyword + threshold, Sustained Hits' D3 amount, etc). Only
 // rendered for entries with a non-empty params list — everything else is
 // added straight from the search result. Field types come from ParamSpec's
-// ParamType ('INT' | 'KEYWORD' | 'BOOLEAN'); KEYWORD is a free-text input
-// for now since the frontend doesn't have the Keyword enum values — swap
-// for a <select> once the backend exposes them.
+// ParamType ('INT' | 'KEYWORD' | 'BOOLEAN' | 'DICE_AMOUNT'); KEYWORD is a
+// free-text input for now since the frontend doesn't have the Keyword enum
+// values — swap for a <select> once the backend exposes them. DICE_AMOUNT
+// reuses the same baseAmount/D6/D3 fields WeaponForm already uses for
+// attacks/damage, since it's the identical DiceAmount shape on the wire.
 function CatalogParamForm({
   entry,
   onSubmit,
@@ -779,7 +792,10 @@ function CatalogParamForm({
 }) {
   const [values, setValues] = useState<Record<string, ParamValue>>(() =>
     Object.fromEntries(
-      entry.params.map(p => [p.fieldName, p.type === "BOOLEAN" ? false : p.type === "INT" ? 0 : ""])
+      entry.params.map(p => [
+        p.fieldName,
+        p.type === "BOOLEAN" ? false : p.type === "INT" ? 0 : p.type === "DICE_AMOUNT" ? blankDiceAmount() : "",
+      ])
     )
   );
 
@@ -788,31 +804,40 @@ function CatalogParamForm({
       <p className="text-xs font-medium">{entry.displayName}</p>
       <div className="flex gap-3 flex-wrap">
         {entry.params.map(param => (
-          <label key={param.fieldName} className="flex flex-col gap-0.5 text-[11px] text-gray-500">
-            {param.uiLabel}
-            {param.type === "BOOLEAN" ? (
-              <input
-                type="checkbox"
-                checked={Boolean(values[param.fieldName])}
-                onChange={e => setValues(v => ({ ...v, [param.fieldName]: e.target.checked }))}
-                className="mt-1"
-              />
-            ) : param.type === "INT" ? (
-              <input
-                type="number"
-                value={Number(values[param.fieldName])}
-                onChange={e => setValues(v => ({ ...v, [param.fieldName]: Number(e.target.value) }))}
-                className="w-16 border border-gray-300 dark:border-gray-600 rounded px-1 py-0.5 text-sm bg-white dark:bg-gray-800"
-              />
-            ) : (
-              <input
-                type="text"
-                value={String(values[param.fieldName])}
-                onChange={e => setValues(v => ({ ...v, [param.fieldName]: e.target.value }))}
-                className="w-24 border border-gray-300 dark:border-gray-600 rounded px-1 py-0.5 text-sm bg-white dark:bg-gray-800"
-              />
-            )}
-          </label>
+          param.type === "DICE_AMOUNT" ? (
+            <DiceAmountFields
+              key={param.fieldName}
+              label={param.uiLabel}
+              value={values[param.fieldName] as DiceAmount}
+              onChange={d => setValues(v => ({ ...v, [param.fieldName]: d }))}
+            />
+          ) : (
+            <label key={param.fieldName} className="flex flex-col gap-0.5 text-[11px] text-gray-500">
+              {param.uiLabel}
+              {param.type === "BOOLEAN" ? (
+                <input
+                  type="checkbox"
+                  checked={Boolean(values[param.fieldName])}
+                  onChange={e => setValues(v => ({ ...v, [param.fieldName]: e.target.checked }))}
+                  className="mt-1"
+                />
+              ) : param.type === "INT" ? (
+                <input
+                  type="number"
+                  value={Number(values[param.fieldName])}
+                  onChange={e => setValues(v => ({ ...v, [param.fieldName]: Number(e.target.value) }))}
+                  className="w-16 border border-gray-300 dark:border-gray-600 rounded px-1 py-0.5 text-sm bg-white dark:bg-gray-800"
+                />
+              ) : (
+                <input
+                  type="text"
+                  value={String(values[param.fieldName])}
+                  onChange={e => setValues(v => ({ ...v, [param.fieldName]: e.target.value }))}
+                  className="w-24 border border-gray-300 dark:border-gray-600 rounded px-1 py-0.5 text-sm bg-white dark:bg-gray-800"
+                />
+              )}
+            </label>
+          )
         ))}
       </div>
       <div className="flex gap-2">
@@ -835,6 +860,7 @@ function AbilityManager({
   catalogLoading,
   catalogError,
   onToggle,
+  onToggleBoost,
   onRemove,
   onAddCatalog,
   onAddCustom,
@@ -845,8 +871,9 @@ function AbilityManager({
   catalogLoading: boolean;
   catalogError: string | null;
   onToggle: (index: number) => void;
+  onToggleBoost: (index: number) => void;
   onRemove: (index: number) => void;
-  onAddCatalog: (entry: AbilityCatalogEntry, paramValues?: Record<string, string | number | boolean>) => void;
+  onAddCatalog: (entry: AbilityCatalogEntry, paramValues?: Record<string, string | number | boolean | DiceAmount>) => void;
   onAddCustom: (name: string, description: string) => void;
   compact?: boolean;
 }) {
@@ -897,6 +924,19 @@ function AbilityManager({
                       <span className="text-[9px] uppercase tracking-wide bg-gray-200 text-gray-500 px-1 py-0.5 rounded shrink-0">
                         No logic
                       </span>
+                    )}
+                    {  ability.hasBoosted && (
+                      <button
+                        onClick={() => onToggleBoost(i)}
+                        title="Toggle this ability's boosted mode (DualModeAbility on the server)"
+                        className={`text-[9px] uppercase tracking-wide px-1 py-0.5 rounded shrink-0 ${
+                          ability.isBoosted
+                            ? "bg-amber-200 text-amber-800 hover:bg-amber-300"
+                            : "bg-gray-200 text-gray-500 hover:bg-gray-300"
+                        }`}
+                      >
+                        {ability.isBoosted ? "Boosted" : "Boost off"}
+                      </button>
                     )}
                   </div>
                   {ability.description && !compact && (

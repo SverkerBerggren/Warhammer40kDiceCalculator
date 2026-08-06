@@ -1,6 +1,6 @@
 {
   "name": "10x Intercessor (bolt rifle) vs 10x Intercessor",
-  "attackerUnitsFile": "units/attacker/intercessor_squad.json",
+  "attackerUnitsFile": "units/attacker/intercessor_squad_sustained_hits_2.json",
   "defenderUnitFile": "units/defender/intercessor_squad.json",
   "attackerGamePiece": "army/ultramarines_standard",
   "defenderGamePiece": "primary",
@@ -16,8 +16,8 @@
     "plusOneToWound" : false,
     "dakkaHalfRange" : false
   },
-  "expectedMeanDamage": 3.33,
-  "expectedModelsKilled":1.41,
+  "expectedMeanDamage": 5.0,
+  "expectedModelsKilled":2.24,
   "referenceSampleSize": 10000,
   "source": "Cross-checked against MathHammer8thEd and 40kStats calculators, both agree to 2dp on 2026-07-13",
   "abilitiesUnderTest": []

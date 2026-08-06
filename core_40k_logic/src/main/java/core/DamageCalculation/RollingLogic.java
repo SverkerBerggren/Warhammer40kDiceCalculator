@@ -1,10 +1,7 @@
 package core.DamageCalculation;
 
-import com.google.gson.Gson;
-
 import core.Abilities.Ability;
 import core.Conditions;
-import core.DatasheetModeling.Army;
 import core.DatasheetModeling.DiceAmount;
 import core.DatasheetModeling.GamePiece;
 import core.DatasheetModeling.Model;
@@ -14,7 +11,6 @@ import core.Enums.AbilityTiming;
 import core.Enums.StatModifier;
 import core.Logging.Logging;
 
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -128,7 +124,7 @@ public class RollingLogic {
                                 DiceResult defenderSaveRoll = CreateD6Result();
                                 if (defenderSaveRoll.result < requiredSaveRoll) {
 
-                                    ApplyDamage(RollDiceAmount(attackingWeapon.damageAmount),defenderSaveRoll,WoundType.NormalWound,attackResults,attackingAbilitySources,defendingAbilitySources,requiredSaveRoll
+                                    ApplyDamage(RollDiceAmount(attackingWeapon.damageAmount),WoundType.NormalWound,attackResults,attackingAbilitySources,defendingAbilitySources,requiredSaveRoll
                                     ,rollingContext);
                                 }
                             }
@@ -140,14 +136,14 @@ public class RollingLogic {
                 if(mortalWounds > 0)
                 {
                     //Yikes med create d6 result och required roll result
-                    ApplyDamage(mortalWounds,CreateD6Result(),WoundType.MortalWound,new AttackResults(),attackingAbilitySources,defendingAbilitySources,7
+                    ApplyDamage(mortalWounds,WoundType.MortalWound,new AttackResults(),attackingAbilitySources,defendingAbilitySources,7
                     ,rollingContext);
                 }
                 if(!devastatingWounds.isEmpty())
                 {
                     for(Integer integer : devastatingWounds)
                     {
-                        ApplyDamage(integer,CreateD6Result(),WoundType.DevastatingWound,new AttackResults(),attackingAbilitySources,defendingAbilitySources,7,
+                        ApplyDamage(integer,WoundType.DevastatingWound,new AttackResults(),attackingAbilitySources,defendingAbilitySources,7,
                                 rollingContext);
                     }
                 }
@@ -198,25 +194,27 @@ public class RollingLogic {
         return returnResult;
     }
 
-    private void ApplyDamage(int damage, DiceResult diceResult, WoundType woundType,
+    private void ApplyDamage(int damage, WoundType woundType,
                              AttackResults attackResults, AbilitySources attackingAbilities,AbilitySources defendingAbilities,int requiredSaveRoll, RollingContext rollingContext )
     {
         attackResults.damage = damage;
 
         if(woundType == WoundType.NormalWound)
         {
-            defendingAbilities.ApplyAbility(AbilityTiming.ReduceDamageCharacteristic,diceResult,attackResults,attackingAbilities,defendingAbilities,requiredSaveRoll,conditionen);
+            // Worth checking the actual order, For now the damage increase happens first
+            attackingAbilities.ApplyAbility(AbilityTiming.IncreaseDamage,null,attackResults,attackingAbilities,defendingAbilities,requiredSaveRoll,conditionen);
+            defendingAbilities.ApplyAbility(AbilityTiming.ReduceDamageCharacteristic,null,attackResults,attackingAbilities,defendingAbilities,requiredSaveRoll,conditionen);
         }
 
         if(woundType == WoundType.DevastatingWound || woundType == WoundType.MortalWound)
         {
-            defendingAbilities.ApplyAbility(AbilityTiming.PreventMortalWoundDamage,diceResult,attackResults,attackingAbilities,defendingAbilities,requiredSaveRoll,conditionen);
+            defendingAbilities.ApplyAbility(AbilityTiming.PreventMortalWoundDamage,null,attackResults,attackingAbilities,defendingAbilities,requiredSaveRoll,conditionen);
         }
 
-        rollingContext.amountOfWoundsTotal += damage;
+        rollingContext.amountOfWoundsTotal += attackResults.damage;
         if(woundType == WoundType.MortalWound)
         {
-            int mortalWoundsLeft = damage;
+            int mortalWoundsLeft = attackResults.damage;
             while (mortalWoundsLeft > 0)
             {
                 int mortalWoundsToDeal = (rollingContext.defendingModel.wounds - rollingContext.currentModelDamage);
@@ -238,7 +236,7 @@ public class RollingLogic {
         }
         else
         {
-            rollingContext.currentModelDamage += damage;
+            rollingContext.currentModelDamage += attackResults.damage;
 
             if (rollingContext.defendingModel.wounds <= rollingContext.currentModelDamage)
             {

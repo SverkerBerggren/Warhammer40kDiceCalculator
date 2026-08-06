@@ -5,6 +5,7 @@ import core.Conditions;
 import core.DamageCalculation.AbilitySources;
 import core.DamageCalculation.AttackResults;
 import core.DamageCalculation.DiceResult;
+import core.DamageCalculation.RollingLogic;
 import core.Enums.AbilityTiming;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -20,7 +21,8 @@ public class TwinLinked extends Ability {
     {
         if(diceResult.result < requiredRoll && !diceResult.hasBeenReRolled )
         {
-            diceResult.result = ThreadLocalRandom.current().nextInt(1,7);
+            diceResult.result = RollingLogic.RollD6();
+            diceResult.hasBeenReRolled = true;
         }
 
     }

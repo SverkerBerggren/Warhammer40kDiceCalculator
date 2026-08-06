@@ -135,6 +135,8 @@ export interface AbilityData {
   description: string;
   active: boolean;
   implemented: boolean;
+  hasBoosted: boolean;
+  isBoosted: boolean;
   [paramField: string]: unknown;
 }
 
@@ -158,5 +160,6 @@ export interface AbilityCatalogEntry {
   kind: string;
   displayName: string;
   description: string;
-  params: { fieldName: string; type: 'INT' | 'KEYWORD' | 'BOOLEAN'; uiLabel: string }[];
+  params: { fieldName: string; type: 'INT' | 'KEYWORD' | 'BOOLEAN' | 'DICE_AMOUNT'; uiLabel: string }[];
+  hasBoosted: boolean;
 }

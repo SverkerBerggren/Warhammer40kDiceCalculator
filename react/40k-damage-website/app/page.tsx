@@ -185,7 +185,6 @@ export default function Home() {
                 if (!armyToUpdate) {
                     return;
                 }
-                console.log("efter grejen")
                 const newUnits = [...armyToUpdate.units];
                 newUnits[index] = updated;
 

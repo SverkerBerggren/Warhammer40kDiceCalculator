@@ -49,15 +49,17 @@ public class DamageRegressionTest {
 
         RollingLogic rollingLogic = new RollingLogic();
 
-        Conditions conditions = fixture.conditions();
-
         RollResult result = rollingLogic.newCalculateDamage(attacker, defender, new GamePiece(), new GamePiece(), fixture.conditions(), fixture.referenceSampleSize());
 
-        double sampleVariance = CustomMath.sampleVariance(result.woundsDealt);
+        double woundSampleVariance = CustomMath.sampleVariance(result.woundsDealt);
+        double modelsKilledSampleVariance = CustomMath.sampleVariance(result.modelsSlain);
 
-        double se = Math.sqrt(sampleVariance);
+        double woundsStandardError = Math.sqrt(woundSampleVariance)/Math.sqrt(fixture.referenceSampleSize());
+        double modelsKilledStandardError = Math.sqrt(modelsKilledSampleVariance)/Math.sqrt(fixture.referenceSampleSize());
+
         assertThat(result.averageAmountOfWounds)
-                .isCloseTo(fixture.expectedMeanDamage(), within(4 * se));
+                .isCloseTo(fixture.expectedMeanDamage(), within(4 * woundsStandardError));
+        assertThat(result.averageAmountOfModelsSlain).isCloseTo(fixture.expectedModelsKilled(),within(4*modelsKilledStandardError));
     }
 
     static Stream<DamageFixture> loadFixtures() throws IOException {

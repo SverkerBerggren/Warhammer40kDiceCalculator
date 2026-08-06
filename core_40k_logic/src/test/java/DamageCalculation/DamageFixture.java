@@ -50,6 +50,7 @@ public class DamageFixture {
     public String defenderGamePiece() { return defenderGamePiece; }
     public Conditions conditions() { return conditions; }
     public double expectedMeanDamage() { return expectedMeanDamage; }
+    public double expectedModelsKilled() { return expectedModelsKilled; }
     public int referenceSampleSize() { return referenceSampleSize; }
     public String source() { return source; }
     public List<String> abilitiesUnderTest() { return abilitiesUnderTest; }
