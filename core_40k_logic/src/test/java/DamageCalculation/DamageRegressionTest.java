@@ -70,32 +70,31 @@ public class DamageRegressionTest {
 
     // placeholder — wire up to your real unit-loading utility
     private static ArrayList<Unit> loadAttackingUnits(String path) {
-
         InputStream is = DamageFixture.class.getClassLoader().getResourceAsStream(path);
+        if (is == null) {
+            throw new RuntimeException("Resource not found on classpath: " + path);
+        }
 
         try (Reader reader = new InputStreamReader(is, StandardCharsets.UTF_8)) {
             String stringToReturn = new Scanner(reader).useDelimiter("\\A").next();
 
-            Type listType = new TypeToken<ArrayList<Unit>>() {
-            }.getType();
+            Type listType = new TypeToken<ArrayList<Unit>>() {}.getType();
             return gson.fromJson(stringToReturn, listType);
-        } catch (Exception e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to read resource: " + path, e);
         }
-        return new ArrayList<>();
     }
     private static Unit LoadDefendingUnit(String path) {
         InputStream is = DamageFixture.class.getClassLoader().getResourceAsStream(path);
+        if (is == null) {
+            throw new RuntimeException("Resource not found on classpath: " + path);
+        }
 
         try (Reader reader = new InputStreamReader(is, StandardCharsets.UTF_8)) {
             String stringToReturn = new Scanner(reader).useDelimiter("\\A").next();
-
             return gson.fromJson(stringToReturn, Unit.class);
-        } catch (Exception e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to read resource: " + path, e);
         }
-        return new Unit();
     }
 }
