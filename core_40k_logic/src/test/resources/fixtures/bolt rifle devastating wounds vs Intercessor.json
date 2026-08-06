@@ -1,6 +1,6 @@
 {
   "name": "bolt rifle devastating wounds vs Intercessor",
-  "attackerUnitsFile": "units/attacker/intercessor_squad_Devastating_wounds.json",
+  "attackerUnitsFile": "units/attacker/intercessor_squad_devastating_wounds.json",
   "defenderUnitFile": "units/defender/intercessor_squad.json",
   "attackerGamePiece": "army/ultramarines_standard",
   "defenderGamePiece": "primary",
