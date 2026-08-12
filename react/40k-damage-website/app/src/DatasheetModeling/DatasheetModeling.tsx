@@ -134,8 +134,8 @@ export interface AbilityData {
   name: string;
   description: string;
   active: boolean;
-  implemented: boolean;
-  hasBoosted: boolean;
+  implemented: boolean ;
+  hasBoostedVersion: boolean;
   isBoosted: boolean;
   [paramField: string]: unknown;
 }

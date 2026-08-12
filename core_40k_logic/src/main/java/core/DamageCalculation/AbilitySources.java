@@ -46,7 +46,7 @@ public class AbilitySources
         // Defending units weapons is not set walla
         if(weapon != null)
         {
-            for(Ability ability : model.GetAbilities())
+            for(Ability ability : weapon.GetAbilities())
             {
                 if(ability.GetAbilityTiming() == abilityTiming)
                 {

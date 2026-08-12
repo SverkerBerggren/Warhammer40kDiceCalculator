@@ -28,7 +28,6 @@ export default function TestGrej() {
   if (error) return <label>Error: {error}</label>;
   if (!result) return <label>Loading...</label>;
 
-
   return <label>{JSON.stringify(result["averageAmountOfModelsSlain"])}</label>;
 }
 

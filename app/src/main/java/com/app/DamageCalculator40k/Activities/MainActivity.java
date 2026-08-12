@@ -113,13 +113,15 @@ public class  MainActivity extends AppCompatActivity {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
             String item = ((TextView)view).getText().toString();
-            Ability ability = DatabaseManager.getInstance().GetAbility(item);
+            //This does not take into account the more complex way of constructing abilities that the react frontend use.
 
-            gamePiece.GetAbilities().add(ability);
-            abilityUIHolder.AbilityAdded(ability, gamePiece);
-
-            View searchLayout = baseView.findViewById(R.id.SearchLayout);
-            searchLayout.setVisibility(View.GONE);
+            // Ability ability = DatabaseManager.getInstance().GetAbility(item);
+//
+            // gamePiece.GetAbilities().add(ability);
+            // abilityUIHolder.AbilityAdded(ability, gamePiece);
+//
+            // View searchLayout = baseView.findViewById(R.id.SearchLayout);
+            // searchLayout.setVisibility(View.GONE);
             AndroidFileHandler.GetInstance().saveMatchup(matchup);
         }
     }

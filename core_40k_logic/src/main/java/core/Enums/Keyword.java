@@ -1,5 +1,10 @@
 package core.Enums;
 
+import static core.Parsing.Parsing.toEnumName;
+
+import java.util.HashMap;
+import java.util.Map;
+
 //TODO: Sourced from wahapedia
 public enum Keyword {
     Orks,
@@ -1429,5 +1434,32 @@ public enum Keyword {
     Warlord,
     Frame,
     Leader,
-    NonKroot
+    NonKroot;
+    private static final Map<String, Keyword> LOOKUP = new HashMap<>();
+
+    static {
+        for (Keyword k : values()) {
+            String canonical = canonicalize(k.name());
+            Keyword existing = LOOKUP.put(canonical, k);
+            if (existing != null) {
+                // Two enum constants collapsed to the same canonical form —
+                // worth knowing about rather than silently overwriting.
+                throw new IllegalStateException(
+                        "Keyword collision: " + existing + " and " + k + " both canonicalize to " + canonical);
+            }
+        }
+    }
+
+    private static String canonicalize(String s) {
+        return s.toLowerCase().replaceAll("[^a-z0-9]", "");
+    }
+    /**
+     * Claude shit
+     * Sanitizes a string to be a valid Java enum name.
+     * Removes "Faction: " prefix, then strips all characters not allowed in enum names.
+     */
+
+    public static Keyword fromString(String raw) {
+        return LOOKUP.get(canonicalize(raw));
+    }
 }

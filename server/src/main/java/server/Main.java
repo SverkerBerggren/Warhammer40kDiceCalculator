@@ -1,6 +1,7 @@
 package server;
 
 import core.Abilities.Ability;
+import core.Abilities.AbilityKind;
 import core.AbilityElementAdapter;
 import core.DamageCalculation.RollResult;
 import core.DamageCalculation.RollingLogic;
@@ -80,10 +81,12 @@ public class Main {
             Army army = parser.ParseGWListFormat(list);
             Logging.d("deez",name);
             army.name = name;
+            String debugResult = gson.toJson(army);
             ctx.result(gson.toJson(army));
         }
         catch (Exception e)
         {
+            e.printStackTrace();
             ctx.status(400);
             ctx.result(gson.toJson(new ErrorResponse(e.getMessage())));
         }
@@ -91,7 +94,7 @@ public class Main {
     private static void handleImplementedAbilities(Context ctx) {
         try {
             ctx.contentType("application/json");
-            ctx.result(gson.toJson(DatabaseManager.GetCatalog()));
+            ctx.result(gson.toJson(AbilityKind.getAbilityDefinitionCatalog()));
         } catch (Exception e) {
             ctx.status(400);
             ctx.result(gson.toJson(new ErrorResponse(e.getMessage())));

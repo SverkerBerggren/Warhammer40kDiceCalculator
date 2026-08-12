@@ -9,11 +9,11 @@ import core.Enums.AbilityTiming;
 import core.Enums.Keyword;
 
 public class AntiKeyword extends Ability {
-    public static String baseName = "anti";
+    public static String baseName = "Anti";
     private final Keyword keyword;
     private int diceNumber = 0;
     public AntiKeyword(Keyword keyword, int diceNumber) {
-        super(baseName + "-" + " " + keyword.name(),AbilityTiming.TriggerOnWoundRoll);
+        super(baseName + "-"  + keyword.name(),AbilityTiming.TriggerOnWoundRoll);
         this.keyword = keyword;
         this.diceNumber = diceNumber;
     }

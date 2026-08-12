@@ -3,6 +3,7 @@ package core;
 
 import core.Abilities.Ability;
 import core.Abilities.AbilityKind;
+import core.Abilities.DualModeAbility;
 import core.Abilities.UnimplementedAbility;
 import core.Logging.Logging;
 
@@ -34,6 +35,8 @@ public class AbilityElementAdapter implements JsonSerializer<Ability>, JsonDeser
         JsonObject obj = tree.getAsJsonObject();
         AbilityKind kind = REVERSE_REGISTRY.getOrDefault(src.getClass(), AbilityKind.UNIMPLEMENTED);
         obj.add("kind", new JsonPrimitive(kind.name()));
+        obj.addProperty("implemented", src.isImplemented());
+        obj.addProperty("hasBoostedVersion", (src instanceof DualModeAbility));
         return obj;
     }
 

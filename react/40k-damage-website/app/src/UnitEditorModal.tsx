@@ -233,7 +233,7 @@ export default function UnitEditorModal({ editingUnit, isOpen, onClose, onSave }
                   description: entry.description,
                   active: true,
                   implemented: true,
-                  hasBoosted: entry.hasBoosted,
+                  hasBoostedVersion: entry.hasBoosted,
                   isBoosted: false,
                   ...paramValues,
                 },
@@ -242,7 +242,7 @@ export default function UnitEditorModal({ editingUnit, isOpen, onClose, onSave }
       onAddCustom: (name: string, description: string) =>
         updateAbilitiesAt(path, abilities => [
           ...abilities,
-          { kind: "CUSTOM", name, description, active: true, implemented: false,hasBoosted: false,isBoosted:false},
+          { kind: "CUSTOM", name, description, active: true, implemented: false,hasBoostedVersion: false,isBoosted:false},
         ]),
     };
   }
@@ -925,7 +925,7 @@ function AbilityManager({
                         No logic
                       </span>
                     )}
-                    {  ability.hasBoosted && (
+                    {  ability.hasBoostedVersion && (
                       <button
                         onClick={() => onToggleBoost(i)}
                         title="Toggle this ability's boosted mode (DualModeAbility on the server)"

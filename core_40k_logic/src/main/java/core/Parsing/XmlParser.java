@@ -309,7 +309,7 @@ public class XmlParser
                 if(nodeName!= null)
                 {
                     String prunedString = Parsing.toEnumName(nodeName.getNodeValue());
-                    Keyword keyword = Parsing.keywordFromString(prunedString);
+                    Keyword keyword = Keyword.fromString(prunedString);
                     if(keyword != null)
                     {
                         retList.add(keyword);

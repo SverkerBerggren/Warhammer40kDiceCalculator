@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class JsonParser {
 
@@ -432,7 +433,7 @@ public class JsonParser {
         for (CategoryLink link : entry.categoryLinks) {
             if (link.name == null) continue;
             String prunedString = Parsing.toEnumName(link.name);
-            Keyword keyword = Parsing.keywordFromString(prunedString);
+            Keyword keyword = Keyword.fromString(prunedString);
             if (keyword != null) {
                 retSet.add(keyword);
             } else {
@@ -768,9 +769,19 @@ public class JsonParser {
                 for (String keyword : keywords.split(",")) {
                     keyword = keyword.trim();
                     if (!keyword.isEmpty()) {
-                        UnimplementedAbility ability = new UnimplementedAbility(keyword);
-                        ability.description = claudeGetKeywordDescription(keyword);
-                        returnWeapon.GetAbilities().add(ability);
+
+                        Optional<Ability> fetchedAbility = DatabaseManager.getAbility(keyword);
+                        Ability abilityToAdd;
+                        if(fetchedAbility.isPresent()) {
+                            abilityToAdd = fetchedAbility.get();
+                        }
+                        else
+                        {
+                            abilityToAdd = new UnimplementedAbility(keyword);
+                            abilityToAdd.description = claudeGetKeywordDescription(keyword);
+                        }
+
+                        returnWeapon.GetAbilities().add(abilityToAdd);
                     }
                 }
             }

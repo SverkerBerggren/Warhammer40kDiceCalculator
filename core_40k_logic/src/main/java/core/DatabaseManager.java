@@ -1,5 +1,7 @@
 package core;
 
+import com.google.gson.JsonObject;
+
 import core.Abilities.Ability;
 import core.Abilities.AbilityDefinition;
 import core.Abilities.AbilityKind;
@@ -40,8 +42,18 @@ import core.Util.Pair;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.regex.MatchResult;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.crypto.spec.OAEPParameterSpec;
 
 public class DatabaseManager {
 
@@ -243,8 +255,8 @@ public class DatabaseManager {
         {
             return new Pair<>(ItemType.UNIT,nameToUnit.get(itemName));
         }
-        Ability ability = DatabaseManager.getInstance().GetAbility(itemName);
-        if(ability != null)
+        Optional<Ability> ability = DatabaseManager.getAbilityForDisplay(itemName);
+        if(ability.isPresent())
         {
             return new Pair<>(ItemType.ABILITY,ability);
         }
@@ -289,31 +301,6 @@ public class DatabaseManager {
         return unitDatabase.get(key);
     }
 
-    public static List<AbilityDefinition> GetCatalog()
-    {
-        return  CATALOG;
-    }
-    private static final List<AbilityDefinition> CATALOG = List.of(
-            new AbilityDefinition(AbilityKind.ANTI_KEYWORD, "Anti-Keyword",
-                    "Wounds on a fixed roll against a specific keyword.",
-                    List.of(new ParamSpec("keyword", ParamType.KEYWORD, "Keyword"),
-                            new ParamSpec("woundThreshold", ParamType.INT, "Threshold")),false),
-            new AbilityDefinition(AbilityKind.LETHAL_HITS, "Lethal Hits",
-                    "Critical hits auto-wound.", List.of(),false),
-            new AbilityDefinition(AbilityKind.DEVASTATING_WOUNDS,"Devastating wounds","Mortal wounds on critical hits",List.of(),false),
-            new AbilityDefinition(AbilityKind.BLAST,"Blast","Extra hits depending on size of defending unit",
-                    List.of(new ParamSpec("extra attacks", ParamType.INT, "extra attacks")),false),
-            new AbilityDefinition(AbilityKind.CLEAVE,"Cleave","Extra hits depending on size of defending unit",
-                            List.of(new ParamSpec("extra attacks", ParamType.INT, "extra attacks")),false),
-            new AbilityDefinition(AbilityKind.MELTA,"Melta","Extra wounds depending on range",
-                    List.of(new ParamSpec("extraWounds", ParamType.INT, "extra wounds")),true),
-            new AbilityDefinition(AbilityKind.SUSTAINED_HITS,"Sustained hits","Extra hits on critical hits",
-                    List.of(new ParamSpec("extraHits", ParamType.DICE_AMOUNT, "extra hits")),false),
-            new AbilityDefinition(AbilityKind.RAPID_FIRE,"Rapid fire","Extra hits when in half range",
-                    List.of(new ParamSpec("extra attacks", ParamType.DICE_AMOUNT, "extra attacks")),true),
-            new AbilityDefinition(AbilityKind.TWIN_LINKED,"Twin-linked","Reroll wound roll",
-                    List.of(),false)
-    );
     private void CreateImplementedAbilities()
     {
         synchronized (localAbilitiesLock)
@@ -347,18 +334,62 @@ public class DatabaseManager {
         return new ArrayList<>(nameToImplementedAbility.values());
     }
 
-    // Name of the ability
-    public Ability GetAbility(String name)
-    {
-        Ability ability = nameToImplementedAbility.get(name);
-        if(ability == null)
-        {
-            ability = nameToParsedAbility.get(name);
+    private static final Pattern ABILITY_TOKEN_PATTERN = Pattern.compile("^((?:[A-Za-z]+(?=[\\s-]|$)\\s*)+)(?:-([A-Za-z]+(?=\\s|$)))?\\s*(.*)$");
 
+    public static Optional<Ability> getAbility(String abilityText) {
+        Matcher m = ABILITY_TOKEN_PATTERN.matcher(abilityText);
+        if (m.matches()) {
+            String alias = m.group(1);
+            alias = alias.strip();
+
+            String keyword = m.group(2); // may be null
+            if(keyword != null)
+            {
+                keyword = keyword.strip();
+            }
+
+            String diceAmount = m.group(3);
+
+            diceAmount = diceAmount.strip();
+            //Cleans trailing +:es
+            diceAmount = diceAmount.replaceAll("\\+$", "");
+
+            List<String> params = new ArrayList<>();
+            if(keyword != null)
+            {
+                params.add(keyword);
+            }
+            if( !diceAmount.isEmpty())
+            {
+                params.add(diceAmount);
+            }
+
+            return AbilityKind.getAbility(alias, params);
         }
-        return ability;
+        else
+        {
+            return Optional.empty();
+        }
     }
+    public static Optional<Ability> getAbilityForDisplay(String abilityText) {
+        Optional<Ability> implementedAbility = getAbility(abilityText);
+        if(implementedAbility.isEmpty())
+        {
 
+            Ability parsedAbility = DatabaseManager.getInstance().nameToParsedAbility.get(abilityText);
+            if(parsedAbility != null)
+            {
+                return Optional.of( parsedAbility);            }
+            else
+            {
+                return Optional.empty();
+            }
+        }
+        else
+        {
+            return implementedAbility;
+        }
+    }
 
     public enum ItemType
     {

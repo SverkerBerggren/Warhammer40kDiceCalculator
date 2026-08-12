@@ -17,6 +17,7 @@ import core.Logging.Logging;
 import core.Util.Pair;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Parsing
@@ -231,29 +232,6 @@ public class Parsing
         return itemName.contains(BATTLELINE) || itemName.contains(DEDICATED_TRANSPORTS) || itemName.contains(CHARACTER) || itemName.contains(OTHER_DATASHEETS);
     }
 
-    /**
-     * Claude shit
-     * Sanitizes a string to be a valid Java enum name.
-     * Removes "Faction: " prefix, then strips all characters not allowed in enum names.
-     */
-    public static String toEnumName(String raw) {
-        return raw
-                .replace("Faction: ", "")
-                .replaceAll("[^\\p{L}0-9_]", "");
-    }
-
-    /**
-     * Attempts to look up a Keyword enum by the given raw string.
-     * Returns the matching enum constant, or null if none found.
-     */
-    public static Keyword keywordFromString(String raw) {
-        String enumName = toEnumName(raw);
-        try {
-            return Keyword.valueOf(enumName);
-        } catch (IllegalArgumentException e) {
-            return null; // No matching enum constant
-        }
-    }
 
 
     private int ParseModelEquipment(int offset, String armyList, Unit unit, Model modelType, int modelCount)
@@ -314,8 +292,8 @@ public class Parsing
             if(parsedItem.first.equals(DatabaseManager.ItemType.ABILITY))
             {
                 //TODO: A open question is how abilities for models should be handled. Right now it is added to both the unit and the model
-                unit.GetAbilities().add((Ability)parsedItem.second);
-                modelType.GetAbilities().add((Ability)parsedItem.second);
+                unit.GetAbilities().add(((Optional<Ability>)parsedItem.second).get());
+                modelType.GetAbilities().add(((Optional<Ability>)parsedItem.second).get());
             }
             if(parsedItem.first.equals(DatabaseManager.ItemType.UNIT) || (parsedItem.first.equals(DatabaseManager.ItemType.MODEL) && hasPointValue))
             {
@@ -605,7 +583,11 @@ public class Parsing
     {
         return charToExamine == '•' || Character.isDigit(charToExamine);
     }
-
+    public static String toEnumName(String raw) {
+        return raw
+                .replace("Faction: ", "")
+                .replaceAll("[^\\p{L}0-9_]", "");
+    }
 
     public static DiceAmount ParseDiceAmount(String string)
     {
